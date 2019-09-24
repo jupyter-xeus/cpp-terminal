@@ -18,6 +18,7 @@
 #    include <sys/ioctl.h>
 #    include <termios.h>
 #    include <unistd.h>
+#    include <errno.h>
 #endif
 
 namespace Term {
