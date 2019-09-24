@@ -6,8 +6,8 @@ compiler:
 os:
   - linux
   - osx
-dist: trusty
-osx_image: xcode7.3
+dist: bionic
+osx_image: xcode11
 
 install:
   - make
