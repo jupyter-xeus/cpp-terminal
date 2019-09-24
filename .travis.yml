@@ -1,0 +1,17 @@
+language: cpp
+sudo: false
+compiler:
+  - gcc
+  - clang
+os:
+  - linux
+  - osx
+dist: trusty
+osx_image: xcode7.3
+
+install:
+  - make
+script:
+  - ./colors
+notifications:
+  email: false
