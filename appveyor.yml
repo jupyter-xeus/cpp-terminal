@@ -1,0 +1,9 @@
+image: Visual Studio 2017
+# List of preinstalled software in the image:
+# https://www.appveyor.com/docs/windows-images-software/
+
+build_script:
+- call build.bat
+
+#on_finish:
+#- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
