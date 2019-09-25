@@ -27,3 +27,8 @@ works natively on all platforms:
 * [menu.cpp](examples/menu.cpp): Shows a menu on the screen
 * [keys.cpp](examples/keys.cpp): Listens for keys, showing their numbers
 * [colors.cpp](examples/colors.cpp): Shows how to print text in color to standard output
+
+## How to use
+
+The easiest is to just copy the two files `terminal.h` and `terminal_base.h`
+into your project. Consult the examples how to use it.
