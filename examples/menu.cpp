@@ -60,8 +60,12 @@ int main() {
                       on = false; break;
             }
         }
+    } catch(const std::runtime_error& re) {
+        std::cerr << "Runtime error: " << re.what() << std::endl;
+        return 2;
     } catch(...) {
-        throw;
+        std::cerr << "Unkown error." << std::endl;
+        return 1;
     }
     return 0;
 }
