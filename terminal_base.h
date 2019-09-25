@@ -34,10 +34,12 @@ private:
 #ifdef _WIN32
     HANDLE hout;
     DWORD dwOriginalOutMode;
-    bool in_console;
+    bool out_console;
+    UINT out_code_page;
 
     HANDLE hin;
     DWORD dwOriginalInMode;
+    UINT in_code_page;
 #else
     struct termios orig_termios;
 #endif
@@ -48,9 +50,10 @@ public:
         : keyboard_enabled{enable_keyboard}
     {
 #ifdef _WIN32
-        in_console = is_stdout_a_tty();
-        if (in_console) {
+        out_console = is_stdout_a_tty();
+        if (out_console) {
             hout = GetStdHandle(STD_OUTPUT_HANDLE);
+            out_code_page = GetConsoleOutputCP();
             SetConsoleOutputCP(65001);
             if (hout == INVALID_HANDLE_VALUE) {
                 throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed");
@@ -68,6 +71,7 @@ public:
 
         if (keyboard_enabled) {
             hin = GetStdHandle(STD_INPUT_HANDLE);
+            in_code_page = GetConsoleCP();
             SetConsoleCP(65001);
             if (hin == INVALID_HANDLE_VALUE) {
                 throw std::runtime_error(
@@ -114,7 +118,8 @@ public:
     virtual ~BaseTerminal() noexcept(false)
     {
 #ifdef _WIN32
-        if (in_console) {
+        if (out_console) {
+            SetConsoleOutputCP(out_code_page);
             if (!SetConsoleMode(hout, dwOriginalOutMode)) {
                 throw std::runtime_error(
                         "SetConsoleMode() failed in destructor");
@@ -122,6 +127,7 @@ public:
         }
 
         if (keyboard_enabled) {
+            SetConsoleCP(in_code_page);
             if (!SetConsoleMode(hin, dwOriginalInMode)) {
                 throw std::runtime_error(
                         "SetConsoleMode() failed in destructor");
