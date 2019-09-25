@@ -900,22 +900,26 @@ int main(int argc, char *argv[]) {
   // being called when exception happens and the terminal is not put into
   // correct state.
   try {
-      Terminal term(true, false);
-      term.save_screen();
-      initEditor(term);
-      if (argc >= 2) {
-        editorOpen(argv[1]);
-      }
+    Terminal term(true, false);
+    term.save_screen();
+    initEditor(term);
+    if (argc >= 2) {
+      editorOpen(argv[1]);
+    }
 
-      editorSetStatusMessage(
-        "HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find");
+    editorSetStatusMessage(
+      "HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find");
 
+    editorRefreshScreen(term);
+    while (editorProcessKeypress(term)) {
       editorRefreshScreen(term);
-      while (editorProcessKeypress(term)) {
-        editorRefreshScreen(term);
-      }
+    }
+  } catch(const std::runtime_error& re) {
+    std::cerr << "Runtime error: " << re.what() << std::endl;
+    return 2;
   } catch(...) {
-      throw;
+    std::cerr << "Unkown error." << std::endl;
+    return 1;
   }
   return 0;
 }
