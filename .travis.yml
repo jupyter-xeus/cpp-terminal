@@ -12,10 +12,6 @@ osx_image: xcode11
 install:
   - make
 script:
-  - ./colors
-# this succeeds:
-  - ./colors < README.md
-# but this fails:
-  - ! (./keys < README.md)
+  - ./tests.sh
 notifications:
   email: false
