@@ -10,7 +10,7 @@ using Term::bg;
 using Term::style;
 using Term::Key;
 
-void render(const Terminal &term, int rows, int cols, int pos)
+void render(int rows, int cols, int pos)
 {
     std::string scr;
     scr.reserve(16*1024);
@@ -38,7 +38,7 @@ void render(const Terminal &term, int rows, int cols, int pos)
 
     scr.append(cursor_on());
 
-    term.write(scr);
+    std::cout << scr << std::flush;
 }
 
 int main() {
@@ -50,11 +50,13 @@ int main() {
         int pos = 5;
         bool on = true;
         while (on) {
-            render(term, rows, cols, pos);
+            render(rows, cols, pos);
             int key = term.read_key();
             switch (key) {
                 case Key::ARROW_UP: if (pos > 1) pos--; break;
                 case Key::ARROW_DOWN: if (pos < rows) pos++; break;
+                case Key::HOME: pos=1; break;
+                case Key::END: pos=rows; break;
                 case 'q':
                 case Key::ESC:
                       on = false; break;
