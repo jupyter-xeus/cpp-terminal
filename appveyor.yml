@@ -6,6 +6,9 @@ build_script:
 - build.bat
 - dir
 - ldd colors.exe
+- powershell -command "Start-Sleep -s 5"
+
+test_script:
 - colors
 
 on_finish:
