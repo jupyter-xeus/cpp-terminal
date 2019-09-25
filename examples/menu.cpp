@@ -10,7 +10,7 @@ using Term::bg;
 using Term::style;
 using Term::Key;
 
-void render(int rows, int cols, int pos)
+void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
 {
     std::string scr;
     scr.reserve(16*1024);
@@ -18,8 +18,18 @@ void render(int rows, int cols, int pos)
     scr.append(cursor_off());
     scr.append(move_cursor(1, 1));
 
-    for (int i=1; i <= rows; i++) {
-        if (i == pos) {
+    int menux0 = (cols - menuwidth) / 2;
+    int menuy0 = (rows - menuheight) / 2;
+
+    for (int j=1; j <= menuy0; j++) {
+        scr.append("\n");
+    }
+
+    for (int i=1; i <= menuheight; i++) {
+        for (int j=1; j <= menux0; j++) {
+            scr.append(" ");
+        }
+        if (i == menupos) {
             scr.append(color(fg::red));
             scr.append(color(bg::gray));
             scr.append(color(style::bold));
@@ -27,14 +37,21 @@ void render(int rows, int cols, int pos)
             scr.append(color(fg::blue));
             scr.append(color(bg::green));
         }
-        scr.append(std::to_string(i) + ": item");
+        std::string s = std::to_string(i) + ": item";
+        scr.append(s);
+        for (size_t j=1; j <= menuwidth-s.size(); j++) {
+            scr.append(" ");
+        }
         scr.append(color(bg::reset));
         scr.append(color(fg::reset));
         scr.append(color(style::reset));
-        if (i < rows) scr.append("\n");
+        if (i < rows) scr.append(" \n");
     }
 
-    scr.append(move_cursor(rows / 2, cols / 2));
+    scr.append(move_cursor(menuy0 + menuheight + 5, 1));
+    scr.append("Selected item: " + std::to_string(menupos) + "      \n");
+    scr.append("Menu width: " + std::to_string(menuwidth) + "       \n");
+    scr.append("Menu height: " + std::to_string(menuheight) + "    \n");
 
     scr.append(cursor_on());
 
@@ -48,15 +65,19 @@ int main() {
         int rows, cols;
         term.get_term_size(rows, cols);
         int pos = 5;
+        int h = 10;
+        int w = 10;
         bool on = true;
         while (on) {
-            render(rows, cols, pos);
+            render(rows, cols, h, w, pos);
             int key = term.read_key();
             switch (key) {
+                case Key::ARROW_LEFT: if (w > 10) w--; break;
+                case Key::ARROW_RIGHT: if (w < cols-1) w++; break;
                 case Key::ARROW_UP: if (pos > 1) pos--; break;
-                case Key::ARROW_DOWN: if (pos < rows) pos++; break;
+                case Key::ARROW_DOWN: if (pos < h) pos++; break;
                 case Key::HOME: pos=1; break;
-                case Key::END: pos=rows; break;
+                case Key::END: pos=h; break;
                 case 'q':
                 case Key::ESC:
                       on = false; break;
