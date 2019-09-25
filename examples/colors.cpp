@@ -49,8 +49,10 @@ int main() {
             + color(bg::reset) + color(fg::reset) + " and some "
             + color(style::bold) + "bold text" + color(style::reset) + ".";
         std::cout << text << std::endl;
+    } catch(const std::runtime_error& re) {
+        std::cerr << "Runtime error: " << re.what() << std::endl;
     } catch(...) {
-        throw;
+        std::cerr << "Unkown error: " << std::endl;
     }
     return 0;
 }
