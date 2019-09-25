@@ -1,4 +1,7 @@
-all: kilo menu keys colors
+all: prompt kilo menu keys colors
+
+prompt: examples/prompt.cpp terminal.h terminal_base.h
+	$(CXX) -I. examples/prompt.cpp -o prompt -Wall -Wextra --std=c++11
 
 kilo: examples/kilo.cpp terminal.h terminal_base.h
 	$(CXX) -I. examples/kilo.cpp -o kilo -Wall -Wextra --std=c++11
