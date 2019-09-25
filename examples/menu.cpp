@@ -25,10 +25,20 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
         scr.append("\n");
     }
 
+    for (int j=1; j <= menux0; j++) {
+        scr.append(" ");
+    }
+    scr.append("┌");
+    for (int j=1; j <= menuwidth; j++) {
+        scr.append("─");
+    }
+    scr.append("┐");
+    scr.append(" \n");
     for (int i=1; i <= menuheight; i++) {
         for (int j=1; j <= menux0; j++) {
             scr.append(" ");
         }
+        scr.append("│");
         if (i == menupos) {
             scr.append(color(fg::red));
             scr.append(color(bg::gray));
@@ -45,8 +55,18 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
         scr.append(color(bg::reset));
         scr.append(color(fg::reset));
         scr.append(color(style::reset));
-        if (i < rows) scr.append(" \n");
+        scr.append("│");
+        scr.append(" \n");
     }
+    for (int j=1; j <= menux0; j++) {
+        scr.append(" ");
+    }
+    scr.append("└");
+    for (int j=1; j <= menuwidth; j++) {
+        scr.append("─");
+    }
+    scr.append("┘");
+    scr.append(" \n");
 
     scr.append(move_cursor(menuy0 + menuheight + 5, 1));
     scr.append("Selected item: " + std::to_string(menupos) + "      \n");
@@ -73,7 +93,7 @@ int main() {
             int key = term.read_key();
             switch (key) {
                 case Key::ARROW_LEFT: if (w > 10) w--; break;
-                case Key::ARROW_RIGHT: if (w < cols-1) w++; break;
+                case Key::ARROW_RIGHT: if (w < cols-5) w++; break;
                 case Key::ARROW_UP: if (pos > 1) pos--; break;
                 case Key::ARROW_DOWN: if (pos < h) pos++; break;
                 case Key::HOME: pos=1; break;
