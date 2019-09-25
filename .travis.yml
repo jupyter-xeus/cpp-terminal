@@ -13,5 +13,9 @@ install:
   - make
 script:
   - ./colors
+# this succeeds:
+  - ./colors < README.md
+# but this fails:
+  - ! (./keys < README.md)
 notifications:
   email: false

@@ -900,7 +900,7 @@ int main(int argc, char *argv[]) {
   // being called when exception happens and the terminal is not put into
   // correct state.
   try {
-      Terminal term;
+      Terminal term(true, false);
       term.save_screen();
       initEditor(term);
       if (argc >= 2) {

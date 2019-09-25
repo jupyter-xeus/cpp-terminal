@@ -8,7 +8,7 @@ using Term::Key;
 
 int main() {
     try {
-        Terminal term(false);
+        Terminal term(true, false);
         int rows, cols;
         term.get_term_size(rows, cols);
         std::cout << "Dimension:" << cols << " " << rows << std::endl;

@@ -43,7 +43,7 @@ void render(const Terminal &term, int rows, int cols, int pos)
 
 int main() {
     try {
-        Terminal term(false);
+        Terminal term(true, false);
         term.save_screen();
         int rows, cols;
         term.get_term_size(rows, cols);
