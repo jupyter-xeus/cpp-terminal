@@ -49,29 +49,31 @@ public:
         if (hout == INVALID_HANDLE_VALUE) {
             throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed");
         }
-        hin = GetStdHandle(STD_INPUT_HANDLE);
-        if (hin == INVALID_HANDLE_VALUE) {
-            throw std::runtime_error("GetStdHandle(STD_INPUT_HANDLE) failed");
-        }
-
         if (!GetConsoleMode(hout, &dwOriginalOutMode)) {
             throw std::runtime_error("GetConsoleMode() failed");
         }
-        if (!GetConsoleMode(hin, &dwOriginalInMode)) {
-            throw std::runtime_error("GetConsoleMode() failed");
-        }
-
-        DWORD dwRequestedOutModes = ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
-        DWORD dwRequestedInModes = ENABLE_VIRTUAL_TERMINAL_INPUT;
-
-        DWORD dwOutMode = dwOriginalOutMode | dwRequestedOutModes;
-        if (!SetConsoleMode(hout, dwOutMode)) {
+        DWORD flags = dwOriginalOutMode;
+        flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+        flags |= DISABLE_NEWLINE_AUTO_RETURN;
+        if (!SetConsoleMode(hout, flags)) {
             throw std::runtime_error("SetConsoleMode() failed");
         }
-        DWORD dwInMode = dwOriginalInMode | dwRequestedInModes;
-        dwInMode &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
-        if (!SetConsoleMode(hin, dwInMode)) {
-            throw std::runtime_error("SetConsoleMode() failed");
+
+        if (keyboard_enabled) {
+            hin = GetStdHandle(STD_INPUT_HANDLE);
+            if (hin == INVALID_HANDLE_VALUE) {
+                throw std::runtime_error(
+                        "GetStdHandle(STD_INPUT_HANDLE) failed");
+            }
+            if (!GetConsoleMode(hin, &dwOriginalInMode)) {
+                throw std::runtime_error("GetConsoleMode() failed");
+            }
+            DWORD flags = dwOriginalInMode;
+            flags |= ENABLE_VIRTUAL_TERMINAL_INPUT;
+            flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
+            if (!SetConsoleMode(hin, flags)) {
+                throw std::runtime_error("SetConsoleMode() failed");
+            }
         }
 #else
         if (keyboard_enabled) {
@@ -107,8 +109,12 @@ public:
         if (!SetConsoleMode(hout, dwOriginalOutMode)) {
             throw std::runtime_error("SetConsoleMode() failed in destructor");
         }
-        if (!SetConsoleMode(hin, dwOriginalInMode)) {
-            throw std::runtime_error("SetConsoleMode() failed in destructor");
+
+        if (keyboard_enabled) {
+            if (!SetConsoleMode(hin, dwOriginalInMode)) {
+                throw std::runtime_error(
+                        "SetConsoleMode() failed in destructor");
+            }
         }
 #else
         if (keyboard_enabled) {
