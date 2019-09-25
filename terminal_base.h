@@ -51,6 +51,7 @@ public:
         in_console = is_stdout_a_tty();
         if (in_console) {
             hout = GetStdHandle(STD_OUTPUT_HANDLE);
+            SetConsoleOutputCP(65001);
             if (hout == INVALID_HANDLE_VALUE) {
                 throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed");
             }
@@ -67,6 +68,7 @@ public:
 
         if (keyboard_enabled) {
             hin = GetStdHandle(STD_INPUT_HANDLE);
+            SetConsoleCP(65001);
             if (hin == INVALID_HANDLE_VALUE) {
                 throw std::runtime_error(
                         "GetStdHandle(STD_INPUT_HANDLE) failed");
