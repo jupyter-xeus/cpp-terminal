@@ -4,7 +4,9 @@ image: Visual Studio 2017
 
 build_script:
 - call build.bat
-- colors.exe
+- dir
+- ldd colors.exe
+- .\colors.exe
 
 #on_finish:
 #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
