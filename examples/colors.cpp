@@ -43,7 +43,7 @@ void render(const Terminal &term, int rows, int cols, int pos)
 
 int main() {
     try {
-        Terminal term(false);
+        Terminal term;
         std::string text = "Some text with "
             + color(fg::red) + color(bg::green) + "red on green"
             + color(bg::reset) + color(fg::reset) + " and some "

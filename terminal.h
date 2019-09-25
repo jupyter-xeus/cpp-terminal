@@ -161,8 +161,9 @@ enum Key {
 class Terminal: public BaseTerminal {
     bool restore_screen_;
 public:
-    Terminal(bool disable_ctrl_c=true)
-        : BaseTerminal(disable_ctrl_c), restore_screen_{false} {}
+    Terminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
+        : BaseTerminal(enable_keyboard, disable_ctrl_c),
+          restore_screen_{false} {}
 
     virtual ~Terminal() {
         restore_screen();

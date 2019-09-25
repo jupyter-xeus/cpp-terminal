@@ -12,6 +12,6 @@ osx_image: xcode11
 install:
   - make
 script:
-  - ./colors
+  - ./tests.sh
 notifications:
   email: false

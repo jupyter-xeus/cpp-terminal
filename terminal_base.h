@@ -38,9 +38,11 @@ private:
 #else
     struct termios orig_termios;
 #endif
+    bool keyboard_enabled;
 
 public:
-    BaseTerminal(bool disable_ctrl_c=true)
+    BaseTerminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
+        : keyboard_enabled{enable_keyboard}
     {
 #ifdef _WIN32
         hout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -72,27 +74,29 @@ public:
             throw std::runtime_error("SetConsoleMode() failed");
         }
 #else
-        if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) {
-            throw std::runtime_error("tcgetattr() failed");
-        }
+        if (keyboard_enabled) {
+            if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) {
+                throw std::runtime_error("tcgetattr() failed");
+            }
 
-        // Put terminal in raw mode
-        struct termios raw = orig_termios;
-        raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-        // This disables output post-processing, requiring explicit \r\n. We
-        // keep it enabled, so that in C++, one can still just use std::endl
-        // for EOL instead of "\r\n".
-        //raw.c_oflag &= ~(OPOST);
-        raw.c_cflag |= (CS8);
-        raw.c_lflag &= ~(ECHO | ICANON | IEXTEN);
-        if (disable_ctrl_c) {
-            raw.c_lflag &= ~(ISIG);
-        }
-        raw.c_cc[VMIN] = 0;
-        raw.c_cc[VTIME] = 0;
+            // Put terminal in raw mode
+            struct termios raw = orig_termios;
+            raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+            // This disables output post-processing, requiring explicit \r\n. We
+            // keep it enabled, so that in C++, one can still just use std::endl
+            // for EOL instead of "\r\n".
+            //raw.c_oflag &= ~(OPOST);
+            raw.c_cflag |= (CS8);
+            raw.c_lflag &= ~(ECHO | ICANON | IEXTEN);
+            if (disable_ctrl_c) {
+                raw.c_lflag &= ~(ISIG);
+            }
+            raw.c_cc[VMIN] = 0;
+            raw.c_cc[VTIME] = 0;
 
-        if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) {
-            throw std::runtime_error("tcsetattr() failed");
+            if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) {
+                throw std::runtime_error("tcsetattr() failed");
+            }
         }
 #endif
     }
@@ -107,8 +111,10 @@ public:
             throw std::runtime_error("SetConsoleMode() failed in destructor");
         }
 #else
-        if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) {
-            throw std::runtime_error("tcsetattr() failed in destructor");
+        if (keyboard_enabled) {
+            if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) {
+                throw std::runtime_error("tcsetattr() failed in destructor");
+            }
         }
 #endif
     }
