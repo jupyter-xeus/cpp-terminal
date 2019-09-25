@@ -14,6 +14,7 @@
 #ifdef _WIN32
 #    include <conio.h>
 #    include <windows.h>
+#    include <io.h>
 #else
 #    include <sys/ioctl.h>
 #    include <termios.h>
@@ -168,6 +169,16 @@ public:
             cols = ws.ws_col;
             rows = ws.ws_row;
         }
+#endif
+    }
+
+    // Returns true if the standard output is attached to a terminal
+    bool is_stdout_a_tty() const
+    {
+#ifdef _WIN32
+        return _isatty(_fileno(stdout));
+#else
+        return isatty(STDOUT_FILENO);
 #endif
     }
 };
