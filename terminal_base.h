@@ -14,6 +14,7 @@
 #ifdef _WIN32
 #    include <conio.h>
 #    include <windows.h>
+#    include <io.h>
 #else
 #    include <sys/ioctl.h>
 #    include <termios.h>
@@ -32,8 +33,10 @@ class BaseTerminal {
 private:
 #ifdef _WIN32
     HANDLE hout;
-    HANDLE hin;
     DWORD dwOriginalOutMode;
+    bool in_console;
+
+    HANDLE hin;
     DWORD dwOriginalInMode;
 #else
     struct termios orig_termios;
@@ -45,18 +48,21 @@ public:
         : keyboard_enabled{enable_keyboard}
     {
 #ifdef _WIN32
-        hout = GetStdHandle(STD_OUTPUT_HANDLE);
-        if (hout == INVALID_HANDLE_VALUE) {
-            throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed");
-        }
-        if (!GetConsoleMode(hout, &dwOriginalOutMode)) {
-            throw std::runtime_error("GetConsoleMode() failed");
-        }
-        DWORD flags = dwOriginalOutMode;
-        flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-        flags |= DISABLE_NEWLINE_AUTO_RETURN;
-        if (!SetConsoleMode(hout, flags)) {
-            throw std::runtime_error("SetConsoleMode() failed");
+        in_console = is_stdout_a_tty();
+        if (in_console) {
+            hout = GetStdHandle(STD_OUTPUT_HANDLE);
+            if (hout == INVALID_HANDLE_VALUE) {
+                throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed");
+            }
+            if (!GetConsoleMode(hout, &dwOriginalOutMode)) {
+                throw std::runtime_error("GetConsoleMode() failed");
+            }
+            DWORD flags = dwOriginalOutMode;
+            flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+            flags |= DISABLE_NEWLINE_AUTO_RETURN;
+            if (!SetConsoleMode(hout, flags)) {
+                throw std::runtime_error("SetConsoleMode() failed");
+            }
         }
 
         if (keyboard_enabled) {
@@ -106,8 +112,11 @@ public:
     virtual ~BaseTerminal() noexcept(false)
     {
 #ifdef _WIN32
-        if (!SetConsoleMode(hout, dwOriginalOutMode)) {
-            throw std::runtime_error("SetConsoleMode() failed in destructor");
+        if (in_console) {
+            if (!SetConsoleMode(hout, dwOriginalOutMode)) {
+                throw std::runtime_error(
+                        "SetConsoleMode() failed in destructor");
+            }
         }
 
         if (keyboard_enabled) {
@@ -168,6 +177,16 @@ public:
             cols = ws.ws_col;
             rows = ws.ws_row;
         }
+#endif
+    }
+
+    // Returns true if the standard output is attached to a terminal
+    bool is_stdout_a_tty() const
+    {
+#ifdef _WIN32
+        return _isatty(_fileno(stdout));
+#else
+        return isatty(STDOUT_FILENO);
 #endif
     }
 };
