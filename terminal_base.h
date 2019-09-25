@@ -172,7 +172,8 @@ public:
 #else
         struct winsize ws;
         if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
-            throw std::runtime_error("ioctl() failed");
+            throw std::runtime_error(
+                    "get_term_size() failed, probably not a terminal");
         } else {
             cols = ws.ws_col;
             rows = ws.ws_row;
