@@ -31,4 +31,8 @@ works natively on all platforms:
 ## How to use
 
 The easiest is to just copy the two files `terminal.h` and `terminal_base.h`
-into your project. Consult the examples how to use it.
+into your project. Consult the examples how to use it. You can just use the
+`terminal_base.h`, which is a standalone header file, if you only want the low
+level platform dependent functionality. Use `terminal.h`, which depends on
+`terminal_base.h`, if you also want the platform independent code to more
+easily print escape sequences and/or read and translate key codes.
