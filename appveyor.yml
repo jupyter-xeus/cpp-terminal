@@ -3,10 +3,10 @@ image: Visual Studio 2017
 # https://www.appveyor.com/docs/windows-images-software/
 
 build_script:
-- call build.bat
+- build.bat
 - dir
 - ldd colors.exe
-# - .\colors.exe
+- colors
 
 on_finish:
 - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
