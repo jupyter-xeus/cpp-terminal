@@ -30,6 +30,12 @@ std::string prompt(const Terminal &term, const std::string &prompt_string) {
         } else if (key >= 'A' && key <= 'Z') {
             s = (char)key;
             input.append(s);
+        } else if (key == CTRL_KEY('d')) {
+            if (input.size() == 0) {
+                s = (char)CTRL_KEY('d');
+                input.append(s);
+                break;
+            }
         }
         switch (key) {
             case Key::BACKSPACE: input = input.substr(0, input.size()-1); break;
@@ -55,7 +61,7 @@ int main() {
         std::cout << "    - Syntax highlighting" << std::endl;
         while (true) {
             std::string answer = prompt(term, "> ");
-            if (answer == "") break;
+            if (answer.size() == 1 && answer[0] == CTRL_KEY('d')) break;
             std::cout << "Submitted text: " << answer << std::endl;
         }
     } catch(const std::runtime_error& re) {
