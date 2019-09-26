@@ -24,10 +24,9 @@ std::string prompt(const Terminal &term, const std::string &prompt_string) {
     int key;
     std::cout << render(row, cols, prompt_string, input) << std::flush;
     while ((key = term.read_key()) != Key::ENTER) {
-        if (key >= 'a' && key <= 'z') {
-            s = (char)key;
-            input.append(s);
-        } else if (key >= 'A' && key <= 'Z') {
+        if (  (key >= 'a' && key <= 'z') ||
+              (key >= 'A' && key <= 'Z') ||
+              (!iscntrl(key) && key < 128)  ) {
             s = (char)key;
             input.append(s);
         } else if (key == CTRL_KEY('d')) {
