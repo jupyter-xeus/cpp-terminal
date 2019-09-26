@@ -10,16 +10,16 @@ struct Model {
     std::string prompt_string; // The string to show as the prompt
     std::string input; // The current input string in the prompt
     // The current cursor position in the "input" string, starting from (1,1)
-    int cursor_col, cursor_row;
+    size_t cursor_col, cursor_row;
 };
 
 std::string render(const Model &m, int prompt_row, int term_cols) {
-    int col = m.prompt_string.size() + m.input.size() + 1;
     std::string out = move_cursor(prompt_row, 1) + m.prompt_string + m.input;
     for (size_t i=0; i < term_cols-out.size(); i++) {
         out.append(" ");
     }
-    out.append(move_cursor(prompt_row, col));
+    out.append(move_cursor(prompt_row+m.cursor_row-1,
+        m.prompt_string.size() + m.cursor_col));
     return out;
 }
 
@@ -29,10 +29,10 @@ std::string prompt(const Terminal &term, const std::string &prompt_string) {
     int rows, cols;
     term.get_term_size(rows, cols);
 
-
     Model m;
     m.prompt_string = prompt_string;
     m.cursor_col = 1;
+    m.cursor_row = 1;
 
     int key;
     std::cout << render(m, row, cols) << std::flush;
@@ -40,7 +40,11 @@ std::string prompt(const Terminal &term, const std::string &prompt_string) {
         if (  (key >= 'a' && key <= 'z') ||
               (key >= 'A' && key <= 'Z') ||
               (!iscntrl(key) && key < 128)  ) {
-            m.input.push_back(key);
+            std::string before = m.input.substr(0, m.cursor_col-1);
+            std::string newchar; newchar.push_back(key);
+            std::string after = m.input.substr(m.cursor_col-1);
+            m.input = before + newchar + after;
+            m.cursor_col++;
         } else if (key == CTRL_KEY('d')) {
             if (m.input.size() == 0) {
                 m.input.push_back(CTRL_KEY('d'));
@@ -49,12 +53,25 @@ std::string prompt(const Terminal &term, const std::string &prompt_string) {
         } else {
             switch (key) {
                 case Key::BACKSPACE:
-                    m.input = m.input.substr(0, m.input.size()-1); break;
-                case Key::ARROW_LEFT: col--; break;
-                case Key::ARROW_RIGHT: col++; break;
+                    if (m.cursor_col > 1) {
+                        std::string before = m.input.substr(0, m.cursor_col-2);
+                        std::string after = m.input.substr(m.cursor_col-1);
+                        m.input = before + after;
+                        m.cursor_col--;
+                    }
+                    break;
+                case Key::ARROW_LEFT:
+                    if (m.cursor_col > 1) {
+                        m.cursor_col--;
+                    }
+                    break;
+                case Key::ARROW_RIGHT:
+                    if (m.cursor_col <= m.input.size()) {
+                        m.cursor_col++;
+                    }
+                    break;
             }
         }
-
         std::cout << render(m, row, cols) << std::flush;
     }
     std::cout << "\n" << std::flush;
