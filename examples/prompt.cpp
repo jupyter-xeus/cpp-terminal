@@ -91,9 +91,11 @@ int main() {
         std::cout << "  * Use Ctrl-D to exit." << std::endl;
         std::cout << "  * Use Enter to submit." << std::endl;
         std::cout << "  * Features:" << std::endl;
-        std::cout << "    - Multi-line editing (use Alt-Enter to add a new line)" << std::endl;
-        std::cout << "    - History (Up and Down arrows)" << std::endl;
-        std::cout << "    - Syntax highlighting" << std::endl;
+        std::cout << "    - Keys: Left, Right, Home, End, Backspace" << std::endl;
+        // TODO:
+        //std::cout << "    - Multi-line editing (use Alt-Enter to add a new line)" << std::endl;
+        //std::cout << "    - History (Up and Down arrows)" << std::endl;
+        //std::cout << "    - Syntax highlighting" << std::endl;
         while (true) {
             std::string answer = prompt(term, "> ");
             if (answer.size() == 1 && answer[0] == CTRL_KEY('d')) break;
