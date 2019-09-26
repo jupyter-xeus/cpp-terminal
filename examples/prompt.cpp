@@ -21,7 +21,8 @@ std::string render(const Model &m, int prompt_row, int term_cols) {
     std::string out;
     out = cursor_off();
     out += move_cursor(prompt_row, 1) + m.prompt_string + m.input;
-    for (size_t i=0; i < term_cols-out.size(); i++) {
+    size_t last_col = m.prompt_string.size() + m.input.size();
+    for (size_t i=0; i < term_cols-last_col; i++) {
         out.append(" ");
     }
     out.append(move_cursor(prompt_row+m.cursor_row-1,
