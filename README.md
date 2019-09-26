@@ -198,3 +198,66 @@ switch (key) {
 
 Now we have all the features that are needed to write any terminal application.
 See `kilo.cpp` for an example of a simple full screen editor.
+
+## Similar Projects
+
+### Colors
+
+Libraries to handle color output.
+
+C++:
+
+* [rang](https://github.com/agauniyal/rang)
+
+### Drawing
+
+JavaScript:
+
+* [node-drawille](https://github.com/madbence/node-drawille)
+
+### Prompt
+
+Libraries to handle a prompt in terminals.
+
+C and C++:
+
+* [readline](https://tiswww.case.edu/php/chet/readline/rltop.html)
+* [libedit](http://thrysoee.dk/editline/)
+* [linenoise](https://github.com/antirez/linenoise)
+* [replxx](https://github.com/AmokHuginnsson/replxx)
+
+Python:
+
+* [python-prompt-toolkit](https://github.com/prompt-toolkit/python-prompt-toolkit)
+
+### General TUI libraries
+
+C and C++:
+
+* [curses](https://en.wikipedia.org/wiki/Curses_%28programming_library%29) and [ncurses](https://www.gnu.org/software/ncurses/ncurses.html)
+* [Newt](https://en.wikipedia.org/wiki/Newt_(programming_library))
+* [termbox](https://github.com/nsf/termbox)
+
+Python:
+
+* [urwid](http://urwid.org/)
+* [python-prompt-toolkit](https://github.com/prompt-toolkit/python-prompt-toolkit)
+* [npyscreen](http://www.npcole.com/npyscreen/)
+* [curtsies](https://github.com/bpython/curtsies)
+
+Go:
+
+* [gocui](https://github.com/jroimartin/gocui)
+* [clui](https://github.com/VladimirMarkelov/clui)
+* [tview](https://github.com/rivo/tview)
+* [termbox-go](https://github.com/nsf/termbox-go)
+* [termui](https://github.com/gizak/termui)
+* [tcell](https://github.com/gdamore/tcell)
+
+Rust:
+
+* [tui-rs](https://github.com/fdehau/tui-rs)
+
+JavaScript:
+
+* [blessed](https://github.com/chjj/blessed) and [blessed-contrib](https://github.com/yaronn/blessed-contrib)
