@@ -1,5 +1,7 @@
 #include "terminal.h"
 
+#include <vector>
+
 using Term::Terminal;
 using Term::Key;
 using Term::move_cursor;
@@ -23,7 +25,8 @@ std::string render(const Model &m, int prompt_row, int term_cols) {
     return out;
 }
 
-std::string prompt(const Terminal &term, const std::string &prompt_string) {
+std::string prompt(const Terminal &term, const std::string &prompt_string,
+        std::vector<std::string> &history) {
     int row, col;
     term.get_cursor_position(row, col);
     int rows, cols;
@@ -33,6 +36,12 @@ std::string prompt(const Terminal &term, const std::string &prompt_string) {
     m.prompt_string = prompt_string;
     m.cursor_col = 1;
     m.cursor_row = 1;
+
+    // Make a local copy of history that can be modified by the user. All
+    // changes will be forgotten once a command is submitted.
+    std::vector<std::string> hist = history;
+    size_t history_pos = hist.size();
+    hist.push_back(m.input); // Push back empty input
 
     int key;
     std::cout << render(m, row, cols) << std::flush;
@@ -76,11 +85,28 @@ std::string prompt(const Terminal &term, const std::string &prompt_string) {
                 case Key::END:
                     m.cursor_col = m.input.size()+1;
                     break;
+                case Key::ARROW_UP:
+                    if (history_pos > 0) {
+                        hist[history_pos] = m.input;
+                        history_pos--;
+                        m.input = hist[history_pos];
+                        m.cursor_col = m.input.size()+1;
+                    }
+                    break;
+                case Key::ARROW_DOWN:
+                    if (history_pos < hist.size()-1) {
+                        hist[history_pos] = m.input;
+                        history_pos++;
+                        m.input = hist[history_pos];
+                        m.cursor_col = m.input.size()+1;
+                    }
+                    break;
             }
         }
         std::cout << render(m, row, cols) << std::flush;
     }
     std::cout << "\n" << std::flush;
+    history.push_back(m.input);
     return m.input;
 }
 
@@ -91,13 +117,14 @@ int main() {
         std::cout << "  * Use Ctrl-D to exit." << std::endl;
         std::cout << "  * Use Enter to submit." << std::endl;
         std::cout << "  * Features:" << std::endl;
-        std::cout << "    - Keys: Left, Right, Home, End, Backspace" << std::endl;
+        std::cout << "    - Editing (Keys: Left, Right, Home, End, Backspace)" << std::endl;
+        std::cout << "    - History (Keys: Up, Down)" << std::endl;
         // TODO:
         //std::cout << "    - Multi-line editing (use Alt-Enter to add a new line)" << std::endl;
-        //std::cout << "    - History (Up and Down arrows)" << std::endl;
         //std::cout << "    - Syntax highlighting" << std::endl;
+        std::vector<std::string> history;
         while (true) {
-            std::string answer = prompt(term, "> ");
+            std::string answer = prompt(term, "> ", history);
             if (answer.size() == 1 && answer[0] == CTRL_KEY('d')) break;
             std::cout << "Submitted text: " << answer << std::endl;
         }
