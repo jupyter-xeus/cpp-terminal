@@ -70,6 +70,12 @@ std::string prompt(const Terminal &term, const std::string &prompt_string) {
                         m.cursor_col++;
                     }
                     break;
+                case Key::HOME:
+                    m.cursor_col = 1;
+                    break;
+                case Key::END:
+                    m.cursor_col = m.input.size()+1;
+                    break;
             }
         }
         std::cout << render(m, row, cols) << std::flush;
