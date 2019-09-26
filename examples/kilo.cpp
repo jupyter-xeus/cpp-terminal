@@ -918,7 +918,7 @@ int main(int argc, char *argv[]) {
     std::cerr << "Runtime error: " << re.what() << std::endl;
     return 2;
   } catch(...) {
-    std::cerr << "Unkown error." << std::endl;
+    std::cerr << "Unknown error." << std::endl;
     return 1;
   }
   return 0;
