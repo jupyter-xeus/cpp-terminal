@@ -46,11 +46,17 @@ std::string prompt(const Terminal &term, const std::string &prompt_string) {
 int main() {
     try {
         Terminal term(true, false);
+        std::cout << "Interactive prompt." << std::endl;
+        std::cout << "  * Use Ctrl-D to exit." << std::endl;
+        std::cout << "  * Use Enter to submit." << std::endl;
+        std::cout << "  * Features:" << std::endl;
+        std::cout << "    - Multi-line editing (use Alt-Enter to add a new line)" << std::endl;
+        std::cout << "    - History (Up and Down arrows)" << std::endl;
+        std::cout << "    - Syntax highlighting" << std::endl;
         while (true) {
-            std::string answer = prompt(term,
-                    "Give me some input (ENTER to exit): ");
+            std::string answer = prompt(term, "> ");
             if (answer == "") break;
-            std::cout << "You said: " << answer << std::endl;
+            std::cout << "Submitted text: " << answer << std::endl;
         }
     } catch(const std::runtime_error& re) {
         std::cerr << "Runtime error: " << re.what() << std::endl;
