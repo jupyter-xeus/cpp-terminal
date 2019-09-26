@@ -5,6 +5,8 @@
 using Term::Terminal;
 using Term::Key;
 using Term::move_cursor;
+using Term::cursor_off;
+using Term::cursor_on;
 
 // This model contains all the information about the state of the prompt in an
 // abstract way, irrespective of where or how it is rendered.
@@ -16,12 +18,15 @@ struct Model {
 };
 
 std::string render(const Model &m, int prompt_row, int term_cols) {
-    std::string out = move_cursor(prompt_row, 1) + m.prompt_string + m.input;
+    std::string out;
+    out = cursor_off();
+    out += move_cursor(prompt_row, 1) + m.prompt_string + m.input;
     for (size_t i=0; i < term_cols-out.size(); i++) {
         out.append(" ");
     }
     out.append(move_cursor(prompt_row+m.cursor_row-1,
         m.prompt_string.size() + m.cursor_col));
+    out.append(cursor_on());
     return out;
 }
 
