@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #define CTRL_KEY(k) ((k)&0x1f)
 
@@ -369,6 +370,317 @@ public:
         write(move_cursor_right(999) + move_cursor_down(999));
         get_cursor_position(rows, cols);
         write(move_cursor(old_row, old_col));
+    }
+};
+
+
+
+/*----------------------------------------------------------------------------*/
+
+/*-
+ * Copyright (c) 2014 Taylor R Campbell
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+#define	UTF8_ACCEPT	0
+#define	UTF8_REJECT	0xf
+
+static const uint32_t utf8_classtab[0x10] = {
+	0x88888888UL,0x88888888UL,0x99999999UL,0x99999999UL,
+	0xaaaaaaaaUL,0xaaaaaaaaUL,0xaaaaaaaaUL,0xaaaaaaaaUL,
+	0x222222ffUL,0x22222222UL,0x22222222UL,0x22222222UL,
+	0x3333333bUL,0x33433333UL,0xfff5666cUL,0xffffffffUL,
+};
+
+static const uint32_t utf8_statetab[0x10] = {
+	0xfffffff0UL,0xffffffffUL,0xfffffff1UL,0xfffffff3UL,
+	0xfffffff4UL,0xfffffff7UL,0xfffffff6UL,0xffffffffUL,
+	0x33f11f0fUL,0xf3311f0fUL,0xf33f110fUL,0xfffffff2UL,
+	0xfffffff5UL,0xffffffffUL,0xffffffffUL,0xffffffffUL,
+};
+
+static inline uint8_t
+utf8_decode_step(uint8_t state, uint8_t octet, uint32_t *cpp)
+{
+	const uint8_t reject = (state >> 3), nonascii = (octet >> 7);
+	const uint8_t class_ = (!nonascii? 0 :
+	    (0xf & (utf8_classtab[(octet >> 3) & 0xf] >> (4 * (octet & 7)))));
+
+	*cpp = (state == UTF8_ACCEPT
+	    ? (octet & (0xffU >> class_))
+	    : ((octet & 0x3fU) | (*cpp << 6)));
+
+	return (reject? 0xf :
+	    (0xf & (utf8_statetab[class_] >> (4 * (state & 7)))));
+}
+
+/*----------------------------------------------------------------------------*/
+
+void codepoint_to_utf8(std::string &s, char32_t c) {
+    int nbytes;
+    if (c < 0x80) {
+        nbytes = 1;
+    } else if (c < 0x800) {
+        nbytes = 2;
+    } else if (c < 0x10000) {
+        nbytes = 3;
+    } else if (c <= 0x0010FFFF) {
+        nbytes = 4;
+    } else {
+        throw std::runtime_error("Invalid UTF32 codepoint.");
+    }
+    char u1, u2, u3, u4;
+    static const unsigned char mask[4] = {0x00, 0xC0, 0xE0, 0xF0};
+    switch (nbytes) {
+        case 4: u4 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
+        case 3: u3 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
+        case 2: u2 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
+        case 1: u1 =  (c | mask[nbytes-1]);
+    }
+    switch (nbytes) {
+        case 1: s.push_back(u1); break;
+        case 2: s.push_back(u1); s.push_back(u2); break;
+        case 3: s.push_back(u1); s.push_back(u2); s.push_back(u3); break;
+        case 4: s.push_back(u1); s.push_back(u2); s.push_back(u3); s.push_back(u4); break;
+    }
+}
+
+/*----------------------------------------------------------------------------*/
+
+// Converts an UTF8 string to UTF32.
+std::u32string utf8_to_utf32(const std::string &s) {
+    uint32_t codepoint, state=UTF8_ACCEPT;
+    std::u32string r;
+    for (size_t i=0; i < s.size(); i++) {
+        state = utf8_decode_step(state, s[i], &codepoint);
+        if (state == UTF8_ACCEPT) {
+            r.push_back(codepoint);
+        }
+        if (state == UTF8_REJECT) {
+            throw std::runtime_error("Invalid byte in UTF8 encoded string");
+        }
+    }
+    if (state != UTF8_ACCEPT) {
+        throw std::runtime_error("Expected more bytes in UTF8 encoded string");
+    }
+    return r;
+}
+
+
+// Converts an UTF32 string to UTF8.
+std::string utf32_to_utf8(const std::u32string &s)
+{
+    std::string r;
+    for (size_t i=0; i < s.size(); i++) {
+        codepoint_to_utf8(r, s[i]);
+    }
+    return r;
+}
+
+
+
+
+/* Represents a rectangular window, as a 2D array of characters and their
+ * attributes. The render method can convert this internal representation to a
+ * string that when printed will show the Window on the screen.
+ *
+ * Note: the characters are represented by char32_t, representing their UTF-32
+ * code point. The natural way to represent a character in a terminal would be
+ * a "unicode grapheme cluster", but due to a lack of a good library for C++
+ * that could handle those, we simply use a Unicode code point as a character.
+ */
+class Window
+{
+private:
+    size_t x0, y0; // top-left corner of the window on the screen
+    size_t w, h; // width and height of the window
+    std::vector<char32_t> chars; // the characters in row first order
+    std::vector<fg> m_fg;
+    std::vector<bg> m_bg;
+    std::vector<style> m_style;
+public:
+    Window(size_t x0, size_t y0, size_t w, size_t h)
+        : x0{x0}, y0{y0}, w{w}, h{h}, chars(w*h, ' '),
+          m_fg(w*h, fg::reset), m_bg(w*h, bg::reset),
+          m_style(w*h, style::reset) {}
+
+    char32_t get_char(int x, int y) {
+        return chars[(y-1)*w+(x-1)];
+    }
+
+    void set_char(int x, int y, char32_t c) {
+        chars[(y-1)*w+(x-1)] = c;
+    }
+
+    fg get_fg(int x, int y) {
+        return m_fg[(y-1)*w+(x-1)];
+    }
+
+    void set_fg(int x, int y, fg c) {
+        m_fg[(y-1)*w+(x-1)] = c;
+    }
+
+    bg get_bg(int x, int y) {
+        return m_bg[(y-1)*w+(x-1)];
+    }
+
+    void set_bg(int x, int y, bg c) {
+        m_bg[(y-1)*w+(x-1)] = c;
+    }
+
+    style get_style(int x, int y) {
+        return m_style[(y-1)*w+(x-1)];
+    }
+
+    void set_style(int x, int y, style c) {
+        m_style[(y-1)*w+(x-1)] = c;
+    }
+
+    void print_str(int x, int y, const std::string &s) {
+        std::u32string s2 = utf8_to_utf32(s);
+        for (size_t i=0; i < s2.size(); i++) {
+            size_t xpos = x+i;
+            if (xpos < w) {
+                set_char(xpos, y, s2[i]);
+            } else {
+                // String is out of the window
+                return;
+            }
+        }
+    }
+
+    void fill_fg(int x1, int y1, int x2, int y2, fg color) {
+        for (int j=y1; j <= y2; j++) {
+            for (int i=x1; i <= x2; i++) {
+                set_fg(i, j, color);
+            }
+        }
+    }
+
+    void fill_bg(int x1, int y1, int x2, int y2, bg color) {
+        for (int j=y1; j <= y2; j++) {
+            for (int i=x1; i <= x2; i++) {
+                set_bg(i, j, color);
+            }
+        }
+    }
+
+    void fill_style(int x1, int y1, int x2, int y2, style color) {
+        for (int j=y1; j <= y2; j++) {
+            for (int i=x1; i <= x2; i++) {
+                set_style(i, j, color);
+            }
+        }
+    }
+
+    void print_border(bool unicode=true) {
+        print_rect(1, 1, w, h, unicode);
+    }
+
+    void print_rect(int x1, int y1, int x2, int y2, bool unicode=true) {
+        std::u32string border = utf8_to_utf32("│─┌┐└┘");
+        if (unicode) {
+            for (int j=y1+1; j <= y2-1; j++) {
+                set_char(x1, j, border[0]);
+                set_char(x2, j, border[0]);
+            }
+            for (int i=x1+1; i <= x2-1; i++) {
+                set_char(i, y1, border[1]);
+                set_char(i, y2, border[1]);
+            }
+            set_char(x1, y1, border[2]); set_char(x2, y1, border[3]);
+            set_char(x1, y2, border[4]); set_char(x2, y2, border[5]);
+        } else {
+            for (int j=y1+1; j <= y2-1; j++) {
+                set_char(x1, j, '|');
+                set_char(x2, j, '|');
+            }
+            for (int i=x1+1; i <= x2-1; i++) {
+                set_char(i, y1, '-');
+                set_char(i, y2, '-');
+            }
+            set_char(x1, y1, '+'); set_char(x2, y1, '+');
+            set_char(x1, y2, '+'); set_char(x2, y2, '+');
+        }
+    }
+
+    void clear() {
+        for (size_t j=1; j <= h; j++) {
+            for (size_t i=1; i <= w; i++) {
+                set_char(i, j, ' ');
+                set_fg(i, j, fg::reset);
+                set_bg(i, j, bg::reset);
+                set_style(i, j, style::reset);
+            }
+        }
+    }
+
+    std::string render() {
+        std::string out;
+        out.append(cursor_off());
+        fg current_fg = fg::reset;
+        bg current_bg = bg::reset;
+        style current_style = style::reset;
+        for (size_t j=1; j <= h; j++) {
+            out.append(move_cursor(y0+j-1, x0));
+            for (size_t i=1; i <= w; i++) {
+                bool update_fg = false;
+                bool update_bg = false;
+                bool update_style = false;
+                if (current_fg != get_fg(i,j)) {
+                    current_fg = get_fg(i,j);
+                    update_fg = true;
+                }
+                if (current_bg != get_bg(i,j)) {
+                    current_bg = get_bg(i,j);
+                    update_bg = true;
+                }
+                if (current_style != get_style(i,j)) {
+                    current_style = get_style(i,j);
+                    update_style = true;
+                    if (current_style == style::reset) {
+                        // style::reset resets fg and bg colors too, we have to
+                        // set them again if they are non-default, but if fg or
+                        // bg colors are reset, we do not update them, as
+                        // style::reset already did that.
+                        update_fg = (current_fg != fg::reset);
+                        update_bg = (current_bg != bg::reset);
+                    }
+                }
+                // Set style first, as style::reset will reset colors too
+                if (update_style) out.append(color(get_style(i,j)));
+                if (update_fg) out.append(color(get_fg(i,j)));
+                if (update_bg) out.append(color(get_bg(i,j)));
+                codepoint_to_utf8(out, get_char(i,j));
+            }
+        }
+        if (current_fg != fg::reset) out.append(color(fg::reset));
+        if (current_bg != bg::reset) out.append(color(bg::reset));
+        if (current_style != style::reset) out.append(color(style::reset));
+        out.append(cursor_on());
+        return out;
     }
 };
 
