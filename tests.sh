@@ -2,6 +2,8 @@
 
 set -ex
 
+./test_terminal
+
 ./colors
 
 echo "Expected to succeed:"
