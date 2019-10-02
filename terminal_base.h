@@ -49,6 +49,8 @@ public:
     BaseTerminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
         : keyboard_enabled{enable_keyboard}
     {
+        // Uncomment this to silently disable raw mode for non-tty
+        //if (keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
 #ifdef _WIN32
         out_console = is_stdout_a_tty();
         if (out_console) {
@@ -186,6 +188,16 @@ public:
             cols = ws.ws_col;
             rows = ws.ws_row;
         }
+#endif
+    }
+
+    // Returns true if the standard input is attached to a terminal
+    bool is_stdin_a_tty() const
+    {
+#ifdef _WIN32
+        return _isatty(_fileno(stdin));
+#else
+        return isatty(STDIN_FILENO);
 #endif
     }
 
