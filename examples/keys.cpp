@@ -26,17 +26,25 @@ int main() {
             } else if (key >= CTRL_KEY('a') && key <= CTRL_KEY('z')) {
                 s = (char)(key+'A'-CTRL_KEY('a')); // Convert to upper case
                 s = "Ctrl+" + s;
-            } else if (!iscntrl(key) && key < 128) {
+            } else if (key >= ALT_KEY('a') && key <= ALT_KEY('z')) {
+                s = (char)(key+'A'-ALT_KEY('a')); // Convert to upper case
+                s = "Alt+" + s;
+            } else if (key > 0 && !iscntrl(key) && key < 128) {
                 s = key;
             } else {
                 switch (key) {
                     case Key::BACKSPACE: s = "BACKSPACE"; break;
                     case Key::ENTER: s = "ENTER"; break;
+                    case Key::ALT_ENTER: s = "Alt+ENTER"; break;
                     case Key::TAB: s = "TAB"; break;
                     case Key::ARROW_LEFT: s = "ARROW_LEFT"; break;
                     case Key::ARROW_RIGHT: s = "ARROW_RIGHT"; break;
                     case Key::ARROW_UP: s = "ARROW_UP"; break;
                     case Key::ARROW_DOWN: s = "ARROW_DOWN"; break;
+                    case Key::CTRL_UP: s = "CTRL_UP"; break;
+                    case Key::CTRL_DOWN: s = "CTRL_DOWN"; break;
+                    case Key::CTRL_RIGHT: s = "CTRL_RIGHT"; break;
+                    case Key::CTRL_LEFT: s = "CTRL_LEFT"; break;
                     case Key::NUMERIC_5: s = "NUMERIC_5"; break;
                     case Key::DEL: s = "DEL"; break;
                     case Key::HOME: s = "HOME"; break;
@@ -58,7 +66,7 @@ int main() {
                     case Key::F11: s = "F11"; break;
                     case Key::F12: s = "F12"; break;
 
-                    default: s = std::to_string(key);
+                    default: s = "Unknown:" + std::to_string(key);
                 }
             }
             std::cout << "Key: " << s << std::endl;
