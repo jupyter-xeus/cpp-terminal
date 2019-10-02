@@ -172,6 +172,7 @@ public:
 #endif
     }
 
+    //TODO: switch rows / cols
     void get_term_size(int& rows, int& cols) const
     {
 #ifdef _WIN32

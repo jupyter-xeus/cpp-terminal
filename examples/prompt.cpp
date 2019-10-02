@@ -12,23 +12,71 @@ using Term::cursor_on;
 // abstract way, irrespective of where or how it is rendered.
 struct Model {
     std::string prompt_string; // The string to show as the prompt
-    std::string input; // The current input string in the prompt
+    std::vector<std::string> lines; // The current input string in the prompt as
+            // a vector of lines, without '\n' at the end.
     // The current cursor position in the "input" string, starting from (1,1)
     size_t cursor_col, cursor_row;
 };
 
-std::string render(const Model &m, int prompt_row, int term_cols) {
-    std::string out;
-    out = cursor_off();
-    out += move_cursor(prompt_row, 1) + m.prompt_string + m.input;
-    size_t last_col = m.prompt_string.size() + m.input.size();
-    for (size_t i=0; i < term_cols-last_col; i++) {
-        out.append(" ");
+std::string concat(const std::vector<std::string> &lines) {
+    std::string s;
+    for (auto &line: lines) {
+        s.append(line + "\n");
     }
-    out.append(move_cursor(prompt_row+m.cursor_row-1,
-        m.prompt_string.size() + m.cursor_col));
-    out.append(cursor_on());
-    return out;
+    return s;
+}
+
+std::vector<std::string> split(const std::string &s) {
+    size_t j = 0;
+    std::vector<std::string> lines;
+    lines.push_back("");
+    if (s[s.size()-1] != '\n') throw std::runtime_error("\\n is required");
+    for (size_t i=0; i<s.size()-1; i++) {
+        if (s[i] == '\n') {
+            j++;
+            lines.push_back("");
+        } else {
+            lines[j].push_back(s[i]);
+        }
+    }
+    return lines;
+}
+
+char32_t U(const std::string &s) {
+    std::u32string s2 = Term::utf8_to_utf32(s);
+    if (s2.size() != 1) throw std::runtime_error("U(s): s not a codepoint.");
+    return s2[0];
+}
+
+void print_left_curly_bracket(Term::Window &scr, int x, int y1, int y2) {
+    int h = y2-y1+1;
+    if (h == 1) {
+        scr.set_char(x, y1, U("]"));
+    } else {
+        scr.set_char(x, y1, U("┐"));
+        for (int j=y1+1; j <= y2-1; j++) {
+            scr.set_char(x, j, U("│"));
+        }
+        scr.set_char(x, y2, U("┘"));
+    }
+}
+
+void render(Term::Window &scr, const Model &m, size_t cols) {
+    scr.clear();
+    print_left_curly_bracket(scr, cols, 1, m.lines.size());
+    scr.print_str(cols-6, m.lines.size(), std::to_string(m.cursor_row) + ","
+            + std::to_string(m.cursor_col));
+    for (size_t j=0; j < m.lines.size(); j++) {
+        if (j == 0) {
+            scr.print_str(1, j+1, m.prompt_string);
+        } else {
+            for (size_t i=0; i < m.prompt_string.size()-1; i++) {
+                scr.set_char(i+1, j+1, '.');
+            }
+        }
+        scr.print_str(m.prompt_string.size()+1, j+1, m.lines[j]);
+    }
+    scr.set_cursor_pos(m.prompt_string.size() + m.cursor_col, m.cursor_row);
 }
 
 std::string prompt(const Terminal &term, const std::string &prompt_string,
@@ -40,6 +88,7 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
 
     Model m;
     m.prompt_string = prompt_string;
+    m.lines.push_back("");
     m.cursor_col = 1;
     m.cursor_row = 1;
 
@@ -47,31 +96,38 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
     // changes will be forgotten once a command is submitted.
     std::vector<std::string> hist = history;
     size_t history_pos = hist.size();
-    hist.push_back(m.input); // Push back empty input
+    hist.push_back(concat(m.lines)); // Push back empty input
 
+    Term::Window scr(cols, 1);
     int key;
-    std::cout << render(m, row, cols) << std::flush;
+    render(scr, m, cols);
+    std::cout << scr.render(1, row) << std::flush;
     while ((key = term.read_key()) != Key::ENTER) {
         if (  (key >= 'a' && key <= 'z') ||
               (key >= 'A' && key <= 'Z') ||
               (!iscntrl(key) && key < 128)  ) {
-            std::string before = m.input.substr(0, m.cursor_col-1);
+            std::string before = m.lines[m.cursor_row-1].substr(0,
+                    m.cursor_col-1);
             std::string newchar; newchar.push_back(key);
-            std::string after = m.input.substr(m.cursor_col-1);
-            m.input = before + newchar + after;
+            std::string after = m.lines[m.cursor_row-1].substr(m.cursor_col-1);
+            m.lines[m.cursor_row-1] = before + newchar + after;
             m.cursor_col++;
         } else if (key == CTRL_KEY('d')) {
-            if (m.input.size() == 0) {
-                m.input.push_back(CTRL_KEY('d'));
-                break;
+            if (m.lines.size() == 1 && m.lines[m.cursor_row-1].size() == 0) {
+                m.lines[m.cursor_row-1].push_back(CTRL_KEY('d'));
+                std::cout << "\n" << std::flush;
+                history.push_back(m.lines[0]);
+                return m.lines[0];
             }
         } else {
             switch (key) {
                 case Key::BACKSPACE:
                     if (m.cursor_col > 1) {
-                        std::string before = m.input.substr(0, m.cursor_col-2);
-                        std::string after = m.input.substr(m.cursor_col-1);
-                        m.input = before + after;
+                        std::string before = m.lines[m.cursor_row-1].substr(0,
+                                m.cursor_col-2);
+                        std::string after = m.lines[m.cursor_row-1]
+                                .substr(m.cursor_col-1);
+                        m.lines[m.cursor_row-1] = before + after;
                         m.cursor_col--;
                     }
                     break;
@@ -81,7 +137,7 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
                     }
                     break;
                 case Key::ARROW_RIGHT:
-                    if (m.cursor_col <= m.input.size()) {
+                    if (m.cursor_col <= m.lines[m.cursor_row-1].size()) {
                         m.cursor_col++;
                     }
                     break;
@@ -89,31 +145,51 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
                     m.cursor_col = 1;
                     break;
                 case Key::END:
-                    m.cursor_col = m.input.size()+1;
+                    m.cursor_col = m.lines[m.cursor_row-1].size()+1;
                     break;
                 case Key::ARROW_UP:
                     if (history_pos > 0) {
-                        hist[history_pos] = m.input;
+                        hist[history_pos] = concat(m.lines);
                         history_pos--;
-                        m.input = hist[history_pos];
-                        m.cursor_col = m.input.size()+1;
+                        m.lines = split(hist[history_pos]);
+                        m.cursor_row = 1;
+                        m.cursor_col = m.lines[0].size()+1;
+                        scr.set_h(m.lines.size());
                     }
                     break;
                 case Key::ARROW_DOWN:
                     if (history_pos < hist.size()-1) {
-                        hist[history_pos] = m.input;
+                        hist[history_pos] = concat(m.lines);
                         history_pos++;
-                        m.input = hist[history_pos];
-                        m.cursor_col = m.input.size()+1;
+                        m.lines = split(hist[history_pos]);
+                        m.cursor_row = 1;
+                        m.cursor_col = m.lines[0].size()+1;
+                        scr.set_h(m.lines.size());
                     }
                     break;
+                case ALT_KEY('n'):
+                case Key::ALT_ENTER:
+                    std::string before = m.lines[m.cursor_row-1].substr(0,
+                            m.cursor_col-1);
+                    std::string after = m.lines[m.cursor_row-1]
+                            .substr(m.cursor_col-1);
+                    m.lines[m.cursor_row-1] = before;
+                    m.lines.push_back(after);
+                    m.cursor_col = after.size()+1;
+                    m.cursor_row++;
+                    scr.set_h(scr.get_h()+1);
             }
         }
-        std::cout << render(m, row, cols) << std::flush;
+        render(scr, m, cols);
+        std::cout << scr.render(1, row) << std::flush;
+        // FIXME: this is a hack
+        if (key == Key::ALT_ENTER || key == ALT_KEY('n')) {
+            if (row+(int)scr.get_h()-1 > rows) row--;
+        }
     }
     std::cout << "\n" << std::flush;
-    history.push_back(m.input);
-    return m.input;
+    history.push_back(concat(m.lines));
+    return concat(m.lines);
 }
 
 int main() {
@@ -125,21 +201,21 @@ int main() {
         std::cout << "  * Features:" << std::endl;
         std::cout << "    - Editing (Keys: Left, Right, Home, End, Backspace)" << std::endl;
         std::cout << "    - History (Keys: Up, Down)" << std::endl;
+        std::cout << "    - Multi-line editing (use Alt-Enter or Alt-N to add a new line)" << std::endl;
         // TODO:
-        //std::cout << "    - Multi-line editing (use Alt-Enter to add a new line)" << std::endl;
         //std::cout << "    - Syntax highlighting" << std::endl;
         std::vector<std::string> history;
         while (true) {
-            std::string answer = prompt(term, "> ", history);
+            std::string answer = prompt(term, ">>> ", history);
             if (answer.size() == 1 && answer[0] == CTRL_KEY('d')) break;
             std::cout << "Submitted text: " << answer << std::endl;
         }
     } catch(const std::runtime_error& re) {
         std::cerr << "Runtime error: " << re.what() << std::endl;
-        return 2;
+        return 1;
     } catch(...) {
         std::cerr << "Unknown error." << std::endl;
-        return 1;
+        throw;
     }
     return 0;
 }
