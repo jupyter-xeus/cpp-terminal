@@ -20,6 +20,7 @@
 #include <vector>
 
 #define CTRL_KEY(k) ((k)&0x1f)
+#define ALT_KEY(k) (k + 128)
 
 namespace Term {
 
@@ -132,11 +133,16 @@ std::string erase_to_eol()
 enum Key {
     BACKSPACE = 1000,
     ENTER,
+    ALT_ENTER,
     TAB,
     ARROW_LEFT,
     ARROW_RIGHT,
     ARROW_UP,
     ARROW_DOWN,
+    CTRL_UP,
+    CTRL_DOWN,
+    CTRL_RIGHT,
+    CTRL_LEFT,
     NUMERIC_5,
     DEL,
     HOME,
@@ -215,6 +221,14 @@ public:
             if (!read_raw(&seq[0]))
                 return Key::ESC;
             if (!read_raw(&seq[1])) {
+                if (seq[0] >= 'a' && seq[0] <= 'z') {
+                    // gnome-term, Windows Console
+                    return ALT_KEY(seq[0]);
+                }
+                if (seq[0] == 13) {
+                    // gnome-term
+                    return Key::ALT_ENTER;
+                }
                 return -1;
             }
 
@@ -241,6 +255,24 @@ public:
                             return Key::HOME;
                         case '8':
                             return Key::END;
+                        }
+                    } else if (seq[2] == ';') {
+                        if (seq[1] == '1') {
+                            if (!read_raw(&seq[2])) {
+                                return -10;
+                            }
+                            if (!read_raw(&seq[3])) {
+                                return -11;
+                            }
+                            if (seq[2] == '5') {
+                                switch (seq[3]) {
+                                    case 'A': return Key::CTRL_UP;
+                                    case 'B': return Key::CTRL_DOWN;
+                                    case 'C': return Key::CTRL_RIGHT;
+                                    case 'D': return Key::CTRL_LEFT;
+                                }
+                            }
+                            return -12;
                         }
                     } else {
                         if (seq[2] >= '0' && seq[2] <= '9') {
@@ -320,6 +352,27 @@ public:
                 return Key::ENTER;
             case 127:
                 return Key::BACKSPACE;
+            }
+            if (c == -61) {
+                if (!read_raw(&c)) {
+                    return -8;
+                } else {
+                    if (c >= -95 && c <= -70) {
+                        // xterm
+                        return ALT_KEY(c+'a'-(-95));
+                    }
+                    return -9;
+                }
+            } else if (c == -62) {
+                if (!read_raw(&c)) {
+                    return -10;
+                } else {
+                    if (c == -115) {
+                        // xterm
+                        return Key::ALT_ENTER;
+                    }
+                    return -11;
+                }
             }
             return c;
         }
