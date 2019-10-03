@@ -81,7 +81,7 @@ void render(Term::Window &scr, const Model &m, size_t cols) {
 
 std::string prompt(const Terminal &term, const std::string &prompt_string,
         std::vector<std::string> &history) {
-    int row, col, new_row;
+    int row, col;
     term.get_cursor_position(row, col);
     int rows, cols;
     term.get_term_size(rows, cols);
@@ -103,7 +103,6 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
     render(scr, m, cols);
     std::cout << scr.render(1, row) << std::flush;
     while ((key = term.read_key()) != Key::ENTER) {
-        new_row = row;
         if (  (key >= 'a' && key <= 'z') ||
               (key >= 'A' && key <= 'Z') ||
               (!iscntrl(key) && key < 128)  ) {
@@ -157,9 +156,6 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
                         m.cursor_col = m.lines[0].size()+1;
                         if (m.lines.size() > scr.get_h()) {
                             scr.set_h(m.lines.size());
-                            if (row+(int)scr.get_h()-1 > rows) {
-                                new_row = rows - ((int)scr.get_h()-1);
-                            }
                         }
                     }
                     break;
@@ -172,9 +168,6 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
                         m.cursor_col = m.lines[0].size()+1;
                         if (m.lines.size() > scr.get_h()) {
                             scr.set_h(m.lines.size());
-                            if (row+(int)scr.get_h()-1 > rows) {
-                                new_row = rows - ((int)scr.get_h()-1);
-                            }
                         }
                     }
                     break;
@@ -189,14 +182,13 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
                     m.cursor_col = after.size()+1;
                     m.cursor_row++;
                     scr.set_h(scr.get_h()+1);
-                    if (row+(int)scr.get_h()-1 > rows) {
-                        new_row = rows - ((int)scr.get_h()-1);
-                    }
             }
         }
         render(scr, m, cols);
         std::cout << scr.render(1, row) << std::flush;
-        row = new_row;
+        if (row+(int)scr.get_h()-1 > rows) {
+            row = rows - ((int)scr.get_h()-1);
+        }
     }
     std::cout << "\n" << std::flush;
     history.push_back(concat(m.lines));
