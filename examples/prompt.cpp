@@ -148,26 +148,40 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
                     m.cursor_col = m.lines[m.cursor_row-1].size()+1;
                     break;
                 case Key::ARROW_UP:
-                    if (history_pos > 0) {
-                        hist[history_pos] = concat(m.lines);
-                        history_pos--;
-                        m.lines = split(hist[history_pos]);
-                        m.cursor_row = 1;
-                        m.cursor_col = m.lines[0].size()+1;
-                        if (m.lines.size() > scr.get_h()) {
-                            scr.set_h(m.lines.size());
+                    if (m.cursor_row == 1) {
+                        if (history_pos > 0) {
+                            hist[history_pos] = concat(m.lines);
+                            history_pos--;
+                            m.lines = split(hist[history_pos]);
+                            m.cursor_row = 1;
+                            m.cursor_col = m.lines[0].size()+1;
+                            if (m.lines.size() > scr.get_h()) {
+                                scr.set_h(m.lines.size());
+                            }
+                        }
+                    } else {
+                        m.cursor_row--;
+                        if (m.cursor_col > m.lines[m.cursor_row-1].size()+1) {
+                            m.cursor_col = m.lines[m.cursor_row-1].size()+1;
                         }
                     }
                     break;
                 case Key::ARROW_DOWN:
-                    if (history_pos < hist.size()-1) {
-                        hist[history_pos] = concat(m.lines);
-                        history_pos++;
-                        m.lines = split(hist[history_pos]);
-                        m.cursor_row = 1;
-                        m.cursor_col = m.lines[0].size()+1;
-                        if (m.lines.size() > scr.get_h()) {
-                            scr.set_h(m.lines.size());
+                    if (m.cursor_row == m.lines.size()) {
+                        if (history_pos < hist.size()-1) {
+                            hist[history_pos] = concat(m.lines);
+                            history_pos++;
+                            m.lines = split(hist[history_pos]);
+                            m.cursor_row = 1;
+                            m.cursor_col = m.lines[0].size()+1;
+                            if (m.lines.size() > scr.get_h()) {
+                                scr.set_h(m.lines.size());
+                            }
+                        }
+                    } else {
+                        m.cursor_row++;
+                        if (m.cursor_col > m.lines[m.cursor_row-1].size()+1) {
+                            m.cursor_col = m.lines[m.cursor_row-1].size()+1;
                         }
                     }
                     break;
