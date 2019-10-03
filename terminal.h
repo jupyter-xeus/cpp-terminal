@@ -643,7 +643,7 @@ public:
             return;
         } else if (new_h > h) {
             int dc = (new_h-h) * w;
-            chars.insert(chars.end(), dc, 'X');
+            chars.insert(chars.end(), dc, ' ');
             m_fg.insert(m_fg.end(), dc, fg::reset);
             m_bg.insert(m_bg.end(), dc, bg::reset);
             m_style.insert(m_style.end(), dc, style::reset);
