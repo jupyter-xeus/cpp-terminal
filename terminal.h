@@ -649,7 +649,7 @@ public:
             m_style.insert(m_style.end(), dc, style::reset);
             h = new_h;
         } else {
-            throw std::runtime_error("Shrinking height not implemented.");
+            throw std::runtime_error("Shrinking height not supported.");
         }
     }
 

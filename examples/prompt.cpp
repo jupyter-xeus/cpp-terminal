@@ -155,9 +155,11 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
                         m.lines = split(hist[history_pos]);
                         m.cursor_row = 1;
                         m.cursor_col = m.lines[0].size()+1;
-                        scr.set_h(m.lines.size());
-                        if (row+(int)scr.get_h()-1 > rows) {
-                            new_row = rows - ((int)scr.get_h()-1);
+                        if (m.lines.size() > scr.get_h()) {
+                            scr.set_h(m.lines.size());
+                            if (row+(int)scr.get_h()-1 > rows) {
+                                new_row = rows - ((int)scr.get_h()-1);
+                            }
                         }
                     }
                     break;
@@ -168,9 +170,11 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
                         m.lines = split(hist[history_pos]);
                         m.cursor_row = 1;
                         m.cursor_col = m.lines[0].size()+1;
-                        scr.set_h(m.lines.size());
-                        if (row+(int)scr.get_h()-1 > rows) {
-                            new_row = rows - ((int)scr.get_h()-1);
+                        if (m.lines.size() > scr.get_h()) {
+                            scr.set_h(m.lines.size());
+                            if (row+(int)scr.get_h()-1 > rows) {
+                                new_row = rows - ((int)scr.get_h()-1);
+                            }
                         }
                     }
                     break;
