@@ -13,6 +13,7 @@
 
 #ifdef _WIN32
 #    include <conio.h>
+#    define _WINSOCKAPI_
 #    include <windows.h>
 #    include <io.h>
 #else
@@ -46,12 +47,12 @@ private:
     bool keyboard_enabled;
 
 public:
-    BaseTerminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
+#ifdef _WIN32
+    BaseTerminal(bool enable_keyboard=false, bool /*disable_ctrl_c*/ = true)
         : keyboard_enabled{enable_keyboard}
     {
         // Uncomment this to silently disable raw mode for non-tty
         //if (keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
-#ifdef _WIN32
         out_console = is_stdout_a_tty();
         if (out_console) {
             hout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -90,6 +91,11 @@ public:
             }
         }
 #else
+    BaseTerminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
+        : keyboard_enabled{enable_keyboard}
+    {
+        // Uncomment this to silently disable raw mode for non-tty
+        //if (keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
         if (keyboard_enabled) {
             if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) {
                 throw std::runtime_error("tcgetattr() failed");

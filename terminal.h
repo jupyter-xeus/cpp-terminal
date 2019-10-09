@@ -89,43 +89,43 @@ std::string color(T const value)
     return "\033[" + std::to_string(static_cast<int>(value)) + "m";
 }
 
-std::string cursor_off()
+inline std::string cursor_off()
 {
     return "\x1b[?25l";
 }
 
-std::string cursor_on()
+inline std::string cursor_on()
 {
     return "\x1b[?25h";
 }
 
 // If an attempt is made to move the cursor out of the window, the result is
 // undefined.
-std::string move_cursor(int row, int col)
+inline std::string move_cursor(int row, int col)
 {
     return "\x1b[" + std::to_string(row) + ";" + std::to_string(col) + "H";
 }
 
 // If an attempt is made to move the cursor to the right of the right margin,
 // the cursor stops at the right margin.
-std::string move_cursor_right(int col)
+inline std::string move_cursor_right(int col)
 {
     return "\x1b[" + std::to_string(col) + "C";
 }
 
 // If an attempt is made to move the cursor below the bottom margin, the cursor
 // stops at the bottom margin.
-std::string move_cursor_down(int row)
+inline std::string move_cursor_down(int row)
 {
     return "\x1b[" + std::to_string(row) + "B";
 }
 
-std::string cursor_position_report()
+inline std::string cursor_position_report()
 {
     return "\x1b[6n";
 }
 
-std::string erase_to_eol()
+inline std::string erase_to_eol()
 {
     return "\x1b[K";
 }
@@ -180,7 +180,7 @@ public:
     {
         if (restore_screen_) {
             write("\033[?1049l"); // restore screen
-            write("\0338"); // restore current cursor position
+            write("\033" "8");    // restore current cursor position
             restore_screen_ = false;
         }
     }
@@ -188,15 +188,14 @@ public:
     void save_screen()
     {
         restore_screen_ = true;
-        write("\0337"); // save current cursor position
+        write("\033" "7");    // save current cursor position
         write("\033[?1049h"); // save screen
     }
 
-    void write(const std::string& s) const
+    inline void write(const std::string& s) const
     {
         std::cout << s << std::flush;
     }
-
 
     // Waits for a key press, translates escape codes
     int read_key() const
@@ -504,7 +503,7 @@ void codepoint_to_utf8(std::string &s, char32_t c) {
     } else {
         throw std::runtime_error("Invalid UTF32 codepoint.");
     }
-    char u1, u2, u3, u4;
+    char32_t u1('x'), u2('x'), u3('x'), u4('x');
     static const unsigned char mask[4] = {0x00, 0xC0, 0xE0, 0xF0};
     switch (nbytes) {
         case 4: u4 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
@@ -513,10 +512,24 @@ void codepoint_to_utf8(std::string &s, char32_t c) {
         case 1: u1 =  (c | mask[nbytes-1]);
     }
     switch (nbytes) {
-        case 1: s.push_back(u1); break;
-        case 2: s.push_back(u1); s.push_back(u2); break;
-        case 3: s.push_back(u1); s.push_back(u2); s.push_back(u3); break;
-        case 4: s.push_back(u1); s.push_back(u2); s.push_back(u3); s.push_back(u4); break;
+      case 1:
+        s.push_back(static_cast<char>(u1));
+        break;
+      case 2:
+        s.push_back(static_cast<char>(u1));
+        s.push_back(static_cast<char>(u2));
+        break;
+      case 3:
+        s.push_back(static_cast<char>(u1));
+        s.push_back(static_cast<char>(u2));
+        s.push_back(static_cast<char>(u3));
+        break;
+      case 4:
+        s.push_back(static_cast<char>(u1));
+        s.push_back(static_cast<char>(u2));
+        s.push_back(static_cast<char>(u3));
+        s.push_back(static_cast<char>(u4));
+        break;
     }
 }
 
@@ -524,7 +537,8 @@ void codepoint_to_utf8(std::string &s, char32_t c) {
 
 // Converts an UTF8 string to UTF32.
 std::u32string utf8_to_utf32(const std::string &s) {
-    uint32_t codepoint, state=UTF8_ACCEPT;
+    uint32_t codepoint;
+    uint8_t state=UTF8_ACCEPT;
     std::u32string r;
     for (size_t i=0; i < s.size(); i++) {
         state = utf8_decode_step(state, s[i], &codepoint);
@@ -579,35 +593,35 @@ public:
           m_fg(w*h, fg::reset), m_bg(w*h, bg::reset),
           m_style(w*h, style::reset) {}
 
-    char32_t get_char(int x, int y) {
+    char32_t get_char(size_t x, size_t y) {
         return chars[(y-1)*w+(x-1)];
     }
 
-    void set_char(int x, int y, char32_t c) {
+    void set_char(size_t x, size_t y, char32_t c) {
         chars[(y-1)*w+(x-1)] = c;
     }
 
-    fg get_fg(int x, int y) {
+    fg get_fg(size_t x, size_t y) {
         return m_fg[(y-1)*w+(x-1)];
     }
 
-    void set_fg(int x, int y, fg c) {
+    void set_fg(size_t x, size_t y, fg c) {
         m_fg[(y-1)*w+(x-1)] = c;
     }
 
-    bg get_bg(int x, int y) {
+    bg get_bg(size_t x, size_t y) {
         return m_bg[(y-1)*w+(x-1)];
     }
 
-    void set_bg(int x, int y, bg c) {
+    void set_bg(size_t x, size_t y, bg c) {
         m_bg[(y-1)*w+(x-1)] = c;
     }
 
-    style get_style(int x, int y) {
+    style get_style(size_t x, size_t y) {
         return m_style[(y-1)*w+(x-1)];
     }
 
-    void set_style(int x, int y, style c) {
+    void set_style(size_t x, size_t y, style c) {
         m_style[(y-1)*w+(x-1)] = c;
     }
 
@@ -652,31 +666,36 @@ public:
         print_rect(1, 1, w, h, unicode);
     }
 
-    void print_rect(int x1, int y1, int x2, int y2, bool unicode=true) {
-        std::u32string border = utf8_to_utf32("│─┌┐└┘");
-        if (unicode) {
-            for (int j=y1+1; j <= y2-1; j++) {
-                set_char(x1, j, border[0]);
-                set_char(x2, j, border[0]);
-            }
-            for (int i=x1+1; i <= x2-1; i++) {
-                set_char(i, y1, border[1]);
-                set_char(i, y2, border[1]);
-            }
-            set_char(x1, y1, border[2]); set_char(x2, y1, border[3]);
-            set_char(x1, y2, border[4]); set_char(x2, y2, border[5]);
-        } else {
-            for (int j=y1+1; j <= y2-1; j++) {
-                set_char(x1, j, '|');
-                set_char(x2, j, '|');
-            }
-            for (int i=x1+1; i <= x2-1; i++) {
-                set_char(i, y1, '-');
-                set_char(i, y2, '-');
-            }
-            set_char(x1, y1, '+'); set_char(x2, y1, '+');
-            set_char(x1, y2, '+'); set_char(x2, y2, '+');
+    void print_rect(size_t x1, size_t y1, size_t x2, size_t y2,
+                    bool unicode = true) {
+      std::u32string border = utf8_to_utf32("│─┌┐└┘");
+      if (unicode) {
+        for (size_t j = y1 + 1; j <= y2 - 1; j++) {
+          set_char(x1, j, border[0]);
+          set_char(x2, j, border[0]);
         }
+        for (size_t i = x1 + 1; i <= x2 - 1; i++) {
+          set_char(i, y1, border[1]);
+          set_char(i, y2, border[1]);
+        }
+        set_char(x1, y1, border[2]);
+        set_char(x2, y1, border[3]);
+        set_char(x1, y2, border[4]);
+        set_char(x2, y2, border[5]);
+      } else {
+        for (size_t j = y1 + 1; j <= y2 - 1; j++) {
+          set_char(x1, j, '|');
+          set_char(x2, j, '|');
+        }
+        for (size_t i = x1 + 1; i <= x2 - 1; i++) {
+          set_char(i, y1, '-');
+          set_char(i, y2, '-');
+        }
+        set_char(x1, y1, '+');
+        set_char(x2, y1, '+');
+        set_char(x1, y2, '+');
+        set_char(x2, y2, '+');
+      }
     }
 
     void clear() {
