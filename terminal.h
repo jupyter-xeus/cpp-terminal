@@ -484,20 +484,12 @@ inline void codepoint_to_utf8(std::string &s, char32_t c) {
         case 2: u2 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
         case 1: u1 =  static_cast<char>(c | mask[nbytes-1]);
     }
-    switch (nbytes) {
-      case 1:
-        s.push_back(u1);
-        break;
-      case 2:
-        s.push_back(u1); s.push_back(u2);
-        break;
-      case 3:
-        s.push_back(u1); s.push_back(u2); s.push_back(u3);
-        break;
-      case 4:
-        s.push_back(u1); s.push_back(u2); s.push_back(u3); s.push_back(u4);
-        break;
-    }
+    size_t idx = s.size();
+    s.append(std::string(nbytes, 'x'));
+    s[idx] = u1; idx++;
+    if (nbytes >= 2) { s[idx] = u2; idx++; }
+    if (nbytes >= 3) { s[idx] = u3; idx++; }
+    if (nbytes == 4) { s[idx] = u4; }
 }
 
 /*----------------------------------------------------------------------------*/
