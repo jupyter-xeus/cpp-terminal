@@ -101,7 +101,7 @@ inline std::string cursor_on()
 
 // If an attempt is made to move the cursor out of the window, the result is
 // undefined.
-inline std::string move_cursor(int row, int col)
+inline std::string move_cursor(size_t row, size_t col)
 {
     return "\x1b[" + std::to_string(row) + ";" + std::to_string(col) + "H";
 }
@@ -463,7 +463,7 @@ utf8_decode_step(uint8_t state, uint8_t octet, uint32_t *cpp)
 
 /*----------------------------------------------------------------------------*/
 
-void codepoint_to_utf8(std::string &s, char32_t c) {
+inline void codepoint_to_utf8(std::string &s, char32_t c) {
     int nbytes;
     if (c < 0x80) {
         nbytes = 1;
@@ -476,32 +476,26 @@ void codepoint_to_utf8(std::string &s, char32_t c) {
     } else {
         throw std::runtime_error("Invalid UTF32 codepoint.");
     }
-    char32_t u1('x'), u2('x'), u3('x'), u4('x');
+    char u1('x'), u2('x'), u3('x'), u4('x');
     static const unsigned char mask[4] = {0x00, 0xC0, 0xE0, 0xF0};
     switch (nbytes) {
         case 4: u4 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
         case 3: u3 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
         case 2: u2 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
-        case 1: u1 =  (c | mask[nbytes-1]);
+        case 1: u1 =  static_cast<char>(c | mask[nbytes-1]);
     }
     switch (nbytes) {
       case 1:
-        s.push_back(static_cast<char>(u1));
+        s.push_back(u1);
         break;
       case 2:
-        s.push_back(static_cast<char>(u1));
-        s.push_back(static_cast<char>(u2));
+        s.push_back(u1); s.push_back(u2);
         break;
       case 3:
-        s.push_back(static_cast<char>(u1));
-        s.push_back(static_cast<char>(u2));
-        s.push_back(static_cast<char>(u3));
+        s.push_back(u1); s.push_back(u2); s.push_back(u3);
         break;
       case 4:
-        s.push_back(static_cast<char>(u1));
-        s.push_back(static_cast<char>(u2));
-        s.push_back(static_cast<char>(u3));
-        s.push_back(static_cast<char>(u4));
+        s.push_back(u1); s.push_back(u2); s.push_back(u3); s.push_back(u4);
         break;
     }
 }
@@ -509,7 +503,8 @@ void codepoint_to_utf8(std::string &s, char32_t c) {
 /*----------------------------------------------------------------------------*/
 
 // Converts an UTF8 string to UTF32.
-std::u32string utf8_to_utf32(const std::string &s) {
+inline std::u32string utf8_to_utf32(const std::string &s)
+{
     uint32_t codepoint;
     uint8_t state=UTF8_ACCEPT;
     std::u32string r;
@@ -530,7 +525,7 @@ std::u32string utf8_to_utf32(const std::string &s) {
 
 
 // Converts an UTF32 string to UTF8.
-std::string utf32_to_utf8(const std::u32string &s)
+inline std::string utf32_to_utf8(const std::u32string &s)
 {
     std::string r;
     for (size_t i=0; i < s.size(); i++) {

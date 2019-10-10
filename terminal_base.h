@@ -156,7 +156,7 @@ public:
 #ifdef _WIN32
         char buf[1];
         DWORD nread;
-        if (kbhit()) {
+        if (_kbhit()) {
             if (!ReadFile(hin, buf, 1, &nread, nullptr)) {
                 throw std::runtime_error("ReadFile() failed");
             }
