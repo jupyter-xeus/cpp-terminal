@@ -503,32 +503,26 @@ void codepoint_to_utf8(std::string &s, char32_t c) {
     } else {
         throw std::runtime_error("Invalid UTF32 codepoint.");
     }
-    char32_t u1('x'), u2('x'), u3('x'), u4('x');
+    char u1('x'), u2('x'), u3('x'), u4('x');
     static const unsigned char mask[4] = {0x00, 0xC0, 0xE0, 0xF0};
     switch (nbytes) {
         case 4: u4 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
         case 3: u3 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
         case 2: u2 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
-        case 1: u1 =  (c | mask[nbytes-1]);
+        case 1: u1 =  static_cast<char>(c | mask[nbytes-1]);
     }
     switch (nbytes) {
       case 1:
-        s.push_back(static_cast<char>(u1));
+        s.push_back(u1);
         break;
       case 2:
-        s.push_back(static_cast<char>(u1));
-        s.push_back(static_cast<char>(u2));
+        s.push_back(u1); s.push_back(u2);
         break;
       case 3:
-        s.push_back(static_cast<char>(u1));
-        s.push_back(static_cast<char>(u2));
-        s.push_back(static_cast<char>(u3));
+        s.push_back(u1); s.push_back(u2); s.push_back(u3);
         break;
       case 4:
-        s.push_back(static_cast<char>(u1));
-        s.push_back(static_cast<char>(u2));
-        s.push_back(static_cast<char>(u3));
-        s.push_back(static_cast<char>(u4));
+        s.push_back(u1); s.push_back(u2); s.push_back(u3); s.push_back(u4);
         break;
     }
 }
