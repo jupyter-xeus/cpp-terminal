@@ -476,20 +476,15 @@ inline void codepoint_to_utf8(std::string &s, char32_t c) {
     } else {
         throw std::runtime_error("Invalid UTF32 codepoint.");
     }
-    char u1('x'), u2('x'), u3('x'), u4('x');
+    size_t m = s.size();
+    s.append(nbytes, 'x');
     static const unsigned char mask[4] = {0x00, 0xC0, 0xE0, 0xF0};
     switch (nbytes) {
-        case 4: u4 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
-        case 3: u3 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
-        case 2: u2 = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
-        case 1: u1 =  static_cast<char>(c | mask[nbytes-1]);
+        case 4: s[m+3] = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
+        case 3: s[m+2] = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
+        case 2: s[m+1] = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
+        case 1: s[m  ] = static_cast<char>(c | mask[nbytes-1]);
     }
-    size_t idx = s.size();
-    s.append(std::string(nbytes, 'x'));
-    s[idx] = u1; idx++;
-    if (nbytes >= 2) { s[idx] = u2; idx++; }
-    if (nbytes >= 3) { s[idx] = u3; idx++; }
-    if (nbytes == 4) { s[idx] = u4; }
 }
 
 /*----------------------------------------------------------------------------*/
