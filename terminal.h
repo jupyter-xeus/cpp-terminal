@@ -101,7 +101,7 @@ inline std::string cursor_on()
 
 // If an attempt is made to move the cursor out of the window, the result is
 // undefined.
-inline std::string move_cursor(int row, int col)
+inline std::string move_cursor(size_t row, size_t col)
 {
     return "\x1b[" + std::to_string(row) + ";" + std::to_string(col) + "H";
 }
@@ -490,7 +490,7 @@ utf8_decode_step(uint8_t state, uint8_t octet, uint32_t *cpp)
 
 /*----------------------------------------------------------------------------*/
 
-void codepoint_to_utf8(std::string &s, char32_t c) {
+inline void codepoint_to_utf8(std::string &s, char32_t c) {
     int nbytes;
     if (c < 0x80) {
         nbytes = 1;
@@ -530,7 +530,8 @@ void codepoint_to_utf8(std::string &s, char32_t c) {
 /*----------------------------------------------------------------------------*/
 
 // Converts an UTF8 string to UTF32.
-std::u32string utf8_to_utf32(const std::string &s) {
+inline std::u32string utf8_to_utf32(const std::string &s)
+{
     uint32_t codepoint;
     uint8_t state=UTF8_ACCEPT;
     std::u32string r;
@@ -551,7 +552,7 @@ std::u32string utf8_to_utf32(const std::string &s) {
 
 
 // Converts an UTF32 string to UTF8.
-std::string utf32_to_utf8(const std::u32string &s)
+inline std::string utf32_to_utf8(const std::u32string &s)
 {
     std::string r;
     for (size_t i=0; i < s.size(); i++) {
