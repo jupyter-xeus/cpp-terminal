@@ -464,26 +464,26 @@ utf8_decode_step(uint8_t state, uint8_t octet, uint32_t *cpp)
 /*----------------------------------------------------------------------------*/
 
 inline void codepoint_to_utf8(std::string &s, char32_t c) {
-    int nbytes;
-    if (c < 0x80) {
-        nbytes = 1;
-    } else if (c < 0x800) {
-        nbytes = 2;
-    } else if (c < 0x10000) {
-        nbytes = 3;
-    } else if (c <= 0x0010FFFF) {
-        nbytes = 4;
-    } else {
+    if (c > 0x0010FFFF) {
         throw std::runtime_error("Invalid UTF32 codepoint.");
     }
     char bytes[4];
-    static const unsigned char mask[4] = {0x00, 0xC0, 0xE0, 0xF0};
-    switch (nbytes) {
-        case 4: bytes[3] = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
-        case 3: bytes[2] = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
-        case 2: bytes[1] = ((c | 0x80) & 0xBF); c >>= 6; /* fall through */
-        case 1: bytes[0] = static_cast<char>(c | mask[nbytes-1]);
+    int nbytes = 1;
+    char32_t d = c;
+    if (c >= 0x10000) {
+        nbytes++;
+        bytes[3] = ((d | 0x80) & 0xBF); d >>= 6;
     }
+    if (c >= 0x800) {
+        nbytes++;
+        bytes[2] = ((d | 0x80) & 0xBF); d >>= 6;
+    }
+    if (c >= 0x80) {
+        nbytes++;
+        bytes[1] = ((d | 0x80) & 0xBF); d >>= 6;
+    }
+    static const unsigned char mask[4] = {0x00, 0xC0, 0xE0, 0xF0};
+    bytes[0] = static_cast<char>(d | mask[nbytes-1]);
     s.append(bytes, nbytes);
 }
 
