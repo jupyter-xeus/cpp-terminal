@@ -19,8 +19,8 @@
 #include <string>
 #include <vector>
 
-#define CTRL_KEY(k) ((k)&0x1f)
-#define ALT_KEY(k) (k + 128)
+#define CTRL_KEY(k) (char)(((unsigned char)(k) & 0x1f))
+#define ALT_KEY(k) (char)(((unsigned char)(k) + 0x80))
 
 namespace Term {
 
@@ -224,7 +224,7 @@ public:
                     // gnome-term, Windows Console
                     return ALT_KEY(seq[0]);
                 }
-                if (seq[0] == 13) {
+                if (seq[0] == '\x0d') {
                     // gnome-term
                     return Key::ALT_ENTER;
                 }
@@ -345,28 +345,28 @@ public:
             return -4;
         } else {
             switch (c) {
-            case 9:
+            case '\x09':
                 return Key::TAB;
-            case 13:
+            case '\x0d':
                 return Key::ENTER;
-            case 127:
+            case '\x7f':
                 return Key::BACKSPACE;
             }
-            if (c == -61) {
+            if (c == '\xc3') {
                 if (!read_raw(&c)) {
                     return -8;
                 } else {
-                    if (c >= -95 && c <= -70) {
+                    if (c >= '\xa1' && c <= '\xba') {
                         // xterm
-                        return ALT_KEY(c+'a'-(-95));
+                        return ALT_KEY(c+'a'-'\xa1');
                     }
                     return -9;
                 }
-            } else if (c == -62) {
+            } else if (c == '\xc2') {
                 if (!read_raw(&c)) {
                     return -10;
                 } else {
-                    if (c == -115) {
+                    if (c == '\x8d') {
                         // xterm
                         return Key::ALT_ENTER;
                     }
