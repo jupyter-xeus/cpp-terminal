@@ -6,11 +6,14 @@ compiler:
 os:
   - linux
   - osx
-dist: bionic
+dist: focal
 osx_image: xcode11
 
 install:
+  - cmake --version
+  - cmake -DCMAKE_INSTALL_PREFIX=`pwd`/inst .
   - make
+  - make install
 script:
   - ./tests.sh
 notifications:

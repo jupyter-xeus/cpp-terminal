@@ -4,13 +4,13 @@ set -ex
 
 ./test_terminal
 
-./colors
+examples/colors
 
 echo "Expected to succeed:"
-./colors < README.md
+examples/colors < README.md
 echo "Expected to fail"
 set +e
-./keys < README.md
+examples/keys < README.md
 if [[ $? != 0 ]]; then
   echo "Success"
 else

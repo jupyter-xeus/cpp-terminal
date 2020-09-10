@@ -32,6 +32,7 @@ std::string render(Term::Window &scr, int rows, int cols,
     scr.print_str(1, y+1, "Menu width: " + std::to_string(menuwidth));
     scr.print_str(1, y+2, "Menu height: " + std::to_string(menuheight),
             0, true);
+    scr.print_str(1, y+3, "Unicode test: Ondřej Čertík, ἐξήκοι");
 
     return scr.render(1, 1);
 }

@@ -1,7 +1,11 @@
-call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
-cl -I. /EHsc examples/prompt.cpp /Fe:prompt.exe
-cl -I. /EHsc examples/kilo.cpp /Fe:kilo.exe
-cl -I. /EHsc examples/menu.cpp /Fe:menu.exe
-cl -I. /EHsc examples/menu_window.cpp /Fe:menu_window.exe
-cl -I. /EHsc examples/keys.cpp /Fe:keys.exe
-cl -I. /EHsc examples/colors.cpp /Fe:colors.exe
+cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=%CD%/inst .
+if errorlevel 1 exit 1
+
+cmake --build . --config Release
+if errorlevel 1 exit 1
+
+cmake --install . --config Release
+if errorlevel 1 exit 1
+
+ctest --output-on-failure
+if errorlevel 1 exit 1
