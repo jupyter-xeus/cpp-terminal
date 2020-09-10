@@ -10,8 +10,9 @@ dist: bionic
 osx_image: xcode11
 
 install:
-  - cmake .
+  - cmake -DCMAKE_INSTALL_PREFIX=`pwd`/inst .
   - make
+  - make install
 script:
   - ./tests.sh
 notifications:
