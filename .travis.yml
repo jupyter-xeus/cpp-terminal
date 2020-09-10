@@ -10,6 +10,7 @@ dist: bionic
 osx_image: xcode11
 
 install:
+  - cmake .
   - make
 script:
   - ./tests.sh
