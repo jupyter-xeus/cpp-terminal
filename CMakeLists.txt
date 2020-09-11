@@ -9,12 +9,10 @@ endif ()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-add_library(mylib INTERFACE)
-
-add_library(terminal INTERFACE)
-target_include_directories(terminal INTERFACE ${PROJECT_SOURCE_DIR})
-set_target_properties(terminal PROPERTIES
-    PUBLIC_HEADER "terminal.h;terminal_base.h"
+add_library(cpp-terminal INTERFACE)
+target_include_directories(cpp-terminal INTERFACE ${PROJECT_SOURCE_DIR})
+set_target_properties(cpp-terminal PROPERTIES
+    PUBLIC_HEADER "cpp-terminal/terminal.h;cpp-terminal/terminal_base.h"
 )
 
 
@@ -23,13 +21,13 @@ enable_testing()
 add_subdirectory(examples)
 
 add_executable(test_terminal test_terminal.cpp)
-target_link_libraries(test_terminal terminal)
+target_link_libraries(test_terminal cpp-terminal)
 add_test(test_terminal ${PROJECT_BINARY_DIR}/test_terminal)
 
 
-install(TARGETS terminal
+install(TARGETS cpp-terminal
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
-    PUBLIC_HEADER DESTINATION include
+    PUBLIC_HEADER DESTINATION include/cpp-terminal
 )

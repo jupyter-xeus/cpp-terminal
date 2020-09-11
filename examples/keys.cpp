@@ -1,7 +1,7 @@
 /*
  * This example shows how to interpret keys presses from Terminal.
  */
-#include "terminal.h"
+#include <cpp-terminal/terminal.h>
 
 using Term::Terminal;
 using Term::Key;

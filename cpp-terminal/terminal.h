@@ -13,7 +13,7 @@
  */
 
 
-#include "terminal_base.h"
+#include <cpp-terminal/terminal_base.h>
 
 #include <iostream>
 #include <string>
