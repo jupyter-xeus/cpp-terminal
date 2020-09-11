@@ -5,6 +5,9 @@ image: Visual Studio 2017
 build_script:
 - call build.bat
 - examples\Release\colors.exe
+- cd test-standalone
+- cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_PREFIX_PATH=../inst .
+- cmake --build . --config Release
 
 #on_finish:
 #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
