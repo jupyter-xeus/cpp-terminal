@@ -16,5 +16,8 @@ install:
   - make install
 script:
   - ./tests.sh
+  - cd test-standalone
+  - cmake -DCMAKE_PREFIX_PATH=../inst .
+  - make
 notifications:
   email: false
