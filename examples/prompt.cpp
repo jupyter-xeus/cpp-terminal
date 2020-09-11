@@ -1,4 +1,4 @@
-#include "terminal.h"
+#include <cpp-terminal/terminal.h>
 
 #include <vector>
 
