@@ -5,9 +5,10 @@ works on Linux, macOS and Windows (in the native `cmd.exe` console). It
 supports colors, keyboard input and has all the basic features to write any
 terminal application.
 
-It has a small core ([terminal_base.h](terminal_base.h)) that has a few
-platform specific building blocks, and a platform independent library written
-on top using the ANSI escape sequences ([terminal.h](terminal.h)).
+It has a small core ([terminal_base.h](cpp-terminal/terminal_base.h)) that has a
+few platform specific building blocks, and a platform independent library
+written on top using the ANSI escape sequences
+([terminal.h](cpp-terminal/terminal.h)).
 
 This design has the advantage of having only a few lines to maintain on each
 platform, and the rest is platform independent. We intentionally limit
@@ -57,7 +58,7 @@ To print colors and other styles (such as bold), use the `Term::color()`
 function and `Term::fg` enum for foreground, `Term::bg` enum for background and
 `Term::style` enum for different styles (see the `colors.cpp` example):
 ```c++
-#include "terminal.h"
+#include <cpp-terminal/terminal.h>
 using Term::color;
 using Term::fg;
 using Term::bg;
