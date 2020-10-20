@@ -18,6 +18,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <thread>
 
 #define CTRL_KEY(k) (char)(((unsigned char)(k) & 0x1f))
 #define ALT_KEY(k) (char)(((unsigned char)(k) + 0x80))
@@ -201,7 +202,10 @@ public:
     int read_key() const
     {
         int key;
-        while ((key = read_key0()) == 0) { }
+        while ((key = read_key0()) == 0)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
         return key;
     }
 
