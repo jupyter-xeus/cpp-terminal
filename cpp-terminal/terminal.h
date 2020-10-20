@@ -725,18 +725,24 @@ struct Model
     size_t cursor_col, cursor_row;
 };
 
-inline std::string render(const Model &m, int prompt_row, int term_cols)
+inline std::string render(const Model &m, int prompt_row, int term_cols, bool term)
 {
     std::string out;
-    out = cursor_off();
-    out += move_cursor(prompt_row, 1) + m.prompt_string + m.input;
+    if (term) {
+        out = cursor_off();
+        out += move_cursor(prompt_row, 1);
+    }
+    out += m.prompt_string;
+    out += m.input;
     size_t last_col = m.prompt_string.size() + m.input.size();
     for (size_t i=0; i < term_cols-last_col; i++) {
         out.append(" ");
     }
-    out.append(move_cursor(prompt_row+m.cursor_row-1,
-        m.prompt_string.size() + m.cursor_col));
-    out.append(cursor_on());
+    if (term) {
+        out.append(move_cursor(prompt_row+m.cursor_row-1,
+            m.prompt_string.size() + m.cursor_col));
+        out.append(cursor_on());
+    }
     return out;
 }
 
@@ -747,9 +753,18 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
         std::vector<std::string> &history = PROMPT_HISTORY)
 {
     int row, col;
-    term.get_cursor_position(row, col);
+    bool term_attached = term.is_stdin_a_tty();
+    if (term_attached) {
+        term.get_cursor_position(row, col);
+    } else {
+        row = 1;
+        col = 1;
+    }
     int rows, cols;
-    term.get_term_size(rows, cols);
+    if (!term.get_term_size(rows, cols)) {
+        rows = 25;
+        cols = 80;
+    }
 
     Model m;
     m.prompt_string = prompt_string;
@@ -763,7 +778,7 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
     hist.push_back(m.input); // Push back empty input
 
     int key;
-    std::cout << render(m, row, cols) << std::flush;
+    std::cout << render(m, row, cols, term_attached) << std::flush;
     while ((key = term.read_key()) != Key::ENTER) {
         if (  (key >= 'a' && key <= 'z') ||
               (key >= 'A' && key <= 'Z') ||
@@ -822,7 +837,7 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
                     break;
             }
         }
-        std::cout << render(m, row, cols) << std::flush;
+        std::cout << render(m, row, cols, term_attached) << std::flush;
     }
     std::cout << "\n" << std::flush;
     history.push_back(m.input);
