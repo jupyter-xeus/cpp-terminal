@@ -8,10 +8,10 @@ examples/colors
 
 echo "Expected to succeed:"
 examples/colors < README.md
-echo "Expected to fail"
+echo "Expected to succeed:"
 set +e
 examples/keys < README.md
-if [[ $? != 0 ]]; then
+if [[ $? == 0 ]]; then
   echo "Success"
 else
   echo "Fail"
