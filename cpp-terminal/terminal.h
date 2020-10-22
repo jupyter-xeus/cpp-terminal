@@ -788,6 +788,10 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
                 m.input.push_back(CTRL_KEY('d'));
                 break;
             }
+        } else if (key == CTRL_KEY('c') || key == CTRL_KEY('u')) {
+            // Discard any input
+            m.input = std::string(1, key);
+            break;
         } else {
             switch (key) {
                 case Key::BACKSPACE:
