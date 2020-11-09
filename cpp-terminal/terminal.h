@@ -352,7 +352,6 @@ public:
             case '\x09': // TAB
                 return Key::TAB;
             case '\x0a': // LF
-                return Key::ENTER;
             case '\x0d': // CR
                 return Key::ENTER;
             case '\x7f': // DEL
@@ -759,7 +758,7 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
     int row, col;
     term.get_cursor_position(row, col);
     int rows, cols;
-    term.get_term_size(rows, cols);
+    Term::Terminal::get_term_size(rows, cols);
 
     Model m;
     m.prompt_string = prompt_string;
