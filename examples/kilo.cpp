@@ -8,13 +8,10 @@
 #include <memory>
 
 #include <cctype>
-#include <cerrno>
-#include <fcntl.h>
 #include <cstdio>
 #include <cstdarg>
 #include <cstdlib>
 #include <cstring>
-#include <sys/types.h>
 #include <ctime>
 
 /*** defines ***/
