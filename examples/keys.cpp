@@ -10,7 +10,7 @@ int main() {
     try {
         Terminal term(true, false);
         int rows, cols;
-        term.get_term_size(rows, cols);
+        Term::Terminal::get_term_size(rows, cols);
         std::cout << "Dimension:" << cols << " " << rows << std::endl;
         std::cout << "Press any key ('q' to quit):" << std::endl;
         bool on = true;
@@ -30,7 +30,7 @@ int main() {
                 s = (char)(key+'A'-ALT_KEY('a')); // Convert to upper case
                 s = "Alt+" + s;
             } else if (key > 0 && !iscntrl(key) && key < 128) {
-                s = key;
+                s = std::to_string(key);
             } else {
                 switch (key) {
                     case Key::BACKSPACE: s = "BACKSPACE"; break;

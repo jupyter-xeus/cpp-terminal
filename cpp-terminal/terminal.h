@@ -169,11 +169,11 @@ enum Key {
 class Terminal: public BaseTerminal {
     bool restore_screen_;
 public:
-    Terminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
+    explicit Terminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
         : BaseTerminal(enable_keyboard, disable_ctrl_c),
           restore_screen_{false} {}
 
-    virtual ~Terminal() {
+    ~Terminal() override {
         restore_screen();
     }
 
@@ -193,7 +193,7 @@ public:
         write("\033[?1049h"); // save screen
     }
 
-    inline void write(const std::string& s) const
+    static inline void write(const std::string& s)
     {
         std::cout << s << std::flush;
     }
@@ -420,14 +420,14 @@ public:
     {
         struct CursorOff {
             const Terminal& term;
-            CursorOff(const Terminal& term)
+            explicit CursorOff(const Terminal& term)
                 : term{ term }
             {
-                term.write(cursor_off());
+                Term::Terminal::write(cursor_off());
             }
             ~CursorOff()
             {
-                term.write(cursor_on());
+                Term::Terminal::write(cursor_on());
             }
         };
         CursorOff cursor_off(*this);
@@ -509,8 +509,8 @@ inline std::u32string utf8_to_utf32(const std::string &s)
     uint32_t codepoint;
     uint8_t state=UTF8_ACCEPT;
     std::u32string r;
-    for (size_t i=0; i < s.size(); i++) {
-        state = utf8_decode_step(state, s[i], &codepoint);
+    for (char i : s) {
+        state = utf8_decode_step(state, i, &codepoint);
         if (state == UTF8_ACCEPT) {
             r.push_back(codepoint);
         }
@@ -529,8 +529,8 @@ inline std::u32string utf8_to_utf32(const std::string &s)
 inline std::string utf32_to_utf8(const std::u32string &s)
 {
     std::string r;
-    for (size_t i=0; i < s.size(); i++) {
-        codepoint_to_utf8(r, s[i]);
+    for (char32_t i : s) {
+        codepoint_to_utf8(r, i);
     }
     return r;
 }
@@ -732,7 +732,7 @@ struct Model
     std::string prompt_string; // The string to show as the prompt
     std::string input; // The current input string in the prompt
     // The current cursor position in the "input" string, starting from (1,1)
-    size_t cursor_col, cursor_row;
+    size_t cursor_col{}, cursor_row{};
 };
 
 inline std::string render(const Model &m, int prompt_row, int term_cols)

@@ -7,15 +7,15 @@
 #include <fstream>
 #include <memory>
 
-#include <ctype.h>
-#include <errno.h>
+#include <cctype>
+#include <cerrno>
 #include <fcntl.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdarg>
+#include <cstdlib>
+#include <cstring>
 #include <sys/types.h>
-#include <time.h>
+#include <ctime>
 
 /*** defines ***/
 
@@ -90,13 +90,13 @@ struct editorConfig E;
 
 /*** filetypes ***/
 
-const char *C_HL_extensions[] = { ".c", ".h", ".cpp", NULL };
+const char *C_HL_extensions[] = { ".c", ".h", ".cpp", nullptr };
 const char *C_HL_keywords[] = {
   "switch", "if", "while", "for", "break", "continue", "return", "else",
   "struct", "union", "typedef", "static", "enum", "class", "case",
 
   "int|", "long|", "double|", "float|", "char|", "unsigned|", "signed|",
-  "void|", NULL
+  "void|", nullptr
 };
 
 struct editorSyntax HLDB[] = {
@@ -119,14 +119,14 @@ char *editorPrompt(const Terminal &term, const char *prompt, void (*callback)(ch
 /*** syntax highlighting ***/
 
 int is_separator(int c) {
-  return isspace(c) || c == '\0' || strchr(",.()+-/*=~%<>[];", c) != NULL;
+  return isspace(c) || c == '\0' || strchr(",.()+-/*=~%<>[];", c) != nullptr;
 }
 
 void editorUpdateSyntax(erow *row) {
   row->hl = (unsigned char*)realloc(row->hl, row->rsize);
   memset(row->hl, HL_NORMAL, row->rsize);
 
-  if (E.syntax == NULL) return;
+  if (E.syntax == nullptr) return;
 
   const char **keywords = E.syntax->keywords;
 
@@ -221,7 +221,7 @@ void editorUpdateSyntax(erow *row) {
           break;
         }
       }
-      if (keywords[j] != NULL) {
+      if (keywords[j] != nullptr) {
         prev_sep = 0;
         continue;
       }
@@ -251,13 +251,13 @@ fg editorSyntaxToColor(int hl) {
 }
 
 void editorSelectSyntaxHighlight() {
-  E.syntax = NULL;
-  if (E.filename == NULL) return;
+  E.syntax = nullptr;
+  if (E.filename == nullptr) return;
 
   char *ext = strrchr(E.filename, '.');
 
-  for (unsigned int j = 0; j < HLDB_ENTRIES; j++) {
-    struct editorSyntax *s = &HLDB[j];
+  for (auto & j : HLDB) {
+    struct editorSyntax *s = &j;
     unsigned int i = 0;
     while (s->filematch[i]) {
       int is_ext = (s->filematch[i][0] == '.');
@@ -342,8 +342,8 @@ void editorInsertRow(int at, const char *s, size_t len) {
   E.row[at].chars[len] = '\0';
 
   E.row[at].rsize = 0;
-  E.row[at].render = NULL;
-  E.row[at].hl = NULL;
+  E.row[at].render = nullptr;
+  E.row[at].hl = nullptr;
   E.row[at].hl_open_comment = 0;
   editorUpdateRow(&E.row[at]);
 
@@ -481,13 +481,13 @@ void editorSetStatusMessage(const char *fmt, ...) {
   va_start(ap, fmt);
   vsnprintf(E.statusmsg, sizeof(E.statusmsg), fmt, ap);
   va_end(ap);
-  E.statusmsg_time = time(NULL);
+  E.statusmsg_time = time(nullptr);
 }
 
 void editorSave(const Terminal &term) {
-  if (E.filename == NULL) {
-    E.filename = editorPrompt(term, "Save as: %s (ESC to cancel)", NULL);
-    if (E.filename == NULL) {
+  if (E.filename == nullptr) {
+    E.filename = editorPrompt(term, "Save as: %s (ESC to cancel)", nullptr);
+    if (E.filename == nullptr) {
       editorSetStatusMessage("Save aborted");
       return;
     }
@@ -514,12 +514,12 @@ void editorFindCallback(char *query, int key) {
   static int direction = 1;
 
   static int saved_hl_line;
-  static char *saved_hl = NULL;
+  static char *saved_hl = nullptr;
 
   if (saved_hl) {
     memcpy(E.row[saved_hl_line].hl, saved_hl, E.row[saved_hl_line].rsize);
     free(saved_hl);
-    saved_hl = NULL;
+    saved_hl = nullptr;
   }
 
   if (key == Key::ENTER || key == Key::ESC) {
@@ -688,7 +688,7 @@ void editorDrawMessageBar(std::string &ab) {
   ab.append(erase_to_eol());
   int msglen = strlen(E.statusmsg);
   if (msglen > E.screencols) msglen = E.screencols;
-  if (msglen && time(NULL) - E.statusmsg_time < 5)
+  if (msglen && time(nullptr) - E.statusmsg_time < 5)
     ab.append(std::string(E.statusmsg, msglen));
 }
 
@@ -709,7 +709,7 @@ void editorRefreshScreen(const Terminal &term) {
 
   ab.append(cursor_on());
 
-  term.write(ab);
+  Term::Terminal::write(ab);
 }
 
 /*** input ***/
@@ -732,7 +732,7 @@ char *editorPrompt(const Terminal &term, const char *prompt, void (*callback)(ch
       editorSetStatusMessage("");
       if (callback) callback(buf, c);
       free(buf);
-      return NULL;
+      return nullptr;
     } else if (c == Key::ENTER) {
       if (buflen != 0) {
         editorSetStatusMessage("");
@@ -753,7 +753,7 @@ char *editorPrompt(const Terminal &term, const char *prompt, void (*callback)(ch
 }
 
 void editorMoveCursor(int key) {
-  erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
+  erow *row = (E.cy >= E.numrows) ? nullptr : &E.row[E.cy];
 
   switch (key) {
     case Key::ARROW_LEFT:
@@ -784,7 +784,7 @@ void editorMoveCursor(int key) {
       break;
   }
 
-  row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
+  row = (E.cy >= E.numrows) ? nullptr : &E.row[E.cy];
   int rowlen = row ? row->size : 0;
   if (E.cx > rowlen) {
     E.cx = rowlen;
@@ -884,14 +884,14 @@ void initEditor(const Terminal &term) {
   E.rowoff = 0;
   E.coloff = 0;
   E.numrows = 0;
-  E.row = NULL;
+  E.row = nullptr;
   E.dirty = 0;
-  E.filename = NULL;
+  E.filename = nullptr;
   E.statusmsg[0] = '\0';
   E.statusmsg_time = 0;
-  E.syntax = NULL;
+  E.syntax = nullptr;
 
-  term.get_term_size(E.screenrows, E.screencols);
+  Term::Terminal::get_term_size(E.screenrows, E.screencols);
   E.screenrows -= 2;
 }
 

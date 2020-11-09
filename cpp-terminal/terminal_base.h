@@ -39,7 +39,7 @@
 #undef B57600
 #undef B115200
 #    include <unistd.h>
-#    include <errno.h>
+#    include <cerrno>
 #endif
 
 namespace Term {
@@ -61,7 +61,7 @@ private:
     DWORD dwOriginalInMode;
     UINT in_code_page;
 #else
-    struct termios orig_termios;
+    struct termios orig_termios{};
 #endif
     bool keyboard_enabled;
 
@@ -110,7 +110,7 @@ public:
             }
         }
 #else
-    BaseTerminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
+    explicit BaseTerminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
         : keyboard_enabled{enable_keyboard}
     {
         // Uncomment this to silently disable raw mode for non-tty
@@ -211,7 +211,7 @@ public:
 #endif
     }
 
-    bool get_term_size(int& rows, int& cols) const
+    static bool get_term_size(int& rows, int& cols)
     {
 #ifdef _WIN32
         CONSOLE_SCREEN_BUFFER_INFO inf;
@@ -224,7 +224,7 @@ public:
             return false;
         }
 #else
-        struct winsize ws;
+        struct winsize ws{};
         if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
             // This happens when we are not connected to a terminal
             return false;
@@ -237,7 +237,7 @@ public:
     }
 
     // Returns true if the standard input is attached to a terminal
-    bool is_stdin_a_tty() const
+    static bool is_stdin_a_tty()
     {
 #ifdef _WIN32
         return _isatty(_fileno(stdin));
@@ -247,7 +247,7 @@ public:
     }
 
     // Returns true if the standard output is attached to a terminal
-    bool is_stdout_a_tty() const
+    static bool is_stdout_a_tty()
     {
 #ifdef _WIN32
         return _isatty(_fileno(stdout));
