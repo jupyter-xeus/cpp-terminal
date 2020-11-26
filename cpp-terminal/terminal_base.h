@@ -52,13 +52,13 @@ namespace Term {
 class BaseTerminal {
 private:
 #ifdef _WIN32
-    HANDLE hout;
-    DWORD dwOriginalOutMode;
+    static HANDLE hout;
+    DWORD dwOriginalOutMode{};
     bool out_console;
     UINT out_code_page;
 
     HANDLE hin;
-    DWORD dwOriginalInMode;
+    DWORD dwOriginalInMode{};
     UINT in_code_page;
 #else
     struct termios orig_termios{};
@@ -67,7 +67,7 @@ private:
 
 public:
 #ifdef _WIN32
-    BaseTerminal(bool enable_keyboard=false, bool /*disable_ctrl_c*/ = true)
+    explicit BaseTerminal(bool enable_keyboard=false, bool /*disable_ctrl_c*/ = true)
         : keyboard_enabled{enable_keyboard}
     {
         // Uncomment this to silently disable raw mode for non-tty
