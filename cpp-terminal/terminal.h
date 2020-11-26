@@ -19,7 +19,6 @@
 #include <string>
 #include <vector>
 #include <thread>
-
 #define CTRL_KEY(k) (char)(((unsigned char)(k) & 0x1f))
 #define ALT_KEY(k) (char)(((unsigned char)(k) + 0x80))
 
@@ -402,7 +401,11 @@ public:
         i = 0;
         while (i < sizeof(buf) - 1 - 5) {
             if (buf[i] == '\x1b' && buf[i+1] == '[') {
+#ifdef _WIN32
+                if (sscanf_s(&buf[i+2], "%d;%d", &rows, &cols) == 2) {
+#else
                 if (sscanf(&buf[i+2], "%d;%d", &rows, &cols) == 2) {
+#endif
                     return;
                 } else {
                     throw std::runtime_error("get_cursor_position(): result could not be parsed");
@@ -758,7 +761,7 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
     int row, col;
     term.get_cursor_position(row, col);
     int rows, cols;
-    Term::Terminal::get_term_size(rows, cols);
+    term.get_term_size(rows, cols);
 
     Model m;
     m.prompt_string = prompt_string;

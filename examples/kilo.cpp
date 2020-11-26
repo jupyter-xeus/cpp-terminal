@@ -5,8 +5,6 @@
 #include <stdexcept>
 #include <iostream>
 #include <fstream>
-#include <memory>
-
 #include <cctype>
 #include <cstdio>
 #include <cstdarg>
@@ -454,8 +452,11 @@ char *editorRowsToString(int *buflen) {
 
 void editorOpen(char *filename) {
     free(E.filename);
+#ifdef _WIN32
+    E.filename = _strdup(filename);
+#else
     E.filename = strdup(filename);
-
+#endif
     editorSelectSyntaxHighlight();
 
     std::ifstream f(filename);
@@ -888,7 +889,7 @@ void initEditor(const Terminal &term) {
   E.statusmsg_time = 0;
   E.syntax = nullptr;
 
-  Term::Terminal::get_term_size(E.screenrows, E.screencols);
+  term.get_term_size(E.screenrows, E.screencols);
   E.screenrows -= 2;
 }
 

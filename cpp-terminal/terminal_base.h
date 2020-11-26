@@ -13,7 +13,6 @@
 
 #ifdef _WIN32
 #    include <conio.h>
-#    define _WINSOCKAPI_
 #    include <windows.h>
 #    include <io.h>
 #else
@@ -52,7 +51,7 @@ namespace Term {
 class BaseTerminal {
 private:
 #ifdef _WIN32
-    static HANDLE hout;
+    HANDLE hout;
     DWORD dwOriginalOutMode{};
     bool out_console;
     UINT out_code_page;
@@ -211,7 +210,7 @@ public:
 #endif
     }
 
-    static bool get_term_size(int& rows, int& cols)
+    bool get_term_size(int& rows, int& cols) const
     {
 #ifdef _WIN32
         CONSOLE_SCREEN_BUFFER_INFO inf;
