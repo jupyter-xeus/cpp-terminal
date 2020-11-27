@@ -350,7 +350,7 @@ public:
             switch (c) {
             case '\x09': // TAB
                 return Key::TAB;
-            case '\x0a': // LF
+            case '\x0a': // LF; falls-through
             case '\x0d': // CR
                 return Key::ENTER;
             case '\x7f': // DEL
