@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TERMINAL_BASE_H
+#define TERMINAL_BASE_H
 
 /*
  * This file contains all the platform specific code regarding terminal input
@@ -268,3 +269,5 @@ public:
 };
 
 } // namespace Term
+
+#endif // TERMINAL_BASE_H
