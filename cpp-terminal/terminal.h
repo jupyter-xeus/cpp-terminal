@@ -401,11 +401,7 @@ public:
         i = 0;
         while (i < sizeof(buf) - 1 - 5) {
             if (buf[i] == '\x1b' && buf[i+1] == '[') {
-#ifdef _WIN32
-                if (sscanf_s(&buf[i+2], "%d;%d", &rows, &cols) == 2) {
-#else
-                if (sscanf(&buf[i+2], "%d;%d", &rows, &cols) == 2) {
-#endif
+                if (convert_string_to_int(&buf[i+2], "%d;%d", &rows, &cols) == 2) {
                     return;
                 } else {
                     throw std::runtime_error("get_cursor_position(): result could not be parsed");
