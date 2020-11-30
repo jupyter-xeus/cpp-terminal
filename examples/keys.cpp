@@ -30,7 +30,7 @@ int main() {
                 s = (char)(key+'A'-ALT_KEY('a')); // Convert to upper case
                 s = "Alt+" + s;
             } else if (key > 0 && !iscntrl(key) && key < 128) {
-                s = key;
+                s = std::to_string(key);
             } else {
                 switch (key) {
                     case Key::BACKSPACE: s = "BACKSPACE"; break;

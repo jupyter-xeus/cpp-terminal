@@ -13,7 +13,6 @@
 
 #ifdef _WIN32
 #    include <conio.h>
-#    define _WINSOCKAPI_
 #    include <windows.h>
 #    include <io.h>
 #else
@@ -39,7 +38,7 @@
 #undef B57600
 #undef B115200
 #    include <unistd.h>
-#    include <errno.h>
+#    include <cerrno>
 #endif
 
 namespace Term {
@@ -53,21 +52,21 @@ class BaseTerminal {
 private:
 #ifdef _WIN32
     HANDLE hout;
-    DWORD dwOriginalOutMode;
+    DWORD dwOriginalOutMode{};
     bool out_console;
     UINT out_code_page;
 
     HANDLE hin;
-    DWORD dwOriginalInMode;
+    DWORD dwOriginalInMode{};
     UINT in_code_page;
 #else
-    struct termios orig_termios;
+    struct termios orig_termios{};
 #endif
     bool keyboard_enabled;
 
 public:
 #ifdef _WIN32
-    BaseTerminal(bool enable_keyboard=false, bool /*disable_ctrl_c*/ = true)
+    explicit BaseTerminal(bool enable_keyboard=false, bool /*disable_ctrl_c*/ = true)
         : keyboard_enabled{enable_keyboard}
     {
         // Uncomment this to silently disable raw mode for non-tty
@@ -110,7 +109,7 @@ public:
             }
         }
 #else
-    BaseTerminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
+    explicit BaseTerminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
         : keyboard_enabled{enable_keyboard}
     {
         // Uncomment this to silently disable raw mode for non-tty
@@ -224,7 +223,7 @@ public:
             return false;
         }
 #else
-        struct winsize ws;
+        struct winsize ws{};
         if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
             // This happens when we are not connected to a terminal
             return false;
@@ -237,7 +236,7 @@ public:
     }
 
     // Returns true if the standard input is attached to a terminal
-    bool is_stdin_a_tty() const
+    static bool is_stdin_a_tty()
     {
 #ifdef _WIN32
         return _isatty(_fileno(stdin));
@@ -247,12 +246,24 @@ public:
     }
 
     // Returns true if the standard output is attached to a terminal
-    bool is_stdout_a_tty() const
+    static bool is_stdout_a_tty()
     {
 #ifdef _WIN32
         return _isatty(_fileno(stdout));
 #else
         return isatty(STDOUT_FILENO);
+#endif
+    }
+    
+    // coverts a string into an integer
+    static int convert_string_to_int(const char *string, const char *format, int* rows, int* cols)
+    {
+#ifdef _WIN32
+        // windows provides it's own alternative to sscanf()
+        return sscanf_s(string, format, rows, cols);
+#else
+        // TODO move to a better way
+        return sscanf(string, format, rows, cols);
 #endif
     }
 };
