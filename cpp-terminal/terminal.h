@@ -1,5 +1,4 @@
-#ifndef TERMINAL_H
-#define TERMINAL_H
+#pragma once
 
 /* This file is all platform independent, it contains the logic to build
  * the features that users need in a terminal application.
@@ -849,5 +848,3 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
 }
 
 } // namespace Term
-
-#endif // TERMINAL_H
