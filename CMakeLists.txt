@@ -7,6 +7,10 @@ if (NOT CMAKE_CXX_STANDARD)
         CACHE STRING "C++ standard" FORCE)
 endif ()
 
+option(CPPTERMINAL_BUILD_EXAMPLES "Set to ON to build examples" ON)
+option(CPPTERMINAL_ENABLE_INSTALL "Set to ON to enable install" ON)
+option(CPPTERMINAL_ENABLE_TESING "Set to ON to enable testing" ON)
+
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 add_library(cpp-terminal INTERFACE)
@@ -25,18 +29,23 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
         DESTINATION lib/${PROJECT_NAME}/cmake )
 
 
-enable_testing()
+if (CPPTERMINAL_ENABLE_TESING)
+    enable_testing()
 
-add_subdirectory(examples)
+    add_executable(test_terminal test_terminal.cpp)
+    target_link_libraries(test_terminal cpp-terminal)
+    add_test(test_terminal ${PROJECT_BINARY_DIR}/test_terminal)
+endif()
 
-add_executable(test_terminal test_terminal.cpp)
-target_link_libraries(test_terminal cpp-terminal)
-add_test(test_terminal ${PROJECT_BINARY_DIR}/test_terminal)
+if (CPPTERMINAL_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
 
-
-install(TARGETS cpp-terminal
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    PUBLIC_HEADER DESTINATION include/cpp-terminal
-)
+if (CPPTERMINAL_ENABLE_INSTALL)
+    install(TARGETS cpp-terminal
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        PUBLIC_HEADER DESTINATION include/cpp-terminal
+    )
+endif()
