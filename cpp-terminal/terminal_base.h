@@ -235,39 +235,31 @@ public:
 #endif
     }
 
-    // Returns true if the standard input is attached to a terminal
-    static bool is_stdin_a_tty()
-    {
-#ifdef _WIN32
-        return _isatty(_fileno(stdin));
-#else
-        return isatty(STDIN_FILENO);
-#endif
-    }
 
-    // Returns true if the standard output is attached to a terminal
-    static bool is_stdout_a_tty()
-    {
+    // Returns true if the standard input is attached to a terminal
 #ifdef _WIN32
-        return _isatty(_fileno(stdout));
+        #define is_stdin_a_tty _isatty(_fileno(stdin))
 #else
-        return isatty(STDOUT_FILENO);
+        #define is_stdin_a_tty isatty(STDIN_FILENO)
 #endif
-    }
+
+#ifdef _WIN32
+        #define is_stdout_a_tty _isatty(_fileno(stdout)
+#else
+        #define is_stdout_a_tty isatty(STDOUT_FILENO)
+#endif
     
     // coverts a string into an integer
-    static int convert_string_to_int(const char *string, const char *format, int* rows, int* cols)
-    {
 #ifdef _WIN32
         // windows provides it's own alternative to sscanf()
-        return sscanf_s(string, format, rows, cols);
+        #define convert_string_to_int(string, format, rows, cols) sscanf_s(string, format, rows, cols)
 #else
         // TODO move to a better way
-        return sscanf(string, format, rows, cols);
+        #define convert_string_to_int(string, format, rows, cols) sscanf(string, format, rows, cols)
 #endif
-    }
 };
 
 } // namespace Term
 
-#endif // TERMINAL_BASE_H
+#endif 
+// TERMINAL_BASE_H

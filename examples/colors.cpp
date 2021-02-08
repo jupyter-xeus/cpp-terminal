@@ -9,9 +9,9 @@ using Term::style;
 int main() {
     try {
         Terminal term;
-        if (Term::Terminal::is_stdout_a_tty()) {
+        if (is_stdout_a_tty) {
             std::cout << "Standard output is attached to a terminal."
-                << std::endl;
+                      << std::endl;
         } else {
             std::cout << "Standard output is not attached to a terminal."
                 << std::endl;
