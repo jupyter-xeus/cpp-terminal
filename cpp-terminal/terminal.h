@@ -89,46 +89,25 @@ std::string color(T const value)
     return "\033[" + std::to_string(static_cast<int>(value)) + "m";
 }
 
-inline std::string cursor_off()
-{
-    return "\x1b[?25l";
-}
+#define cursor_off "\x1b[?25l"
 
-inline std::string cursor_on()
-{
-    return "\x1b[?25h";
-}
+#define cursor_on "\x1b[?25h"
 
 // If an attempt is made to move the cursor out of the window, the result is
 // undefined.
-inline std::string move_cursor(size_t row, size_t col)
-{
-    return "\x1b[" + std::to_string(row) + ";" + std::to_string(col) + "H";
-}
+#define move_cursor(row,col) "\x1b[" + std::to_string(row) + ";" + std::to_string(col) + "H"
 
 // If an attempt is made to move the cursor to the right of the right margin,
 // the cursor stops at the right margin.
-inline std::string move_cursor_right(int col)
-{
-    return "\x1b[" + std::to_string(col) + "C";
-}
+#define move_cursor_right(col) "\x1b[" + std::to_string(col) + "C"
 
 // If an attempt is made to move the cursor below the bottom margin, the cursor
 // stops at the bottom margin.
-inline std::string move_cursor_down(int row)
-{
-    return "\x1b[" + std::to_string(row) + "B";
-}
+#define move_cursor_down(row) "\x1b[" + std::to_string(row) + "B"
 
-inline std::string cursor_position_report()
-{
-    return "\x1b[6n";
-}
+#define cursor_position_report "\x1b[6n"
 
-inline std::string erase_to_eol()
-{
-    return "\x1b[K";
-}
+#define erase_to_eol "\x1b[K"
 
 enum Key {
     BACKSPACE = 1000,
@@ -385,7 +364,7 @@ public:
     {
         char buf[32];
         unsigned int i = 0;
-        write(cursor_position_report());
+        write(cursor_position_report);
         while (i < sizeof(buf) - 1) {
             while (!read_raw(&buf[i])) {
             };
@@ -421,14 +400,13 @@ public:
             explicit CursorOff(const Terminal& term)
                 : term{ term }
             {
-                Term::Terminal::write(cursor_off());
+                Term::Terminal::write(cursor_off);
             }
             ~CursorOff()
             {
-                Term::Terminal::write(cursor_on());
+                Term::Terminal::write(cursor_on);
             }
         };
-        CursorOff cursor_off(*this);
         int old_row, old_col;
         get_cursor_position(old_row, old_col);
         write(move_cursor_right(999) + move_cursor_down(999));
@@ -678,7 +656,7 @@ public:
 
     std::string render() {
         std::string out;
-        out.append(cursor_off());
+        out.append(cursor_off);
         fg current_fg = fg::reset;
         bg current_bg = bg::reset;
         style current_style = style::reset;
@@ -718,7 +696,7 @@ public:
         if (current_fg != fg::reset) out.append(color(fg::reset));
         if (current_bg != bg::reset) out.append(color(bg::reset));
         if (current_style != style::reset) out.append(color(style::reset));
-        out.append(cursor_on());
+        out.append(cursor_on);
         return out;
     }
 };
@@ -736,7 +714,7 @@ struct Model
 inline std::string render(const Model &m, int prompt_row, int term_cols)
 {
     std::string out;
-    out = cursor_off();
+    out = cursor_off;
     out += move_cursor(prompt_row, 1) + m.prompt_string + m.input;
     size_t last_col = m.prompt_string.size() + m.input.size();
     for (size_t i=0; i < term_cols-last_col; i++) {
@@ -744,7 +722,7 @@ inline std::string render(const Model &m, int prompt_row, int term_cols)
     }
     out.append(move_cursor(prompt_row+m.cursor_row-1,
         m.prompt_string.size() + m.cursor_col));
-    out.append(cursor_on());
+    out.append(cursor_on);
     return out;
 }
 

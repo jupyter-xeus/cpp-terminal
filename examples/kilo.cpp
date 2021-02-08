@@ -19,10 +19,6 @@
 #define KILO_QUIT_TIMES 3
 
 using Term::Terminal;
-using Term::cursor_on;
-using Term::cursor_off;
-using Term::move_cursor;
-using Term::erase_to_eol;
 using Term::color;
 using Term::fg;
 using Term::style;
@@ -654,7 +650,7 @@ void editorDrawRows(std::string &ab) {
       ab.append(color(fg::reset));
     }
 
-    ab.append(erase_to_eol());
+    ab.append(erase_to_eol);
     ab.append("\r\n");
   }
 }
@@ -683,7 +679,7 @@ void editorDrawStatusBar(std::string &ab) {
 }
 
 void editorDrawMessageBar(std::string &ab) {
-  ab.append(erase_to_eol());
+  ab.append(erase_to_eol);
   int msglen = strlen(E.statusmsg);
   if (msglen > E.screencols) msglen = E.screencols;
   if (msglen && time(nullptr) - E.statusmsg_time < 5)
@@ -696,7 +692,7 @@ void editorRefreshScreen(const Terminal &term) {
   std::string ab;
   ab.reserve(16*1024);
 
-  ab.append(cursor_off());
+  ab.append(cursor_off);
   ab.append(move_cursor(1, 1));
 
   editorDrawRows(ab);
@@ -705,7 +701,7 @@ void editorRefreshScreen(const Terminal &term) {
 
   ab.append(move_cursor((E.cy - E.rowoff) + 1, (E.rx - E.coloff) + 1));
 
-  ab.append(cursor_on());
+  ab.append(cursor_on);
 
   Term::Terminal::write(ab);
 }

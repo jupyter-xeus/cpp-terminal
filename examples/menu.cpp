@@ -1,9 +1,6 @@
 #include <cpp-terminal/terminal.h>
 
 using Term::Terminal;
-using Term::cursor_on;
-using Term::cursor_off;
-using Term::move_cursor;
 using Term::color;
 using Term::fg;
 using Term::bg;
@@ -15,7 +12,7 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
     std::string scr;
     scr.reserve(16*1024);
 
-    scr.append(cursor_off());
+    scr.append(cursor_off);
     scr.append(move_cursor(1, 1));
 
     int menux0 = (cols - menuwidth) / 2;
@@ -73,7 +70,7 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
     scr.append("Menu width: " + std::to_string(menuwidth) + "       \n");
     scr.append("Menu height: " + std::to_string(menuheight) + "    \n");
 
-    scr.append(cursor_on());
+    scr.append(cursor_on);
 
     std::cout << scr << std::flush;
 }
