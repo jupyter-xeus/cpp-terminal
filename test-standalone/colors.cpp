@@ -1,15 +1,13 @@
 #include <cpp-terminal/terminal.h>
 
 using Term::Terminal;
-using Term::color;
 using Term::fg;
 using Term::bg;
 using Term::style;
 
 int main() {
     try {
-        Terminal term;
-        if (term.is_stdout_a_tty()) {
+        if (is_stdout_a_tty) {
             std::cout << "Standard output is attached to a terminal."
                 << std::endl;
         } else {
