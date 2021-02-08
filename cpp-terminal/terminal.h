@@ -450,7 +450,7 @@ inline std::u32string utf8_to_utf32(const std::string &s)
         if (state == UTF8_ACCEPT) {
             r.push_back(codepoint);
         }
-        if (state == UTF8_REJECT) {
+        else if (state == UTF8_REJECT) {
             throw std::runtime_error("Invalid byte in UTF8 encoded string");
         }
     }
