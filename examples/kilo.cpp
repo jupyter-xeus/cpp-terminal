@@ -690,7 +690,7 @@ void editorDrawMessageBar(std::string &ab) {
     ab.append(std::string(E.statusmsg, msglen));
 }
 
-void editorRefreshScreen(const Terminal &term) {
+void editorRefreshScreen(const Terminal) {
   editorScroll();
 
   std::string ab;
