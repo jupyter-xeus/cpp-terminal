@@ -21,6 +21,20 @@
 #include <thread>
 #define CTRL_KEY(k) (char)(((unsigned char)(k) & 0x1f))
 #define ALT_KEY(k) (char)(((unsigned char)(k) + 0x80))
+
+#define cursor_off "\x1b[?25l"
+#define cursor_on "\x1b[?25h"
+// If an attempt is made to move the cursor out of the window, the result is
+// undefined.
+#define move_cursor(row,col) "\x1b[" + std::to_string(row) + ";" + std::to_string(col) + "H"
+// If an attempt is made to move the cursor to the right of the right margin,
+// the cursor stops at the right margin.
+#define move_cursor_right(col) "\x1b[" + std::to_string(col) + "C"
+// If an attempt is made to move the cursor below the bottom margin, the cursor
+// stops at the bottom margin.
+#define move_cursor_down(row) "\x1b[" + std::to_string(row) + "B"
+#define cursor_position_report "\x1b[6n"
+#define erase_to_eol "\x1b[K"
 #define color(value) std::string("\033[") + std::to_string((int)value) + "m"
 
 namespace Term {
@@ -83,27 +97,6 @@ enum class bgB {
     cyan = 106,
     gray = 107
 };
-
-
-#define cursor_off "\x1b[?25l"
-
-#define cursor_on "\x1b[?25h"
-
-// If an attempt is made to move the cursor out of the window, the result is
-// undefined.
-#define move_cursor(row,col) "\x1b[" + std::to_string(row) + ";" + std::to_string(col) + "H"
-
-// If an attempt is made to move the cursor to the right of the right margin,
-// the cursor stops at the right margin.
-#define move_cursor_right(col) "\x1b[" + std::to_string(col) + "C"
-
-// If an attempt is made to move the cursor below the bottom margin, the cursor
-// stops at the bottom margin.
-#define move_cursor_down(row) "\x1b[" + std::to_string(row) + "B"
-
-#define cursor_position_report "\x1b[6n"
-
-#define erase_to_eol "\x1b[K"
 
 enum Key {
     BACKSPACE = 1000,
