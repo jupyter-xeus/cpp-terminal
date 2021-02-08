@@ -41,6 +41,28 @@
 #    include <cerrno>
 #endif
 
+// Returns true if the standard input is attached to a terminal
+#ifdef _WIN32
+        #define is_stdin_a_tty _isatty(_fileno(stdin))
+#else
+        #define is_stdin_a_tty isatty(STDIN_FILENO)
+#endif
+// Returns true if the standard output is attached to a terminal
+#ifdef _WIN32
+        #define is_stdout_a_tty _isatty(_fileno(stdout)
+#else
+        #define is_stdout_a_tty isatty(STDOUT_FILENO)
+#endif
+    
+// coverts a string into an integer
+#ifdef _WIN32
+        // windows provides it's own alternative to sscanf()
+        #define convert_string_to_int(string, format, rows, cols) sscanf_s(string, format, rows, cols)
+#else
+        // TODO move to a better way
+        #define convert_string_to_int(string, format, rows, cols) sscanf(string, format, rows, cols)
+#endif
+
 namespace Term {
 
 /* Note: the code that uses Terminal must be inside try/catch block, otherwise
@@ -234,31 +256,7 @@ public:
         }
 #endif
     }
-
-
-    // Returns true if the standard input is attached to a terminal
-#ifdef _WIN32
-        #define is_stdin_a_tty _isatty(_fileno(stdin))
-#else
-        #define is_stdin_a_tty isatty(STDIN_FILENO)
-#endif
-
-#ifdef _WIN32
-        #define is_stdout_a_tty _isatty(_fileno(stdout)
-#else
-        #define is_stdout_a_tty isatty(STDOUT_FILENO)
-#endif
-    
-    // coverts a string into an integer
-#ifdef _WIN32
-        // windows provides it's own alternative to sscanf()
-        #define convert_string_to_int(string, format, rows, cols) sscanf_s(string, format, rows, cols)
-#else
-        // TODO move to a better way
-        #define convert_string_to_int(string, format, rows, cols) sscanf(string, format, rows, cols)
-#endif
 };
-
 } // namespace Term
 
 #endif 
