@@ -36,6 +36,12 @@
 #define cursor_position_report "\x1b[6n"
 #define erase_to_eol "\x1b[K"
 #define color(value) std::string("\033[") + std::to_string((int)value) + "m"
+#define restore_screen_code "\033[?1049l"
+#define save_screen_code "\033[?1049h"
+#define restore_cursor_pos "\033" "8"
+#define save_cursor_pos "\033" "7"
+#define ansi_esc '\x1b'
+#define ansi_carriagereturn '\x0d'
 
 namespace Term {
 
@@ -147,8 +153,8 @@ public:
     void restore_screen()
     {
         if (restore_screen_) {
-            std::cout << "\033[?1049l" // restore screen
-                      << "\033" "8" // restore current cursor position
+            std::cout << restore_screen_code
+                      << restore_cursor_pos
                       << std::flush;
             restore_screen_ = false;
         }
@@ -157,8 +163,8 @@ public:
     void save_screen()
     {
         restore_screen_ = true;
-        std::cout << "\033" "7" // save current cursor position
-                  << "\033[?1049h" // save screen
+        std::cout << save_cursor_pos
+                  << save_screen_code
                   << std::flush;
     }
 
@@ -182,7 +188,7 @@ public:
         if (!read_raw(&c))
             return 0;
 
-        if (c == '\x1b') {
+        if (c == ansi_esc) {
             char seq[4];
 
             if (!read_raw(&seq[0]))
@@ -192,7 +198,7 @@ public:
                     // gnome-term, Windows Console
                     return ALT_KEY(seq[0]);
                 }
-                if (seq[0] == '\x0d') {
+                if (seq[0] == ansi_carriagereturn) {
                     // gnome-term
                     return Key::ALT_ENTER;
                 }
