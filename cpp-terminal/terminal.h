@@ -158,8 +158,9 @@ public:
     void restore_screen()
     {
         if (restore_screen_) {
-            write("\033[?1049l"); // restore screen
-            write("\033" "8");    // restore current cursor position
+            std::cout << "\033[?1049l" // restore screen
+                      << "\033" "8" // restore current cursor position
+                      << std::flush;
             restore_screen_ = false;
         }
     }
@@ -167,13 +168,9 @@ public:
     void save_screen()
     {
         restore_screen_ = true;
-        write("\033" "7");    // save current cursor position
-        write("\033[?1049h"); // save screen
-    }
-
-    static inline void write(const std::string& s)
-    {
-        std::cout << s << std::flush;
+        std::cout << "\033" "7" // save current cursor position
+                  << "\033[?1049h" // save screen
+                  << std::flush;
     }
 
     // Waits for a key press, translates escape codes
@@ -364,7 +361,8 @@ public:
     {
         char buf[32];
         unsigned int i = 0;
-        write(cursor_position_report);
+        std::cout << cursor_position_report
+                  << std::endl;
         while (i < sizeof(buf) - 1) {
             while (!read_raw(&buf[i])) {
             };
@@ -392,8 +390,6 @@ public:
         throw std::runtime_error("get_cursor_position(): result not found in the response");
     }
 };
-
-
 
 /*----------------------------------------------------------------------------*/
 

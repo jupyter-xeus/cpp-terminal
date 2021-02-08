@@ -703,7 +703,7 @@ void editorRefreshScreen(const Terminal &term) {
 
   ab.append(cursor_on);
 
-  Term::Terminal::write(ab);
+  std::cout << ab << std::flush;
 }
 
 /*** input ***/
