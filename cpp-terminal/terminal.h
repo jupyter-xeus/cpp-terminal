@@ -19,8 +19,8 @@
 #include <string>
 #include <vector>
 #include <thread>
-#define CTRL_KEY(k) (char)(((unsigned char)(k) & 0x1f))
-#define ALT_KEY(k) (char)(((unsigned char)(k) + 0x80))
+#define CTRL_KEY(k) (char)((unsigned char)(k) & 0x1f)
+#define ALT_KEY(k) (char)((unsigned char)(k) + 0x80)
 
 #define cursor_off "\x1b[?25l"
 #define cursor_on "\x1b[?25h"
