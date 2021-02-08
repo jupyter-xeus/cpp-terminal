@@ -130,6 +130,7 @@ public:
                 throw std::runtime_error("SetConsoleMode() failed");
             }
         }
+    }
 #else
     explicit BaseTerminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
         : keyboard_enabled{enable_keyboard}
