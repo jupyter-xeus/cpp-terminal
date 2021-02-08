@@ -21,6 +21,7 @@
 #include <thread>
 #define CTRL_KEY(k) (char)(((unsigned char)(k) & 0x1f))
 #define ALT_KEY(k) (char)(((unsigned char)(k) + 0x80))
+#define color(value) std::string("\033[") + std::to_string((int)value) + "m"
 
 namespace Term {
 
@@ -83,11 +84,6 @@ enum class bgB {
     gray = 107
 };
 
-template <typename T>
-std::string color(T const value)
-{
-    return "\033[" + std::to_string(static_cast<int>(value)) + "m";
-}
 
 #define cursor_off "\x1b[?25l"
 

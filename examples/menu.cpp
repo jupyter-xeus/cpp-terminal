@@ -1,7 +1,6 @@
 #include <cpp-terminal/terminal.h>
 
 using Term::Terminal;
-using Term::color;
 using Term::fg;
 using Term::bg;
 using Term::style;

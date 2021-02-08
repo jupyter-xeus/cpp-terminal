@@ -1,7 +1,6 @@
 #include <cpp-terminal/terminal.h>
 
 using Term::Terminal;
-using Term::color;
 using Term::fg;
 using Term::bg;
 using Term::style;
@@ -17,7 +16,7 @@ int main() {
                 << std::endl;
         }
         std::string text = "Some text with "
-            + color(fg::red) + color(bg::green) + "red on green"
+            + color(fg::red) + color(bg::green) + std::string("red on green")
             + color(bg::reset) + color(fg::reset) + " and some "
             + color(style::bold) + "bold text" + color(style::reset) + ".\n";
         text += "Unicode works too: originally written by Ondřej Čertík.";

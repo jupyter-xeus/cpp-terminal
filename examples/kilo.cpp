@@ -19,7 +19,6 @@
 #define KILO_QUIT_TIMES 3
 
 using Term::Terminal;
-using Term::color;
 using Term::fg;
 using Term::style;
 using Term::Key;
@@ -642,7 +641,7 @@ void editorDrawRows(std::string &ab) {
           fg color = editorSyntaxToColor(hl[j]);
           if (color != current_color) {
             current_color = color;
-            ab.append(::color(color));
+            ab.append(color(color));
           }
           ab.append(std::string(&c[j], 1));
         }
