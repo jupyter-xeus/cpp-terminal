@@ -179,8 +179,8 @@ public:
     void restore_screen()
     {
         if (restore_screen_) {
-            write("\033[?1049l"); // restore screen
-            write("\033" "8");    // restore current cursor position
+            std::cout << "\033[?1049l" << std::flush; // restore screen
+            std::cout << "\033" "8" << std::flush; // restore current cursor position
             restore_screen_ = false;
         }
     }
@@ -188,13 +188,8 @@ public:
     void save_screen()
     {
         restore_screen_ = true;
-        write("\033" "7");    // save current cursor position
-        write("\033[?1049h"); // save screen
-    }
-
-    static inline void write(const std::string& s)
-    {
-        std::cout << s << std::flush;
+        std::cout << "\033" "7" << std::flush; // save current cursor position
+        std::cout << "\033[?1049h" << std::flush; // save screen
     }
 
     // Waits for a key press, translates escape codes
@@ -385,7 +380,7 @@ public:
     {
         char buf[32];
         unsigned int i = 0;
-        write(cursor_position_report());
+        std::cout << cursor_position_report() << std::flush;
         while (i < sizeof(buf) - 1) {
             while (!read_raw(&buf[i])) {
             };
@@ -421,19 +416,19 @@ public:
             explicit CursorOff(const Terminal& term)
                 : term{ term }
             {
-                Term::Terminal::write(cursor_off());
+                std::cout << cursor_off() << std::flush;
             }
             ~CursorOff()
             {
-                Term::Terminal::write(cursor_on());
+                std::cout << cursor_on() << std::flush;
             }
         };
         CursorOff cursor_off(*this);
         int old_row{}, old_col{};
         get_cursor_position(old_row, old_col);
-        write(move_cursor_right(999) + move_cursor_down(999));
+        std::cout << move_cursor_right(999) + move_cursor_down(999) << std::flush;
         get_cursor_position(rows, cols);
-        write(move_cursor(old_row, old_col));
+        std::cout << move_cursor(old_row, old_col) << std::flush;
     }
 };
 
