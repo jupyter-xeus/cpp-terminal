@@ -754,9 +754,9 @@ static std::vector<std::string> PROMPT_HISTORY;
 inline std::string prompt(const Terminal &term, const std::string &prompt_string,
         std::vector<std::string> &history = PROMPT_HISTORY)
 {
-    int row, col;
+    int row{}, col{};
     term.get_cursor_position(row, col);
-    int rows, cols;
+    int rows{}, cols{};
     term.get_term_size(rows, cols);
 
     Model m;
