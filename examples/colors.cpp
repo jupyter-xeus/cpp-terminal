@@ -1,5 +1,5 @@
 #include <cpp-terminal/terminal.h>
-#include <cpp-terminal/info.h>
+#include <cpp-terminal/version.h>
 
 using Term::Terminal;
 using Term::color;

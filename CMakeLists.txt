@@ -10,7 +10,7 @@ if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 11
         CACHE STRING "C++ standard" FORCE)
 endif ()
-configure_file(cpp-terminal/info.h.in cpp-terminal/info.h)
+configure_file(cpp-terminal/version.h.in cpp-terminal/version.h)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
