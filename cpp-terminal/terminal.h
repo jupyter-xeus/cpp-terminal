@@ -381,34 +381,32 @@ public:
         }
     }
 
-    void get_cursor_position(int& rows, int& cols) const
+void get_cursor_position(int& rows, int& cols) const
     {
         char buf[32];
-        unsigned int i = 0;
-        write(cursor_position_report());
-        while (i < sizeof(buf) - 1) {
-            while (!read_raw(&buf[i])) {
-            };
+        std::cout << cursor_position_report
+                  << std::endl;
+        for (unsigned int i = 0; i < sizeof(buf) -1; i++) {
+            while (!read_raw(&buf[i]));
             if (buf[i] == 'R')
+            {
+                if (i < 5)
+                    throw std::runtime_error("get_cursor_position(): too short response");
+                else
+                    buf[i] = '\0';
                 break;
-            i++;
-        }
-        buf[i] = '\0';
-        if (i < 5) {
-            throw std::runtime_error("get_cursor_position(): too short response");
+            }
         }
         // Find the result in the response, drop the rest:
-        i = 0;
-        while (i < sizeof(buf) - 1 - 5) {
+        for (unsigned int i = 0; i < sizeof(buf) - 6; i++) {
             if (buf[i] == '\x1b' && buf[i+1] == '[') {
-                if (convert_string_to_int(&buf[i+2], "%d;%d", &rows, &cols) == 2) {
-                    return;
-                } else {
+                if (convert_string_to_int(&buf[i+2], "%d;%d", &rows, &cols) != 2) {
                     throw std::runtime_error("get_cursor_position(): result could not be parsed");
                 }
+                return;
             }
-            if (buf[i] == '\0') break;
-            i++;
+            if (buf[i] == '\0') 
+                break;
         }
         throw std::runtime_error("get_cursor_position(): result not found in the response");
     }
