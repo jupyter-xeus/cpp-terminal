@@ -4,6 +4,7 @@
 
 using Term::Terminal;
 using Term::prompt;
+using Term::ctrl_key;
 
 
 int main() {
@@ -21,7 +22,7 @@ int main() {
         std::vector<std::string> history;
         while (true) {
             std::string answer = prompt(term, "> ", history);
-            if (answer.size() == 1 && answer[0] == CTRL_KEY('d')) break;
+            if (answer.size() == 1 && answer[0] == ctrl_key('d')) break;
             std::cout << "Submitted text: " << answer << std::endl;
         }
     } catch(const std::runtime_error& re) {

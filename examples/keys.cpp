@@ -4,6 +4,8 @@
 #include <cpp-terminal/terminal.h>
 
 using Term::Terminal;
+using Term::alt_key;
+using Term::ctrl_key;
 using Term::Key;
 
 int main() {
@@ -23,11 +25,11 @@ int main() {
             } else if (key >= 'A' && key <= 'Z') {
                 s = (char)key; // Already in upper case
                 s = "Shift+" + s;
-            } else if (key >= CTRL_KEY('a') && key <= CTRL_KEY('z')) {
-                s = (char)(key+'A'-CTRL_KEY('a')); // Convert to upper case
+            } else if (key >= ctrl_key('a') && key <= ctrl_key('z')) {
+                s = (char)(key+'A'-ctrl_key('a')); // Convert to upper case
                 s = "Ctrl+" + s;
-            } else if (key >= ALT_KEY('a') && key <= ALT_KEY('z')) {
-                s = (char)(key+'A'-ALT_KEY('a')); // Convert to upper case
+            } else if (key >= alt_key('a') && key <= alt_key('z')) {
+                s = (char)(key+'A'-ctrl_key('a')); // Convert to upper case
                 s = "Alt+" + s;
             } else if (key > 0 && !iscntrl(key) && key < 128) {
                 s = std::to_string(key);
