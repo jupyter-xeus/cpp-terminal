@@ -1,4 +1,5 @@
 #include <cpp-terminal/terminal.h>
+#include <cpp-terminal/version.h>
 
 using Term::Terminal;
 using Term::color;
@@ -7,6 +8,9 @@ using Term::bg;
 using Term::style;
 
 int main() {
+    std::cout << "Running cpp-terminal version: " 
+                << CPP_TERMINAL_VERSION_COMPLETE
+                << std::endl;
     try {
         Terminal term;
         if (Term::Terminal::is_stdout_a_tty()) {
