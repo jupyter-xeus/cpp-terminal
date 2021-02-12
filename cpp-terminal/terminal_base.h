@@ -62,7 +62,7 @@ private:
 #else
     struct termios orig_termios{};
 #endif
-    bool keyboard_enabled;
+    bool keyboard_enabled{};
 
 public:
 #ifdef _WIN32
