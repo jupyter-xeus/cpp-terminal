@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
-project(cpp-terminal CXX)
+project(cpp-terminal 
+        VERSION 1.0.0
+        DESCRIPTION "Small header only C++ library for writing multiplatform terminal applications"
+        HOMEPAGE_URL "https://github.com/jupyter-xeus/cpp-terminal"
+        LANGUAGES CXX)
 
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 11
