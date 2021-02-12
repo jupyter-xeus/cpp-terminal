@@ -385,7 +385,7 @@ void get_cursor_position(int& rows, int& cols) const
     {
         char buf[32];
         std::cout << cursor_position_report
-                  << std::endl;
+                  << std::flush;
         for (unsigned int i = 0; i < sizeof(buf) -1; i++) {
             while (!read_raw(&buf[i]));
             if (buf[i] == 'R')
