@@ -798,7 +798,7 @@ bool editorProcessKeypress(const Terminal &term) {
 
   if (c == Key::ENTER)
     editorInsertNewline();
-  else if (c = ctrl_key('q')) {
+  else if (c == ctrl_key('q')) {
     if (E.dirty && quit_times > 0) {
         editorSetStatusMessage("WARNING!!! File has unsaved changes. "
           "Press Ctrl-Q %d more times to quit.", quit_times);
@@ -852,7 +852,7 @@ bool editorProcessKeypress(const Terminal &term) {
   else if (c == Key::ARROW_UP ||
       c == Key::ARROW_DOWN ||
       c == Key::ARROW_LEFT ||
-       Key::ARROW_RIGHT) {
+      c == Key::ARROW_RIGHT) {
     editorMoveCursor(c);
   }
   else if (c == Key::TAB)
