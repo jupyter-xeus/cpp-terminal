@@ -19,8 +19,6 @@
 #include <string>
 #include <vector>
 #include <thread>
-#define CTRL_KEY(k) (char)(((unsigned char)(k) & 0x1f))
-#define ALT_KEY(k) (char)(((unsigned char)(k) + 0x80))
 
 namespace Term {
 
@@ -97,6 +95,16 @@ inline std::string cursor_off()
 inline std::string cursor_on()
 {
     return "\x1b[?25h";
+}
+
+inline char ctrl_key(unsigned char k)
+{
+    return k & 0x1f;
+}
+
+inline char alt_key(unsigned char k)
+{
+    return k + 0x80;
 }
 
 // If an attempt is made to move the cursor out of the window, the result is
@@ -225,7 +233,7 @@ public:
             if (!read_raw(&seq[1])) {
                 if (seq[0] >= 'a' && seq[0] <= 'z') {
                     // gnome-term, Windows Console
-                    return ALT_KEY(seq[0]);
+                    return alt_key(seq[0]);
                 }
                 if (seq[0] == '\x0d') {
                     // gnome-term
@@ -362,7 +370,7 @@ public:
                 } else {
                     if (c >= '\xa1' && c <= '\xba') {
                         // xterm
-                        return ALT_KEY(c+'a'-'\xa1');
+                        return alt_key(c+'a'-'\xa1');
                     }
                     return -9;
                 }
@@ -781,12 +789,12 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
             std::string after = m.input.substr(m.cursor_col-1);
             m.input = before + newchar + after;
             m.cursor_col++;
-        } else if (key == CTRL_KEY('d')) {
+        } else if (key == ctrl_key('d')) {
             if (m.input.size() == 0) {
-                m.input.push_back(CTRL_KEY('d'));
+                m.input.push_back(ctrl_key('d'));
                 break;
             }
-        } else if (key == CTRL_KEY('c') || key == CTRL_KEY('u')) {
+        } else if (key == ctrl_key('c') || key == ctrl_key('u')) {
             // Discard any input
             m.input = std::string(1, key);
             break;
