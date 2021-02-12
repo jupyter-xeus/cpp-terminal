@@ -89,6 +89,11 @@ std::string color(T const value)
     return "\033[" + std::to_string(static_cast<int>(value)) + "m";
 }
 
+inline void write(const std::string& s)
+{
+    std::cout << s << std::flush;
+}
+
 inline std::string cursor_off()
 {
     return "\x1b[?25l";
@@ -190,11 +195,6 @@ public:
         restore_screen_ = true;
         write("\033" "7");    // save current cursor position
         write("\033[?1049h"); // save screen
-    }
-
-    static inline void write(const std::string& s)
-    {
-        std::cout << s << std::flush;
     }
 
     // Waits for a key press, translates escape codes
@@ -421,11 +421,11 @@ public:
             explicit CursorOff(const Terminal& term)
                 : term{ term }
             {
-                Term::Terminal::write(cursor_off());
+                write(cursor_off());
             }
             ~CursorOff()
             {
-                Term::Terminal::write(cursor_on());
+                write(cursor_on());
             }
         };
         CursorOff cursor_off(*this);
@@ -771,7 +771,7 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
     hist.push_back(m.input); // Push back empty input
 
     int key{};
-    std::cout << render(m, row, cols) << std::flush;
+    write(render(m, row, cols));
     while ((key = term.read_key()) != Key::ENTER) {
         if (  (key >= 'a' && key <= 'z') ||
               (key >= 'A' && key <= 'Z') ||
@@ -841,9 +841,9 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
                     break;
             }
         }
-        std::cout << render(m, row, cols) << std::flush;
+        write(render(m, row, cols));
     }
-    std::cout << "\n" << std::flush;
+    write("\n");
     history.push_back(m.input);
     return m.input;
 }
