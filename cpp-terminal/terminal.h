@@ -200,7 +200,7 @@ public:
     // Waits for a key press, translates escape codes
     int read_key() const
     {
-        int key;
+        int key{};
         while ((key = read_key0()) == 0)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -213,7 +213,7 @@ public:
     // negative number.
     int read_key0() const
     {
-        char c;
+        char c{};
         if (!read_raw(&c))
             return 0;
 
@@ -429,7 +429,7 @@ public:
             }
         };
         CursorOff cursor_off(*this);
-        int old_row, old_col;
+        int old_row{}, old_col{};
         get_cursor_position(old_row, old_col);
         write(move_cursor_right(999) + move_cursor_down(999));
         get_cursor_position(rows, cols);
@@ -504,9 +504,9 @@ inline void codepoint_to_utf8(std::string &s, char32_t c) {
 // Converts an UTF8 string to UTF32.
 inline std::u32string utf8_to_utf32(const std::string &s)
 {
-    uint32_t codepoint;
+    uint32_t codepoint{};
     uint8_t state=UTF8_ACCEPT;
-    std::u32string r;
+    std::u32string r{};
     for (char i : s) {
         state = utf8_decode_step(state, i, &codepoint);
         if (state == UTF8_ACCEPT) {
@@ -770,7 +770,7 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
     size_t history_pos = hist.size();
     hist.push_back(m.input); // Push back empty input
 
-    int key;
+    int key{};
     std::cout << render(m, row, cols) << std::flush;
     while ((key = term.read_key()) != Key::ENTER) {
         if (  (key >= 'a' && key <= 'z') ||

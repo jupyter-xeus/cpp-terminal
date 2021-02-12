@@ -276,8 +276,7 @@ void editorSelectSyntaxHighlight() {
 
 int editorRowCxToRx(erow *row, int cx) {
   int rx = 0;
-  int j;
-  for (j = 0; j < cx; j++) {
+  for (int j = 0; j < cx; j++) {
     if (row->chars[j] == '\t')
       rx += (KILO_TAB_STOP - 1) - (rx % KILO_TAB_STOP);
     rx++;
@@ -287,7 +286,7 @@ int editorRowCxToRx(erow *row, int cx) {
 
 int editorRowRxToCx(erow *row, int rx) {
   int cur_rx = 0;
-  int cx;
+  int cx{};
   for (cx = 0; cx < row->size; cx++) {
     if (row->chars[cx] == '\t')
       cur_rx += (KILO_TAB_STOP - 1) - (cur_rx % KILO_TAB_STOP);
@@ -300,15 +299,14 @@ int editorRowRxToCx(erow *row, int rx) {
 
 void editorUpdateRow(erow *row) {
   int tabs = 0;
-  int j;
-  for (j = 0; j < row->size; j++)
+  for (int j = 0; j < row->size; j++)
     if (row->chars[j] == '\t') tabs++;
 
   free(row->render);
   row->render = (char*)malloc(row->size + tabs*(KILO_TAB_STOP - 1) + 1);
 
   int idx = 0;
-  for (j = 0; j < row->size; j++) {
+  for (int j = 0; j < row->size; j++) {
     if (row->chars[j] == '\t') {
       row->render[idx++] = ' ';
       while (idx % KILO_TAB_STOP != 0) row->render[idx++] = ' ';
@@ -433,14 +431,13 @@ void editorDelChar() {
 
 char *editorRowsToString(int *buflen) {
   int totlen = 0;
-  int j;
-  for (j = 0; j < E.numrows; j++)
+  for (int j = 0; j < E.numrows; j++)
     totlen += E.row[j].size + 1;
   *buflen = totlen;
 
   char *buf = (char*)malloc(totlen);
   char *p = buf;
-  for (j = 0; j < E.numrows; j++) {
+  for (int j = 0; j < E.numrows; j++) {
     memcpy(p, E.row[j].chars, E.row[j].size);
     p += E.row[j].size;
     *p = '\n';
@@ -535,8 +532,7 @@ void editorFindCallback(char *query, int key) {
 
   if (last_match == -1) direction = 1;
   int current = last_match;
-  int i;
-  for (i = 0; i < E.numrows; i++) {
+  for (int i = 0; i < E.numrows; i++) {
     current += direction;
     if (current == -1) current = E.numrows - 1;
     else if (current == E.numrows) current = 0;
@@ -600,8 +596,7 @@ void editorScroll() {
 }
 
 void editorDrawRows(std::string &ab) {
-  int y;
-  for (y = 0; y < E.screenrows; y++) {
+  for (int y = 0; y < E.screenrows; y++) {
     int filerow = y + E.rowoff;
     if (filerow >= E.numrows) {
       if (E.numrows == 0 && y == E.screenrows / 3) {
