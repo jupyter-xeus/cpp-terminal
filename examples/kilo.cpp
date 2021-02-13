@@ -641,7 +641,7 @@ void editorDrawRows(std::string &ab) {
           fg color = editorSyntaxToColor(hl[j]);
           if (color != current_color) {
             current_color = color;
-            ab.append(::color(color));
+            ab.append(Term::color(color));
           }
           ab.append(std::string(&c[j], 1));
         }
