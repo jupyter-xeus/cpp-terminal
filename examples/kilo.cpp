@@ -702,7 +702,7 @@ void editorRefreshScreen(const Terminal) {
 
   ab.append(cursor_on());
 
-  Term::Terminal::write(ab);
+  Term::write(ab);
 }
 
 /*** input ***/
