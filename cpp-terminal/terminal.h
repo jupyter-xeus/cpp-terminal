@@ -89,6 +89,14 @@ std::string color(T const value)
     return "\033[" + std::to_string(static_cast<int>(value)) + "m";
 }
 
+std::string color24(unsigned int red, unsigned int green, unsigned int blue, bool fg)
+{
+    if (fg)
+        return "\033[38;2;" + std::to_string(red) + ';' + std::to_string(green) + ';' + std::to_string(blue) + 'm';
+    else
+        return "\033[48;2;" + std::to_string(red) + ';' + std::to_string(green) + ';' + std::to_string(blue) + 'm';
+}
+
 inline void write(const std::string& s)
 {
     std::cout << s << std::flush;
