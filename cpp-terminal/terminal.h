@@ -724,15 +724,17 @@ class Window_24bit
                     bool update_style = false;
                     if (current_fg_reset != get_fg_reset(i, j)) {
                         current_fg_reset = get_fg_reset(i, j);
-                        if (current_fg_reset)
+                        if (current_fg_reset) {
                             update_fg_reset = true;
                             current_fg = {256, 256, 256};
+                        }
                     }
                     if (current_bg_reset != get_bg_reset(i, j)) {
                         current_bg_reset = get_bg_reset(i, j);
-                        if (current_bg_reset)
+                        if (current_bg_reset) {
                             update_bg_reset = true;
                             current_bg = {256, 256, 256};
+                        }
                     }
 
                     if (current_fg_reset == false) {
