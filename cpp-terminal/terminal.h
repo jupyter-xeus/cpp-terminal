@@ -84,9 +84,9 @@ enum class bgB {
 };
 
 template <typename T>
-std::string color(T const value)
+std::string color(T const& value)
 {
-    return "\033[" + std::to_string(static_cast<int>(value)) + "m";
+    return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
 }
 
 std::string color24(unsigned int red, unsigned int green, unsigned int blue, bool fg)
@@ -548,16 +548,33 @@ class Window_24bit
         size_t x0, y0; // top-left corner of the window on the screen
         size_t w, h; // width and height of the window
         std::vector<char32_t> chars; // the characters in row first order
-        
         struct rgb {
             unsigned int r, g, b;
         };
-        
         std::vector<rgb> m_fg;
         std::vector<rgb> m_bg;
         std::vector<bool> m_fg_reset;
         std::vector<bool> m_bg_reset;
         std::vector<style> m_style;
+    
+        char32_t get_char(size_t x, size_t y) {
+            return chars[(y-1)*w+(x-1)];
+        }
+        bool get_fg_reset(size_t x, size_t y) {
+            return m_fg_reset[(y-1)*w+(x-1)];
+        }
+        bool get_bg_reset(size_t x, size_t y) {
+            return m_bg_reset[(y-1)*w+(x-1)];
+        }
+        rgb get_fg(size_t x, size_t y) {
+            return m_fg[(y-1)*w+(x-1)];
+        }
+        rgb get_bg(size_t x, size_t y) {
+            return m_bg[(y-1)*w+(x-1)];
+        }
+        style get_style(size_t x, size_t y) {
+            return m_style[(y-1)*w+(x-1)];
+        }
     public:
         Window_24bit(size_t x0, size_t y0, size_t w, size_t h)
             : x0{x0}, y0{y0}, w{w}, h{h}, chars(w*h, ' '),
@@ -565,16 +582,8 @@ class Window_24bit
               m_fg_reset(w*h, true), m_bg_reset(w*h, true),
               m_style(w*h, style::reset) {};
 
-        char32_t get_char(size_t x, size_t y) {
-            return chars[(y-1)*w+(x-1)];
-        }
-
         void set_char(size_t x, size_t y, char32_t c) {
             chars[(y-1)*w+(x-1)] = c;
-        }
-
-        bool get_fg_reset(size_t x, size_t y) {
-            return m_fg_reset[(y-1)*w+(x-1)];
         }
 
         void set_fg_reset(size_t x, size_t y) {
@@ -582,17 +591,9 @@ class Window_24bit
             m_fg[(y-1)*w+(x-1)] = {256, 256, 256};
         }
 
-        bool get_bg_reset(size_t x, size_t y) {
-            return m_bg_reset[(y-1)*w+(x-1)];
-        }
-
         void set_bg_reset(size_t x, size_t y) {
             m_bg_reset[(y-1)*w+(x-1)] = true;
             m_fg[(y-1)*w+(x-1)] = {256, 256, 256};
-        }
-
-        rgb get_fg(size_t x, size_t y) {
-            return m_fg[(y-1)*w+(x-1)];
         }
 
         void set_fg(size_t x, size_t y, unsigned int r, unsigned int g, unsigned int b) {
@@ -600,17 +601,9 @@ class Window_24bit
             m_fg[(y-1)*w+(x-1)] = {r, g, b};
         }
 
-        rgb get_bg(size_t x, size_t y) {
-            return m_bg[(y-1)*w+(x-1)];
-        }
-
         void set_bg(size_t x, size_t y, unsigned int r, unsigned int g, unsigned int b) {
             m_bg_reset[(y-1)*w+(x-1)] = false;
             m_bg[(y-1)*w+(x-1)] = {r, g, b};
-        }
-
-        style get_style(size_t x, size_t y) {
-            return m_style[(y-1)*w+(x-1)];
         }
 
         void set_style(size_t x, size_t y, style c) {
@@ -805,38 +798,38 @@ private:
     std::vector<fg> m_fg;
     std::vector<bg> m_bg;
     std::vector<style> m_style;
-public:
-    Window(size_t x0, size_t y0, size_t w, size_t h)
-        : x0{x0}, y0{y0}, w{w}, h{h}, chars(w*h, ' '),
-          m_fg(w*h, fg::reset), m_bg(w*h, bg::reset),
-          m_style(w*h, style::reset) {}
-
     char32_t get_char(size_t x, size_t y) {
         return chars[(y-1)*w+(x-1)];
     }
-
-    void set_char(size_t x, size_t y, char32_t c) {
-        chars[(y-1)*w+(x-1)] = c;
-    }
-
+    
     fg get_fg(size_t x, size_t y) {
         return m_fg[(y-1)*w+(x-1)];
-    }
-
-    void set_fg(size_t x, size_t y, fg c) {
-        m_fg[(y-1)*w+(x-1)] = c;
     }
 
     bg get_bg(size_t x, size_t y) {
         return m_bg[(y-1)*w+(x-1)];
     }
 
-    void set_bg(size_t x, size_t y, bg c) {
-        m_bg[(y-1)*w+(x-1)] = c;
-    }
-
     style get_style(size_t x, size_t y) {
         return m_style[(y-1)*w+(x-1)];
+    }
+
+public:
+    Window(size_t x0, size_t y0, size_t w, size_t h)
+        : x0{x0}, y0{y0}, w{w}, h{h}, chars(w*h, ' '),
+          m_fg(w*h, fg::reset), m_bg(w*h, bg::reset),
+          m_style(w*h, style::reset) {}
+
+    void set_char(size_t x, size_t y, char32_t c) {
+        chars[(y-1)*w+(x-1)] = c;
+    }
+
+    void set_fg(size_t x, size_t y, fg c) {
+        m_fg[(y-1)*w+(x-1)] = c;
+    }
+
+    void set_bg(size_t x, size_t y, bg c) {
+        m_bg[(y-1)*w+(x-1)] = c;
     }
 
     void set_style(size_t x, size_t y, style c) {
