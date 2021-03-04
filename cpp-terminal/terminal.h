@@ -381,18 +381,19 @@ public:
         }
     }
 
-void get_cursor_position(int& rows, int& cols) const
+    void get_cursor_position(int& rows, int& cols) const
     {
         char buf[32];
         write(cursor_position_report());
-        for (unsigned int i = 0; i < sizeof(buf) -1; i++) {
+        for (unsigned int i = 0; i < sizeof(buf) - 1; i++) {
             while (!read_raw(&buf[i]));
-            if (buf[i] == 'R')
-            {
-                if (i < 5)
+            if (buf[i] == 'R') {
+                if (i < 5) {
                     throw std::runtime_error("get_cursor_position(): too short response");
-                else
+                }
+                else {
                     buf[i] = '\0';
+                }
                 break;
             }
         }
@@ -404,8 +405,7 @@ void get_cursor_position(int& rows, int& cols) const
                 }
                 return;
             }
-            if (buf[i] == '\0') 
-                break;
+            if (buf[i] == '\0') break;
         }
         throw std::runtime_error("get_cursor_position(): result not found in the response");
     }
