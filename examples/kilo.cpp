@@ -685,7 +685,7 @@ void editorDrawMessageBar(std::string &ab) {
     ab.append(std::string(E.statusmsg, msglen));
 }
 
-void editorRefreshScreen(const Terminal) {
+void editorRefreshScreen() {
   editorScroll();
 
   std::string ab;
@@ -716,7 +716,7 @@ char *editorPrompt(const Terminal &term, const char *prompt, void (*callback)(ch
 
   while (1) {
     editorSetStatusMessage(prompt, buf);
-    editorRefreshScreen(term);
+    editorRefreshScreen();
 
     int c = term.read_key();
     if (c == Key::DEL || c == CTRL_KEY('h') || c == Key::BACKSPACE) {
@@ -903,9 +903,9 @@ int main(int argc, char *argv[]) {
     editorSetStatusMessage(
       "HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find");
 
-    editorRefreshScreen(term);
+    editorRefreshScreen();
     while (editorProcessKeypress(term)) {
-      editorRefreshScreen(term);
+      editorRefreshScreen();
     }
   } catch(const std::runtime_error& re) {
     std::cerr << "Runtime error: " << re.what() << std::endl;
