@@ -2,11 +2,11 @@
 
 set -ex
 
-cd ..
+#cd ..
 
-./tests/test_terminal
+tests/test_terminal
 
-./examples/colors
+examples/colors
 
 echo "Expected to succeed:"
 examples/colors < README.md
