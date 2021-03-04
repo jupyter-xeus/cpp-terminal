@@ -35,6 +35,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
 
 
 if (CPPTERMINAL_ENABLE_TESING)
+    enable_testing()
     add_subdirectory(tests)
 endif()
 
