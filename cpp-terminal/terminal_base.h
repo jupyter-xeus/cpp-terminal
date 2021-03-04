@@ -13,6 +13,7 @@
 
 #ifdef _WIN32
 #    include <conio.h>
+#    define _WINSOCKAPI_
 #    include <windows.h>
 #    include <io.h>
 #else

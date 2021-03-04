@@ -15,6 +15,7 @@
 
 #include <cpp-terminal/terminal_base.h>
 
+#include <chrono>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -185,7 +186,7 @@ public:
         : BaseTerminal(enable_keyboard, disable_ctrl_c),
           restore_screen_{false} {}
 
-    ~Terminal() override {
+    virtual ~Terminal() {
         restore_screen();
     }
 
@@ -203,6 +204,11 @@ public:
         restore_screen_ = true;
         write("\033" "7");    // save current cursor position
         write("\033[?1049h"); // save screen
+    }
+
+    inline void write(const std::string& s) const
+    {
+        std::cout << s << std::flush;
     }
 
     // Waits for a key press, translates escape codes
@@ -358,7 +364,8 @@ public:
             switch (c) {
             case '\x09': // TAB
                 return Key::TAB;
-            case '\x0a': // LF; falls-through
+            case '\x0a': // LF
+                return Key::ENTER;
             case '\x0d': // CR
                 return Key::ENTER;
             case '\x7f': // DEL
@@ -429,15 +436,15 @@ public:
             explicit CursorOff(const Terminal& term)
                 : term{ term }
             {
-                write(cursor_off());
+                term.write(cursor_off());
             }
             ~CursorOff()
             {
-                write(cursor_on());
+                term.write(cursor_on());
             }
         };
         CursorOff cursor_off(*this);
-        int old_row{}, old_col{};
+        int old_row, old_col;
         get_cursor_position(old_row, old_col);
         write(move_cursor_right(999) + move_cursor_down(999));
         get_cursor_position(rows, cols);
@@ -514,9 +521,9 @@ inline std::u32string utf8_to_utf32(const std::string &s)
 {
     uint32_t codepoint{};
     uint8_t state=UTF8_ACCEPT;
-    std::u32string r{};
-    for (char i : s) {
-        state = utf8_decode_step(state, i, &codepoint);
+    std::u32string r;
+    for (size_t i=0; i < s.size(); i++) {
+        state = utf8_decode_step(state, s[i], &codepoint);
         if (state == UTF8_ACCEPT) {
             r.push_back(codepoint);
         }
@@ -535,8 +542,8 @@ inline std::u32string utf8_to_utf32(const std::string &s)
 inline std::string utf32_to_utf8(const std::u32string &s)
 {
     std::string r;
-    for (char32_t i : s) {
-        codepoint_to_utf8(r, i);
+    for (size_t i=0; i < s.size(); i++) {
+        codepoint_to_utf8(r, s[i]);
     }
     return r;
 }
@@ -792,60 +799,112 @@ class Window_24bit
 class Window
 {
 private:
-    size_t x0, y0; // top-left corner of the window on the screen
     size_t w, h; // width and height of the window
+    size_t cursor_x, cursor_y; // current cursor position
     std::vector<char32_t> chars; // the characters in row first order
     std::vector<fg> m_fg;
     std::vector<bg> m_bg;
     std::vector<style> m_style;
-    char32_t get_char(size_t x, size_t y) {
-        return chars[(y-1)*w+(x-1)];
-    }
-    
-    fg get_fg(size_t x, size_t y) {
-        return m_fg[(y-1)*w+(x-1)];
-    }
-
-    bg get_bg(size_t x, size_t y) {
-        return m_bg[(y-1)*w+(x-1)];
-    }
-
-    style get_style(size_t x, size_t y) {
-        return m_style[(y-1)*w+(x-1)];
-    }
-
 public:
-    Window(size_t x0, size_t y0, size_t w, size_t h)
-        : x0{x0}, y0{y0}, w{w}, h{h}, chars(w*h, ' '),
+    Window(size_t w, size_t h)
+        : w{w}, h{h}, cursor_x{1}, cursor_y{1}, chars(w*h, ' '),
           m_fg(w*h, fg::reset), m_bg(w*h, bg::reset),
           m_style(w*h, style::reset) {}
 
+    char32_t get_char(size_t x, size_t y) {
+        return chars[(y-1)*w+(x-1)];
+    }
+
     void set_char(size_t x, size_t y, char32_t c) {
-        chars[(y-1)*w+(x-1)] = c;
+        if (x >= 1 && y >= 1 && x <= w && y <= h) {
+            chars[(y-1)*w+(x-1)] = c;
+        } else {
+            throw std::runtime_error("set_char(): (x,y) out of bounds");
+        }
+    }
+
+    fg get_fg(size_t x, size_t y) {
+        return m_fg[(y-1)*w+(x-1)];
     }
 
     void set_fg(size_t x, size_t y, fg c) {
         m_fg[(y-1)*w+(x-1)] = c;
     }
 
+    bg get_bg(size_t x, size_t y) {
+        return m_bg[(y-1)*w+(x-1)];
+    }
+
     void set_bg(size_t x, size_t y, bg c) {
         m_bg[(y-1)*w+(x-1)] = c;
+    }
+
+    style get_style(size_t x, size_t y) {
+        return m_style[(y-1)*w+(x-1)];
     }
 
     void set_style(size_t x, size_t y, style c) {
         m_style[(y-1)*w+(x-1)] = c;
     }
 
-    void print_str(int x, int y, const std::string &s) {
+    void set_cursor_pos(int x, int y) {
+        cursor_x = x;
+        cursor_y = y;
+    }
+
+    size_t get_w() {
+        return w;
+    }
+
+    size_t get_h() {
+        return h;
+    }
+
+    void set_h(size_t new_h) {
+        if (new_h == h) {
+            return;
+        } else if (new_h > h) {
+            int dc = (new_h-h) * w;
+            chars.insert(chars.end(), dc, ' ');
+            m_fg.insert(m_fg.end(), dc, fg::reset);
+            m_bg.insert(m_bg.end(), dc, bg::reset);
+            m_style.insert(m_style.end(), dc, style::reset);
+            h = new_h;
+        } else {
+            throw std::runtime_error("Shrinking height not supported.");
+        }
+    }
+
+    void print_str(int x, int y, const std::string &s, int indent=0,
+            bool move_cursor=false) {
         std::u32string s2 = utf8_to_utf32(s);
+        size_t xpos = x;
+        size_t ypos = y;
         for (size_t i=0; i < s2.size(); i++) {
-            size_t xpos = x+i;
-            if (xpos < w) {
-                set_char(xpos, y, s2[i]);
+            if (s2[i] == U'\n') {
+                xpos = x+indent;
+                ypos++;
+                if (xpos <= w && ypos <= h) {
+                    for (int j=0; j < indent; j++) {
+                        set_char(x+j, ypos, '.');
+                    }
+                } else {
+                    // String is out of the window
+                    return;
+                }
             } else {
-                // String is out of the window
-                return;
+                if (xpos <= w && ypos <= h) {
+                    set_char(xpos, y, s2[i]);
+                } else {
+                    // String is out of the window
+                    return;
+                }
+                xpos++;
             }
+        }
+        if (move_cursor) {
+            cursor_x = xpos;
+            cursor_y = ypos;
         }
     }
 
@@ -920,14 +979,22 @@ public:
         }
     }
 
-    std::string render() {
+    // TODO: add Window/Screen parameter here, to be used like this:
+    // old_scr = scr;
+    // scr.print_str(...)
+    // scr.render(1, 1, old_scr)
+    std::string render(int x0, int y0, bool term) {
         std::string out;
-        out.append(cursor_off());
+        if (term){
+          out.append(cursor_off());
+        }
         fg current_fg = fg::reset;
         bg current_bg = bg::reset;
         style current_style = style::reset;
         for (size_t j=1; j <= h; j++) {
-            out.append(move_cursor(y0+j-1, x0));
+            if (term){
+              out.append(move_cursor(y0+j-1, x0));
+            }
             for (size_t i=1; i <= w; i++) {
                 bool update_fg = false;
                 bool update_bg = false;
@@ -958,13 +1025,16 @@ public:
                 if (update_bg) out.append(color(get_bg(i,j)));
                 codepoint_to_utf8(out, get_char(i,j));
             }
+            if (j < h) out.append("\n");
         }
         if (current_fg != fg::reset) out.append(color(fg::reset));
         if (current_bg != bg::reset) out.append(color(bg::reset));
         if (current_style != style::reset) out.append(color(style::reset));
-        out.append(cursor_on());
-        return out;
-    }
+        if (term) {
+          out.append(move_cursor(y0+cursor_y-1, x0+cursor_x-1));
+          out.append(cursor_on());
+        }
+    return out;
 };
 
 // This model contains all the information about the state of the prompt in an
@@ -990,7 +1060,7 @@ inline std::string render(const Model &m, int prompt_row, int term_cols)
         m.prompt_string.size() + m.cursor_col));
     out.append(cursor_on());
     return out;
-}
+};
 
 static std::vector<std::string> PROMPT_HISTORY;
 
@@ -1092,6 +1162,8 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
     return m.input;
 }
 
-} // namespace Term
+};
+
+}; // namespace Term
 
 #endif // TERMINAL_H
