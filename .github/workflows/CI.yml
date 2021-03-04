@@ -31,4 +31,4 @@ jobs:
       if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
       run: |
           bash ci/compile_test.sh
-          ./tests.sh
+          bash ci/tests.sh
