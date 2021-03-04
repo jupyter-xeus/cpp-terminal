@@ -84,12 +84,12 @@ enum class bgB {
 };
 
 template <typename T>
-std::string color(T const& value)
+static std::string color(T const& value)
 {
     return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
 }
 
-std::string color24(unsigned int red, unsigned int green, unsigned int blue, bool fg)
+static std::string color24(unsigned int red, unsigned int green, unsigned int blue, bool fg)
 {
     if (fg)
         return "\033[38;2;" + std::to_string(red) + ';' + std::to_string(green) + ';' + std::to_string(blue) + 'm';
