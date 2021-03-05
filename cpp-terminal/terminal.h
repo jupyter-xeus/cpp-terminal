@@ -112,6 +112,17 @@ inline std::string cursor_on()
     return "\x1b[?25h";
 }
 
+inline std::string clear_screen()
+{
+    return "\033[2J";
+}
+
+// clears screen + scroll back buffer
+inline std::string clear_screen_buffer()
+{
+    return "\033[3J";
+}
+
 // If an attempt is made to move the cursor out of the window, the result is
 // undefined.
 inline std::string move_cursor(size_t row, size_t col)
