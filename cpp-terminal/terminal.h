@@ -46,7 +46,7 @@ enum class fg {
     blue = 34,
     magenta = 35,
     cyan = 36,
-    gray = 37,
+    white = 37,
     reset = 39
 };
 
@@ -58,30 +58,30 @@ enum class bg {
     blue = 44,
     magenta = 45,
     cyan = 46,
-    gray = 47,
+    white = 47,
     reset = 49
 };
 
 enum class fgB {
-    black = 90,
+    gray = 90,
     red = 91,
     green = 92,
     yellow = 93,
     blue = 94,
     magenta = 95,
     cyan = 96,
-    gray = 97
+    white = 97
 };
 
 enum class bgB {
-    black = 100,
+    gray = 100,
     red = 101,
     green = 102,
     yellow = 103,
     blue = 104,
     magenta = 105,
     cyan = 106,
-    gray = 107
+    white = 107
 };
 
 template <typename T>
