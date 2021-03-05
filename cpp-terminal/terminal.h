@@ -84,12 +84,14 @@ static std::string color(T const& value)
     return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
 }
 
-static std::string color24(unsigned int red, unsigned int green, unsigned int blue, bool fg)
+inline std::string color24_fg(unsigned int red, unsigned int green, unsigned int blue)
 {
-    if (fg)
-        return "\033[38;2;" + std::to_string(red) + ';' + std::to_string(green) + ';' + std::to_string(blue) + 'm';
-    else
-        return "\033[48;2;" + std::to_string(red) + ';' + std::to_string(green) + ';' + std::to_string(blue) + 'm';
+    return "\033[38;2;" + std::to_string(red) + ';' + std::to_string(green) + ';' + std::to_string(blue) + 'm';
+}
+
+inline std::string color24_bg(unsigned int red, unsigned int green, unsigned int blue)
+{
+    return "\033[48;2;" + std::to_string(red) + ';' + std::to_string(green) + ';' + std::to_string(blue) + 'm';
 }
 
 inline void write(const std::string& s)
@@ -767,12 +769,12 @@ class Window_24bit
                     if (update_fg_reset) out.append(color(fg::reset));
                     else if (update_fg) {
                         rgb color_tmp = get_fg(i, j);
-                        out.append(color24(color_tmp.r, color_tmp.g, color_tmp.b, true));
+                        out.append(color24_fg(color_tmp.r, color_tmp.g, color_tmp.b));
                     }
                     if (update_bg_reset) out.append(color(bg::reset));
                     else if (update_bg) {
                         rgb color_tmp = get_bg(i, j);
-                        out.append(color24(color_tmp.r, color_tmp.g, color_tmp.b, false));
+                        out.append(color24_bg(color_tmp.r, color_tmp.g, color_tmp.b));
                     }
                     codepoint_to_utf8(out, get_char(i,j));
                 }

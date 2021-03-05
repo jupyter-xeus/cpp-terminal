@@ -3,7 +3,8 @@
 
 using Term::Terminal;
 using Term::color;
-using Term::color24;
+using Term::color24_fg;
+using Term::color24_bg;
 using Term::fg;
 using Term::bg;
 using Term::style;
@@ -29,9 +30,9 @@ int main() {
         std::cout << text << std::endl;
 
         std::string rgb_text = "Some Text in "
-            + color24(255, 0, 0, true) + 'R'
-            + color24(0, 255, 0, true) + 'G'
-            + color24(0, 0, 255, true) + 'B'
+            + color24_fg(255, 0, 0) + 'R'
+            + color24_fg(0, 255, 0) + 'G'
+            + color24_fg(0, 0, 255) + 'B'
             + color(fg::reset);
 
         std::cout << rgb_text << std::endl;
@@ -40,28 +41,28 @@ int main() {
 
         for (unsigned int i = 0; i <= 255; i += 3)
         {
-            std::cout << color24(i, 0, 0, false)
+            std::cout << color24_bg(i, 0, 0)
                       << " "
                       << "\033[0m";
         }
         std::cout << "\n";
         for (unsigned int i = 0; i <= 255; i += 3)
         {
-            std::cout << color24(0, i, 0, false)
+            std::cout << color24_bg(0, i, 0)
                       << " "
                       << "\033[0m";
         }
         std::cout << "\n";
         for (unsigned int i = 0; i <= 255; i += 3)
         {
-            std::cout << color24(0, 0, i, false)
+            std::cout << color24_bg(0, 0, i)
                       << " "
                       << "\033[0m";
         }
         std::cout << "\n";
         for (unsigned int i = 0; i <= 255; i += 3)
         {
-            std::cout << color24(i, i, i, false)
+            std::cout << color24_bg(i, i, i)
                       << " "
                       << "\033[0m";
         }
