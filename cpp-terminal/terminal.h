@@ -798,15 +798,36 @@ private:
     std::vector<fg> m_fg;
     std::vector<bg> m_bg;
     std::vector<style> m_style;
+
+    char32_t get_char(size_t x, size_t y) {
+        return chars[(y-1)*w+(x-1)];
+    }
+
+    fg get_fg(size_t x, size_t y) {
+        return m_fg[(y-1)*w+(x-1)];
+    }
+
+    bg get_bg(size_t x, size_t y) {
+        return m_bg[(y-1)*w+(x-1)];
+    }
+
+    style get_style(size_t x, size_t y) {
+        return m_style[(y-1)*w+(x-1)];
+    }
+
+    size_t get_w() {
+        return w;
+    }
+
+    size_t get_h() {
+        return h;
+    }
+
 public:
     Window(size_t w, size_t h)
         : w{w}, h{h}, cursor_x{1}, cursor_y{1}, chars(w*h, ' '),
           m_fg(w*h, fg::reset), m_bg(w*h, bg::reset),
           m_style(w*h, style::reset) {}
-
-    char32_t get_char(size_t x, size_t y) {
-        return chars[(y-1)*w+(x-1)];
-    }
 
     void set_char(size_t x, size_t y, char32_t c) {
         if (x >= 1 && y >= 1 && x <= w && y <= h) {
@@ -816,24 +837,12 @@ public:
         }
     }
 
-    fg get_fg(size_t x, size_t y) {
-        return m_fg[(y-1)*w+(x-1)];
-    }
-
     void set_fg(size_t x, size_t y, fg c) {
         m_fg[(y-1)*w+(x-1)] = c;
     }
 
-    bg get_bg(size_t x, size_t y) {
-        return m_bg[(y-1)*w+(x-1)];
-    }
-
     void set_bg(size_t x, size_t y, bg c) {
         m_bg[(y-1)*w+(x-1)] = c;
-    }
-
-    style get_style(size_t x, size_t y) {
-        return m_style[(y-1)*w+(x-1)];
     }
 
     void set_style(size_t x, size_t y, style c) {
@@ -843,14 +852,6 @@ public:
     void set_cursor_pos(int x, int y) {
         cursor_x = x;
         cursor_y = y;
-    }
-
-    size_t get_w() {
-        return w;
-    }
-
-    size_t get_h() {
-        return h;
     }
 
     void set_h(size_t new_h) {
