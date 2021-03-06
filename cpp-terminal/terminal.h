@@ -15,7 +15,6 @@
 
 #include <cpp-terminal/terminal_base.h>
 #include <functional>
-#include <chrono>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -186,7 +185,7 @@ public:
         : BaseTerminal(enable_keyboard, disable_ctrl_c),
           restore_screen_{false} {}
 
-    virtual ~Terminal() {
+    ~Terminal() override {
         restore_screen();
     }
 
@@ -204,11 +203,6 @@ public:
         restore_screen_ = true;
         write("\033" "7");    // save current cursor position
         write("\033[?1049h"); // save screen
-    }
-
-    inline void write(const std::string& s) const
-    {
-        std::cout << s << std::flush;
     }
 
     // Waits for a key press, translates escape codes
@@ -364,8 +358,7 @@ public:
             switch (c) {
             case '\x09': // TAB
                 return Key::TAB;
-            case '\x0a': // LF
-                return Key::ENTER;
+            case '\x0a': // LF; falls-through
             case '\x0d': // CR
                 return Key::ENTER;
             case '\x7f': // DEL
@@ -436,15 +429,15 @@ public:
             explicit CursorOff(const Terminal& term)
                 : term{ term }
             {
-                term.write(cursor_off());
+                write(cursor_off());
             }
             ~CursorOff()
             {
-                term.write(cursor_on());
+                write(cursor_on());
             }
         };
         CursorOff cursor_off(*this);
-        int old_row, old_col;
+        int old_row{}, old_col{};
         get_cursor_position(old_row, old_col);
         write(move_cursor_right(999) + move_cursor_down(999));
         get_cursor_position(rows, cols);
@@ -521,9 +514,9 @@ inline std::u32string utf8_to_utf32(const std::string &s)
 {
     uint32_t codepoint{};
     uint8_t state=UTF8_ACCEPT;
-    std::u32string r;
-    for (size_t i=0; i < s.size(); i++) {
-        state = utf8_decode_step(state, s[i], &codepoint);
+    std::u32string r{};
+    for (char i : s) {
+        state = utf8_decode_step(state, i, &codepoint);
         if (state == UTF8_ACCEPT) {
             r.push_back(codepoint);
         }
@@ -541,9 +534,9 @@ inline std::u32string utf8_to_utf32(const std::string &s)
 // Converts an UTF32 string to UTF8.
 inline std::string utf32_to_utf8(const std::u32string &s)
 {
-    std::string r;
-    for (size_t i=0; i < s.size(); i++) {
-        codepoint_to_utf8(r, s[i]);
+    std::string r{};
+    for (char32_t i : s) {
+        codepoint_to_utf8(r, i);
     }
     return r;
 }
@@ -1296,6 +1289,8 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
     history.push_back(concat(m.lines));
     return concat(m.lines);
 }
+
+};
 
 }; // namespace Term
 
