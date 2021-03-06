@@ -1107,7 +1107,7 @@ void render(Term::Window &scr, const Model &m, size_t cols) {
     scr.set_cursor_pos(m.prompt_string.size() + m.cursor_col, m.cursor_row);
 }
 
-std::string prompt(const Terminal &term, const std::string &prompt_string,
+[[maybe_unused]] static std::string prompt(const Terminal &term, const std::string &prompt_string,
         std::vector<std::string> &history, std::function<bool(std::string)>
         &iscomplete) {
     int row, col;
@@ -1290,8 +1290,6 @@ std::string prompt(const Terminal &term, const std::string &prompt_string,
     return concat(m.lines);
 }
 
-};
-
-}; // namespace Term
+} // namespace Term
 
 #endif // TERMINAL_H
