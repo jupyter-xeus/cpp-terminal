@@ -33,7 +33,7 @@ std::string render(Term::Window &scr, int rows, int cols,
     scr.print_str(1, y+2, "Menu height: " + std::to_string(menuheight));
     scr.print_str(1, y+3, "Unicode test: Ondřej Čertík, ἐξήκοι");
 
-    return scr.render();
+    return scr.render(1,1, true);
 }
 
 int main() {
@@ -46,7 +46,7 @@ int main() {
         int h = 10;
         int w = 10;
         bool on = true;
-        Term::Window scr(1, 1, cols, rows);
+        Term::Window scr(cols, rows);
         while (on) {
             std::cout << render(scr, rows, cols, h, w, pos) << std::flush;
             int key = term.read_key();
