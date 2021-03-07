@@ -11,9 +11,12 @@ using Term::prompt;
 bool determine_completeness(std::string command)
 {
     // Determine if the statement is complete
-    // Get the tokens
     bool complete;
-    complete = true;
+    if (command.substr(command.size()-2, 1) == "\\"){
+        complete = false;
+    } else {
+        complete = true;
+    }
     return complete;
 }
 
