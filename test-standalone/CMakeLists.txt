@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 project(test-standalone CXX)
 
 if (NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 11
+    set(CMAKE_CXX_STANDARD 17
         CACHE STRING "C++ standard" FORCE)
 endif ()
 
