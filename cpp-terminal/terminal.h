@@ -1330,7 +1330,7 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
                     } else {
                         break;
                     }
-                    [[fallthrough]];
+                    [[fallthrough]]
                 case ALT_KEY('n'):
                 case CTRL_KEY('n'):
                 case Key::ALT_ENTER:
