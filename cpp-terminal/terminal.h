@@ -1331,7 +1331,6 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
                         break;
                     }
                     [[fallthrough]];
-                case ALT_KEY('n'):
                 case CTRL_KEY('n'):
                 case Key::ALT_ENTER:
                     std::string before = m.lines[m.cursor_row-1].substr(0,
