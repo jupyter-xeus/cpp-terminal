@@ -815,6 +815,12 @@ private:
         return m_style[(y-1)*w+(x-1)];
     }
 
+public:
+    Window(size_t w, size_t h)
+        : w{w}, h{h}, cursor_x{1}, cursor_y{1}, chars(w*h, ' '),
+          m_fg(w*h, fg::reset), m_bg(w*h, bg::reset),
+          m_style(w*h, style::reset) {}
+
     size_t get_w() {
         return w;
     }
@@ -822,12 +828,6 @@ private:
     size_t get_h() {
         return h;
     }
-
-public:
-    Window(size_t w, size_t h)
-        : w{w}, h{h}, cursor_x{1}, cursor_y{1}, chars(w*h, ' '),
-          m_fg(w*h, fg::reset), m_bg(w*h, bg::reset),
-          m_style(w*h, style::reset) {}
 
     void set_char(size_t x, size_t y, char32_t c) {
         if (x >= 1 && y >= 1 && x <= w && y <= h) {
