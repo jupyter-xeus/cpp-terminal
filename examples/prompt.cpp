@@ -8,7 +8,7 @@ using Term::Terminal;
 using Term::prompt;
 
 
-bool determine_completeness([[maybe_unused]] std::string command)
+bool determine_completeness([[maybe_unused]] std::string& command)
 {
     // Determine if the statement is complete
     bool complete;

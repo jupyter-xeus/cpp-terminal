@@ -593,11 +593,11 @@ public:
           m_fg_reset(w*h, true), m_bg_reset(w*h, true),
           m_style(w*h, style::reset) {}
 
-    size_t get_w() {
+    size_t get_w() const {
         return w;
     }
 
-    size_t get_h() {
+    size_t get_h() const {
         return h;
     }
 
@@ -642,7 +642,7 @@ public:
         if (new_h == h) {
             return;
         } else if (new_h > h) {
-            int dc = (new_h-h) * w;
+            size_t dc = (new_h-h) * w;
             chars.insert(chars.end(), dc, ' ');
             m_fg_reset.insert(m_fg_reset.end(), dc, true);
             m_bg_reset.insert(m_bg_reset.end(), dc, true);
@@ -660,8 +660,8 @@ public:
         std::u32string s2 = utf8_to_utf32(s);
         size_t xpos = x;
         size_t ypos = y;
-        for (size_t i=0; i < s2.size(); i++) {
-            if (s2[i] == U'\n') {
+        for (char32_t i : s2) {
+            if (i == U'\n') {
                 xpos = x+indent;
                 ypos++;
                 if (xpos <= w && ypos <= h) {
@@ -674,7 +674,7 @@ public:
                 }
             } else {
                 if (xpos <= w && ypos <= h) {
-                    set_char(xpos, y, s2[i]);
+                    set_char(xpos, y, i);
                 } else {
                     // String is out of the window
                     return;
@@ -900,11 +900,11 @@ public:
           m_fg(w*h, fg::reset), m_bg(w*h, bg::reset),
           m_style(w*h, style::reset) {}
 
-    size_t get_w() {
+    size_t get_w() const {
         return w;
     }
 
-    size_t get_h() {
+    size_t get_h() const {
         return h;
     }
 
@@ -937,7 +937,7 @@ public:
         if (new_h == h) {
             return;
         } else if (new_h > h) {
-            int dc = (new_h-h) * w;
+            size_t dc = (new_h-h) * w;
             chars.insert(chars.end(), dc, ' ');
             m_fg.insert(m_fg.end(), dc, fg::reset);
             m_bg.insert(m_bg.end(), dc, bg::reset);
@@ -953,8 +953,8 @@ public:
         std::u32string s2 = utf8_to_utf32(s);
         size_t xpos = x;
         size_t ypos = y;
-        for (size_t i=0; i < s2.size(); i++) {
-            if (s2[i] == U'\n') {
+        for (char32_t i : s2) {
+            if (i == U'\n') {
                 xpos = x+indent;
                 ypos++;
                 if (xpos <= w && ypos <= h) {
@@ -967,7 +967,7 @@ public:
                 }
             } else {
                 if (xpos <= w && ypos <= h) {
-                    set_char(xpos, y, s2[i]);
+                    set_char(xpos, y, i);
                 } else {
                     // String is out of the window
                     return;
@@ -1119,7 +1119,7 @@ struct Model {
     std::vector<std::string> lines; // The current input string in the prompt as
             // a vector of lines, without '\n' at the end.
     // The current cursor position in the "input" string, starting from (1,1)
-    size_t cursor_col, cursor_row;
+    size_t cursor_col{}, cursor_row{};
 };
 
 std::string concat(const std::vector<std::string> &lines) {
@@ -1133,12 +1133,12 @@ std::string concat(const std::vector<std::string> &lines) {
 std::vector<std::string> split(const std::string &s) {
     size_t j = 0;
     std::vector<std::string> lines;
-    lines.push_back("");
+    lines.emplace_back("");
     if (s[s.size()-1] != '\n') throw std::runtime_error("\\n is required");
     for (size_t i=0; i<s.size()-1; i++) {
         if (s[i] == '\n') {
             j++;
-            lines.push_back("");
+            lines.emplace_back("");
         } else {
             lines[j].push_back(s[i]);
         }
@@ -1187,11 +1187,11 @@ void render(Term::Window &scr, const Model &m, size_t cols) {
     scr.set_cursor_pos(m.prompt_string.size() + m.cursor_col, m.cursor_row);
 }
 
-[[maybe_unused]] static std::string prompt(const Terminal &term, const std::string &prompt_string,
+inline std::string prompt(const Terminal &term, const std::string &prompt_string,
         std::vector<std::string> &history, std::function<bool(std::string)>
         &iscomplete) {
     int row, col;
-    bool term_attached = term.is_stdin_a_tty();
+    bool term_attached = Terminal::is_stdin_a_tty();
     if (term_attached) {
         term.get_cursor_position(row, col);
     } else {
@@ -1206,7 +1206,7 @@ void render(Term::Window &scr, const Model &m, size_t cols) {
 
     Model m;
     m.prompt_string = prompt_string;
-    m.lines.push_back("");
+    m.lines.emplace_back("");
     m.cursor_col = 1;
     m.cursor_row = 1;
 
@@ -1230,10 +1230,10 @@ void render(Term::Window &scr, const Model &m, size_t cols) {
                     m.cursor_col-1);
             std::string newchar; newchar.push_back(key);
             std::string after = m.lines[m.cursor_row-1].substr(m.cursor_col-1);
-            m.lines[m.cursor_row-1] = before + newchar + after;
+            m.lines[m.cursor_row-1] = before += newchar += after;
             m.cursor_col++;
         } else if (key == CTRL_KEY('d')) {
-            if (m.lines.size() == 1 && m.lines[m.cursor_row-1].size() == 0) {
+            if (m.lines.size() == 1 && m.lines[m.cursor_row-1].empty()) {
                 m.lines[m.cursor_row-1].push_back(CTRL_KEY('d'));
                 std::cout << "\n" << std::flush;
                 history.push_back(m.lines[0]);
