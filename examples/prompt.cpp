@@ -1,9 +1,24 @@
 #include <cpp-terminal/terminal.h>
 
 #include <vector>
+#include <functional>
+#include <string>
 
 using Term::Terminal;
 using Term::prompt;
+
+
+bool determine_completeness([[maybe_unused]] std::string command)
+{
+    // Determine if the statement is complete
+    bool complete;
+    if (command.substr(command.size()-2, 1) == "\\"){
+        complete = false;
+    } else {
+        complete = true;
+    }
+    return complete;
+}
 
 
 int main() {
@@ -15,12 +30,13 @@ int main() {
         std::cout << "  * Features:" << std::endl;
         std::cout << "    - Editing (Keys: Left, Right, Home, End, Backspace)" << std::endl;
         std::cout << "    - History (Keys: Up, Down)" << std::endl;
+        std::cout << "    - Multi-line editing (use Alt-Enter to add a new line)" << std::endl;
         // TODO:
-        //std::cout << "    - Multi-line editing (use Alt-Enter to add a new line)" << std::endl;
         //std::cout << "    - Syntax highlighting" << std::endl;
         std::vector<std::string> history;
+        std::function<bool(std::string)> iscomplete = determine_completeness;
         while (true) {
-            std::string answer = prompt(term, "> ", history);
+            std::string answer = prompt(term, "> ", history, iscomplete);
             if (answer.size() == 1 && answer[0] == CTRL_KEY('d')) break;
             std::cout << "Submitted text: " << answer << std::endl;
         }
