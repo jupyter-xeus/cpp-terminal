@@ -1130,7 +1130,7 @@ struct Model {
     size_t cursor_col{}, cursor_row{};
 };
 
-std::string concat(const std::vector<std::string> &lines) {
+static std::string concat(const std::vector<std::string> &lines) {
     std::string s;
     for (auto &line: lines) {
         s.append(line + "\n");
@@ -1138,7 +1138,7 @@ std::string concat(const std::vector<std::string> &lines) {
     return s;
 }
 
-std::vector<std::string> split(const std::string &s) {
+static std::vector<std::string> split(const std::string &s) {
     size_t j = 0;
     std::vector<std::string> lines;
     lines.emplace_back("");
@@ -1154,13 +1154,13 @@ std::vector<std::string> split(const std::string &s) {
     return lines;
 }
 
-char32_t U(const std::string &s) {
+static char32_t U(const std::string &s) {
     std::u32string s2 = Term::utf8_to_utf32(s);
     if (s2.size() != 1) throw std::runtime_error("U(s): s not a codepoint.");
     return s2[0];
 }
 
-void print_left_curly_bracket(Term::Window &scr, int x, int y1, int y2) {
+static void print_left_curly_bracket(Term::Window &scr, int x, int y1, int y2) {
     int h = y2-y1+1;
     if (h == 1) {
         scr.set_char(x, y1, U("]"));
@@ -1173,7 +1173,7 @@ void print_left_curly_bracket(Term::Window &scr, int x, int y1, int y2) {
     }
 }
 
-void render(Term::Window &scr, const Model &m, size_t cols) {
+static void render(Term::Window &scr, const Model &m, size_t cols) {
     scr.clear();
     print_left_curly_bracket(scr, cols, 1, m.lines.size());
     scr.print_str(cols-6, m.lines.size(), std::to_string(m.cursor_row) + ","
