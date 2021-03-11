@@ -31,10 +31,11 @@ enum class style {
     italic = 3,
     underline = 4,
     blink = 5,
-    rblink = 6,
+    blink_rapid = 6,
     reversed = 7,
     conceal = 8,
-    crossed = 9
+    crossed = 9,
+    overline = 53
 };
 
 enum class fg {
@@ -45,8 +46,16 @@ enum class fg {
     blue = 34,
     magenta = 35,
     cyan = 36,
-    gray = 37,
-    reset = 39
+    white = 37,
+    reset = 39,
+    gray = 90,
+    bright_red = 91,
+    bright_green = 92,
+    bright_yellow = 93,
+    bright_blue = 94,
+    bright_magenta = 95,
+    bright_cyan = 96,
+    bright_white = 97
 };
 
 enum class bg {
@@ -57,30 +66,16 @@ enum class bg {
     blue = 44,
     magenta = 45,
     cyan = 46,
-    gray = 47,
-    reset = 49
-};
-
-enum class fgB {
-    black = 90,
-    red = 91,
-    green = 92,
-    yellow = 93,
-    blue = 94,
-    magenta = 95,
-    cyan = 96,
-    gray = 97
-};
-
-enum class bgB {
-    black = 100,
-    red = 101,
-    green = 102,
-    yellow = 103,
-    blue = 104,
-    magenta = 105,
-    cyan = 106,
-    gray = 107
+    white = 47,
+    reset = 49,
+    gray = 100,
+    bright_red = 101,
+    bright_green = 102,
+    bright_yellow = 103,
+    bright_blue = 104,
+    bright_magenta = 105,
+    bright_cyan = 106,
+    bright_white = 107
 };
 
 template <typename T>
@@ -89,12 +84,14 @@ static std::string color(T const& value)
     return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
 }
 
-static std::string color24(unsigned int red, unsigned int green, unsigned int blue, bool fg)
+inline std::string color24_fg(unsigned int red, unsigned int green, unsigned int blue)
 {
-    if (fg)
-        return "\033[38;2;" + std::to_string(red) + ';' + std::to_string(green) + ';' + std::to_string(blue) + 'm';
-    else
-        return "\033[48;2;" + std::to_string(red) + ';' + std::to_string(green) + ';' + std::to_string(blue) + 'm';
+    return "\033[38;2;" + std::to_string(red) + ';' + std::to_string(green) + ';' + std::to_string(blue) + 'm';
+}
+
+inline std::string color24_bg(unsigned int red, unsigned int green, unsigned int blue)
+{
+    return "\033[48;2;" + std::to_string(red) + ';' + std::to_string(green) + ';' + std::to_string(blue) + 'm';
 }
 
 inline void write(const std::string& s)
@@ -110,6 +107,17 @@ inline std::string cursor_off()
 inline std::string cursor_on()
 {
     return "\x1b[?25h";
+}
+
+inline std::string clear_screen()
+{
+    return "\033[2J";
+}
+
+// clears screen + scroll back buffer
+inline std::string clear_screen_buffer()
+{
+    return "\033[3J";
 }
 
 // If an attempt is made to move the cursor out of the window, the result is
@@ -835,12 +843,12 @@ public:
                 if (update_fg_reset) out.append(color(fg::reset));
                 else if (update_fg) {
                     rgb color_tmp = get_fg(i, j);
-                    out.append(color24(color_tmp.r, color_tmp.g, color_tmp.b, true));
+                    out.append(color24_fg(color_tmp.r, color_tmp.g, color_tmp.b));
                 }
                 if (update_bg_reset) out.append(color(bg::reset));
                 else if (update_bg) {
                     rgb color_tmp = get_bg(i, j);
-                    out.append(color24(color_tmp.r, color_tmp.g, color_tmp.b, false));
+                    out.append(color24_bg(color_tmp.r, color_tmp.g, color_tmp.b));
                 }
                 codepoint_to_utf8(out, get_char(i,j));
             }
