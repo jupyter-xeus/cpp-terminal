@@ -19,8 +19,6 @@
 #include <string>
 #include <vector>
 #include <thread>
-#define CTRL_KEY(k) (char)(((unsigned char)(k) & 0x1f))
-#define ALT_KEY(k) (char)(((unsigned char)(k) + 0x80))
 
 namespace Term {
 
@@ -184,6 +182,9 @@ enum Key {
     F10,
     F11,
     F12,
+    // special keys
+    CTRL = -96,
+    ALT = -128
 };
 
 class Terminal: public BaseTerminal {
@@ -241,7 +242,7 @@ public:
             if (!read_raw(&seq[1])) {
                 if (seq[0] >= 'a' && seq[0] <= 'z') {
                     // gnome-term, Windows Console
-                    return ALT_KEY(seq[0]);
+                    return Key::ALT + seq[0];
                 }
                 if (seq[0] == '\x0d') {
                     // gnome-term
@@ -378,7 +379,7 @@ public:
                 } else {
                     if (c >= '\xa1' && c <= '\xba') {
                         // xterm
-                        return ALT_KEY(c+'a'-'\xa1');
+                        return Key::ALT + (c+'a'-'\xa1');
                     }
                     return -9;
                 }
@@ -1237,9 +1238,9 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
             std::string after = m.lines[m.cursor_row-1].substr(m.cursor_col-1);
             m.lines[m.cursor_row-1] = before += newchar += after;
             m.cursor_col++;
-        } else if (key == CTRL_KEY('d')) {
+        } else if (key == Key::CTRL + 'd') {
             if (m.lines.size() == 1 && m.lines[m.cursor_row-1].empty()) {
-                m.lines[m.cursor_row-1].push_back(CTRL_KEY('d'));
+                m.lines[m.cursor_row-1].push_back(Key::CTRL + 'd');
                 std::cout << "\n" << std::flush;
                 history.push_back(m.lines[0]);
                 return m.lines[0];
@@ -1336,7 +1337,7 @@ inline std::string prompt(const Terminal &term, const std::string &prompt_string
                         break;
                     }
                     [[fallthrough]];
-                case CTRL_KEY('n'):
+                case Key::CTRL + 'n':
                 case Key::ALT_ENTER:
                     std::string before = m.lines[m.cursor_row-1].substr(0,
                             m.cursor_col-1);
