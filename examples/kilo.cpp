@@ -24,8 +24,6 @@ using Term::cursor_off;
 using Term::move_cursor;
 using Term::erase_to_eol;
 using Term::color;
-using Term::ctrl_key;
-using Term::alt_key;
 using Term::fg;
 using Term::style;
 using Term::Key;
@@ -726,7 +724,7 @@ char *editorPrompt(const Terminal &term, const char *prompt, void (*callback)(ch
     editorRefreshScreen(term);
 
     int c = term.read_key();
-    if (c == Key::DEL || c == ctrl_key('h') || c == Key::BACKSPACE) {
+    if (c == Key::DEL || c == Term::ctrl_key('h') || c == Key::BACKSPACE) {
       if (buflen != 0) buf[--buflen] = '\0';
     } else if (c == Key::ESC) {
       editorSetStatusMessage("");
@@ -796,72 +794,79 @@ bool editorProcessKeypress(const Terminal &term) {
 
   int c = term.read_key();
 
-  if (c == Key::ENTER)
-    editorInsertNewline();
-  else if (c == ctrl_key('q')) {
-    if (E.dirty && quit_times > 0) {
+  switch (c) {
+    case Key::ENTER:
+      editorInsertNewline();
+      break;
+
+    case Term::ctrl_key('q'):
+      if (E.dirty && quit_times > 0) {
         editorSetStatusMessage("WARNING!!! File has unsaved changes. "
           "Press Ctrl-Q %d more times to quit.", quit_times);
         quit_times--;
         return true;
       }
       return false;
-  }
-  else if (c == ctrl_key('q')) {
-    if (E.dirty && quit_times > 0) {
-        editorSetStatusMessage("WARNING!!! File has unsaved changes. "
-          "Press Ctrl-Q %d more times to quit.", quit_times);
-        quit_times--;
-        return true;
-      }
-      return false;
-  }
-  else if (c == ctrl_key('s')) {
-    editorSave(term);
-  }
-  else if (c == Key::HOME) {
-    E.cx = 0;
-  }
-  else if (c == Key::END) {
-    if (E.cy < E.numrows) {
+      break;
+
+    case Term::ctrl_key('s'):
+      editorSave(term);
+      break;
+
+    case Key::HOME:
+      E.cx = 0;
+      break;
+
+    case Key::END:
+      if (E.cy < E.numrows)
         E.cx = E.row[E.cy].size;
-    }
-  }
-  else if (c == ctrl_key('f')) {
-    editorFind(term);
-  }
-  else if (c == Key::BACKSPACE ||
-           c == ctrl_key('h') ||
-           c == Key::DEL) {
-    if (c == Key::DEL) editorMoveCursor(Key::ARROW_RIGHT);
+      break;
+
+    case Term::ctrl_key('f'):
+      editorFind(term);
+      break;
+
+    case Key::BACKSPACE:
+    case Term::ctrl_key('h'):
+    case Key::DEL:
+      if (c == Key::DEL) editorMoveCursor(Key::ARROW_RIGHT);
       editorDelChar();
-  }
-  else if (c == Key::PAGE_UP ||
-           c == Key::PAGE_DOWN) {
-    if (c == Key::PAGE_UP) {
-      E.cy = E.rowoff;
-    } else if (c == Key::PAGE_DOWN) {
-      E.cy = E.rowoff + E.screenrows - 1;
-      if (E.cy > E.numrows) E.cy = E.numrows;
-    }
-    int times = E.screenrows;
-    while (times--) {
-    editorMoveCursor(c == Key::PAGE_UP ? Key::ARROW_UP : Key::ARROW_DOWN);
-    }
-  }
-  else if (c == Key::ARROW_UP ||
-      c == Key::ARROW_DOWN ||
-      c == Key::ARROW_LEFT ||
-      c == Key::ARROW_RIGHT) {
-    editorMoveCursor(c);
-  }
-  else if (c == Key::TAB)
-    editorInsertChar('\t');
-  else
-  {
-    if (c != ctrl_key('l') ||
-           c != Key::ESC)
+      break;
+
+    case Key::PAGE_UP:
+    case Key::PAGE_DOWN:
+      {
+        if (c == Key::PAGE_UP) {
+          E.cy = E.rowoff;
+        } else if (c == Key::PAGE_DOWN) {
+          E.cy = E.rowoff + E.screenrows - 1;
+          if (E.cy > E.numrows) E.cy = E.numrows;
+        }
+
+        int times = E.screenrows;
+        while (times--)
+          editorMoveCursor(c == Key::PAGE_UP ? Key::ARROW_UP : Key::ARROW_DOWN);
+      }
+      break;
+
+    case Key::ARROW_UP:
+    case Key::ARROW_DOWN:
+    case Key::ARROW_LEFT:
+    case Key::ARROW_RIGHT:
+      editorMoveCursor(c);
+      break;
+
+    case Term::ctrl_key('l'):
+    case Key::ESC:
+      break;
+
+    case Key::TAB:
+      editorInsertChar('\t');
+      break;
+
+    default:
       editorInsertChar(c);
+      break;
   }
 
   quit_times = KILO_QUIT_TIMES;

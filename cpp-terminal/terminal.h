@@ -97,12 +97,13 @@ inline std::string cursor_on()
     return "\x1b[?25h";
 }
 
-inline char ctrl_key(unsigned char k)
+inline constexpr char ctrl_key(unsigned char k)
 {
     return k & 0x1f;
+    //return (char)((unsigned char)k & 0x1f);
 }
 
-inline char alt_key(unsigned char k)
+inline constexpr char alt_key(unsigned char k)
 {
     return k + 0x80;
 }
