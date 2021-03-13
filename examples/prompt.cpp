@@ -6,6 +6,7 @@
 
 using Term::Terminal;
 using Term::prompt;
+using Term::Key;
 
 
 bool determine_completeness([[maybe_unused]] std::string command)
@@ -37,7 +38,7 @@ int main() {
         std::function<bool(std::string)> iscomplete = determine_completeness;
         while (true) {
             std::string answer = prompt(term, "> ", history, iscomplete);
-            if (answer.size() == 1 && answer[0] == CTRL_KEY('d')) break;
+            if (answer.size() == 1 && answer[0] == Key::CTRL + 'd') break;
             std::cout << "Submitted text: " << answer << std::endl;
         }
     } catch(const std::runtime_error& re) {
