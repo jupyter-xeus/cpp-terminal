@@ -1,0 +1,64 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# visual studio
+.vscode/
+.devcontainer/
+build/
+.vs/
+CMakeSettings.json
+*.sln
+*.vcxitems
+*.vcxproj
+*.filters
+Debug/
+out/
+CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt
+
+# Clion
+cmake-build-release/
+cmake-build-release-visual-studio/
+cmake-build-release-cygwin/
+cmake-build-debug/
+cmake-build-debug-visual-studio/
+cmake-build-debug-cygwin/
+.idea/
+
+# cmake
+.cache/
+Makefile
+
+# project specific
+cpp-terminal/version.h

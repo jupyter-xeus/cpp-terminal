@@ -1,0 +1,3 @@
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#configurable-format-style-options
+BasedOnStyle: Chromium
+IndentWidth: 4

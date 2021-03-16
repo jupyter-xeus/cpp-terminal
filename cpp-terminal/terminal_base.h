@@ -12,12 +12,12 @@
 #include <stdexcept>
 
 #ifdef _WIN32
-#    include <conio.h>
-#    include <windows.h>
-#    include <io.h>
+#include <conio.h>
+#include <io.h>
+#include <windows.h>
 #else
-#    include <sys/ioctl.h>
-#    include <termios.h>
+#include <sys/ioctl.h>
+#include <termios.h>
 #undef B0
 #undef B50
 #undef B75
@@ -37,8 +37,8 @@
 #undef B38400
 #undef B57600
 #undef B115200
-#    include <unistd.h>
-#    include <cerrno>
+#include <unistd.h>
+#include <cerrno>
 #endif
 
 namespace Term {
@@ -49,7 +49,7 @@ namespace Term {
  * something goes wrong.
  */
 class BaseTerminal {
-private:
+   private:
 #ifdef _WIN32
     HANDLE hout;
     DWORD dwOriginalOutMode{};
@@ -60,24 +60,25 @@ private:
     DWORD dwOriginalInMode{};
     UINT in_code_page;
 #else
-    struct termios orig_termios{};
+    struct termios orig_termios {};
 #endif
     bool keyboard_enabled{};
 
-public:
+   public:
 #ifdef _WIN32
-    explicit BaseTerminal(bool enable_keyboard=false, bool /*disable_ctrl_c*/ = true)
-        : keyboard_enabled{enable_keyboard}
-    {
+    explicit BaseTerminal(bool enable_keyboard = false,
+                          bool /*disable_ctrl_c*/ = true)
+        : keyboard_enabled{enable_keyboard} {
         // Uncomment this to silently disable raw mode for non-tty
-        //if (keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
+        // if (keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
         out_console = is_stdout_a_tty();
         if (out_console) {
             hout = GetStdHandle(STD_OUTPUT_HANDLE);
             out_code_page = GetConsoleOutputCP();
             SetConsoleOutputCP(65001);
             if (hout == INVALID_HANDLE_VALUE) {
-                throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed");
+                throw std::runtime_error(
+                    "GetStdHandle(STD_OUTPUT_HANDLE) failed");
             }
             if (!GetConsoleMode(hout, &dwOriginalOutMode)) {
                 throw std::runtime_error("GetConsoleMode() failed");
@@ -96,7 +97,7 @@ public:
             SetConsoleCP(65001);
             if (hin == INVALID_HANDLE_VALUE) {
                 throw std::runtime_error(
-                        "GetStdHandle(STD_INPUT_HANDLE) failed");
+                    "GetStdHandle(STD_INPUT_HANDLE) failed");
             }
             if (!GetConsoleMode(hin, &dwOriginalInMode)) {
                 throw std::runtime_error("GetConsoleMode() failed");
@@ -109,11 +110,11 @@ public:
             }
         }
 #else
-    explicit BaseTerminal(bool enable_keyboard=false, bool disable_ctrl_c=true)
-        : keyboard_enabled{enable_keyboard}
-    {
+    explicit BaseTerminal(bool enable_keyboard = false,
+                          bool disable_ctrl_c = true)
+        : keyboard_enabled{enable_keyboard} {
         // Uncomment this to silently disable raw mode for non-tty
-        //if (keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
+        // if (keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
         if (keyboard_enabled) {
             if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) {
                 throw std::runtime_error("tcgetattr() failed");
@@ -125,7 +126,7 @@ public:
             // This disables output post-processing, requiring explicit \r\n. We
             // keep it enabled, so that in C++, one can still just use std::endl
             // for EOL instead of "\r\n".
-            //raw.c_oflag &= ~(OPOST);
+            // raw.c_oflag &= ~(OPOST);
             raw.c_cflag |= (CS8);
             raw.c_lflag &= ~(ECHO | ICANON | IEXTEN);
             if (disable_ctrl_c) {
@@ -141,14 +142,13 @@ public:
 #endif
     }
 
-    virtual ~BaseTerminal() noexcept(false)
-    {
+    virtual ~BaseTerminal() noexcept(false) {
 #ifdef _WIN32
         if (out_console) {
             SetConsoleOutputCP(out_code_page);
             if (!SetConsoleMode(hout, dwOriginalOutMode)) {
                 throw std::runtime_error(
-                        "SetConsoleMode() failed in destructor");
+                    "SetConsoleMode() failed in destructor");
             }
         }
 
@@ -156,7 +156,7 @@ public:
             SetConsoleCP(in_code_page);
             if (!SetConsoleMode(hin, dwOriginalInMode)) {
                 throw std::runtime_error(
-                        "SetConsoleMode() failed in destructor");
+                    "SetConsoleMode() failed in destructor");
             }
         }
 #else
@@ -169,8 +169,7 @@ public:
     }
 
     // Returns true if a character is read, otherwise immediately returns false
-    bool read_raw(char* s) const
-    {
+    bool read_raw(char* s) const {
         if (!keyboard_enabled) {
             int c = getchar();
             if (c >= 0) {
@@ -210,8 +209,7 @@ public:
 #endif
     }
 
-    bool get_term_size(int& rows, int& cols) const
-    {
+    bool get_term_size(int& rows, int& cols) const {
 #ifdef _WIN32
         CONSOLE_SCREEN_BUFFER_INFO inf;
         if (GetConsoleScreenBufferInfo(hout, &inf)) {
@@ -223,7 +221,7 @@ public:
             return false;
         }
 #else
-        struct winsize ws{};
+        struct winsize ws {};
         if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
             // This happens when we are not connected to a terminal
             return false;
@@ -236,8 +234,7 @@ public:
     }
 
     // Returns true if the standard input is attached to a terminal
-    static bool is_stdin_a_tty()
-    {
+    static bool is_stdin_a_tty() {
 #ifdef _WIN32
         return _isatty(_fileno(stdin));
 #else
@@ -246,18 +243,19 @@ public:
     }
 
     // Returns true if the standard output is attached to a terminal
-    static bool is_stdout_a_tty()
-    {
+    static bool is_stdout_a_tty() {
 #ifdef _WIN32
         return _isatty(_fileno(stdout));
 #else
         return isatty(STDOUT_FILENO);
 #endif
     }
-    
+
     // coverts a string into an integer
-    static int convert_string_to_int(const char *string, const char *format, int* rows, int* cols)
-    {
+    static int convert_string_to_int(const char* string,
+                                     const char* format,
+                                     int* rows,
+                                     int* cols) {
 #ifdef _WIN32
         // windows provides it's own alternative to sscanf()
         return sscanf_s(string, format, rows, cols);
@@ -268,6 +266,6 @@ public:
     }
 };
 
-} // namespace Term
+}  // namespace Term
 
-#endif // TERMINAL_BASE_H
+#endif  // TERMINAL_BASE_H
