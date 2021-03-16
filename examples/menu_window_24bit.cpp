@@ -6,7 +6,7 @@ using Term::bg;
 using Term::style;
 using Term::Key;
 
-std::string render(Term::Window &scr, int rows, int cols,
+std::string render(Term::Window_24bit &scr, int rows, int cols,
         int menuheight, int menuwidth, int menupos)
 {
     scr.clear();
@@ -18,12 +18,12 @@ std::string render(Term::Window &scr, int rows, int cols,
         std::string s = std::to_string(i) + ": item";
         scr.print_str(menux0+1, menuy0+i, s);
         if (i == menupos) {
-            scr.fill_fg(menux0+1, menuy0+i, menux0+s.size(), menuy0+i, fg::red);
-            scr.fill_bg(menux0+1, menuy0+i, menux0+menuwidth, menuy0+i, bg::gray);
+            scr.fill_fg(menux0+1, menuy0+i, menux0+s.size(), menuy0+i, 184, 37, 0);
+            scr.fill_bg(menux0+1, menuy0+i, menux0+menuwidth, menuy0+i, 8, 9, 10);
             scr.fill_style(menux0+1, menuy0+i, menux0+s.size(), menuy0+i, style::bold);
         } else {
-            scr.fill_fg(menux0+1, menuy0+i, menux0+s.size(), menuy0+i, fg::blue);
-            scr.fill_bg(menux0+1, menuy0+i, menux0+menuwidth, menuy0+i, bg::green);
+            scr.fill_fg(menux0+1, menuy0+i, menux0+s.size(), menuy0+i, 5, 63, 97);
+            scr.fill_bg(menux0+1, menuy0+i, menux0+menuwidth, menuy0+i, 142, 166, 4);
         }
     }
 
@@ -33,7 +33,7 @@ std::string render(Term::Window &scr, int rows, int cols,
     scr.print_str(1, y+2, "Menu height: " + std::to_string(menuheight));
     scr.print_str(1, y+3, "Unicode test: Ondřej Čertík, ἐξήκοι");
 
-    return scr.render(1,1, true);
+    return scr.render(1, 1, true);
 }
 
 int main() {
@@ -46,7 +46,7 @@ int main() {
         int h = 10;
         int w = 10;
         bool on = true;
-        Term::Window scr(cols, rows);
+        Term::Window_24bit scr(cols, rows);
         while (on) {
             std::cout << render(scr, rows, cols, h, w, pos) << std::flush;
             int key = term.read_key();
