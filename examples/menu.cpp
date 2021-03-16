@@ -1,19 +1,18 @@
 #include <cpp-terminal/terminal.h>
 
-using Term::Terminal;
-using Term::cursor_on;
-using Term::cursor_off;
-using Term::move_cursor;
-using Term::color;
-using Term::fg;
 using Term::bg;
-using Term::style;
+using Term::color;
+using Term::cursor_off;
+using Term::cursor_on;
+using Term::fg;
 using Term::Key;
+using Term::move_cursor;
+using Term::style;
+using Term::Terminal;
 
-void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
-{
+void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
     std::string scr;
-    scr.reserve(16*1024);
+    scr.reserve(16 * 1024);
 
     scr.append(cursor_off());
     scr.append(move_cursor(1, 1));
@@ -21,21 +20,21 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
     int menux0 = (cols - menuwidth) / 2;
     int menuy0 = (rows - menuheight) / 2;
 
-    for (int j=1; j <= menuy0; j++) {
+    for (int j = 1; j <= menuy0; j++) {
         scr.append("\n");
     }
 
-    for (int j=1; j <= menux0; j++) {
+    for (int j = 1; j <= menux0; j++) {
         scr.append(" ");
     }
     scr.append("┌");
-    for (int j=1; j <= menuwidth; j++) {
+    for (int j = 1; j <= menuwidth; j++) {
         scr.append("─");
     }
     scr.append("┐");
     scr.append(" \n");
-    for (int i=1; i <= menuheight; i++) {
-        for (int j=1; j <= menux0; j++) {
+    for (int i = 1; i <= menuheight; i++) {
+        for (int j = 1; j <= menux0; j++) {
             scr.append(" ");
         }
         scr.append("│");
@@ -49,7 +48,7 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
         }
         std::string s = std::to_string(i) + ": item";
         scr.append(s);
-        for (size_t j=1; j <= menuwidth-s.size(); j++) {
+        for (size_t j = 1; j <= menuwidth - s.size(); j++) {
             scr.append(" ");
         }
         scr.append(color(bg::reset));
@@ -58,11 +57,11 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
         scr.append("│");
         scr.append(" \n");
     }
-    for (int j=1; j <= menux0; j++) {
+    for (int j = 1; j <= menux0; j++) {
         scr.append(" ");
     }
     scr.append("└");
-    for (int j=1; j <= menuwidth; j++) {
+    for (int j = 1; j <= menuwidth; j++) {
         scr.append("─");
     }
     scr.append("┘");
@@ -92,21 +91,38 @@ int main() {
             render(rows, cols, h, w, pos);
             int key = term.read_key();
             switch (key) {
-                case Key::ARROW_LEFT: if (w > 10) w--; break;
-                case Key::ARROW_RIGHT: if (w < cols-5) w++; break;
-                case Key::ARROW_UP: if (pos > 1) pos--; break;
-                case Key::ARROW_DOWN: if (pos < h) pos++; break;
-                case Key::HOME: pos=1; break;
-                case Key::END: pos=h; break;
+                case Key::ARROW_LEFT:
+                    if (w > 10)
+                        w--;
+                    break;
+                case Key::ARROW_RIGHT:
+                    if (w < cols - 5)
+                        w++;
+                    break;
+                case Key::ARROW_UP:
+                    if (pos > 1)
+                        pos--;
+                    break;
+                case Key::ARROW_DOWN:
+                    if (pos < h)
+                        pos++;
+                    break;
+                case Key::HOME:
+                    pos = 1;
+                    break;
+                case Key::END:
+                    pos = h;
+                    break;
                 case 'q':
                 case Key::ESC:
-                      on = false; break;
+                    on = false;
+                    break;
             }
         }
-    } catch(const std::runtime_error& re) {
+    } catch (const std::runtime_error& re) {
         std::cerr << "Runtime error: " << re.what() << std::endl;
         return 2;
-    } catch(...) {
+    } catch (...) {
         std::cerr << "Unknown error." << std::endl;
         return 1;
     }
