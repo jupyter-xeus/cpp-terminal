@@ -1,16 +1,15 @@
 /*
  * This example shows how to interpret keys presses from Terminal.
  */
-#include <cpp-terminal/terminal.h>
+#include <cpp-terminal/input.hpp>
 
-using Term::Key;
-using Term::Terminal;
+using namespace Term;
 
 int main() {
     try {
         Terminal term(true, false);
         int rows{}, cols{};
-        term.get_term_size(rows, cols);
+        get_term_size(rows, cols);
         std::cout << "Dimension:" << cols << " " << rows << std::endl;
         std::cout << "Press any key ('q' to quit):" << std::endl;
         bool on = true;

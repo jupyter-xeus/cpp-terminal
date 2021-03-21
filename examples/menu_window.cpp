@@ -1,4 +1,6 @@
-#include <cpp-terminal/terminal.h>
+#include <cpp-terminal/input.hpp>
+#include <cpp-terminal/window.hpp>
+
 
 using Term::bg;
 using Term::fg;

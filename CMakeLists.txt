@@ -10,19 +10,12 @@ if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 17
         CACHE STRING "C++ standard" FORCE)
 endif ()
-configure_file(cpp-terminal/version.h.in cpp-terminal/version.h)
 
 option(CPPTERMINAL_BUILD_EXAMPLES "Set to ON to build examples" ON)
 option(CPPTERMINAL_ENABLE_INSTALL "Set to ON to enable install" ON)
 option(CPPTERMINAL_ENABLE_TESING "Set to ON to enable testing" ON)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-add_library(cpp-terminal INTERFACE)
-target_include_directories(cpp-terminal INTERFACE ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
-set_target_properties(cpp-terminal PROPERTIES
-    PUBLIC_HEADER "cpp-terminal/terminal.h;cpp-terminal/terminal_base.h;cpp-terminal/version.h"
-)
 
 set(CPPTERMINAL_CMAKECONFIG_INCLUDE_DIR "include" CACHE STRING "install include directory")
 include(CMakePackageConfigHelpers)
@@ -42,6 +35,8 @@ endif()
 if (CPPTERMINAL_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
+
+add_subdirectory(cpp-terminal)
 
 if (CPPTERMINAL_ENABLE_INSTALL)
     install(TARGETS cpp-terminal
