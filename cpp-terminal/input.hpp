@@ -472,5 +472,4 @@ class Terminal : public BaseTerminal {
     }
 };
 
-
 }  // namespace Term

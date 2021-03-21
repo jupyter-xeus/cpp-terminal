@@ -110,19 +110,19 @@ inline std::string clear_screen_buffer() {
 // If an attempt is made to move the cursor out of the window, the result is
 // undefined.
 inline std::string move_cursor(size_t row, size_t col) {
-    return "\x1b[" + std::to_string(row) + ";" + std::to_string(col) + "H";
+    return "\x1b[" + std::to_string(row) + ';' + std::to_string(col) + 'H';
 }
 
 // If an attempt is made to move the cursor to the right of the right margin,
 // the cursor stops at the right margin.
 inline std::string move_cursor_right(int col) {
-    return "\x1b[" + std::to_string(col) + "C";
+    return "\x1b[" + std::to_string(col) + 'C';
 }
 
 // If an attempt is made to move the cursor below the bottom margin, the cursor
 // stops at the bottom margin.
 inline std::string move_cursor_down(int row) {
-    return "\x1b[" + std::to_string(row) + "B";
+    return "\x1b[" + std::to_string(row) + 'B';
 }
 
 inline std::string cursor_position_report() {
@@ -135,15 +135,11 @@ inline std::string erase_to_eol() {
 
 void restore_screen() {
         write("\033[?1049l");  // restore screen
-        write(
-            "\033"
-            "8");  // restore current cursor position
+        write("\0338");  // restore current cursor position
 }
 
 void save_screen() {
-    write(
-        "\033"
-        "7");              // save current cursor position
+    write("\0337");              // save current cursor position
     write("\033[?1049h");  // save screen
 }
 
