@@ -51,7 +51,7 @@ int main() {
         Terminal term(true, false);
         term.save_screen();
         int rows{}, cols{};
-        term.get_term_size(rows, cols);
+        Term::get_term_size(rows, cols);
         int pos = 5;
         int h = 10;
         int w = 10;
