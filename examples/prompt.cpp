@@ -1,4 +1,4 @@
-#include <cpp-terminal/terminal.h>
+#include <cpp-terminal/prompt.hpp>
 
 #include <functional>
 #include <string>
