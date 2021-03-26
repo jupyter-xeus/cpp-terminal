@@ -4,10 +4,13 @@
 #include <windows.h>
 #else
 #include <termios.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 #endif
 
 #include <thread>
 #include <chrono>
+#include <stdexcept>
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/tools.hpp>
 

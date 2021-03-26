@@ -1,6 +1,8 @@
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/version.hpp>
 
+#include <iostream>
+
 using namespace Term;
 
 int main() {

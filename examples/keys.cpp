@@ -2,6 +2,7 @@
  * This example shows how to interpret keys presses from Terminal.
  */
 #include <cpp-terminal/input.hpp>
+#include <iostream>
 
 using namespace Term;
 

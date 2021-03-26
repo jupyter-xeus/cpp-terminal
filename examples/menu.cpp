@@ -1,15 +1,9 @@
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
 
-using Term::bg;
-using Term::color;
-using Term::cursor_off;
-using Term::cursor_on;
-using Term::fg;
-using Term::Key;
-using Term::move_cursor;
-using Term::style;
-using Term::Terminal;
+#include <iostream>
+
+using namespace Term;
 
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
     std::string scr;
