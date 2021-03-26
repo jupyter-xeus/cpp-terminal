@@ -11,8 +11,8 @@
 #include <thread>
 #include <chrono>
 #include <stdexcept>
-#include <cpp-terminal/base.hpp>
-#include <cpp-terminal/tools.hpp>
+#include "base.hpp"
+#include "tools.hpp"
 
 namespace Term {
 enum Key {
