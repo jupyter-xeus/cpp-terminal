@@ -51,15 +51,18 @@ if (CPPTERMINAL_ENABLE_INSTALL)
     export(EXPORT cpp-terminalTargets
       FILE "${CMAKE_CURRENT_BINARY_DIR}/cpp-terminal/cpp-terminalTargets.cmake"
     )
+    
+    set(ConfigPackageLocation lib/cmake/cpp-terminal)
+
     configure_file(cmake/cpp-terminalConfig.cmake.in
       "${CMAKE_CURRENT_BINARY_DIR}/cpp-terminal/cpp-terminalConfig.cmake"
     )
 
-    set(ConfigPackageLocation lib/cmake/cpp-terminal)
     install(
       FILES
         "${CMAKE_CURRENT_BINARY_DIR}/cpp-terminal/cpp-terminalConfig.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/cpp-terminal/cpp-terminalConfigVersion.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/cpp-terminal/cpp-terminalTargets.cmake"
       DESTINATION
         ${ConfigPackageLocation}
       COMPONENT
