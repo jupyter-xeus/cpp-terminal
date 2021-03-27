@@ -58,7 +58,7 @@ if (CPPTERMINAL_ENABLE_INSTALL)
     set(ConfigPackageLocation lib/cmake/cpp-terminal)
     install(
       FILES
-        cmake/cpp-terminalConfig.cmake
+        "${CMAKE_CURRENT_BINARY_DIR}/cpp-terminal/cpp-terminalConfig.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/cpp-terminal/cpp-terminalConfigVersion.cmake"
       DESTINATION
         ${ConfigPackageLocation}
