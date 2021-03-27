@@ -1,5 +1,3 @@
-// terminal base
-
 #pragma once
 
 #include <string>

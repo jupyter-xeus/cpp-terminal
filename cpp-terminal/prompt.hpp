@@ -1,9 +1,8 @@
+#pragma once
+
 #include <string>
 #include <functional>
-
-#include "tools.hpp"
 #include "window.hpp"
-#include "base.hpp"
 #include "input.hpp"
 
 namespace Term

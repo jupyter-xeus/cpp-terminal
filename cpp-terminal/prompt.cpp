@@ -1,7 +1,8 @@
 #include <vector>
 #include <stdexcept>
 #include <iostream>
-
+#include "tools.hpp"
+#include "base.hpp"
 #include "prompt.hpp"
 
 std::string Term::concat(const std::vector<std::string>& lines) {

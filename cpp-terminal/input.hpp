@@ -1,3 +1,5 @@
+#pragma once
+
 #ifdef _WIN32
 #include <conio.h>
 #include <io.h>
@@ -7,7 +9,6 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #endif
-
 #include <thread>
 #include <chrono>
 #include <stdexcept>

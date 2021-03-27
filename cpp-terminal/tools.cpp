@@ -1,6 +1,5 @@
-#include "tools.hpp"
-
 #include <stdexcept>
+#include "tools.hpp"
 
 #define UTF8_ACCEPT 0
 #define UTF8_REJECT 0xf

@@ -1,6 +1,6 @@
-#include "window.hpp"
 #include <iostream>
 #include "tools.hpp"
+#include "window.hpp"
 
 /* window_24bit */
 
