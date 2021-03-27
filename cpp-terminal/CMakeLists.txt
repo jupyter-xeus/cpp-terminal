@@ -1,4 +1,4 @@
-set(CPP_TERMINAL_SOURCES base.cpp prompt.cpp)
+set(CPP_TERMINAL_SOURCES base.cpp prompt.cpp tools.cpp)
 
 add_library(cpp-terminal ${CPP_TERMINAL_SOURCES})
 target_include_directories(cpp-terminal INTERFACE ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})

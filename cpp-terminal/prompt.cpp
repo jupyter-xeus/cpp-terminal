@@ -1,5 +1,6 @@
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 
 #include "prompt.hpp"
 
