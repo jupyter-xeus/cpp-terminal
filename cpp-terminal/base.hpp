@@ -97,8 +97,6 @@ void restore_screen();
 
 void save_screen();
 
-    bool get_term_size(int& rows, int& cols);
-
     // Returns true if the standard input is attached to a terminal
     bool is_stdin_a_tty();
 

@@ -7,6 +7,7 @@
 #include <unistd.h>
 #endif
 #include <iostream>
+#include <stdexcept>
 #include "base.hpp"
 
 std::string Term::color(const style& value) {
@@ -84,30 +85,6 @@ void Term::save_screen() {
     write("\0337");              // save current cursor position
     write("\033[?1049h");  // save screen
 }
-
-    bool Term::get_term_size(int& rows, int& cols) {
-#ifdef _WIN32
-        CONSOLE_SCREEN_BUFFER_INFO inf;
-        if (GetConsoleScreenBufferInfo(hout, &inf)) {
-            cols = inf.srWindow.Right - inf.srWindow.Left + 1;
-            rows = inf.srWindow.Bottom - inf.srWindow.Top + 1;
-            return true;
-        } else {
-            // This happens when we are not connected to a terminal
-            return false;
-        }
-#else
-        struct winsize ws {};
-        if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
-            // This happens when we are not connected to a terminal
-            return false;
-        } else {
-            cols = ws.ws_col;
-            rows = ws.ws_row;
-            return true;
-        }
-#endif
-    }
 
     bool Term::is_stdin_a_tty() {
 #ifdef _WIN32

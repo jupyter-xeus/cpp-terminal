@@ -28,9 +28,9 @@ void print_left_curly_bracket(Term::Window&, int, int, int);
 
 void render(Term::Window&, const Model&, size_t);
 
-std::string prompt(const Terminal& term,
-                          const std::string& prompt_string,
-                          std::vector<std::string>& history,
-                          std::function<bool(std::string)>& iscomplete);
+std::string prompt(Terminal& term,
+                   const std::string& prompt_string,
+                   std::vector<std::string>& history,
+                   std::function<bool(std::string)>& iscomplete);
 
 }

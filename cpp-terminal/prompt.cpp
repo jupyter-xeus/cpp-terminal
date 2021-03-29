@@ -73,10 +73,10 @@ void Term::render(Term::Window& scr, const Model& m, size_t cols) {
     scr.set_cursor_pos(m.prompt_string.size() + m.cursor_col, m.cursor_row);
 }
 
-std::string Term::prompt(const Terminal& term,
-                          const std::string& prompt_string,
-                          std::vector<std::string>& history,
-                          std::function<bool(std::string)>& iscomplete) {
+std::string Term::prompt(Terminal& term,
+                         const std::string& prompt_string,
+                         std::vector<std::string>& history,
+                         std::function<bool(std::string)>& iscomplete) {
     int row, col;
     bool term_attached = is_stdin_a_tty();
     if (term_attached) {
@@ -86,7 +86,7 @@ std::string Term::prompt(const Terminal& term,
         col = 1;
     }
     int rows, cols;
-    if (!get_term_size(rows, cols)) {
+    if (!term.get_term_size(rows, cols)) {
         rows = 25;
         cols = 80;
     }
