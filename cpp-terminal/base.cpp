@@ -1,7 +1,6 @@
 #ifdef _WIN32
 #include <conio.h>
 #include <io.h>
-#include <windows.h>
 #else
 #include <sys/ioctl.h>
 #include <unistd.h>
