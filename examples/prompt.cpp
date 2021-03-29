@@ -30,8 +30,8 @@ int main() {
                   << std::endl;
         std::cout << "    - History (Keys: Up, Down)" << std::endl;
         std::cout
-            << "    - Multi-line editing (use Alt-Enter to add a new line)"
-            << std::endl;
+                << "    - Multi-line editing (use Alt-Enter to add a new line)"
+                << std::endl;
         // TODO:
         // std::cout << "    - Syntax highlighting" << std::endl;
         std::vector<std::string> history;
@@ -42,7 +42,7 @@ int main() {
                 break;
             std::cout << "Submitted text: " << answer << std::endl;
         }
-    } catch (const std::runtime_error& re) {
+    } catch (const std::runtime_error &re) {
         std::cerr << "Runtime error: " << re.what() << std::endl;
         return 2;
     } catch (...) {

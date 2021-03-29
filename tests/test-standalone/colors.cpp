@@ -53,7 +53,7 @@ int main() {
         }
         std::cout << "\n";
 
-    } catch (const std::runtime_error& re) {
+    } catch (const std::runtime_error &re) {
         std::cerr << "Runtime error: " << re.what() << std::endl;
         return 2;
     } catch (...) {

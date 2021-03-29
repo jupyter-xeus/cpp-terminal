@@ -18,18 +18,18 @@ int main() {
             int key = term.read_key();
             std::string s;
             if (key >= 'a' && key <= 'z') {
-                s = (char)(key + 'A' - 'a');  // Convert to upper case
+                s = (char) (key + 'A' - 'a');  // Convert to upper case
                 if (key == 'q')
                     on = false;
             } else if (key >= 'A' && key <= 'Z') {
-                s = (char)key;  // Already in upper case
+                s = (char) key;  // Already in upper case
                 s = "Shift+" + s;
             } else if (key >= Key::CTRL + 'a' && key <= Key::CTRL + 'z') {
-                s = (char)((-Key::CTRL + key) - 32);  // Convert to upper case
+                s = (char) ((-Key::CTRL + key) - 32);  // Convert to upper case
                 s = "Ctrl+" + s;
             } else if (key >= Key::ALT + 'a' && key <= Key::ALT + 'z') {
-                s = (char)(key + 'A' -
-                           (Key::ALT + 'a'));  // Convert to upper case
+                s = (char) (key + 'A' -
+                            (Key::ALT + 'a'));  // Convert to upper case
                 s = "Alt+" + s;
             } else if (key > 0 && !iscntrl(key) && key < 128) {
                 s = std::to_string(key);
@@ -138,7 +138,7 @@ int main() {
             }
             std::cout << "Key: " << s << std::endl;
         }
-    } catch (const std::runtime_error& re) {
+    } catch (const std::runtime_error &re) {
         std::cerr << "Runtime error: " << re.what() << std::endl;
         return 2;
     } catch (...) {

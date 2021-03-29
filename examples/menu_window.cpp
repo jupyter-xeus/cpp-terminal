@@ -8,7 +8,7 @@ using Term::Key;
 using Term::style;
 using Term::Terminal;
 
-std::string render(Term::Window& scr,
+std::string render(Term::Window &scr,
                    int rows,
                    int cols,
                    int menuheight,
@@ -90,7 +90,7 @@ int main() {
                     break;
             }
         }
-    } catch (const std::runtime_error& re) {
+    } catch (const std::runtime_error &re) {
         std::cerr << "Runtime error: " << re.what() << std::endl;
         return 2;
     } catch (...) {

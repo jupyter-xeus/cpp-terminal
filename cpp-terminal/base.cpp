@@ -1,41 +1,44 @@
 #ifdef _WIN32
+
 #include <conio.h>
 #include <io.h>
+
 #else
 #include <sys/ioctl.h>
 #include <unistd.h>
 #endif
+
 #include <iostream>
 #include <stdexcept>
 #include "base.hpp"
 
-std::string Term::color(const style& value) {
+std::string Term::color(const style &value) {
     return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
 }
 
-std::string Term::color(const fg& value) {
+std::string Term::color(const fg &value) {
     return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
 }
 
-std::string Term::color(const bg& value) {
+std::string Term::color(const bg &value) {
     return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
 }
 
 std::string Term::color24_fg(unsigned int red,
-                              unsigned int green,
-                              unsigned int blue) {
+                             unsigned int green,
+                             unsigned int blue) {
     return "\033[38;2;" + std::to_string(red) + ';' + std::to_string(green) +
            ';' + std::to_string(blue) + 'm';
 }
 
 std::string Term::color24_bg(unsigned int red,
-                              unsigned int green,
-                              unsigned int blue) {
+                             unsigned int green,
+                             unsigned int blue) {
     return "\033[48;2;" + std::to_string(red) + ';' + std::to_string(green) +
            ';' + std::to_string(blue) + 'm';
 }
 
-void Term::write(const std::string& s) {
+void Term::write(const std::string &s) {
     std::cout << s << std::flush;
 }
 
@@ -76,8 +79,8 @@ std::string Term::erase_to_eol() {
 }
 
 void Term::restore_screen() {
-        write("\033[?1049l");  // restore screen
-        write("\0338");  // restore current cursor position
+    write("\033[?1049l");  // restore screen
+    write("\0338");  // restore current cursor position
 }
 
 void Term::save_screen() {
@@ -85,18 +88,18 @@ void Term::save_screen() {
     write("\033[?1049h");  // save screen
 }
 
-    bool Term::is_stdin_a_tty() {
+bool Term::is_stdin_a_tty() {
 #ifdef _WIN32
-        return _isatty(_fileno(stdin));
+    return _isatty(_fileno(stdin));
 #else
-        return isatty(STDIN_FILENO);
+    return isatty(STDIN_FILENO);
 #endif
-    }
+}
 
-    bool Term::is_stdout_a_tty() {
+bool Term::is_stdout_a_tty() {
 #ifdef _WIN32
-        return _isatty(_fileno(stdout));
+    return _isatty(_fileno(stdout));
 #else
-        return isatty(STDOUT_FILENO);
+    return isatty(STDOUT_FILENO);
 #endif
-    }
+}
