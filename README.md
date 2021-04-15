@@ -238,6 +238,8 @@ C and C++:
 * [curses](https://en.wikipedia.org/wiki/Curses_%28programming_library%29) and [ncurses](https://www.gnu.org/software/ncurses/ncurses.html)
 * [Newt](https://en.wikipedia.org/wiki/Newt_(programming_library))
 * [termbox](https://github.com/nsf/termbox)
+* [FTXUI](https://github.com/ArthurSonzogni/FTXUI)
+* [ImTui](https://github.com/ggerganov/imtui)
 
 Python:
 
