@@ -2,7 +2,7 @@
 configure_file(version.h.in version.h)
 
 # create and confirgure library target
-add_library(cpp-terminal terminal_base.cpp)
+add_library(cpp-terminal terminal_base.cpp terminal.cpp)
 
 target_include_directories(cpp-terminal BEFORE PUBLIC
     ${cpp-terminal_SOURCE_DIR}

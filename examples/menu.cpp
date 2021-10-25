@@ -1,4 +1,5 @@
 #include <cpp-terminal/terminal.h>
+#include <iostream>
 
 using Term::bg;
 using Term::color;
