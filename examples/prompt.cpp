@@ -1,6 +1,7 @@
 #include <cpp-terminal/terminal.h>
 
 #include <functional>
+#include <iostream>
 #include <string>
 #include <vector>
 
