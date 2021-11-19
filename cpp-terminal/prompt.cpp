@@ -1,3 +1,7 @@
+#include "prompt.hpp"
+#include <iostream>
+#include "private/conversion.hpp"
+
 std::string Term::concat(const std::vector<std::string>& lines) {
     std::string s;
     for (auto& line : lines) {

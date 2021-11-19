@@ -1,4 +1,5 @@
 #include "base.hpp"
+#include <iostream>
 
 template <typename T>
 std::string Term::color(T const& value) {
