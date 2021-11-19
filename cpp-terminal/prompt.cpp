@@ -28,7 +28,7 @@ std::vector<std::string> Term::split(const std::string& s) {
 }
 
 char32_t Term::U(const std::string& s) {
-    std::u32string s2 = Term::utf8_to_utf32(s);
+    std::u32string s2 = Private::utf8_to_utf32(s);
     if (s2.size() != 1)
         throw std::runtime_error("U(s): s not a codepoint.");
     return s2[0];

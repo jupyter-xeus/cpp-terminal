@@ -5,7 +5,7 @@
 namespace Term::Private {
     static constexpr uint8_t UTF8_ACCEPT = 0;
     static constexpr uint8_t UTF8_REJECT = 0xf;
-    uint8_t Private::utf8_decode_step(uint8_t state, uint8_t octet, uint32_t* cpp) {
+    uint8_t utf8_decode_step(uint8_t state, uint8_t octet, uint32_t* cpp) {
     static const uint32_t utf8_classtab[0x10] = {
         0x88888888UL, 0x88888888UL, 0x99999999UL, 0x99999999UL,
         0xaaaaaaaaUL, 0xaaaaaaaaUL, 0xaaaaaaaaUL, 0xaaaaaaaaUL,
