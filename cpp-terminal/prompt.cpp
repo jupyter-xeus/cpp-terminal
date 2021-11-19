@@ -1,4 +1,4 @@
-#include "prompt.hpp"
+#include <cpp-terminal/prompt.hpp>
 #include <iostream>
 #include "private/conversion.hpp"
 

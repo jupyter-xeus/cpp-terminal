@@ -1,6 +1,6 @@
 #pragma once
 
-#include "window.hpp"
+#include <cpp-terminal/window.hpp>
 #include <cpp-terminal/terminal.h>
 
 namespace Term {

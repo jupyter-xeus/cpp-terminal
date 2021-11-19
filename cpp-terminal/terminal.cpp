@@ -5,7 +5,7 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include "base.hpp"
+#include <cpp-terminal/base.hpp>
 
 Term::Terminal::~Terminal() {
     restore_screen();

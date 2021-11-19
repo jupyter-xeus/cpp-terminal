@@ -1,4 +1,4 @@
-#include "base.hpp"
+#include <cpp-terminal/base.hpp>
 #include <iostream>
 
 template <typename T>

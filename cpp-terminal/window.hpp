@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "base.hpp"
+#include <cpp-terminal/base.hpp>
 
 namespace Term {
 
