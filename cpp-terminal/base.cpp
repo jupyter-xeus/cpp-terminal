@@ -1,8 +1,15 @@
 #include <cpp-terminal/base.hpp>
 #include <iostream>
+#include <string>
 
-template <typename T>
-std::string Term::color(T const& value) {
+
+std::string Term::color(style value) {
+    return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
+}
+std::string Term::color(fg value) {
+    return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
+}
+std::string Term::color(bg value) {
     return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
 }
 

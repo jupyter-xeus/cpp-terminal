@@ -57,8 +57,9 @@ enum class bg {
     bright_white = 107
 };
 
-template <typename T>
-std::string color(T const&);
+std::string color(style);
+std::string color(fg);
+std::string color(bg);
 
 std::string color24_fg(unsigned int, unsigned int, unsigned int);
 
