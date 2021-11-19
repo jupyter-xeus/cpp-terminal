@@ -1,4 +1,5 @@
 #include "window.hpp"
+#include "private/conversion.hpp"
 #include <stdexcept>
 
 namespace Term {
@@ -98,7 +99,7 @@ void Term::Window_24bit::print_str(int x,
                                    const std::string& s,
                                    int indent,
                                    bool move_cursor) {
-    std::u32string s2 = utf8_to_utf32(s);
+    std::u32string s2 = Private::utf8_to_utf32(s);
     size_t xpos = x;
     size_t ypos = y;
     for (char32_t i : s2) {
@@ -178,7 +179,7 @@ void Term::Window_24bit::print_rect(size_t x1,
                                     size_t x2,
                                     size_t y2,
                                     bool unicode) {
-    std::u32string border = utf8_to_utf32("│─┌┐└┘");
+    std::u32string border = Private::utf8_to_utf32("│─┌┐└┘");
     if (unicode) {
         for (size_t j = y1 + 1; j <= y2 - 1; j++) {
             set_char(x1, j, border[0]);
@@ -299,7 +300,7 @@ std::string Term::Window_24bit::render(int x0, int y0, bool term) {
                 rgb color_tmp = get_bg(i, j);
                 out.append(color24_bg(color_tmp.r, color_tmp.g, color_tmp.b));
             }
-            codepoint_to_utf8(out, get_char(i, j));
+            Private::codepoint_to_utf8(out, get_char(i, j));
         }
         if (j < h)
             out.append("\n");
@@ -386,7 +387,7 @@ void Term::Window::print_str(int x,
                              const std::string& s,
                              int indent,
                              bool move_cursor) {
-    std::u32string s2 = utf8_to_utf32(s);
+    std::u32string s2 = Private::utf8_to_utf32(s);
     size_t xpos = x;
     size_t ypos = y;
     for (char32_t i : s2) {
@@ -450,7 +451,7 @@ void Term::Window::print_rect(size_t x1,
                               size_t x2,
                               size_t y2,
                               bool unicode) {
-    std::u32string border = utf8_to_utf32("│─┌┐└┘");
+    std::u32string border = Private::utf8_to_utf32("│─┌┐└┘");
     if (unicode) {
         for (size_t j = y1 + 1; j <= y2 - 1; j++) {
             set_char(x1, j, border[0]);
@@ -534,7 +535,7 @@ std::string Term::Window::render(int x0, int y0, bool term) {
                 out.append(color(get_fg(i, j)));
             if (update_bg)
                 out.append(color(get_bg(i, j)));
-            codepoint_to_utf8(out, get_char(i, j));
+            Private::codepoint_to_utf8(out, get_char(i, j));
         }
         if (j < h)
             out.append("\n");

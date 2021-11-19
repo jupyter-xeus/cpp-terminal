@@ -88,13 +88,6 @@ class Terminal : public BaseTerminal {
     void get_term_size_slow(int&, int&);
 };
 
-// Converts an UTF8 string to UTF32.
-std::u32string utf8_to_utf32(const std::string&);
-
-// Converts an UTF32 string to UTF8.
-std::string utf32_to_utf8(const std::u32string&);
-
-
 
 // This model contains all the information about the state of the prompt in an
 // abstract way, irrespective of where or how it is rendered.
@@ -121,14 +114,6 @@ std::string prompt(Terminal&,
                    const std::string&,
                    std::vector<std::string>&,
                    std::function<bool(std::string)>&);
-
-// UTF8
-uint8_t utf8_decode_step(uint8_t, uint8_t, uint32_t*);
-
-void codepoint_to_utf8(std::string&, char32_t);
-
-std::u32string utf8_to_utf32(const std::string&);
-std::string utf32_to_utf8(const std::u32string&);
 
 }  // namespace Term
 
