@@ -7,7 +7,7 @@
 namespace Term::Private {
     static constexpr uint8_t UTF8_ACCEPT = 0;
     static constexpr uint8_t UTF8_REJECT = 0xf;
-    uint8_t utf8_decode_step(uint8_t state, uint8_t octet, uint32_t* cpp) {
+    inline uint8_t utf8_decode_step(uint8_t state, uint8_t octet, uint32_t* cpp) {
     static const uint32_t utf8_classtab[0x10] = {
         0x88888888UL, 0x88888888UL, 0x99999999UL, 0x99999999UL,
         0xaaaaaaaaUL, 0xaaaaaaaaUL, 0xaaaaaaaaUL, 0xaaaaaaaaUL,
@@ -35,7 +35,7 @@ namespace Term::Private {
                    : (0xf & (utf8_statetab[class_] >> (4 * (state & 7)))));
 }
 
-void codepoint_to_utf8(std::string& s, char32_t c) {
+inline void codepoint_to_utf8(std::string& s, char32_t c) {
     if (c > 0x0010FFFF) {
         throw std::runtime_error("Invalid UTF32 codepoint.");
     }
@@ -62,7 +62,7 @@ void codepoint_to_utf8(std::string& s, char32_t c) {
     s.append(bytes, nbytes);
 }
 
-std::u32string utf8_to_utf32(const std::string& s) {
+inline std::u32string utf8_to_utf32(const std::string& s) {
     uint32_t codepoint{};
     uint8_t state = UTF8_ACCEPT;
     std::u32string r{};
@@ -80,7 +80,7 @@ std::u32string utf8_to_utf32(const std::string& s) {
     return r;
 }
 
-std::string utf32_to_utf8(const std::u32string& s) {
+inline std::string utf32_to_utf8(const std::u32string& s) {
     std::string r{};
     for (char32_t i : s) {
         codepoint_to_utf8(r, i);
