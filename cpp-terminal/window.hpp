@@ -5,7 +5,7 @@
 
 namespace Term {
 
-    /* Represents a rectangular window, as a 2D array of characters and their
+/* Represents a rectangular window, as a 2D array of characters and their
  * attributes. The render method can convert this internal representation to a
  * string that when printed will show the Window on the screen.
  *

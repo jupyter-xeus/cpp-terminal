@@ -4,7 +4,7 @@
 #include <cpp-terminal/terminal.h>
 
 namespace Term {
-    // This model contains all the information about the state of the prompt in an
+// This model contains all the information about the state of the prompt in an
 // abstract way, irrespective of where or how it is rendered.
 struct Model {
     std::string prompt_string;  // The string to show as the prompt

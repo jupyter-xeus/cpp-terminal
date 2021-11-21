@@ -3,7 +3,8 @@
 #include <string>
 
 namespace Term {
-    enum class style {
+
+enum class style {
     reset = 0,
     bold = 1,
     dim = 2,
