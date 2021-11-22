@@ -19,21 +19,6 @@
 
 namespace Term {
 
-
-
-
-
-class Terminal : public BaseTerminal {
-    bool restore_screen_ = false;
-
-   public:
-    Terminal(bool enable_keyboard, bool disable_ctrl_c)
-        : BaseTerminal(enable_keyboard, disable_ctrl_c){};
-    // providing no parameters will disable the keyboard and ctrl+c
-    Terminal() : BaseTerminal(false, true){};
-
-    virtual ~Terminal() override;
-};
 }  // namespace Term
 
 #endif  // TERMINAL_H

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <cpp-terminal/terminal_base.h>
 
 namespace Term {
 
@@ -105,5 +106,16 @@ void get_cursor_position(int&, int&);
 
 // This function takes about 23ms, so it should only be used as a fallback
 void get_term_size_slow(int&, int&);
+
+
+// initializes the terminal
+class Terminal : public BaseTerminal {
+   public:
+    Terminal(bool enable_keyboard, bool disable_ctrl_c);
+    // providing no parameters will disable the keyboard and ctrl+c
+    Terminal();
+
+    virtual ~Terminal() override;
+};
 
 }

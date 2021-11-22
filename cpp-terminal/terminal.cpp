@@ -9,7 +9,5 @@
 #include "private/conversion.hpp"
 #include "private/platform.hpp"
 
-Term::Terminal::~Terminal() {
-    restore_screen();
-}
+
 

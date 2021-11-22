@@ -79,19 +79,14 @@ bool Term::get_term_size(int &rows, int &cols) {
 }
 
 void Term::restore_screen() {
-    // TODO: move back to the class
-    if (true) {
-        write("\033[?1049l");  // restore screen
-        write(
-            "\033"
-            "8");  // restore current cursor position
-        // restore_screen_ = false;
-    }
+    write("\033[?1049l");  // restore screen
+    write(
+        "\033"
+        "8");  // restore current cursor position
+    // restore_screen_ = false;
 }
 
 void Term::save_screen() {
-    // TODO: move back into the class
-    // restore_screen_ = true;
     write(
         "\033"
         "7");              // save current cursor position
@@ -148,3 +143,14 @@ void Term::get_cursor_position(int& rows, int& cols){
 //     get_cursor_position(rows, cols);
 //     write(move_cursor(old_row, old_col));
 // }
+
+Term::Terminal::Terminal(bool enable_keyboard, bool disable_ctrl_c) : BaseTerminal(enable_keyboard, disable_ctrl_c) {
+    save_screen();
+}
+Term::Terminal::Terminal()  : BaseTerminal(false, true)
+{
+    save_screen();
+}
+Term::Terminal::~Terminal() {
+    restore_screen();
+}
