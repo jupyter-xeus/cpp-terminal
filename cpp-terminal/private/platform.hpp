@@ -5,6 +5,8 @@
 #else
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <stdexcept>
+#include <unistd.h>
 #endif
 
 namespace Term::Private {

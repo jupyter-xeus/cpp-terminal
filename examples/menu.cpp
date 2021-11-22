@@ -1,6 +1,7 @@
 #include <cpp-terminal/terminal.h>
 #include <iostream>
 #include <cpp-terminal/base.hpp>
+#include <cpp-terminal/input.hpp>
 
 using Term::bg;
 using Term::color;
@@ -91,7 +92,7 @@ int main() {
         bool on = true;
         while (on) {
             render(rows, cols, h, w, pos);
-            int key = term.read_key();
+            int key = Term::read_key();
             switch (key) {
                 case Key::ARROW_LEFT:
                     if (w > 10)

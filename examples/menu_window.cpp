@@ -2,6 +2,7 @@
 #include <cpp-terminal/window.hpp>
 #include <iostream>
 #include <cpp-terminal/base.hpp>
+#include <cpp-terminal/input.hpp>
 
 using Term::bg;
 using Term::fg;
@@ -61,7 +62,7 @@ int main() {
         Term::Window scr(cols, rows);
         while (on) {
             std::cout << render(scr, rows, cols, h, w, pos) << std::flush;
-            int key = term.read_key();
+            int key = Term::read_key();
             switch (key) {
                 case Key::ARROW_LEFT:
                     if (w > 10)

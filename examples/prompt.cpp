@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <cpp-terminal/prompt.hpp>
+#include <cpp-terminal/input.hpp>
 
 using Term::Key;
 using Term::prompt;

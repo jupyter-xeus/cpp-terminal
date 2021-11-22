@@ -2,6 +2,7 @@
 #include <iostream>
 #include "private/conversion.hpp"
 #include "private/platform.hpp"
+#include <cpp-terminal/input.hpp>
 
 std::string Term::concat(const std::vector<std::string>& lines) {
     std::string s;
@@ -107,7 +108,7 @@ std::string Term::prompt(Terminal& term,
     std::cout << scr.render(1, row, term_attached) << std::flush;
     bool not_complete = true;
     while (not_complete) {
-        key = term.read_key();
+        key = Term::read_key();
         if ((key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') ||
             (!iscntrl(key) && key < 128)) {
             std::string before =
