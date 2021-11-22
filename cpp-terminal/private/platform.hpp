@@ -1,6 +1,7 @@
 #ifdef _WIN32
 #include <io.h>
 #include <windows.h>
+#include <conio.h>
 #else
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -73,6 +74,11 @@ inline bool is_stdout_a_tty() {
             return true;
         }
 #ifdef _WIN32
+        HANDLE hin = GetStdHandle(STD_INPUT_HANDLE);
+        if (hin == INVALID_HANDLE_VALUE) {
+            throw std::runtime_error(
+                "GetStdHandle(STD_INPUT_HANDLE) failed");
+        }
         char buf[1];
         DWORD nread;
         if (_kbhit()) {
