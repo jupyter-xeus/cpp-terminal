@@ -1,6 +1,7 @@
 /*** includes ***/
 
 #include <cpp-terminal/terminal.h>
+#include <cpp-terminal/base.hpp>
 
 #include <cctype>
 #include <cstdarg>

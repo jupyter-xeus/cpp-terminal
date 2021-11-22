@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cpp-terminal/prompt.hpp>
 
 using Term::Key;
 using Term::prompt;

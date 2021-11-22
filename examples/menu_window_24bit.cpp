@@ -1,4 +1,5 @@
 #include <cpp-terminal/terminal.h>
+#include <cpp-terminal/window.hpp>
 #include <iostream>
 
 using Term::bg;
