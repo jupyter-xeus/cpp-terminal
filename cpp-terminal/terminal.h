@@ -33,16 +33,6 @@ class Terminal : public BaseTerminal {
     Terminal() : BaseTerminal(false, true){};
 
     virtual ~Terminal() override;
-
-    void restore_screen();
-
-    void save_screen();
-
-
-    void get_cursor_position(int&, int&) const;
-
-    // This function takes about 23ms, so it should only be used as a fallback
-    void get_term_size_slow(int&, int&);
 };
 }  // namespace Term
 

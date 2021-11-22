@@ -933,7 +933,7 @@ int main(int argc, char* argv[]) {
     // correct state.
     try {
         Terminal term(true, false);
-        term.save_screen();
+        Term::save_screen();
         initEditor();
         if (argc >= 2) {
             editorOpen(argv[1]);

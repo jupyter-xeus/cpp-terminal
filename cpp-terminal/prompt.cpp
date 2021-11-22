@@ -79,7 +79,7 @@ std::string Term::prompt(Terminal& term,
     int row, col;
     bool term_attached = Private::is_stdin_a_tty();
     if (term_attached) {
-        term.get_cursor_position(row, col);
+        Term::get_cursor_position(row, col);
     } else {
         row = 1;
         col = 1;

@@ -97,5 +97,13 @@ bool is_stdin_a_tty();
 bool is_stdout_a_tty();
 bool get_term_size(int&, int&);
 
+void restore_screen();
+
+void save_screen();
+
+void get_cursor_position(int&, int&);
+
+// This function takes about 23ms, so it should only be used as a fallback
+void get_term_size_slow(int&, int&);
 
 }

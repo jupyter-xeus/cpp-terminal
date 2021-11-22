@@ -52,7 +52,7 @@ std::string render(Term::Window& scr,
 int main() {
     try {
         Terminal term(true, false);
-        term.save_screen();
+        Term::save_screen();
         int rows{}, cols{};
         Term::get_term_size(rows, cols);
         int pos = 5;
