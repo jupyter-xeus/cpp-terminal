@@ -910,7 +910,7 @@ bool editorProcessKeypress(const Terminal& term) {
 
 /*** init ***/
 
-void initEditor(const Terminal& term) {
+void initEditor() {
     E.cx = 0;
     E.cy = 0;
     E.rx = 0;
@@ -924,7 +924,7 @@ void initEditor(const Terminal& term) {
     E.statusmsg_time = 0;
     E.syntax = nullptr;
 
-    term.get_term_size(E.screenrows, E.screencols);
+    Term::get_term_size(E.screenrows, E.screencols);
     E.screenrows -= 2;
 }
 
@@ -935,7 +935,7 @@ int main(int argc, char* argv[]) {
     try {
         Terminal term(true, false);
         term.save_screen();
-        initEditor(term);
+        initEditor();
         if (argc >= 2) {
             editorOpen(argv[1]);
         }

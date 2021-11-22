@@ -6,6 +6,8 @@
 #include <thread>
 #include <vector>
 #include <cpp-terminal/base.hpp>
+#include "private/conversion.hpp"
+#include "private/platform.hpp"
 
 Term::Terminal::~Terminal() {
     restore_screen();
@@ -229,7 +231,7 @@ void Term::Terminal::get_cursor_position(int& rows, int& cols) const {
     // Find the result in the response, drop the rest:
     for (unsigned int i = 0; i < sizeof(buf) - 6; i++) {
         if (buf[i] == '\x1b' && buf[i + 1] == '[') {
-            if (convert_string_to_int(&buf[i + 2], "%d;%d", &rows, &cols) !=
+            if (Private::convert_string_to_int(&buf[i + 2], "%d;%d", &rows, &cols) !=
                 2) {
                 throw std::runtime_error(
                     "get_cursor_position(): result could not be parsed");

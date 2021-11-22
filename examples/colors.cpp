@@ -16,7 +16,7 @@ int main() {
               << CPP_TERMINAL_VERSION_COMPLETE << std::endl;
     try {
         Terminal term;
-        if (Terminal::is_stdout_a_tty()) {
+        if (Term::is_stdout_a_tty()) {
             std::cout << "Standard output is attached to a terminal."
                       << std::endl;
         } else {

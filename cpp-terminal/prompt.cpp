@@ -1,6 +1,7 @@
 #include <cpp-terminal/prompt.hpp>
 #include <iostream>
 #include "private/conversion.hpp"
+#include "private/platform.hpp"
 
 std::string Term::concat(const std::vector<std::string>& lines) {
     std::string s;
@@ -75,7 +76,7 @@ std::string Term::prompt(Terminal& term,
                          std::vector<std::string>& history,
                          std::function<bool(std::string)>& iscomplete) {
     int row, col;
-    bool term_attached = Terminal::is_stdin_a_tty();
+    bool term_attached = Private::is_stdin_a_tty();
     if (term_attached) {
         term.get_cursor_position(row, col);
     } else {
@@ -83,7 +84,7 @@ std::string Term::prompt(Terminal& term,
         col = 1;
     }
     int rows, cols;
-    if (!term.get_term_size(rows, cols)) {
+    if (!Private::get_term_size(rows, cols)) {
         rows = 25;
         cols = 80;
     }

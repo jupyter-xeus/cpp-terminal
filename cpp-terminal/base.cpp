@@ -1,6 +1,7 @@
 #include <cpp-terminal/base.hpp>
 #include <iostream>
 #include <string>
+#include "private/platform.hpp"
 
 
 std::string Term::color(style value) {
@@ -65,4 +66,13 @@ std::string Term::cursor_position_report() {
 
 std::string Term::erase_to_eol() {
     return "\x1b[K";
+}
+bool Term::is_stdin_a_tty() {
+    return Private::is_stdin_a_tty();
+}
+bool Term::is_stdout_a_tty() {
+    return Private::is_stdout_a_tty();
+}
+bool Term::get_term_size(int &rows, int &cols) {
+    return Private::get_term_size(rows, cols);
 }

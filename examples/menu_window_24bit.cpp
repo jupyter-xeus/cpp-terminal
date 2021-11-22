@@ -1,6 +1,7 @@
 #include <cpp-terminal/terminal.h>
 #include <cpp-terminal/window.hpp>
 #include <iostream>
+#include <cpp-terminal/base.hpp>
 
 using Term::bg;
 using Term::fg;
@@ -52,7 +53,7 @@ int main() {
         Terminal term(true, false);
         term.save_screen();
         int rows{}, cols{};
-        term.get_term_size(rows, cols);
+        Term::get_term_size(rows, cols);
         int pos = 5;
         int h = 10;
         int w = 10;

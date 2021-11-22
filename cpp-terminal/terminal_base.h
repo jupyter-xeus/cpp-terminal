@@ -135,61 +135,8 @@ class BaseTerminal {
 #endif
     }
 
-    bool get_term_size(int& rows, int& cols) const {
-#ifdef _WIN32
-        CONSOLE_SCREEN_BUFFER_INFO inf;
-        if (GetConsoleScreenBufferInfo(hout, &inf)) {
-            cols = inf.srWindow.Right - inf.srWindow.Left + 1;
-            rows = inf.srWindow.Bottom - inf.srWindow.Top + 1;
-            return true;
-        } else {
-            // This happens when we are not connected to a terminal
-            return false;
-        }
-#else
-        struct winsize ws {};
-        if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
-            // This happens when we are not connected to a terminal
-            return false;
-        } else {
-            cols = ws.ws_col;
-            rows = ws.ws_row;
-            return true;
-        }
-#endif
-    }
 
-    // Returns true if the standard input is attached to a terminal
-    static bool is_stdin_a_tty() {
-#ifdef _WIN32
-        return _isatty(_fileno(stdin));
-#else
-        return isatty(STDIN_FILENO);
-#endif
-    }
 
-    // Returns true if the standard output is attached to a terminal
-    static bool is_stdout_a_tty() {
-#ifdef _WIN32
-        return _isatty(_fileno(stdout));
-#else
-        return isatty(STDOUT_FILENO);
-#endif
-    }
-
-    // coverts a string into an integer
-    static int convert_string_to_int(const char* string,
-                                     const char* format,
-                                     int* rows,
-                                     int* cols) {
-#ifdef _WIN32
-        // windows provides it's own alternative to sscanf()
-        return sscanf_s(string, format, rows, cols);
-#else
-        // TODO move to a better way
-        return sscanf(string, format, rows, cols);
-#endif
-    }
 };
 
 }  // namespace Term
