@@ -43,62 +43,7 @@
 
 namespace Term {
 
-/* Note: the code that uses Terminal must be inside try/catch block, otherwise
- * the destructors will not be called when an exception happens and the
- * terminal will not be left in a good state. Terminal uses exceptions when
- * something goes wrong.
- */
-class BaseTerminal {
-   private:
-#ifdef _WIN32
-    HANDLE hout;
-    DWORD dwOriginalOutMode{};
-    bool out_console;
-    UINT out_code_page;
 
-    HANDLE hin;
-    DWORD dwOriginalInMode{};
-    UINT in_code_page;
-#else
-    struct termios orig_termios {};
-#endif
-    bool keyboard_enabled{};
-
-   public:
-    explicit BaseTerminal(bool enable_keyboard = false,
-                          bool disable_ctrl_c = true);
-
-    virtual ~BaseTerminal() noexcept(false) {
-#ifdef _WIN32
-        if (out_console) {
-            SetConsoleOutputCP(out_code_page);
-            if (!SetConsoleMode(hout, dwOriginalOutMode)) {
-                throw std::runtime_error(
-                    "SetConsoleMode() failed in destructor");
-            }
-        }
-
-        if (keyboard_enabled) {
-            SetConsoleCP(in_code_page);
-            if (!SetConsoleMode(hin, dwOriginalInMode)) {
-                throw std::runtime_error(
-                    "SetConsoleMode() failed in destructor");
-            }
-        }
-#else
-        if (keyboard_enabled) {
-            if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) {
-                throw std::runtime_error("tcsetattr() failed in destructor");
-            }
-        }
-#endif
-    }
-
-
-
-
-
-};
 
 }  // namespace Term
 
