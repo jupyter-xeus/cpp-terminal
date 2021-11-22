@@ -1,5 +1,6 @@
 #ifdef _WIN32
 #include <io.h>
+#include <windows.h>
 #else
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -25,6 +26,11 @@ inline bool is_stdout_a_tty() {
 
     inline bool get_term_size(int& rows, int& cols) {
 #ifdef _WIN32
+        HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
+        if (hout == INVALID_HANDLE_VALUE) {
+            throw std::runtime_error(
+                "GetStdHandle(STD_OUTPUT_HANDLE) failed");
+        }
         CONSOLE_SCREEN_BUFFER_INFO inf;
         if (GetConsoleScreenBufferInfo(hout, &inf)) {
             cols = inf.srWindow.Right - inf.srWindow.Left + 1;
