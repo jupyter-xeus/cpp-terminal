@@ -5,9 +5,9 @@
 #else
 #include <unistd.h>
 #include <sys/ioctl.h>
-#include <stdexcept>
 #include <unistd.h>
 #endif
+#include <stdexcept>
 
 namespace Term::Private {
 // Returns true if the standard input is attached to a terminal
