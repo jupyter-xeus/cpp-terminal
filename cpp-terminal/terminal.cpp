@@ -41,15 +41,15 @@ int Term::Terminal::read_key() const {
 
 int Term::Terminal::read_key0() const {
     char c{};
-    if (!read_raw(&c))
+    if (!Private::read_raw(&c))
         return 0;
 
     if (c == '\x1b') {
         char seq[4];
 
-        if (!read_raw(&seq[0]))
+        if (!Private::read_raw(&seq[0]))
             return Key::ESC;
-        if (!read_raw(&seq[1])) {
+        if (!Private::read_raw(&seq[1])) {
             if (seq[0] >= 'a' && seq[0] <= 'z') {
                 // gnome-term, Windows Console
                 return Key::ALT + seq[0];
@@ -63,7 +63,7 @@ int Term::Terminal::read_key0() const {
 
         if (seq[0] == '[') {
             if (seq[1] >= '0' && seq[1] <= '9') {
-                if (!read_raw(&seq[2])) {
+                if (!Private::read_raw(&seq[2])) {
                     return -2;
                 }
                 if (seq[2] == '~') {
@@ -87,10 +87,10 @@ int Term::Terminal::read_key0() const {
                     }
                 } else if (seq[2] == ';') {
                     if (seq[1] == '1') {
-                        if (!read_raw(&seq[2])) {
+                        if (!Private::read_raw(&seq[2])) {
                             return -10;
                         }
-                        if (!read_raw(&seq[3])) {
+                        if (!Private::read_raw(&seq[3])) {
                             return -11;
                         }
                         if (seq[2] == '5') {
@@ -109,7 +109,7 @@ int Term::Terminal::read_key0() const {
                     }
                 } else {
                     if (seq[2] >= '0' && seq[2] <= '9') {
-                        if (!read_raw(&seq[3])) {
+                        if (!Private::read_raw(&seq[3])) {
                             return -3;
                         }
                         if (seq[3] == '~') {
@@ -188,7 +188,7 @@ int Term::Terminal::read_key0() const {
                 return Key::BACKSPACE;
         }
         if (c == '\xc3') {
-            if (!read_raw(&c)) {
+            if (!Private::read_raw(&c)) {
                 return -8;
             } else {
                 if (c >= '\xa1' && c <= '\xba') {
@@ -198,7 +198,7 @@ int Term::Terminal::read_key0() const {
                 return -9;
             }
         } else if (c == '\xc2') {
-            if (!read_raw(&c)) {
+            if (!Private::read_raw(&c)) {
                 return -10;
             } else {
                 if (c == '\x8d') {
@@ -216,7 +216,7 @@ void Term::Terminal::get_cursor_position(int& rows, int& cols) const {
     char buf[32];
     write(cursor_position_report());
     for (unsigned int i = 0; i < sizeof(buf) - 1; i++) {
-        while (!read_raw(&buf[i]))
+        while (!Private::read_raw(&buf[i]))
             ;
         if (buf[i] == 'R') {
             if (i < 5) {
