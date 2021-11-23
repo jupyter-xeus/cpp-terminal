@@ -82,7 +82,6 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
 int main() {
     try {
         Terminal term(true, true, false);
-        Term::save_screen();
         int rows{}, cols{};
         Term::get_term_size(rows, cols);
         int pos = 5;

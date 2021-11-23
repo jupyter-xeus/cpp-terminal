@@ -932,7 +932,6 @@ int main(int argc, char* argv[]) {
     // correct state.
     try {
         Terminal term(true, true, false);
-        Term::save_screen();
         initEditor();
         if (argc >= 2) {
             editorOpen(argv[1]);

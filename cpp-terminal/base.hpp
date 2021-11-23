@@ -70,14 +70,14 @@ std::string color24_bg(unsigned int, unsigned int, unsigned int);
 
 void write(const std::string&);
 
-std::string cursor_off();
+const char* cursor_off();
 
-std::string cursor_on();
+const char* cursor_on();
 
-std::string clear_screen();
+const char* clear_screen();
 
 // clears screen + scroll back buffer
-std::string clear_screen_buffer();
+const char* clear_screen_buffer();
 
 // If an attempt is made to move the cursor out of the window, the result is
 // undefined.
@@ -91,9 +91,9 @@ std::string move_cursor_right(int);
 // stops at the bottom margin.
 std::string move_cursor_down(int);
 
-std::string cursor_position_report();
+const char* cursor_position_report();
 
-std::string erase_to_eol();
+const char* erase_to_eol();
 
 bool is_stdin_a_tty();
 bool is_stdout_a_tty();
