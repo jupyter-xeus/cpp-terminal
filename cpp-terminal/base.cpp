@@ -6,13 +6,13 @@
 
 
 std::string Term::color(style value) {
-    return "\033[" + std::to_string((unsigned int)value) + 'm';
+    return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
 }
 std::string Term::color(fg value) {
-    return "\033[" + std::to_string((unsigned int)value) + 'm';
+    return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
 }
 std::string Term::color(bg value) {
-    return "\033[" + std::to_string((unsigned int)value) + 'm';
+    return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
 }
 
 std::string Term::color24_fg(unsigned int red,
