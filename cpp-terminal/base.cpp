@@ -144,13 +144,15 @@ void Term::get_cursor_position(int& rows, int& cols){
 //     write(move_cursor(old_row, old_col));
 // }
 
-Term::Terminal::Terminal(bool enable_keyboard, bool disable_ctrl_c) : BaseTerminal(enable_keyboard, disable_ctrl_c) {
-    save_screen();
+Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_ctrl_c) : BaseTerminal(enable_keyboard, disable_ctrl_c), clear_screen{_clear_screen} {
+    if (clear_screen)
+        save_screen();
 }
-Term::Terminal::Terminal()  : BaseTerminal(false, true)
-{
-    save_screen();
+Term::Terminal::Terminal(bool _clear_screen)  : BaseTerminal(false, true), clear_screen{_clear_screen} {
+    if (clear_screen)
+        save_screen();
 }
 Term::Terminal::~Terminal() {
-    restore_screen();
+    if (clear_screen)
+        restore_screen();
 }

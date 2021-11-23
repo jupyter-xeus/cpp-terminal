@@ -931,7 +931,7 @@ int main(int argc, char* argv[]) {
     // being called when exception happens and the terminal is not put into
     // correct state.
     try {
-        Terminal term(true, false);
+        Terminal term(true, true, false);
         Term::save_screen();
         initEditor();
         if (argc >= 2) {

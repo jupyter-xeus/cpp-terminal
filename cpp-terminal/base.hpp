@@ -111,10 +111,12 @@ void get_term_size_slow(int&, int&);
 
 // initializes the terminal
 class Terminal : public Private::BaseTerminal {
+   private:
+    bool clear_screen{};
    public:
-    Terminal(bool enable_keyboard, bool disable_ctrl_c);
+    Terminal(bool _clear_screen, bool enable_keyboard, bool disable_ctrl_c);
     // providing no parameters will disable the keyboard and ctrl+c
-    Terminal();
+    Terminal(bool _clear_screen);
 
     virtual ~Terminal() override;
 };
