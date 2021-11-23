@@ -33,19 +33,19 @@ void Term::write(const std::string& s) {
     std::cout << s << std::flush;
 }
 
-const char* Term::cursor_off() {
+std::string Term::cursor_off() {
     return "\x1b[?25l";
 }
 
-const char* Term::cursor_on() {
+std::string Term::cursor_on() {
     return "\x1b[?25h";
 }
 
-const char* Term::clear_screen() {
+std::string Term::clear_screen() {
     return "\033[2J";
 }
 
-const char* Term::clear_screen_buffer() {
+std::string Term::clear_screen_buffer() {
     return "\033[3J";
 }
 
@@ -61,11 +61,11 @@ std::string Term::move_cursor_down(int row) {
     return "\x1b[" + std::to_string(row) + 'B';
 }
 
-const char* Term::cursor_position_report() {
+std::string Term::cursor_position_report() {
     return "\x1b[6n";
 }
 
-const char* Term::erase_to_eol() {
+std::string Term::erase_to_eol() {
     return "\x1b[K";
 }
 bool Term::is_stdin_a_tty() {
