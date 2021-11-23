@@ -1,9 +1,9 @@
 #include <cpp-terminal/window.hpp>
-#include "private/conversion.hpp"
 #include <stdexcept>
+#include "private/conversion.hpp"
 
 namespace Term {
-    char32_t Term::Window_24bit::get_char(size_t x, size_t y) {
+char32_t Term::Window_24bit::get_char(size_t x, size_t y) {
     return chars[(y - 1) * w + (x - 1)];
 }
 
@@ -552,4 +552,4 @@ std::string Term::Window::render(int x0, int y0, bool term) {
     }
     return out;
 };
-}
+}  // namespace Term

@@ -1,8 +1,7 @@
-#include <cpp-terminal/input.hpp>
 #include <chrono>
+#include <cpp-terminal/input.hpp>
 #include <thread>
 #include "private/platform.hpp"
-
 
 int Term::read_key() {
     int key{};

@@ -1,8 +1,8 @@
+#include <cpp-terminal/input.hpp>
 #include <cpp-terminal/prompt.hpp>
 #include <iostream>
 #include "private/conversion.hpp"
 #include "private/platform.hpp"
-#include <cpp-terminal/input.hpp>
 
 std::string Term::concat(const std::vector<std::string>& lines) {
     std::string s;

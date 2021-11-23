@@ -1,9 +1,9 @@
 /*
  * This example shows how to interpret keys presses from Terminal.
  */
-#include <iostream>
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
+#include <iostream>
 
 using Term::Key;
 using Term::Terminal;

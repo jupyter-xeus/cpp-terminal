@@ -1,9 +1,8 @@
 #include <cpp-terminal/base.hpp>
 #include <iostream>
 #include <string>
-#include "private/platform.hpp"
 #include "private/conversion.hpp"
-
+#include "private/platform.hpp"
 
 std::string Term::color(style value) {
     return "\033[" + std::to_string(static_cast<unsigned int>(value)) + 'm';
@@ -74,7 +73,7 @@ bool Term::is_stdin_a_tty() {
 bool Term::is_stdout_a_tty() {
     return Private::is_stdout_a_tty();
 }
-bool Term::get_term_size(int &rows, int &cols) {
+bool Term::get_term_size(int& rows, int& cols) {
     return Private::get_term_size(rows, cols);
 }
 
@@ -93,9 +92,7 @@ void Term::save_screen() {
     write("\033[?1049h");  // save screen
 }
 
-
-
-void Term::get_cursor_position(int& rows, int& cols){
+void Term::get_cursor_position(int& rows, int& cols) {
     char buf[32];
     write(cursor_position_report());
     for (unsigned int i = 0; i < sizeof(buf) - 1; i++) {
@@ -114,8 +111,8 @@ void Term::get_cursor_position(int& rows, int& cols){
     // Find the result in the response, drop the rest:
     for (unsigned int i = 0; i < sizeof(buf) - 6; i++) {
         if (buf[i] == '\x1b' && buf[i + 1] == '[') {
-            if (Private::convert_string_to_int(&buf[i + 2], "%d;%d", &rows, &cols) !=
-                2) {
+            if (Private::convert_string_to_int(&buf[i + 2], "%d;%d", &rows,
+                                               &cols) != 2) {
                 throw std::runtime_error(
                     "get_cursor_position(): result could not be parsed");
             }
@@ -144,11 +141,16 @@ void Term::get_cursor_position(int& rows, int& cols){
 //     write(move_cursor(old_row, old_col));
 // }
 
-Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_ctrl_c) : BaseTerminal(enable_keyboard, disable_ctrl_c), clear_screen{_clear_screen} {
+Term::Terminal::Terminal(bool _clear_screen,
+                         bool enable_keyboard,
+                         bool disable_ctrl_c)
+    : BaseTerminal(enable_keyboard, disable_ctrl_c),
+      clear_screen{_clear_screen} {
     if (clear_screen)
         save_screen();
 }
-Term::Terminal::Terminal(bool _clear_screen)  : BaseTerminal(false, true), clear_screen{_clear_screen} {
+Term::Terminal::Terminal(bool _clear_screen)
+    : BaseTerminal(false, true), clear_screen{_clear_screen} {
     if (clear_screen)
         save_screen();
 }

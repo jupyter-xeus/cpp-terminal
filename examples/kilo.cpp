@@ -103,8 +103,7 @@ struct editorSyntax HLDB[] = {
 
 /*** prototypes ***/
 
-char* editorPrompt(const char* prompt,
-                   void (*callback)(char*, int));
+char* editorPrompt(const char* prompt, void (*callback)(char*, int));
 
 /*** syntax highlighting ***/
 
@@ -581,8 +580,8 @@ void editorFind() {
     int saved_coloff = E.coloff;
     int saved_rowoff = E.rowoff;
 
-    char* query = editorPrompt("Search: %s (Use ESC/Arrows/Enter)",
-                               editorFindCallback);
+    char* query =
+        editorPrompt("Search: %s (Use ESC/Arrows/Enter)", editorFindCallback);
 
     if (query) {
         free(query);
@@ -737,8 +736,7 @@ void editorRefreshScreen() {
 
 /*** input ***/
 
-char* editorPrompt(const char* prompt,
-                   void (*callback)(char*, int)) {
+char* editorPrompt(const char* prompt, void (*callback)(char*, int)) {
     size_t bufsize = 128;
     char* buf = (char*)malloc(bufsize);
 

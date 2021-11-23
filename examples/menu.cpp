@@ -1,6 +1,6 @@
-#include <iostream>
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
+#include <iostream>
 
 using Term::bg;
 using Term::color;
