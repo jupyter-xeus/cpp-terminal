@@ -49,15 +49,15 @@ std::string Term::clear_screen_buffer() {
 }
 
 std::string Term::move_cursor(size_t row, size_t col) {
-    return "\x1b[" + std::to_string(row) + ";" + std::to_string(col) + "H";
+    return "\x1b[" + std::to_string(row) + ';' + std::to_string(col) + 'H';
 }
 
 std::string Term::move_cursor_right(int col) {
-    return "\x1b[" + std::to_string(col) + "C";
+    return "\x1b[" + std::to_string(col) + 'C';
 }
 
 std::string Term::move_cursor_down(int row) {
-    return "\x1b[" + std::to_string(row) + "B";
+    return "\x1b[" + std::to_string(row) + 'B';
 }
 
 std::string Term::cursor_position_report() {
