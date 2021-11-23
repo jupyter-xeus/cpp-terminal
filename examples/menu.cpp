@@ -1,4 +1,3 @@
-#include <cpp-terminal/terminal.h>
 #include <iostream>
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>

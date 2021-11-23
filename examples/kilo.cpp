@@ -1,6 +1,5 @@
 /*** includes ***/
 
-#include <cpp-terminal/terminal.h>
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
 

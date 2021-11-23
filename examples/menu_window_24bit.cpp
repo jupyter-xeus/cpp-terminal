@@ -1,4 +1,3 @@
-#include <cpp-terminal/terminal.h>
 #include <cpp-terminal/window.hpp>
 #include <iostream>
 #include <cpp-terminal/base.hpp>

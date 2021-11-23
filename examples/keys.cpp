@@ -1,7 +1,6 @@
 /*
  * This example shows how to interpret keys presses from Terminal.
  */
-#include <cpp-terminal/terminal.h>
 #include <iostream>
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
