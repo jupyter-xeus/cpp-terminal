@@ -1,7 +1,7 @@
 /*** includes ***/
 
-#include <cpp-terminal/terminal.h>
 #include <cpp-terminal/base.hpp>
+#include <cpp-terminal/input.hpp>
 
 #include <cctype>
 #include <cstdarg>
@@ -103,8 +103,7 @@ struct editorSyntax HLDB[] = {
 
 /*** prototypes ***/
 
-char* editorPrompt(const Terminal& term,
-                   const char* prompt,
+char* editorPrompt(const char* prompt,
                    void (*callback)(char*, int));
 
 /*** syntax highlighting ***/
@@ -498,9 +497,9 @@ void editorSetStatusMessage(const char* fmt, ...) {
     E.statusmsg_time = time(nullptr);
 }
 
-void editorSave(const Terminal& term) {
+void editorSave() {
     if (E.filename == nullptr) {
-        E.filename = editorPrompt(term, "Save as: %s (ESC to cancel)", nullptr);
+        E.filename = editorPrompt("Save as: %s (ESC to cancel)", nullptr);
         if (E.filename == nullptr) {
             editorSetStatusMessage("Save aborted");
             return;
@@ -576,13 +575,13 @@ void editorFindCallback(char* query, int key) {
     }
 }
 
-void editorFind(const Terminal& term) {
+void editorFind() {
     int saved_cx = E.cx;
     int saved_cy = E.cy;
     int saved_coloff = E.coloff;
     int saved_rowoff = E.rowoff;
 
-    char* query = editorPrompt(term, "Search: %s (Use ESC/Arrows/Enter)",
+    char* query = editorPrompt("Search: %s (Use ESC/Arrows/Enter)",
                                editorFindCallback);
 
     if (query) {
@@ -738,8 +737,7 @@ void editorRefreshScreen() {
 
 /*** input ***/
 
-char* editorPrompt(const Terminal& term,
-                   const char* prompt,
+char* editorPrompt(const char* prompt,
                    void (*callback)(char*, int)) {
     size_t bufsize = 128;
     char* buf = (char*)malloc(bufsize);
@@ -751,7 +749,7 @@ char* editorPrompt(const Terminal& term,
         editorSetStatusMessage(prompt, buf);
         editorRefreshScreen();
 
-        int c = term.read_key();
+        int c = Term::read_key();
         if (c == Key::DEL || c == Key::CTRL + 'h' || c == Key::BACKSPACE) {
             if (buflen != 0)
                 buf[--buflen] = '\0';
@@ -821,10 +819,10 @@ void editorMoveCursor(int key) {
     }
 }
 
-bool editorProcessKeypress(const Terminal& term) {
+bool editorProcessKeypress() {
     static int quit_times = KILO_QUIT_TIMES;
 
-    int c = term.read_key();
+    int c = Term::read_key();
 
     switch (c) {
         case Key::ENTER:
@@ -844,7 +842,7 @@ bool editorProcessKeypress(const Terminal& term) {
             break;
 
         case Key::CTRL + 's':
-            editorSave(term);
+            editorSave();
             break;
 
         case Key::HOME:
@@ -857,7 +855,7 @@ bool editorProcessKeypress(const Terminal& term) {
             break;
 
         case Key::CTRL + 'f':
-            editorFind(term);
+            editorFind();
             break;
 
         case Key::BACKSPACE:
@@ -910,7 +908,7 @@ bool editorProcessKeypress(const Terminal& term) {
 
 /*** init ***/
 
-void initEditor(const Terminal& term) {
+void initEditor() {
     E.cx = 0;
     E.cy = 0;
     E.rx = 0;
@@ -924,7 +922,7 @@ void initEditor(const Terminal& term) {
     E.statusmsg_time = 0;
     E.syntax = nullptr;
 
-    term.get_term_size(E.screenrows, E.screencols);
+    Term::get_term_size(E.screenrows, E.screencols);
     E.screenrows -= 2;
 }
 
@@ -933,9 +931,9 @@ int main(int argc, char* argv[]) {
     // being called when exception happens and the terminal is not put into
     // correct state.
     try {
-        Terminal term(true, false);
-        term.save_screen();
-        initEditor(term);
+        Terminal term(true, true, false);
+        Term::save_screen();
+        initEditor();
         if (argc >= 2) {
             editorOpen(argv[1]);
         }
@@ -944,7 +942,7 @@ int main(int argc, char* argv[]) {
             "HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find");
 
         editorRefreshScreen();
-        while (editorProcessKeypress(term)) {
+        while (editorProcessKeypress()) {
             editorRefreshScreen();
         }
     } catch (const std::runtime_error& re) {

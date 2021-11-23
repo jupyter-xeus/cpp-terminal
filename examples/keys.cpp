@@ -1,22 +1,23 @@
 /*
  * This example shows how to interpret keys presses from Terminal.
  */
-#include <cpp-terminal/terminal.h>
 #include <iostream>
+#include <cpp-terminal/base.hpp>
+#include <cpp-terminal/input.hpp>
 
 using Term::Key;
 using Term::Terminal;
 
 int main() {
     try {
-        Terminal term(true, false);
+        Terminal term(true, true, false);
         int rows{}, cols{};
-        term.get_term_size(rows, cols);
+        Term::get_term_size(rows, cols);
         std::cout << "Dimension:" << cols << " " << rows << std::endl;
         std::cout << "Press any key ('q' to quit):" << std::endl;
         bool on = true;
         while (on) {
-            int key = term.read_key();
+            int key = Term::read_key();
             std::string s;
             if (key >= 'a' && key <= 'z') {
                 s = (char)(key + 'A' - 'a');  // Convert to upper case

@@ -1,4 +1,3 @@
-#include <cpp-terminal/terminal.h>
 #include <cpp-terminal/version.h>
 #include <cpp-terminal/base.hpp>
 #include <iostream>
@@ -15,8 +14,8 @@ int main() {
     std::cout << "Running cpp-terminal version: "
               << CPP_TERMINAL_VERSION_COMPLETE << std::endl;
     try {
-        Terminal term;
-        if (Terminal::is_stdout_a_tty()) {
+        Terminal term(false);
+        if (Term::is_stdout_a_tty()) {
             std::cout << "Standard output is attached to a terminal."
                       << std::endl;
         } else {

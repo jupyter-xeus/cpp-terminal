@@ -1,10 +1,9 @@
-#include <cpp-terminal/terminal.h>
-
 #include <functional>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <cpp-terminal/prompt.hpp>
+#include <cpp-terminal/input.hpp>
 
 using Term::Key;
 using Term::prompt;
@@ -23,7 +22,7 @@ bool determine_completeness([[maybe_unused]] std::string command) {
 
 int main() {
     try {
-        Terminal term(true, false);
+        Terminal term(false, true, false);
         std::cout << "Interactive prompt." << std::endl;
         std::cout << "  * Use Ctrl-D to exit." << std::endl;
         std::cout << "  * Use Enter to submit." << std::endl;

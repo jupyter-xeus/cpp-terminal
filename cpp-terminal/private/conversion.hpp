@@ -3,10 +3,17 @@
 #include <cstdint>
 #include <string>
 #include <stdexcept>
+#ifdef _WIN32
+#include <stdio.h>
+#else
+#include <sys/ioctl.h>
+#endif
+
 
 namespace Term::Private {
     static constexpr uint8_t UTF8_ACCEPT = 0;
     static constexpr uint8_t UTF8_REJECT = 0xf;
+
     inline uint8_t utf8_decode_step(uint8_t state, uint8_t octet, uint32_t* cpp) {
     static const uint32_t utf8_classtab[0x10] = {
         0x88888888UL, 0x88888888UL, 0x99999999UL, 0x99999999UL,
@@ -87,4 +94,18 @@ inline std::string utf32_to_utf8(const std::u32string& s) {
     }
     return r;
 }
+    // coverts a string into an integer
+    inline int convert_string_to_int(const char* string,
+                                     const char* format,
+                                     int* rows,
+                                     int* cols) {
+#ifdef _WIN32
+        // windows provides it's own alternative to sscanf()
+        return sscanf_s(string, format, rows, cols);
+#else
+        // TODO move to a better way
+        return sscanf(string, format, rows, cols);
+#endif
+    }
+
 }

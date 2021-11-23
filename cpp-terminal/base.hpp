@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+// TODO: remove include
+#include "private/platform.hpp"
 
 namespace Term {
 
@@ -92,5 +94,31 @@ std::string move_cursor_down(int);
 std::string cursor_position_report();
 
 std::string erase_to_eol();
+
+bool is_stdin_a_tty();
+bool is_stdout_a_tty();
+bool get_term_size(int&, int&);
+
+void restore_screen();
+
+void save_screen();
+
+void get_cursor_position(int&, int&);
+
+// This function takes about 23ms, so it should only be used as a fallback
+void get_term_size_slow(int&, int&);
+
+
+// initializes the terminal
+class Terminal : public Private::BaseTerminal {
+   private:
+    bool clear_screen{};
+   public:
+    Terminal(bool _clear_screen, bool enable_keyboard, bool disable_ctrl_c);
+    // providing no parameters will disable the keyboard and ctrl+c
+    Terminal(bool _clear_screen);
+
+    virtual ~Terminal() override;
+};
 
 }

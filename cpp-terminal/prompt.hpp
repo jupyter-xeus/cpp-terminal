@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cpp-terminal/window.hpp>
-#include <cpp-terminal/terminal.h>
+#include <functional>
 
 namespace Term {
 // This model contains all the information about the state of the prompt in an

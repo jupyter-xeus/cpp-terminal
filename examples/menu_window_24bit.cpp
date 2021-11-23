@@ -1,6 +1,7 @@
-#include <cpp-terminal/terminal.h>
 #include <cpp-terminal/window.hpp>
 #include <iostream>
+#include <cpp-terminal/base.hpp>
+#include <cpp-terminal/input.hpp>
 
 using Term::bg;
 using Term::fg;
@@ -49,10 +50,10 @@ std::string render(Term::Window_24bit& scr,
 
 int main() {
     try {
-        Terminal term(true, false);
-        term.save_screen();
+        Terminal term(true, true, false);
+        Term::save_screen();
         int rows{}, cols{};
-        term.get_term_size(rows, cols);
+        Term::get_term_size(rows, cols);
         int pos = 5;
         int h = 10;
         int w = 10;
@@ -60,7 +61,7 @@ int main() {
         Term::Window_24bit scr(cols, rows);
         while (on) {
             std::cout << render(scr, rows, cols, h, w, pos) << std::flush;
-            int key = term.read_key();
+            int key = Term::read_key();
             switch (key) {
                 case Key::ARROW_LEFT:
                     if (w > 10)

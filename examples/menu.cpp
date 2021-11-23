@@ -1,6 +1,6 @@
-#include <cpp-terminal/terminal.h>
 #include <iostream>
 #include <cpp-terminal/base.hpp>
+#include <cpp-terminal/input.hpp>
 
 using Term::bg;
 using Term::color;
@@ -81,17 +81,17 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
 
 int main() {
     try {
-        Terminal term(true, false);
-        term.save_screen();
+        Terminal term(true, true, false);
+        Term::save_screen();
         int rows{}, cols{};
-        term.get_term_size(rows, cols);
+        Term::get_term_size(rows, cols);
         int pos = 5;
         int h = 10;
         int w = 10;
         bool on = true;
         while (on) {
             render(rows, cols, h, w, pos);
-            int key = term.read_key();
+            int key = Term::read_key();
             switch (key) {
                 case Key::ARROW_LEFT:
                     if (w > 10)

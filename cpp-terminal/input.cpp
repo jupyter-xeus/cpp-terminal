@@ -1,35 +1,10 @@
-#include <cpp-terminal/terminal.h>
-#include <cpp-terminal/terminal_base.h>
-#include <functional>
-#include <iostream>
-#include <string>
+#include <cpp-terminal/input.hpp>
+#include <chrono>
 #include <thread>
-#include <vector>
-#include <cpp-terminal/base.hpp>
+#include "private/platform.hpp"
 
-Term::Terminal::~Terminal() {
-    restore_screen();
-}
 
-void Term::Terminal::restore_screen() {
-    if (restore_screen_) {
-        write("\033[?1049l");  // restore screen
-        write(
-            "\033"
-            "8");  // restore current cursor position
-        restore_screen_ = false;
-    }
-}
-
-void Term::Terminal::save_screen() {
-    restore_screen_ = true;
-    write(
-        "\033"
-        "7");              // save current cursor position
-    write("\033[?1049h");  // save screen
-}
-
-int Term::Terminal::read_key() const {
+int Term::read_key() {
     int key{};
     while ((key = read_key0()) == 0) {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -37,17 +12,17 @@ int Term::Terminal::read_key() const {
     return key;
 }
 
-int Term::Terminal::read_key0() const {
+int Term::read_key0() {
     char c{};
-    if (!read_raw(&c))
+    if (!Private::read_raw(&c))
         return 0;
 
     if (c == '\x1b') {
         char seq[4];
 
-        if (!read_raw(&seq[0]))
+        if (!Private::read_raw(&seq[0]))
             return Key::ESC;
-        if (!read_raw(&seq[1])) {
+        if (!Private::read_raw(&seq[1])) {
             if (seq[0] >= 'a' && seq[0] <= 'z') {
                 // gnome-term, Windows Console
                 return Key::ALT + seq[0];
@@ -61,7 +36,7 @@ int Term::Terminal::read_key0() const {
 
         if (seq[0] == '[') {
             if (seq[1] >= '0' && seq[1] <= '9') {
-                if (!read_raw(&seq[2])) {
+                if (!Private::read_raw(&seq[2])) {
                     return -2;
                 }
                 if (seq[2] == '~') {
@@ -85,10 +60,10 @@ int Term::Terminal::read_key0() const {
                     }
                 } else if (seq[2] == ';') {
                     if (seq[1] == '1') {
-                        if (!read_raw(&seq[2])) {
+                        if (!Private::read_raw(&seq[2])) {
                             return -10;
                         }
-                        if (!read_raw(&seq[3])) {
+                        if (!Private::read_raw(&seq[3])) {
                             return -11;
                         }
                         if (seq[2] == '5') {
@@ -107,7 +82,7 @@ int Term::Terminal::read_key0() const {
                     }
                 } else {
                     if (seq[2] >= '0' && seq[2] <= '9') {
-                        if (!read_raw(&seq[3])) {
+                        if (!Private::read_raw(&seq[3])) {
                             return -3;
                         }
                         if (seq[3] == '~') {
@@ -186,7 +161,7 @@ int Term::Terminal::read_key0() const {
                 return Key::BACKSPACE;
         }
         if (c == '\xc3') {
-            if (!read_raw(&c)) {
+            if (!Private::read_raw(&c)) {
                 return -8;
             } else {
                 if (c >= '\xa1' && c <= '\xba') {
@@ -196,7 +171,7 @@ int Term::Terminal::read_key0() const {
                 return -9;
             }
         } else if (c == '\xc2') {
-            if (!read_raw(&c)) {
+            if (!Private::read_raw(&c)) {
                 return -10;
             } else {
                 if (c == '\x8d') {
@@ -208,52 +183,4 @@ int Term::Terminal::read_key0() const {
         }
         return c;
     }
-}
-
-void Term::Terminal::get_cursor_position(int& rows, int& cols) const {
-    char buf[32];
-    write(cursor_position_report());
-    for (unsigned int i = 0; i < sizeof(buf) - 1; i++) {
-        while (!read_raw(&buf[i]))
-            ;
-        if (buf[i] == 'R') {
-            if (i < 5) {
-                throw std::runtime_error(
-                    "get_cursor_position(): too short response");
-            } else {
-                buf[i] = '\0';
-            }
-            break;
-        }
-    }
-    // Find the result in the response, drop the rest:
-    for (unsigned int i = 0; i < sizeof(buf) - 6; i++) {
-        if (buf[i] == '\x1b' && buf[i + 1] == '[') {
-            if (convert_string_to_int(&buf[i + 2], "%d;%d", &rows, &cols) !=
-                2) {
-                throw std::runtime_error(
-                    "get_cursor_position(): result could not be parsed");
-            }
-            return;
-        }
-        if (buf[i] == '\0')
-            break;
-    }
-    throw std::runtime_error(
-        "get_cursor_position(): result not found in the response");
-}
-void Term::Terminal::get_term_size_slow(int& rows, int& cols) {
-    struct CursorOff {
-        const Terminal& term;
-        explicit CursorOff(const Terminal& term) : term{term} {
-            write(cursor_off());
-        }
-        ~CursorOff() { write(cursor_on()); }
-    };
-    CursorOff cursor_off(*this);
-    int old_row{}, old_col{};
-    get_cursor_position(old_row, old_col);
-    write(move_cursor_right(999) + move_cursor_down(999));
-    get_cursor_position(rows, cols);
-    write(move_cursor(old_row, old_col));
 }
