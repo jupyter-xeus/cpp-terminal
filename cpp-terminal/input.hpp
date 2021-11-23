@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Term {
-    enum Key {
+enum Key {
     BACKSPACE = 1000,
     ENTER,
     ALT_ENTER,
@@ -39,12 +39,12 @@ namespace Term {
     ALT = -128
 };
 
-    // Waits for a key press, translates escape codes
-    int read_key();
+// Waits for a key press, translates escape codes
+int read_key();
 
-    // If there was a key press, returns the translated key from escape codes,
-    // otherwise returns 0. If the escape code is not supported, returns a
-    // negative number.
-    int read_key0();
+// If there was a key press, returns the translated key from escape codes,
+// otherwise returns 0. If the escape code is not supported, returns a
+// negative number.
+int read_key0();
 
-}
+}  // namespace Term

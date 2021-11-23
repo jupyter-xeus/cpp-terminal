@@ -1,14 +1,13 @@
 #pragma once
 
 #ifdef _WIN32
+#include <conio.h>
 #include <io.h>
 #include <windows.h>
-#include <conio.h>
 #else
-#include <unistd.h>
 #include <sys/ioctl.h>
-#include <unistd.h>
 #include <termios.h>
+#include <unistd.h>
 #include <cerrno>
 #endif
 #include <stdexcept>
@@ -21,10 +20,9 @@ bool is_stdout_a_tty();
 
 bool get_term_size(int& rows, int& cols);
 
-
-    // Returns true if a character is read, otherwise immediately returns false
-    // This can't be made inline
-    bool read_raw(char* s);
+// Returns true if a character is read, otherwise immediately returns false
+// This can't be made inline
+bool read_raw(char* s);
 
 /* Note: the code that uses Terminal must be inside try/catch block, otherwise
  * the destructors will not be called when an exception happens and the
@@ -54,4 +52,4 @@ class BaseTerminal {
     virtual ~BaseTerminal() noexcept(false);
 };
 
-}  // namespace Term::Platform
+}  // namespace Term::Private

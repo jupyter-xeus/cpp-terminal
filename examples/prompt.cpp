@@ -1,9 +1,9 @@
+#include <cpp-terminal/input.hpp>
+#include <cpp-terminal/prompt.hpp>
 #include <functional>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <cpp-terminal/prompt.hpp>
-#include <cpp-terminal/input.hpp>
 
 using Term::Key;
 using Term::prompt;

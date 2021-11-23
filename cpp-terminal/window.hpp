@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <cpp-terminal/base.hpp>
+#include <vector>
 
 namespace Term {
 
@@ -166,4 +166,4 @@ class Window {
     // scr.render(1, 1, old_scr)
     std::string render(int, int, bool);
 };
-}
+}  // namespace Term

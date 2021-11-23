@@ -29,4 +29,4 @@ std::string prompt(Terminal&,
                    const std::string&,
                    std::vector<std::string>&,
                    std::function<bool(std::string)>&);
-}
+}  // namespace Term

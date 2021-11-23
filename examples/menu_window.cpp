@@ -1,7 +1,7 @@
-#include <cpp-terminal/window.hpp>
-#include <iostream>
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
+#include <cpp-terminal/window.hpp>
+#include <iostream>
 
 using Term::bg;
 using Term::fg;
