@@ -12,7 +12,7 @@ using Term::Terminal;
 bool determine_completeness([[maybe_unused]] std::string command) {
     // Determine if the statement is complete
     bool complete;
-    if (command.substr(command.size() - 2, 1) == "\\") {
+    if (command.size() > 1 && command.substr(command.size() - 2, 1) == "\\") {
         complete = false;
     } else {
         complete = true;
