@@ -81,7 +81,7 @@ bool Term::Private::read_raw(char* s) {
         return false;
     }
 #else
-    int nread = read(STDIN_FILENO, s, 1);
+    ssize_t nread = read(STDIN_FILENO, s, 1);
     if (nread == -1 && errno != EAGAIN) {
         throw std::runtime_error("read() failed");
     }
