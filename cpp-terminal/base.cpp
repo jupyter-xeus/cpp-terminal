@@ -130,15 +130,27 @@ Term::Terminal::Terminal(bool _clear_screen,
                          bool disable_ctrl_c)
     : BaseTerminal(enable_keyboard, disable_ctrl_c),
       clear_screen{_clear_screen} {
-    if (clear_screen)
+    if (clear_screen) {
         save_screen();
+        // fixes consoles that ignore save_screen()
+        write(clear_screen_buffer());
+    }
 }
 Term::Terminal::Terminal(bool _clear_screen)
     : BaseTerminal(false, true), clear_screen{_clear_screen} {
-    if (clear_screen)
+    if (clear_screen) {
         save_screen();
+        // fixes consoles that ignore save_screen()
+        write(clear_screen_buffer());
+    }
 }
 Term::Terminal::~Terminal() {
-    if (clear_screen)
+    if (clear_screen) {
+        // fixes consoles that ignore save_screen()
+        write(color(Term::style::reset) + clear_screen_buffer() +
+              move_cursor(1, 1));
+
+        // restores the screen, might be ignored by some terminals
         restore_screen();
+    }
 }
