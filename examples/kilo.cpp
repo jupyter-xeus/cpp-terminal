@@ -929,7 +929,7 @@ int main(int argc, char* argv[]) {
     // being called when exception happens and the terminal is not put into
     // correct state.
     try {
-        Terminal term(true, true, false);
+        Terminal term(true, true, false, false);
         initEditor();
         if (argc >= 2) {
             editorOpen(argv[1]);

@@ -122,14 +122,18 @@ void Term::get_cursor_position(int& rows, int& cols) {
 
 Term::Terminal::Terminal(bool _clear_screen,
                          bool enable_keyboard,
-                         bool disable_ctrl_c)
+                         bool disable_ctrl_c,
+                         bool _hide_cursor)
     : BaseTerminal(enable_keyboard, disable_ctrl_c),
-      clear_screen{_clear_screen} {
+      clear_screen{_clear_screen},
+      hide_cursor{_hide_cursor} {
     if (clear_screen) {
         write(save_screen() +
               // fixes consoles that ignore save_screen()
               clear_screen_buffer());
     }
+    if (hide_cursor)
+        write(cursor_off());
 }
 Term::Terminal::Terminal(bool _clear_screen)
     : BaseTerminal(false, true), clear_screen{_clear_screen} {
@@ -147,4 +151,6 @@ Term::Terminal::~Terminal() {
               // restores the screen, might be ignored by some terminals
               restore_screen());
     }
+    if (hide_cursor)
+        write(cursor_on());
 }

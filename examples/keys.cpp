@@ -10,7 +10,7 @@ using Term::Terminal;
 
 int main() {
     try {
-        Terminal term(true, true, false);
+        Terminal term(true, true, false, false);
         int rows{}, cols{};
         Term::get_term_size(rows, cols);
         std::cout << "Dimension:" << cols << " " << rows << std::endl;
