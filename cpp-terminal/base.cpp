@@ -77,19 +77,14 @@ bool Term::get_term_size(int& rows, int& cols) {
     return Private::get_term_size(rows, cols);
 }
 
-void Term::restore_screen() {
-    write("\033[?1049l");  // restore screen
-    write(
-        "\033"
-        "8");  // restore current cursor position
-    // restore_screen_ = false;
+std::string Term::restore_screen() {
+    return "\033[?1049l"  // restores screen
+           "\0338";       // restore current cursor position
 }
 
-void Term::save_screen() {
-    write(
-        "\033"
-        "7");              // save current cursor position
-    write("\033[?1049h");  // save screen
+std::string Term::save_screen() {
+    return "\0337"         // save current cursor position
+           "\033[?1049h";  // save screen
 }
 
 void Term::get_cursor_position(int& rows, int& cols) {
@@ -131,26 +126,25 @@ Term::Terminal::Terminal(bool _clear_screen,
     : BaseTerminal(enable_keyboard, disable_ctrl_c),
       clear_screen{_clear_screen} {
     if (clear_screen) {
-        save_screen();
-        // fixes consoles that ignore save_screen()
-        write(clear_screen_buffer());
+        write(save_screen() +
+              // fixes consoles that ignore save_screen()
+              clear_screen_buffer());
     }
 }
 Term::Terminal::Terminal(bool _clear_screen)
     : BaseTerminal(false, true), clear_screen{_clear_screen} {
     if (clear_screen) {
-        save_screen();
-        // fixes consoles that ignore save_screen()
-        write(clear_screen_buffer());
+        write(save_screen()
+              // fixes consoles that ignore save_screen()
+              + clear_screen_buffer());
     }
 }
 Term::Terminal::~Terminal() {
     if (clear_screen) {
         // fixes consoles that ignore save_screen()
         write(color(Term::style::reset) + clear_screen_buffer() +
-              move_cursor(1, 1));
-
-        // restores the screen, might be ignored by some terminals
-        restore_screen();
+              move_cursor(1, 1) +
+              // restores the screen, might be ignored by some terminals
+              restore_screen());
     }
 }

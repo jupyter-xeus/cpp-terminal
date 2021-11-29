@@ -99,9 +99,9 @@ bool is_stdin_a_tty();
 bool is_stdout_a_tty();
 bool get_term_size(int&, int&);
 
-void restore_screen();
+std::string restore_screen();
 
-void save_screen();
+std::string save_screen();
 
 void get_cursor_position(int&, int&);
 
