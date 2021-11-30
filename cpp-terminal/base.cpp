@@ -124,22 +124,6 @@ void Term::get_cursor_position(int& rows, int& cols) {
     throw std::runtime_error(
         "get_cursor_position(): result not found in the response");
 }
-// TODO: repair or remove
-// void Term::get_term_size_slow(int& rows, int& cols) {
-//     struct CursorOff {
-//         const Terminal& term;
-//         explicit CursorOff(const Terminal& term) : term{term} {
-//             write(cursor_off());
-//         }
-//         ~CursorOff() { write(cursor_on()); }
-//     };
-//     CursorOff cursor_off(*this);
-//     int old_row{}, old_col{};
-//     get_cursor_position(old_row, old_col);
-//     write(move_cursor_right(999) + move_cursor_down(999));
-//     get_cursor_position(rows, cols);
-//     write(move_cursor(old_row, old_col));
-// }
 
 Term::Terminal::Terminal(bool _clear_screen,
                          bool enable_keyboard,

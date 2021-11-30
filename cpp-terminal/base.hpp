@@ -105,9 +105,6 @@ void save_screen();
 
 void get_cursor_position(int&, int&);
 
-// This function takes about 23ms, so it should only be used as a fallback
-void get_term_size_slow(int&, int&);
-
 // initializes the terminal
 class Terminal : public Private::BaseTerminal {
    private:
