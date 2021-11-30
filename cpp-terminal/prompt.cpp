@@ -1,5 +1,6 @@
 #include <cpp-terminal/input.hpp>
 #include <cpp-terminal/prompt.hpp>
+#include <cpp-terminal/base.hpp>
 #include <iostream>
 #include "private/conversion.hpp"
 #include "private/platform.hpp"
