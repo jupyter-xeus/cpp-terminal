@@ -25,8 +25,8 @@ void print_left_curly_bracket(Term::Window&, int, int, int);
 
 void render(Term::Window&, const Model&, size_t);
 
-std::string prompt(Terminal&,
-                   const std::string&,
-                   std::vector<std::string>&,
-                   std::function<bool(std::string)>&);
+std::string prompt_multiline(Terminal&,
+                             const std::string&,
+                             std::vector<std::string>&,
+                             std::function<bool(std::string)>&);
 }  // namespace Term

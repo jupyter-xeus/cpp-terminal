@@ -6,7 +6,7 @@
 #include <vector>
 
 using Term::Key;
-using Term::prompt;
+using Term::prompt_multiline;
 using Term::Terminal;
 
 bool determine_completeness([[maybe_unused]] std::string command) {
@@ -38,7 +38,8 @@ int main() {
         std::vector<std::string> history;
         std::function<bool(std::string)> iscomplete = determine_completeness;
         while (true) {
-            std::string answer = prompt(term, "> ", history, iscomplete);
+            std::string answer =
+                Term::prompt_multiline(term, "> ", history, iscomplete);
             if (answer.size() == 1 && answer[0] == Key::CTRL + 'd')
                 break;
             std::cout << "Submitted text: " << answer << std::endl;

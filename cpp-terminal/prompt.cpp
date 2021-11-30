@@ -72,10 +72,11 @@ void Term::render(Term::Window& scr, const Model& m, size_t cols) {
     scr.set_cursor_pos(m.prompt_string.size() + m.cursor_col, m.cursor_row);
 }
 
-std::string Term::prompt(Terminal& term,
-                         const std::string& prompt_string,
-                         std::vector<std::string>& history,
-                         std::function<bool(std::string)>& iscomplete) {
+std::string Term::prompt_multiline(
+    Terminal& term,
+    const std::string& prompt_string,
+    std::vector<std::string>& history,
+    std::function<bool(std::string)>& iscomplete) {
     int row, col;
     bool term_attached = Private::is_stdin_a_tty();
     if (term_attached) {
