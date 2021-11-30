@@ -112,6 +112,8 @@ Term::Result_simple Term::prompt_simple(std::string message) {
         case Result::INVALID:
             return Result_simple::NO;
     }
+    // shouldn't be reached
+    return Result_simple::NO;
 }
 
 std::string Term::concat(const std::vector<std::string>& lines) {
