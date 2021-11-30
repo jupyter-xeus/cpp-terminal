@@ -4,6 +4,42 @@
 #include <functional>
 
 namespace Term {
+/* Basic prompt */
+
+// indicates the results of prompt_blocking() and prompt_non_blocking
+enum class Result {
+    YES,
+    NO,
+    ERROR,
+    NONE,
+    ABORT,
+    INVALID,
+};
+// indicates the results of prompt_simple()
+enum class Result_simple { YES, NO, ABORT };
+
+// A simple yes/no prompt, requires the user to press the ENTER key to continue
+// The arguments are used like this: 1 [2/3]4 <user Input>
+Result prompt_blocking(std::string message,
+                       std::string first_option,
+                       std::string second_option,
+                       std::string prompt_indicator);
+
+// A simple yes/no prompt, returns immediately after the first key press
+// The arguments are used like this: 1 [2/3]4 <user Input>
+Result prompt_non_blocking(std::string message,
+                           std::string first_option,
+                           std::string second_option,
+                           std::string prompt_indicator);
+
+// The most simple prompt possible, requires the user to press enter to continue
+// The arguments are used like this: 1 [y/N]:
+// Invalid input, errors (like no attached terminal) all result in 'no' as
+// default
+Result_simple prompt_simple(std::string message);
+
+/* Multiline prompt */
+
 // This model contains all the information about the state of the prompt in an
 // abstract way, irrespective of where or how it is rendered.
 struct Model {
