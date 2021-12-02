@@ -13,7 +13,7 @@ enum class Result {
     ERROR,
     NONE,
     ABORT,
-    INVALID,
+    INVALID
 };
 // indicates the results of prompt_simple()
 enum class Result_simple { YES, NO, ABORT };
