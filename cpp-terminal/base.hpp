@@ -2,7 +2,7 @@
 
 #include <string>
 // TODO: remove include
-#include "private/platform.hpp"
+// #include "private/platform.hpp"
 
 namespace Term {
 
