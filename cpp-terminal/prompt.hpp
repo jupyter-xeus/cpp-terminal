@@ -11,15 +11,29 @@ namespace Term {
 
 // indicates the results of prompt_blocking() and prompt_non_blocking
 enum class Result {
+    // returned if the user chose yes
     YES,
+    // returned if the user chose no
     NO,
+    // returned of no terminal is attached to the program
     ERROR,
+    // returned of the enter key was pressed without additional input
     NONE,
+    // returned if CTRL+C was pressed
     ABORT,
-    INVALID,
+    // returned if the given input did not match the case 'yes' of 'no'
+    INVALID
 };
 // indicates the results of prompt_simple()
-enum class Result_simple { YES, NO, ABORT };
+enum class Result_simple {
+    // returned if the user chose yes
+    YES,
+    // returned if the user chose no or invalid / no input or if no terminal is
+    // attached
+    NO,
+    // returned if CTRL+C was pressed
+    ABORT
+};
 
 // A simple yes/no prompt, requires the user to press the ENTER key to continue
 // The arguments are used like this: 1 [2/3]4 <user Input>
