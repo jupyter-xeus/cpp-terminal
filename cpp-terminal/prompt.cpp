@@ -88,7 +88,7 @@ Term::Result Term::prompt(const std::string& message,
 }
 
 Term::Result_simple Term::prompt_simple(const std::string& message) {
-    switch (prompt(message, "Y", "N", ":", false)) {
+    switch (prompt(message, "y", "N", ":", false)) {
         case Result::YES:
             return Result_simple::YES;
         case Result::ABORT:
