@@ -23,17 +23,17 @@ enum class Result_simple { YES, NO, ABORT };
 
 // A simple yes/no prompt, requires the user to press the ENTER key to continue
 // The arguments are used like this: 1 [2/3]4 <user Input>
-Result prompt_blocking(std::string message,
-                       std::string first_option,
-                       std::string second_option,
-                       std::string prompt_indicator);
+Result prompt_blocking(const std::string& message,
+                       const std::string& first_option,
+                       const std::string& second_option,
+                       const std::string& prompt_indicator);
 
 // A simple yes/no prompt, returns immediately after the first key press
 // The arguments are used like this: 1 [2/3]4 <user Input>
-Result prompt_non_blocking(std::string message,
-                           std::string first_option,
-                           std::string second_option,
-                           std::string prompt_indicator);
+Result prompt_non_blocking(const std::string& message,
+                           const std::string& first_option,
+                           const std::string& second_option,
+                           const std::string& prompt_indicator);
 
 // The most simple prompt possible, requires the user to press enter to continue
 // The arguments are used like this: 1 [y/N]:

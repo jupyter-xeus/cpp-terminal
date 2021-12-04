@@ -5,10 +5,10 @@
 #include "private/conversion.hpp"
 #include "private/platform.hpp"
 
-Term::Result Term::prompt_blocking(std::string message,
-                                   std::string first_option,
-                                   std::string second_option,
-                                   std::string prompt_indicator) {
+Term::Result Term::prompt_blocking(const std::string& message,
+                                   const std::string& first_option,
+                                   const std::string& second_option,
+                                   const std::string& prompt_indicator) {
     Terminal term(false, true, true);
     std::cout << message << " [" << first_option << '/' << second_option << ']'
               << prompt_indicator << ' ' << std::flush;
@@ -65,10 +65,10 @@ Term::Result Term::prompt_blocking(std::string message,
     return Result::ERROR;
 }
 
-Term::Result Term::prompt_non_blocking(std::string message,
-                                       std::string first_option,
-                                       std::string second_option,
-                                       std::string prompt_indicator) {
+Term::Result Term::prompt_non_blocking(const std::string& message,
+                                       const std::string& first_option,
+                                       const std::string& second_option,
+                                       const std::string& prompt_indicator) {
     Terminal term(false, true, true);
     std::cout << message << " [" << first_option << '/' << second_option << ']'
               << prompt_indicator << ' ' << std::flush;
