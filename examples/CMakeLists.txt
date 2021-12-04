@@ -1,11 +1,11 @@
 add_executable(prompt_multiline prompt_multiline.cpp)
 target_link_libraries(prompt_multiline cpp-terminal)
 
-add_executable(prompt_blocking prompt_blocking.cpp)
-target_link_libraries(prompt_blocking cpp-terminal)
+add_executable(prompt_immediate prompt_immediate.cpp)
+target_link_libraries(prompt_immediate cpp-terminal)
 
-add_executable(prompt_non_blocking prompt_non_blocking.cpp)
-target_link_libraries(prompt_non_blocking cpp-terminal)
+add_executable(prompt_not_immediate prompt_not_immediate.cpp)
+target_link_libraries(prompt_not_immediate cpp-terminal)
 
 add_executable(prompt_simple prompt_simple.cpp)
 target_link_libraries(prompt_simple cpp-terminal)

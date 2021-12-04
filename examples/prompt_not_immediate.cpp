@@ -7,7 +7,7 @@ int main() {
               << CPP_TERMINAL_VERSION_COMPLETE << std::endl;
     try {
         std::cout << "CPP-Terminal basic prompt example: \n\n";
-        switch (Term::prompt_blocking("Proceed?", "Y", "n", ":")) {
+        switch (Term::prompt("Proceed?", "Y", "n", ":", false)) {
             case Term::Result::NONE:  // no input was given
                 std::cout << "No input given, proceeding anyway...\n";
                 break;
