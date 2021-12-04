@@ -3,6 +3,9 @@
 #include <cpp-terminal/window.hpp>
 #include <functional>
 
+// TODO: remove windows.h include and this undefine
+#undef ERROR
+
 namespace Term {
 /* Basic prompt */
 
