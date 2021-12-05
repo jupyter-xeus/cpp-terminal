@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com//jupyter-xeus/cpp-terminal/readme/logo.svg" alt="CPP-Terminal logo"/>
+  <img src="https://raw.githubusercontent.com/MCWertGaming/cpp-terminal/readme/logo.svg" alt="CPP-Terminal logo"/>
 </p>
 
 `CPP-Terminal` is a small and simple library for writing platform independent terminal applications. It works on Windows, MacOS and Linux and offers a simple programming interface. It
