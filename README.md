@@ -41,7 +41,7 @@ We have created serval examples to show possible use cases of CPP-Terminal and t
 
 ## How to use
 
-Adding CPP-Terminal to your project is really easy. We have collected various ways with easy how-to's [in our documentation](https://github.com/jupyter-xeus/cpp-terminal/wiki/Adding-CPP-Terminal-to-your-ptoject).
+Adding CPP-Terminal to your own project is really easy. We have collected various ways with easy how-to's [in our documentation](https://github.com/jupyter-xeus/cpp-terminal/wiki/Adding-CPP-Terminal-to-your-ptoject).
 
 ## Documentation
 
