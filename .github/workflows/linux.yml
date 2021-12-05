@@ -1,0 +1,19 @@
+name: Linux CI
+
+on: [push, pull_request]
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build
+      run: bash ci/compile_test.sh
+
+    - name: Test      
+      run: bash ci/tests.sh
