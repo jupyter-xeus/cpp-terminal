@@ -30,7 +30,8 @@ Term::Result Term::prompt(const std::string& message,
             } else if (key == 'n' || key == 'N') {
                 Term::write("\n");
                 return Result::NO;
-            } else if (key == Term::Key::CTRL + 'c') {
+            } else if (key == Term::Key::CTRL + 'c' ||
+                       key == Term::Key::CTRL + 'd') {
                 Term::write("\n");
                 return Result::ABORT;
             } else if (key == Term::Key::ENTER) {
@@ -55,7 +56,8 @@ Term::Result Term::prompt(const std::string& message,
                 length++;
                 input.push_back(static_cast<char>(
                     key + 32));  // convert upper case to lowercase
-            } else if (key == Term::Key::CTRL + 'c') {
+            } else if (key == Term::Key::CTRL + 'c' ||
+                       key == Term::Key::CTRL + 'd') {
                 std::cout << '\n';
                 return Result::ABORT;
             } else if (key == Term::Key::BACKSPACE) {
