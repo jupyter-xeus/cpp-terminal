@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/MCWertGaming/cpp-terminal/readme/logo.svg" alt="CPP-Terminal logo"/>
+  <img src="logo.svg" alt="CPP-Terminal logo"/>
 </p>
 
 [![Linux CI](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/linux.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/linux.yml)
