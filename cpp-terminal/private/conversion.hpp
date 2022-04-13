@@ -3,15 +3,20 @@
 #include <cstdint>
 #include <stdexcept>
 #include <string>
+#include <vector>
+
 #ifdef _WIN32
 #include <stdio.h>
 #else
+
 #include <sys/ioctl.h>
+
 #endif
 
-namespace Term::Private {
 static constexpr uint8_t UTF8_ACCEPT = 0;
 static constexpr uint8_t UTF8_REJECT = 0xf;
+
+namespace Term::Private {
 
 inline uint8_t utf8_decode_step(uint8_t state, uint8_t octet, uint32_t* cpp) {
     static const uint32_t utf8_classtab[0x10] = {
@@ -93,6 +98,7 @@ inline std::string utf32_to_utf8(const std::u32string& s) {
     }
     return r;
 }
+
 // coverts a string into an integer
 inline int convert_string_to_int(const char* string,
                                  const char* format,
@@ -105,6 +111,15 @@ inline int convert_string_to_int(const char* string,
     // TODO move to a better way
     return sscanf(string, format, rows, cols);
 #endif
+}
+
+// converts a vector of char into a string
+inline std::string vector_to_string(const std::vector<char>& vector) {
+    std::string string;
+    for (char i : vector) {
+        string.push_back(i);
+    }
+    return string;
 }
 
 }  // namespace Term::Private

@@ -1,8 +1,109 @@
+#include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
 #include <cpp-terminal/prompt.hpp>
 #include <iostream>
 #include "private/conversion.hpp"
 #include "private/platform.hpp"
+
+Term::Result Term::prompt(const std::string& message,
+                          const std::string& first_option,
+                          const std::string& second_option,
+                          const std::string& prompt_indicator,
+                          bool immediate) {
+    Terminal term(false, true, true);
+    std::cout << message << " [" << first_option << '/' << second_option << ']'
+              << prompt_indicator << ' ' << std::flush;
+
+    if (!Term::is_stdin_a_tty()) {
+        Term::write("\n");
+        return Result::ERROR;
+    }
+
+    int key;
+
+    if (immediate) {
+        while (true) {
+            key = Term::read_key();
+            if (key == 'y' || key == 'Y') {
+                Term::write("\n");
+                return Result::YES;
+            } else if (key == 'n' || key == 'N') {
+                Term::write("\n");
+                return Result::NO;
+            } else if (key == Term::Key::CTRL + 'c' ||
+                       key == Term::Key::CTRL + 'd') {
+                Term::write("\n");
+                return Result::ABORT;
+            } else if (key == Term::Key::ENTER) {
+                Term::write("\n");
+                return Result::NONE;
+            } else {
+                Term::write("\n");
+                return Result::INVALID;
+            }
+        }
+    } else {
+        std::vector<char> input;
+        unsigned short int length = 0;
+        while (true) {
+            key = Term::read_key();
+            if (key >= 'a' && key <= 'z') {
+                std::cout << (char)key << std::flush;
+                length++;
+                input.push_back(static_cast<char>(key));
+            } else if (key >= 'A' && key <= 'Z') {
+                std::cout << (char)key << std::flush;
+                length++;
+                input.push_back(static_cast<char>(
+                    key + 32));  // convert upper case to lowercase
+            } else if (key == Term::Key::CTRL + 'c' ||
+                       key == Term::Key::CTRL + 'd') {
+                std::cout << '\n';
+                return Result::ABORT;
+            } else if (key == Term::Key::BACKSPACE) {
+                if (length != 0) {
+                    std::cout << "\033[D \033[D"
+                              << std::flush;  // erase last line and move the
+                                              // cursor back
+                    length--;
+                    input.pop_back();
+                }
+            } else if (key == Term::Key::ENTER) {
+                if (Private::vector_to_string(input) == "y" ||
+                    Private::vector_to_string(input) == "yes") {
+                    Term::write("\n");
+                    return Result::YES;
+                } else if (Private::vector_to_string(input) == "n" ||
+                           Private::vector_to_string(input) == "no") {
+                    Term::write("\n");
+                    return Result::NO;
+                } else if (length == 0) {
+                    Term::write("\n");
+                    return Result::NONE;
+                } else {
+                    Term::write("\n");
+                    return Result::INVALID;
+                }
+            }
+        }
+    }
+}
+
+Term::Result_simple Term::prompt_simple(const std::string& message) {
+    switch (prompt(message, "y", "N", ":", false)) {
+        case Result::YES:
+            return Result_simple::YES;
+        case Result::ABORT:
+            return Result_simple::ABORT;
+        case Result::NO:     // falls through
+        case Result::ERROR:  // falls through
+        case Result::NONE:   // falls through
+        case Result::INVALID:
+            return Result_simple::NO;
+    }
+    // shouldn't be reached
+    return Result_simple::NO;
+}
 
 std::string Term::concat(const std::vector<std::string>& lines) {
     std::string s;
@@ -72,10 +173,11 @@ void Term::render(Term::Window& scr, const Model& m, size_t cols) {
     scr.set_cursor_pos(m.prompt_string.size() + m.cursor_col, m.cursor_row);
 }
 
-std::string Term::prompt(Terminal& term,
-                         const std::string& prompt_string,
-                         std::vector<std::string>& history,
-                         std::function<bool(std::string)>& iscomplete) {
+std::string Term::prompt_multiline(
+    Terminal& term,
+    const std::string& prompt_string,
+    std::vector<std::string>& history,
+    std::function<bool(std::string)>& iscomplete) {
     int row, col;
     bool term_attached = Private::is_stdin_a_tty();
     if (term_attached) {
