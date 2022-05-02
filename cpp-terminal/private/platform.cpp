@@ -1,5 +1,7 @@
 #include "platform.hpp"
 
+#include "inputOutputModeFlags.hpp"
+
 bool Term::Private::is_stdin_a_tty() {
 #ifdef _WIN32
     return _isatty(_fileno(stdin));
