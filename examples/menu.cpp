@@ -16,7 +16,6 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
     std::string scr;
     scr.reserve(16 * 1024);
 
-    scr.append(cursor_off());
     scr.append(move_cursor(1, 1));
 
     int menux0 = (cols - menuwidth) / 2;
@@ -74,14 +73,12 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
     scr.append("Menu width: " + std::to_string(menuwidth) + "       \n");
     scr.append("Menu height: " + std::to_string(menuheight) + "    \n");
 
-    scr.append(cursor_on());
-
     std::cout << scr << std::flush;
 }
 
 int main() {
     try {
-        Terminal term(true, true, false);
+        Terminal term(true, true, false, true);
         int rows{}, cols{};
         Term::get_term_size(rows, cols);
         int pos = 5;

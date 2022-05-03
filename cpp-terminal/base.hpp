@@ -99,9 +99,9 @@ bool is_stdin_a_tty();
 bool is_stdout_a_tty();
 bool get_term_size(int&, int&);
 
-void restore_screen();
+std::string restore_screen();
 
-void save_screen();
+std::string save_screen();
 
 void get_cursor_position(int&, int&);
 
@@ -109,9 +109,13 @@ void get_cursor_position(int&, int&);
 class Terminal : public Private::BaseTerminal {
    private:
     bool clear_screen{};
+    bool hide_cursor{};
 
    public:
-    Terminal(bool _clear_screen, bool enable_keyboard, bool disable_ctrl_c);
+    Terminal(bool _clear_screen,
+             bool enable_keyboard,
+             bool disable_ctrl_c,
+             bool);
     // providing no parameters will disable the keyboard and ctrl+c
     Terminal(bool _clear_screen);
 
