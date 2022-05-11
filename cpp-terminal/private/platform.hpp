@@ -1,15 +1,28 @@
 #pragma once
 
 #ifdef _WIN32
-#include <conio.h>
-#include <io.h>
-#include <windows.h>
-#else
-#include <sys/ioctl.h>
-#include <termios.h>
-#include <unistd.h>
-#include <cerrno>
+#define NOMINMAX
+#if defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || \
+    defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64)
+#ifndef _AMD64_
+#define _AMD64_
 #endif
+#elif defined(i386) || defined(__i386) || defined(__i386__) || \
+    defined(__i386__) || defined(_M_IX86)
+#ifndef _X86_
+#define _X86_
+#endif
+#elif defined(__arm__) || defined(_M_ARM) || defined(_M_ARMT)
+#ifndef _ARM_
+#define _ARM_
+#endif
+#endif
+#include <minwindef.h>
+#undef NOMINMAX
+#else
+class termios;
+#endif
+
 #include <stdexcept>
 
 namespace Term::Private {
@@ -41,7 +54,7 @@ class BaseTerminal {
     DWORD dwOriginalInMode{};
     UINT in_code_page;
 #else
-    struct termios orig_termios {};
+    const termios& orig_termios;
 #endif
     bool keyboard_enabled{};
 

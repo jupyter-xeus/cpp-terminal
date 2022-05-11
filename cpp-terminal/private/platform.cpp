@@ -1,6 +1,19 @@
 #include "platform.hpp"
 
+#ifdef _WIN32
+#include <conio.h>
+#include <io.h>
+#include <windows.h>
+#else
+#include <sys/ioctl.h>
+#include <termios.h>
+#include <unistd.h>
+#include <cerrno>
+#endif
+
 #include "inputOutputModeFlags.hpp"
+
+#include <memory>
 
 bool Term::Private::is_stdin_a_tty() {
 #ifdef _WIN32
@@ -160,11 +173,13 @@ Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
 #else
 Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
                                           bool disable_ctrl_c)
-    : keyboard_enabled{enable_keyboard} {
+    : orig_termios{*std::unique_ptr<termios>(new termios).get()},
+      keyboard_enabled{enable_keyboard} {
     // Uncomment this to silently disable raw mode for non-tty
     // if (keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
     if (keyboard_enabled) {
-        if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) {
+        if (tcgetattr(STDIN_FILENO, const_cast<termios*>(&orig_termios)) ==
+            -1) {
             throw std::runtime_error("tcgetattr() failed");
         }
 
