@@ -21,9 +21,8 @@
 #undef NOMINMAX
 #else
 class termios;
+#include <memory>
 #endif
-
-#include <stdexcept>
 
 namespace Term::Private {
 // Returns true if the standard input is attached to a terminal
@@ -54,7 +53,7 @@ class BaseTerminal {
     DWORD dwOriginalInMode{};
     UINT in_code_page;
 #else
-    const termios& orig_termios;
+    std::unique_ptr<termios> orig_termios{nullptr};
 #endif
     bool keyboard_enabled{};
 
