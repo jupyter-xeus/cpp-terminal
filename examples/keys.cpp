@@ -25,15 +25,12 @@ int main() {
                 if (key == 'q')
                     on = false;
             } else if (key >= 'A' && key <= 'Z') {
-                s = (char)key;  // Already in upper case
-                s = "Shift+" + s;
+                s = (std::string)"Shift+" + (char)key;  // Already in upper case;
             } else if (key >= Key::CTRL + 'a' && key <= Key::CTRL + 'z') {
-                s = (char)((-Key::CTRL + key) - 32);  // Convert to upper case
-                s = "Ctrl+" + s;
+                s = (std::string)"CTRL+" + (char)((-Key::CTRL + key) - 32);
             } else if (key >= Key::ALT + 'a' && key <= Key::ALT + 'z') {
-                s = (char)(key + 'A' -
-                           (Key::ALT + 'a'));  // Convert to upper case
-                s = "Alt+" + s;
+                s = (std::string)"Alt+" + (char)(key + 'A' -
+                                    (Key::ALT + 'a'));  // Convert to upper case
             } else if (key > 0 && !iscntrl(key) && key < 128) {
                 s = std::to_string(key);
             } else {
