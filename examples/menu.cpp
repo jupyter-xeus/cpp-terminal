@@ -113,7 +113,7 @@ int main() {
                     break;
                 case 'q':
                 case Key::ESC:
-                case Key::CTRL+'c':
+                case Key::CTRL + 'c':
                     on = false;
                     break;
             }

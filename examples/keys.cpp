@@ -13,7 +13,7 @@ int main() {
         Terminal term(true, true, true, false);
         int rows{}, cols{};
         Term::get_term_size(rows, cols);
-        std::cout << Term::move_cursor(1,1);
+        std::cout << Term::move_cursor(1, 1);
         std::cout << "Dimension:" << cols << " " << rows << std::endl;
         std::cout << "Press any key ('q' to quit):" << std::endl;
         bool on = true;
@@ -25,12 +25,14 @@ int main() {
                 if (key == 'q')
                     on = false;
             } else if (key >= 'A' && key <= 'Z') {
-                s = (std::string)"Shift+" + (char)key;  // Already in upper case;
+                s = (std::string) "Shift+" +
+                    (char)key;  // Already in upper case;
             } else if (key >= Key::CTRL + 'a' && key <= Key::CTRL + 'z') {
-                s = (std::string)"CTRL+" + (char)((-Key::CTRL + key) - 32);
+                s = (std::string) "CTRL+" + (char)((-Key::CTRL + key) - 32);
             } else if (key >= Key::ALT + 'a' && key <= Key::ALT + 'z') {
-                s = (std::string)"Alt+" + (char)(key + 'A' -
-                                    (Key::ALT + 'a'));  // Convert to upper case
+                s = (std::string) "Alt+" +
+                    (char)(key + 'A' -
+                           (Key::ALT + 'a'));  // Convert to upper case
             } else if (key > 0 && !iscntrl(key) && key < 128) {
                 s = (char)key;
             } else {
