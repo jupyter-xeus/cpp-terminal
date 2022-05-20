@@ -13,6 +13,7 @@ int main() {
         Terminal term(true, true, true, false);
         int rows{}, cols{};
         Term::get_term_size(rows, cols);
+        std::cout << Term::move_cursor(1,1);
         std::cout << "Dimension:" << cols << " " << rows << std::endl;
         std::cout << "Press any key ('q' to quit):" << std::endl;
         bool on = true;
