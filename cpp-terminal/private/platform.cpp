@@ -1,5 +1,18 @@
 #include "platform.hpp"
 
+#ifdef _WIN32
+#include <conio.h>
+#include <io.h>
+#include <windows.h>
+#else
+#include <sys/ioctl.h>
+#include <termios.h>
+#include <unistd.h>
+#include <cerrno>
+#endif
+
+#include <stdexcept>
+
 #include "inputOutputModeFlags.hpp"
 
 bool Term::Private::is_stdin_a_tty() {
@@ -108,10 +121,12 @@ Term::Private::BaseTerminal::~BaseTerminal() noexcept(false) {
     }
 #else
     if (keyboard_enabled) {
-        if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) {
+        if (tcsetattr(STDIN_FILENO, TCSAFLUSH, orig_termios.get()) == -1) {
             throw std::runtime_error("tcsetattr() failed in destructor");
         }
     }
+    // Just to let it living longer
+    orig_termios.get();
 #endif
 }
 
@@ -160,17 +175,21 @@ Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
 #else
 Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
                                           bool disable_ctrl_c)
-    : keyboard_enabled{enable_keyboard} {
+    : orig_termios{std::unique_ptr<termios>(new termios)},
+      keyboard_enabled{enable_keyboard} {
     // Uncomment this to silently disable raw mode for non-tty
     // if (keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
     if (keyboard_enabled) {
-        if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) {
+        if (tcgetattr(STDIN_FILENO, orig_termios.get()) == -1) {
             throw std::runtime_error("tcgetattr() failed");
         }
 
         // Put terminal in raw mode
-        struct termios raw = orig_termios;
+
+        struct termios raw = termios(*orig_termios.get());
+
         raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+
         // This disables output post-processing, requiring explicit \r\n. We
         // keep it enabled, so that in C++, one can still just use std::endl
         // for EOL instead of "\r\n".
