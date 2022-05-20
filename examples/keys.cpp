@@ -32,7 +32,7 @@ int main() {
                 s = (std::string)"Alt+" + (char)(key + 'A' -
                                     (Key::ALT + 'a'));  // Convert to upper case
             } else if (key > 0 && !iscntrl(key) && key < 128) {
-                s = std::to_string(key);
+                s = (char)key;
             } else {
                 switch (key) {
                     case Key::BACKSPACE:
