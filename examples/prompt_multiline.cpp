@@ -9,7 +9,7 @@ using Term::Key;
 using Term::prompt_multiline;
 using Term::Terminal;
 
-bool determine_completeness([[maybe_unused]] std::string command) {
+bool determine_completeness([[maybe_unused]] std::string& command) {
     // Determine if the statement is complete
     bool complete;
     if (command.size() > 1 && command.substr(command.size() - 2, 1) == "\\") {
@@ -36,7 +36,9 @@ int main() {
         // TODO:
         // std::cout << "    - Syntax highlighting" << std::endl;
         std::vector<std::string> history;
-        std::function<bool(std::string)> iscomplete = determine_completeness;
+        std::function<bool(std::string)> iscomplete = reinterpret_cast<
+            const std::function<bool(std::basic_string<char>)>&>(
+            determine_completeness);
         while (true) {
             std::string answer =
                 Term::prompt_multiline(term, "> ", history, iscomplete);
