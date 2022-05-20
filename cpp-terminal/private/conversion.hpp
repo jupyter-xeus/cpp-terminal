@@ -6,11 +6,9 @@
 #include <vector>
 
 #ifdef _WIN32
-#include <stdio.h>
+#include <cstdio>
 #else
-
 #include <sys/ioctl.h>
-
 #endif
 
 static constexpr uint8_t UTF8_ACCEPT = 0;
