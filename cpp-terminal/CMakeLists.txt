@@ -1,7 +1,7 @@
 # configure version information
 configure_file(version.h.in version.h)
 
-# create and confirgure library target
+# create and configure library target
 add_library(cpp-terminal base.cpp prompt.cpp window.cpp input.cpp private/platform.cpp)
 
 target_include_directories(cpp-terminal BEFORE PUBLIC

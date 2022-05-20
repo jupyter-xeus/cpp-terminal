@@ -277,7 +277,7 @@ std::string Term::Window_24bit::render(int x0, int y0, bool term) {
                 current_style = get_style(i, j);
                 update_style = true;
                 if (current_style == style::reset) {
-                    // style::reset resets fg and bg colors too, we have to
+                    // style::reset: reset fg and bg colors too, we have to
                     // set them again if they are non-default, but if fg or
                     // bg colors are reset, we do not update them, as
                     // style::reset already did that.
@@ -520,7 +520,7 @@ std::string Term::Window::render(int x0, int y0, bool term) {
                 current_style = get_style(i, j);
                 update_style = true;
                 if (current_style == style::reset) {
-                    // style::reset resets fg and bg colors too, we have to
+                    // style::reset: resets fg and bg colors too, we have to
                     // set them again if they are non-default, but if fg or
                     // bg colors are reset, we do not update them, as
                     // style::reset already did that.

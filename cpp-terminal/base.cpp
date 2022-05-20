@@ -129,7 +129,7 @@ Term::Terminal::Terminal(bool _clear_screen,
       hide_cursor{_hide_cursor} {
     if (clear_screen) {
         write(save_screen() +
-              // fixes consoles that ignore save_screen()
+              // Fix consoles that ignore save_screen()
               clear_screen_buffer());
     }
     if (hide_cursor)
@@ -139,13 +139,13 @@ Term::Terminal::Terminal(bool _clear_screen)
     : BaseTerminal(false, true), clear_screen{_clear_screen} {
     if (clear_screen) {
         write(save_screen()
-              // fixes consoles that ignore save_screen()
+              // Fix consoles that ignore save_screen()
               + clear_screen_buffer());
     }
 }
 Term::Terminal::~Terminal() {
     if (clear_screen) {
-        // fixes consoles that ignore save_screen()
+        // Fix consoles that ignore save_screen()
         write(color(Term::style::reset) + clear_screen_buffer() +
               move_cursor(1, 1) +
               // restores the screen, might be ignored by some terminals

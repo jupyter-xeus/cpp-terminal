@@ -60,7 +60,7 @@ bool Term::Private::get_term_size(int& rows, int& cols) {
 }
 
 bool Term::Private::read_raw(char* s) {
-    // TODO: What if the keyboard is not initialzed?
+    // TODO: What if the keyboard is not initialized?
     if (false) {
         int c = getchar();
         if (c >= 0) {
