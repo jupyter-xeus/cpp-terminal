@@ -34,7 +34,7 @@ enum class Result_simple {
 
 // A simple yes/no prompt, requires the user to press the ENTER key to continue
 // The arguments are used like this: 1 [2/3]4 <user Input>
-// the immediate switch indicates toggles wether pressing enter for
+// the immediate switch indicates toggles whether pressing enter for
 // confirming the input is required or not
 Result prompt(const std::string& message,
               const std::string& first_option,
