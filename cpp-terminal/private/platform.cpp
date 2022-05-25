@@ -68,22 +68,24 @@ bool Term::Private::get_term_size(int& rows, int& cols) {
     }
 #endif
 }
-
-bool Term::Private::read_raw(char* s) {
-    // TODO: What if the keyboard is not initialized?
-    if (false) {
+char Term::Private::read_raw_stdin() {
         int c = getchar();
         if (c >= 0) {
-            *s = c;
+            return c;
         } else if (c == EOF) {
             // In non-raw (blocking) mode this happens when the input file
             // ends. In such a case, return the End of Transmission (EOT)
             // character (Ctrl-D)
-            *s = 0x04;
+            return 0x04;
         } else {
             throw std::runtime_error("getchar() failed");
         }
-        return true;
+}
+
+bool Term::Private::read_raw(char* s) {
+    // do nothing when TTY is not connected
+    if (!is_stdin_a_tty()) {
+        return false;
     }
 #ifdef _WIN32
     HANDLE hin = GetStdHandle(STD_INPUT_HANDLE);

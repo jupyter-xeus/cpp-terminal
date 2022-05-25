@@ -64,4 +64,6 @@ class BaseTerminal {
     virtual ~BaseTerminal() noexcept(false);
 };
 
+char read_raw_stdin();
+
 }  // namespace Term::Private
