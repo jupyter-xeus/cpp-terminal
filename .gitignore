@@ -54,6 +54,8 @@ cmake-build-release-cygwin/
 cmake-build-debug/
 cmake-build-debug-visual-studio/
 cmake-build-debug-cygwin/
+cmake-build-minsizerel/
+cmake-build-relwithdebinfo/
 .idea/
 
 # cmake
