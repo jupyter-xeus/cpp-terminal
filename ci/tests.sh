@@ -4,6 +4,13 @@ set -ex
 
 ./tests/test_terminal
 ./examples/colors
+./examples/read_stdin
+
+echo "testing stdin example"
+if [[ $(echo test | ./examples/read_stdin) != "Input from stdin: test" ]]; then
+  echo "stdin example returned wrong input"
+  exit 1
+fi
 
 echo "Expected to succeed:"
 ./examples/colors < README.md
