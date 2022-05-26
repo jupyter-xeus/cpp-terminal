@@ -50,9 +50,9 @@ class Window_24bit {
           m_bg_reset(w * h, true),
           m_style(w * h, style::reset){};
 
-    size_t get_w();
+    [[nodiscard]] size_t get_w() const;
 
-    size_t get_h();
+    [[nodiscard]] size_t get_h() const;
 
     void set_char(size_t, size_t, char32_t);
 
@@ -84,7 +84,7 @@ class Window_24bit {
 
     void clear();
 
-    bool rgb_equal(rgb&, rgb);
+    static bool rgb_equal(rgb&, rgb);
 
     // TODO: add Window/Screen parameter here, to be used like this:
     // old_scr = scr;
@@ -130,9 +130,9 @@ class Window {
           m_bg(w * h, bg::reset),
           m_style(w * h, style::reset){};
 
-    size_t get_w();
+    [[nodiscard]] size_t get_w() const;
 
-    size_t get_h();
+    [[nodiscard]] size_t get_h() const;
 
     void set_char(size_t, size_t, char32_t);
 

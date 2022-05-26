@@ -24,11 +24,11 @@ Term::style Term::Window_24bit::get_style(size_t x, size_t y) {
     return m_style[(y - 1) * w + (x - 1)];
 }
 
-size_t Term::Window_24bit::get_w() {
+size_t Term::Window_24bit::get_w() const {
     return w;
 }
 
-size_t Term::Window_24bit::get_h() {
+size_t Term::Window_24bit::get_h() const {
     return h;
 }
 
@@ -260,14 +260,14 @@ std::string Term::Window_24bit::render(int x0, int y0, bool term) {
                 }
             }
 
-            if (current_fg_reset == false) {
+            if (!current_fg_reset) {
                 if (!rgb_equal(current_fg, get_fg(i, j))) {
                     current_fg = get_fg(i, j);
                     update_fg = true;
                 }
             }
 
-            if (current_fg_reset == false) {
+            if (!current_fg_reset) {
                 if (!rgb_equal(current_bg, get_bg(i, j))) {
                     current_bg = get_bg(i, j);
                     update_bg = true;
@@ -277,12 +277,12 @@ std::string Term::Window_24bit::render(int x0, int y0, bool term) {
                 current_style = get_style(i, j);
                 update_style = true;
                 if (current_style == style::reset) {
-                    // style::reset resets fg and bg colors too, we have to
+                    // style::reset: reset fg and bg colors too, we have to
                     // set them again if they are non-default, but if fg or
                     // bg colors are reset, we do not update them, as
                     // style::reset already did that.
-                    update_fg = (current_fg_reset == false);
-                    update_bg = (current_bg_reset == false);
+                    update_fg = !current_fg_reset;
+                    update_bg = !current_bg_reset;
                 }
             }
             // Set style first, as style::reset will reset colors too
@@ -334,11 +334,11 @@ Term::style Term::Window::get_style(size_t x, size_t y) {
     return m_style[(y - 1) * w + (x - 1)];
 }
 
-size_t Term::Window::get_w() {
+size_t Term::Window::get_w() const {
     return w;
 }
 
-size_t Term::Window::get_h() {
+size_t Term::Window::get_h() const {
     return h;
 }
 
@@ -520,7 +520,7 @@ std::string Term::Window::render(int x0, int y0, bool term) {
                 current_style = get_style(i, j);
                 update_style = true;
                 if (current_style == style::reset) {
-                    // style::reset resets fg and bg colors too, we have to
+                    // style::reset: resets fg and bg colors too, we have to
                     // set them again if they are non-default, but if fg or
                     // bg colors are reset, we do not update them, as
                     // style::reset already did that.

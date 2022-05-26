@@ -50,7 +50,7 @@ std::string render(Term::Window& scr,
 
 int main() {
     try {
-        Terminal term(true, true, false, false);
+        Terminal term(true, true, true, true);
         int rows{}, cols{};
         Term::get_term_size(rows, cols);
         int pos = 5;
@@ -86,6 +86,7 @@ int main() {
                     break;
                 case 'q':
                 case Key::ESC:
+                case Key::CTRL + 'c':
                     on = false;
                     break;
             }

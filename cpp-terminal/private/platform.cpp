@@ -13,7 +13,17 @@
 
 #include <stdexcept>
 
-#include "inputOutputModeFlags.hpp"
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#endif
+
+#ifndef DISABLE_NEWLINE_AUTO_RETURN
+#define DISABLE_NEWLINE_AUTO_RETURN 0x0008
+#endif
+
+#ifndef ENABLE_VIRTUAL_TERMINAL_INPUT
+#define ENABLE_VIRTUAL_TERMINAL_INPUT 0x0200
+#endif
 
 bool Term::Private::is_stdin_a_tty() {
 #ifdef _WIN32
@@ -60,7 +70,7 @@ bool Term::Private::get_term_size(int& rows, int& cols) {
 }
 
 bool Term::Private::read_raw(char* s) {
-    // TODO: What if the keyboard is not initialzed?
+    // TODO: What if the keyboard is not initialized?
     if (false) {
         int c = getchar();
         if (c >= 0) {
@@ -175,7 +185,7 @@ Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
 #else
 Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
                                           bool disable_ctrl_c)
-    : orig_termios{std::unique_ptr<termios>(new termios)},
+    : orig_termios{std::make_unique<termios>()},
       keyboard_enabled{enable_keyboard} {
     // Uncomment this to silently disable raw mode for non-tty
     // if (keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
@@ -186,7 +196,7 @@ Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
 
         // Put terminal in raw mode
 
-        struct termios raw = termios(*orig_termios.get());
+        auto raw = termios(*orig_termios);
 
         raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
 

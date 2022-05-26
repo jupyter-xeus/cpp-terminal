@@ -743,7 +743,7 @@ char* editorPrompt(const char* prompt, void (*callback)(char*, int)) {
     size_t buflen = 0;
     buf[0] = '\0';
 
-    while (1) {
+    while (true) {
         editorSetStatusMessage(prompt, buf);
         editorRefreshScreen();
 

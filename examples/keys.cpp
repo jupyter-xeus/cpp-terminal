@@ -10,9 +10,10 @@ using Term::Terminal;
 
 int main() {
     try {
-        Terminal term(true, true, false, false);
+        Terminal term(true, true, true, false);
         int rows{}, cols{};
         Term::get_term_size(rows, cols);
+        std::cout << Term::move_cursor(1, 1);
         std::cout << "Dimension:" << cols << " " << rows << std::endl;
         std::cout << "Press any key ('q' to quit):" << std::endl;
         bool on = true;
@@ -24,17 +25,16 @@ int main() {
                 if (key == 'q')
                     on = false;
             } else if (key >= 'A' && key <= 'Z') {
-                s = (char)key;  // Already in upper case
-                s = "Shift+" + s;
+                s = (std::string) "Shift+" +
+                    (char)key;  // Already in upper case;
             } else if (key >= Key::CTRL + 'a' && key <= Key::CTRL + 'z') {
-                s = (char)((-Key::CTRL + key) - 32);  // Convert to upper case
-                s = "Ctrl+" + s;
+                s = (std::string) "CTRL+" + (char)((-Key::CTRL + key) - 32);
             } else if (key >= Key::ALT + 'a' && key <= Key::ALT + 'z') {
-                s = (char)(key + 'A' -
+                s = (std::string) "Alt+" +
+                    (char)(key + 'A' -
                            (Key::ALT + 'a'));  // Convert to upper case
-                s = "Alt+" + s;
             } else if (key > 0 && !iscntrl(key) && key < 128) {
-                s = std::to_string(key);
+                s = (char)key;
             } else {
                 switch (key) {
                     case Key::BACKSPACE:
