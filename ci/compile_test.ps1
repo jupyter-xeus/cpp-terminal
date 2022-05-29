@@ -1,9 +1,11 @@
-cmake -DCMAKE_INSTALL_PREFIX=%cd%\inst .
+#cmake -DCMAKE_INSTALL_PREFIX=.\inst .
+cmake .
 cmake --build . --config Release
 cmake --install . --config Release
 ctest --output-on-failure
 
-cd tests\test-standalone
-cmake -DCMAKE_PREFIX_PATH=%cd%\..\inst .
-cmake --build . --config Release
-cd
+# Install on windows is complicated and not like on linux
+#cd tests\test-standalone
+#cmake -DCMAKE_PREFIX_PATH=%cd%\..\inst .
+#cmake --build . --config Release
+#cd
