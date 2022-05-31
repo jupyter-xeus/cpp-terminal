@@ -929,6 +929,12 @@ int main(int argc, char* argv[]) {
     // being called when exception happens and the terminal is not put into
     // correct state.
     try {
+        // check if the terminal is capable of handling input
+        if (!Term::is_stdin_a_tty()) {
+            std::cout << "The terminal is not attached to a TTY and therefore "
+                         "can't catch user input. Exiting...\n";
+            return 1;
+        }
         Terminal term(true, true, false, false);
         initEditor();
         if (argc >= 2) {

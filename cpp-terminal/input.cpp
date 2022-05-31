@@ -1,4 +1,5 @@
 #include <chrono>
+#include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
 #include <thread>
 #include "private/platform.hpp"
@@ -182,4 +183,23 @@ int Term::read_key0() {
         }
         return c;
     }
+}
+
+// returns the whole input from STDIN as string
+std::string Term::read_stdin() {
+    std::string file;
+    char c;
+    while (true) {
+        c = Private::read_raw_stdin();
+        if (c == 0x04) {  // check for end of transmission signal
+            return file;
+        } else {
+            file += c;
+        }
+    }
+}
+std::string Term::read_stdin_alone() {
+    // temporarily enable raw mode
+    Term::Terminal term(false, true, false, false);
+    return Term::read_stdin();
 }

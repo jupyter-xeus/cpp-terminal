@@ -28,6 +28,9 @@ target_link_libraries(keys cpp-terminal)
 add_executable(colors colors.cpp)
 target_link_libraries(colors cpp-terminal)
 
+add_executable(read_stdin read_stdin.cpp)
+target_link_libraries(read_stdin cpp-terminal)
+
 # enable warnings and set compile features
 foreach(target kilo menu menu_window keys colors)
         # Force Microsoft Visual Studio to decode sources files in UTF-8

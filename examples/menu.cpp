@@ -78,6 +78,12 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
 
 int main() {
     try {
+        // check if the terminal is capable of handling input
+        if (!Term::is_stdin_a_tty()) {
+            std::cout << "The terminal is not attached to a TTY and therefore "
+                         "can't catch user input. Exiting...\n";
+            return 1;
+        }
         Terminal term(true, true, true, true);
         int rows{}, cols{};
         Term::get_term_size(rows, cols);

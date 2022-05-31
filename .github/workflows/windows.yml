@@ -12,7 +12,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Build and test
+    - name: Build
       run: |
-          ci\compile_test.bat
-          examples\Release\colors.exe
+          ci\compile_test.ps1
+    - name: Test
+      run: ci\test.ps1

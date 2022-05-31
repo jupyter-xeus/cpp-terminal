@@ -68,22 +68,24 @@ bool Term::Private::get_term_size(int& rows, int& cols) {
     }
 #endif
 }
+char Term::Private::read_raw_stdin() {
+    int c = getchar();
+    if (c >= 0) {
+        return c;
+    } else if (c == EOF) {
+        // In non-raw (blocking) mode this happens when the input file
+        // ends. In such a case, return the End of Transmission (EOT)
+        // character (Ctrl-D)
+        return 0x04;
+    } else {
+        throw std::runtime_error("getchar() failed");
+    }
+}
 
 bool Term::Private::read_raw(char* s) {
-    // TODO: What if the keyboard is not initialized?
-    if (false) {
-        int c = getchar();
-        if (c >= 0) {
-            *s = c;
-        } else if (c == EOF) {
-            // In non-raw (blocking) mode this happens when the input file
-            // ends. In such a case, return the End of Transmission (EOT)
-            // character (Ctrl-D)
-            *s = 0x04;
-        } else {
-            throw std::runtime_error("getchar() failed");
-        }
-        return true;
+    // do nothing when TTY is not connected
+    if (!is_stdin_a_tty()) {
+        return false;
     }
 #ifdef _WIN32
     HANDLE hin = GetStdHandle(STD_INPUT_HANDLE);
@@ -144,8 +146,9 @@ Term::Private::BaseTerminal::~BaseTerminal() noexcept(false) {
 Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
                                           bool /*disable_ctrl_c*/)
     : keyboard_enabled{enable_keyboard} {
-    // Uncomment this to silently disable raw mode for non-tty
-    // if (keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
+    // silently disable raw mode for non-tty
+    if (keyboard_enabled)
+        keyboard_enabled = is_stdin_a_tty();
     out_console = is_stdout_a_tty();
     if (out_console) {
         hout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -187,8 +190,9 @@ Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
                                           bool disable_ctrl_c)
     : orig_termios{std::make_unique<termios>()},
       keyboard_enabled{enable_keyboard} {
-    // Uncomment this to silently disable raw mode for non-tty
-    // if (keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
+    // silently disable raw mode for non-tty
+    if (keyboard_enabled)
+        keyboard_enabled = is_stdin_a_tty();
     if (keyboard_enabled) {
         if (tcgetattr(STDIN_FILENO, orig_termios.get()) == -1) {
             throw std::runtime_error("tcgetattr() failed");

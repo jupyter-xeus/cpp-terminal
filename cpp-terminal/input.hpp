@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace Term {
 enum Key {
@@ -40,11 +41,24 @@ enum Key {
 };
 
 // Waits for a key press, translates escape codes
+// if Term:Terminal is not enabling the keyboard it'll loop for infinity
 int read_key();
 
 // If there was a key press, returns the translated key from escape codes,
-// otherwise returns 0. If the escape code is not supported, returns a
+// otherwise returns 0. If the escape code is not supported it returns a
 // negative number.
+// if Term::Terminal is not enabling the keyboard it'll always return 0
 int read_key0();
+
+// returns the stdin as a string
+// waits until the EOT signal is send
+// if Term::Terminal is not enabling the keyboard this function will wait until
+// the user presses CTRL+D (which sends the EOT signal)
+std::string read_stdin();
+
+// returns stdin as a string, Term::Terminal is used to enable input to make the
+// function non-blocking, use Term::read_stdin() when Term::Terminal is already
+// created
+std::string read_stdin_alone();
 
 }  // namespace Term

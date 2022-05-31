@@ -22,6 +22,11 @@ bool determine_completeness([[maybe_unused]] std::string command) {
 
 int main() {
     try {
+        if (!Term::is_stdin_a_tty()) {
+            std::cout << "The terminal is not attached to a TTY and therefore "
+                         "can't catch user input. Exiting...\n";
+            return 1;
+        }
         Terminal term(false, true, false, false);
         std::cout << "Interactive prompt." << std::endl;
         std::cout << "  * Use Ctrl-D to exit." << std::endl;
