@@ -67,16 +67,78 @@ struct RGB {
     uint8_t r, g, b;
 };
 
+// used as reference values for converting 4bit colors to RGB
+// the default values can be changed if wished
+struct bit4_reference {
+    RGB black{0,0,0};
+    RGB red{151, 12, 40};
+    RGB green{1, 142, 66};
+    RGB yellow{238, 198, 67};
+    RGB blue{13, 33, 161};
+    RGB magenta{255, 0, 144};
+    RGB cyan{0, 159, 184};
+    RGB white{240,240,240};
+    RGB gray{127,127,127};
+    RGB bright_red{241, 85, 116};
+    RGB bright_green{52, 254, 146};
+    RGB bright_yellow{243, 215, 124};
+    RGB bright_blue{63, 136, 197};
+    RGB bright_magenta{255, 92, 184};
+    RGB bright_cyan{51, 228, 255};
+    RGB bright_white{255, 255, 255};
+};
+
 // returns the given style code as ANSI escape code
 std::string color(style);
 // returns the given foreground color as ANSI escape code
 std::string color(fg);
 // returns the given background color as ANSI escape code
 std::string color(bg);
+// returns the given 8bit color as ANSI escape code
+std::string color8_fg(uint8_t);
+// returns the given 8bit color as ANSI escape code
+std::string color8_bg(uint8_t);
 // returns the given RGB color as ANSI escape code
 std::string color24_fg(unsigned int, unsigned int, unsigned int);
 // returns the given RGB color as ANSI escape code
+std::string color24_fg(RGB color);
+// returns the given RGB color as ANSI escape code
 std::string color24_bg(unsigned int, unsigned int, unsigned int);
+// returns the given RGB color as ANSI escape code
+std::string color24_bg(RGB color);
+
+// converts 24bit colors to Term::RGB
+RGB bit24_to_rgb(uint8_t r, uint8_t g, uint8_t b);
+// converts 8bit colors to Term::
+// TODO
+RGB bit8_to_rgb(uint8_t color);
+// converts 8bit colors to Term::RGB
+// TODO
+RGB bit8_to_rgb(uint8_t color, bit4_reference color_ref);
+// converts 4bit colors to Term::RGB
+RGB bit4_to_rgb(fg color, bit4_reference color_ref);
+// converts 4bit colors to Term::RGB
+RGB bit4_to_rgb(fg color);
+// converts 4bit colors to Term::RGB
+RGB bit4_to_rgb(bg color, bit4_reference color_ref);
+// converts 4bit colors to Term::RGB
+RGB bit4_to_rgb(bg color);
+
+// Generates a diff from two colors. The lower the result the closer the color
+uint16_t rgb_diff(RGB color_first, RGB color_second);
+
+// converts Term::RGB to 8bit colors
+uint8_t rgb_to_bit8(RGB color);
+// converts Term::RGB to 8bit colors
+//uint8_t rgb_to_bit8(RGB color);
+// converts Term::RGB to 4bit colors foreground
+fg rgb_to_bit4_fg(RGB color);
+// converts Term::RGB to 4bit colors foreground
+fg rgb_to_bit4_fg(RGB color, bit4_reference color_ref);
+// converts Term::RGB to 4bit colors foreground
+bg rgb_to_bit4_bg(RGB color);
+// converts Term::RGB to 4bit colors foreground
+bg rgb_to_bit4_bg(RGB color, bit4_reference color_ref);
 
 // writes a string to the console and flushes stdout
 void write(const std::string&);

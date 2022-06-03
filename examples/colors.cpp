@@ -59,6 +59,131 @@ int main() {
         }
         std::cout << "\n";
 
+        std::cout << "\nColor conversion (4bit base):\n";
+        std::cout << "4bit original: " << color(bg::black) << " " << color(bg::red) << " " << color(bg::green) << " " << color(bg::yellow) << " " << color(bg::blue) << " " << color(bg::magenta) << " " << color(bg::cyan) << " " << color(bg::white) << " " << color(bg::gray) << " " << color(bg::bright_red) << " " << color(bg::bright_green) << " " << color(bg::bright_yellow) << " " << color(bg::bright_blue) << " " << color(bg::bright_magenta) << " " << color(bg::bright_cyan) << " " << color(bg::bright_white) << " " << color(bg::reset) << "\n";
+        std::cout << "4bit to 4bit:  " << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::black))) << " "
+                  << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::red)))  << " "
+                  << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::green))) << " "
+                  << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::yellow))) << " "
+                  << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::blue))) << " "
+                  << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::magenta))) << " "
+                  << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::cyan))) << " "
+                  << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::white))) << " "
+                  << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::gray))) << " "
+        << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::bright_red))) << " "
+        << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::bright_green))) << " "
+        << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::bright_yellow))) << " "
+        << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::bright_blue))) << " "
+        << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::bright_magenta))) << " "
+        << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::bright_cyan))) << " "
+        << color(Term::rgb_to_bit4_bg(Term::bit4_to_rgb(bg::bright_white))) << " "
+        << color(bg::reset) << "\n";
+
+        std::cout << "4bit to 24bit: " << Term::color24_bg(Term::bit4_to_rgb(bg::black)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::red)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::green)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::yellow)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::blue)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::magenta)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::cyan)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::white)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::gray)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::bright_red)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::bright_green)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::bright_yellow)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::bright_blue)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::bright_magenta)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::bright_cyan)) << " "
+            << Term::color24_bg(Term::bit4_to_rgb(bg::bright_white)) << " "
+            << Term::color(bg::reset) << "\n";
+
+        std::cout << "4bit to 8bit:  " << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::black))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::red))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::green))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::yellow))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::blue))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::magenta))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::cyan))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::white))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::gray))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::bright_red))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::bright_green))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::bright_yellow))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::bright_blue))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::bright_magenta))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::bright_cyan))) + " "
+                  << Term::color8_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(bg::bright_white))) + " "
+                         << Term::color(bg::reset) << "\n";
+
+        std::cout << "\nColor conversion (24bit)\n";
+        /* red color space */
+        std::cout << "24bit original: ";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << color24_bg(i, 0, 0) << " "
+                      << "\033[0m";
+        }
+        std::cout << "\n24bit to 8bit:  ";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << Term::color8_bg(Term::rgb_to_bit8(Term::bit24_to_rgb(i, 0, 0))) << " " << "\033[0m";
+        }
+        std::cout << "\n24bit to 4bit:  ";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << Term::color(Term::rgb_to_bit4_bg(Term::bit24_to_rgb(i, 0, 0))) << " " << "\033[0m";
+        }
+        /* green color space */
+        std::cout << "\n24bit original: ";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << color24_bg(0, i, 0) << " "
+                      << "\033[0m";
+        }
+        std::cout << "\n24bit to 8bit:  ";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << Term::color8_bg(Term::rgb_to_bit8(Term::bit24_to_rgb(0, i, 0))) << " " << "\033[0m";
+        }
+        std::cout << "\n24bit to 4bit:  ";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << Term::color(Term::rgb_to_bit4_bg(Term::bit24_to_rgb(0, i, 0))) << " " << "\033[0m";
+        }
+        /* blue color space */
+        std::cout << "\n24bit original: ";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << color24_bg(0, 0, i) << " "
+                      << "\033[0m";
+        }
+        std::cout << "\n24bit to 8bit:  ";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << Term::color8_bg(Term::rgb_to_bit8(Term::bit24_to_rgb(0, 0, i))) << " " << "\033[0m";
+        }
+        std::cout << "\n24bit to 4bit:  ";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << Term::color(Term::rgb_to_bit4_bg(Term::bit24_to_rgb(0, 0, i))) << " " << "\033[0m";
+        }
+        /* black / grey color space */
+        std::cout << "\n24bit original: ";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << color24_bg(i, i, i) << " "
+                      << "\033[0m";
+        }
+        std::cout << "\n24bit to 8bit:  ";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << Term::color8_bg(Term::rgb_to_bit8(Term::bit24_to_rgb(i, i, i))) << " " << "\033[0m";
+        }
+        std::cout << "\n24bit to 4bit:  ";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << Term::color(Term::rgb_to_bit4_bg(Term::bit24_to_rgb(i, i, i))) << " " << "\033[0m";
+        }
+        std::cout << "\n";
+
+
+        std::cout << "\nDebug:\n";
+        Term::RGB test_color = Term::bit24_to_rgb(50, 50, 50);
+
+        std::cout << "diff to red:  " << std::to_string(Term::rgb_diff(test_color, Term::bit4_reference{}.red)) << "\n";
+        std::cout << "diff to gray: " << std::to_string(Term::rgb_diff(test_color, Term::bit4_reference{}.gray)) << "\n";
+
+        std::cout << "color: " << Term::color(Term::rgb_to_bit4_bg(test_color)) << " " << "\033[0m\n";
+
+
     } catch (const std::runtime_error& re) {
         std::cerr << "Runtime error: " << re.what() << std::endl;
         return 2;
