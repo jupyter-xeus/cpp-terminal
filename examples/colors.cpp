@@ -174,14 +174,35 @@ int main() {
         }
         std::cout << "\n";
 
+        std::cout << "\nAuto color for 24bit: \n";
+        if (Term::bit24_support()) {
+            std::cout << "24bit support: yes\n$COLORTERM: " << getenv("COLORTERM") << '\n';
+        }
+        else {
+            std::cout << "24bit support: no\n$COLORTERM: " << getenv("COLORTERM") << '\n';
+        }
+        std::cout << "24bit auto function test:\n";
 
-        std::cout << "\nDebug:\n";
-        Term::RGB test_color = Term::bit24_to_rgb(50, 50, 50);
-
-        std::cout << "diff to red:  " << std::to_string(Term::rgb_diff(test_color, Term::bit4_reference{}.red)) << "\n";
-        std::cout << "diff to gray: " << std::to_string(Term::rgb_diff(test_color, Term::bit4_reference{}.gray)) << "\n";
-
-        std::cout << "color: " << Term::color(Term::rgb_to_bit4_bg(test_color)) << " " << "\033[0m\n";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << Term::color24_auto_bg(i, 0, 0) << " "
+                      << "\033[0m";
+        }
+        std::cout << "\n";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << Term::color24_auto_bg(0, i, 0) << " "
+                      << "\033[0m";
+        }
+        std::cout << "\n";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << Term::color24_auto_bg(0, 0, i) << " "
+                      << "\033[0m";
+        }
+        std::cout << "\n";
+        for (unsigned int i = 0; i <= 255; i += 3) {
+            std::cout << Term::color24_auto_bg(i, i, i) << " "
+                      << "\033[0m";
+        }
+        std::cout << "\n";
 
 
     } catch (const std::runtime_error& re) {

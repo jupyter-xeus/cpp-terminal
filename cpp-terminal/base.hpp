@@ -106,6 +106,18 @@ std::string color24_fg(RGB color);
 std::string color24_bg(unsigned int, unsigned int, unsigned int);
 // returns the given RGB color as ANSI escape code
 std::string color24_bg(RGB color);
+// returns the given RGB color as 24bit ANSI escape code if the terminal
+// is supporting it, converts it to 8bit when the terminal is not supporting it
+std::string color24_auto_fg(uint8_t r, uint8_t g, uint8_t b);
+// returns the given RGB color as 24bit ANSI escape code if the terminal
+// is supporting it, converts it to 8bit when the terminal is not supporting it
+std::string color24_auto_fg(RGB color);
+// returns the given RGB color as 24bit ANSI escape code if the terminal
+// is supporting it, converts it to 8bit when the terminal is not supporting it
+std::string color24_auto_bg(uint8_t r, uint8_t g, uint8_t b);
+// returns the given RGB color as 24bit ANSI escape code if the terminal
+// is supporting it, converts it to 8bit when the terminal is not supporting it
+std::string color24_auto_bg(RGB color);
 
 // converts 24bit colors to Term::RGB
 RGB bit24_to_rgb(uint8_t r, uint8_t g, uint8_t b);
@@ -182,6 +194,10 @@ bool is_stdout_a_tty();
 // returning false means that the program isn't connected to a terminal
 // and therefore using raw mode isn't possible
 bool get_term_size(int&, int&);
+// returns true if the terminal supports 24bit colors
+// false positives are not possible, but false negatives if the terminal
+// doesn't expose the COLORTERM variable
+bool bit24_support();
 
 // escape code for saving the current terminal state
 std::string save_screen();

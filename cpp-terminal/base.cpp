@@ -46,6 +46,41 @@ std::string Term::color24_bg(RGB color) {
            ';' + std::to_string(color.b) + 'm';
 }
 
+std::string Term::color24_auto_bg(uint8_t r, uint8_t g, uint8_t b) {
+    if(bit24_support()) {
+        return color24_bg(r, g, b);
+    }
+    else {
+        return color8_bg(rgb_to_bit8(RGB{r, g, b}));
+    }
+}
+std::string Term::color24_auto_bg(RGB color) {
+    if (bit24_support()) {
+        return color24_bg(color);
+    }
+    else {
+        return color8_bg(rgb_to_bit8(color));
+    }
+}
+
+std::string Term::color24_auto_fg(uint8_t r, uint8_t g, uint8_t b) {
+    if(bit24_support()) {
+        return color24_fg(r, g, b);
+    }
+    else {
+        return color8_fg(rgb_to_bit8(RGB{r, g, b}));
+    }
+}
+std::string Term::color24_auto_fg(RGB color) {
+    if (bit24_support()) {
+        return color24_fg(color);
+    }
+    else {
+        return color8_fg(rgb_to_bit8(color));
+    }
+}
+
+
 Term::RGB Term::bit24_to_rgb(uint8_t r, uint8_t g, uint8_t b) {
     return RGB{r, g, b};
 }
@@ -409,6 +444,13 @@ bool Term::is_stdout_a_tty() {
 }
 bool Term::get_term_size(int& rows, int& cols) {
     return Private::get_term_size(rows, cols);
+}
+bool Term::bit24_support() {
+    std::string colorterm = getenv("COLORTERM");
+    if (colorterm == "truecolor" || colorterm == "24bit") {
+        return true;
+    }
+    return false;
 }
 
 std::string Term::restore_screen() {
