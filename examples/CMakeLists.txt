@@ -13,8 +13,11 @@ target_link_libraries(prompt_simple cpp-terminal)
 add_executable(kilo kilo.cpp)
 target_link_libraries(kilo cpp-terminal)
 
-add_executable(menu menu.cpp)
-target_link_libraries(menu cpp-terminal)
+add_executable(menu_simple menu_simple.cpp)
+target_link_libraries(menu_simple cpp-terminal)
+
+add_executable(menu_advanced menu_advanced.cpp)
+target_link_libraries(menu_advanced cpp-terminal)
 
 add_executable(menu_window menu_window.cpp)
 target_link_libraries(menu_window cpp-terminal)
@@ -32,7 +35,7 @@ add_executable(read_stdin read_stdin.cpp)
 target_link_libraries(read_stdin cpp-terminal)
 
 # enable warnings and set compile features
-foreach(target kilo menu menu_window keys colors)
+foreach(target kilo menu_simple menu_advanced menu_window keys colors)
         # Force Microsoft Visual Studio to decode sources files in UTF-8
         if (MSVC)
                 target_compile_options(${target} PUBLIC "/utf-8")

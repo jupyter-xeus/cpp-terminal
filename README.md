@@ -31,7 +31,7 @@ We have created serval examples to show possible use cases of CPP-Terminal and t
 - [base.cpp](examples/base.cpp): basic color, style and unicode demo
 - [kilo.cpp](examples/kilo.cpp): the [kilo](https://github.com/snaptoken/kilo-src) text editor
   ported to C++ and `CPP-Terminal` instead of using Linux specific API
-- [menu.cpp](examples/menu.cpp): An interactive menu using only the contents of `cpp-terminal/base.hpp`
+- [menu.cpp](examples/menu_simple.cpp): An interactive menu using only the contents of `cpp-terminal/base.hpp`
 - [menu_window.cpp](examples/menu_window.cpp): An interactive menu using the fully managed windowing system from `cpp-terminal/window.hpp`
 - [keys.cpp](examples/keys.cpp): Interactively shows the keys pressed
 
