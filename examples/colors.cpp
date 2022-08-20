@@ -58,6 +58,10 @@ int main() {
                       << "\033[0m";
         }
         std::cout << "\n";
+#ifdef _WIN32
+        while (1)
+            ;
+#endif
 
     } catch (const std::runtime_error& re) {
         std::cerr << "Runtime error: " << re.what() << std::endl;
