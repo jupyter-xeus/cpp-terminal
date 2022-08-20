@@ -56,3 +56,7 @@ foreach(target kilo menu menu_window keys colors)
                 target_compile_options(${target} PRIVATE "-Wno-sign-compare")
         endif()
 endforeach()
+
+if(CPPTERMINAL_ENABLE_INSTALL)
+install(TARGETS prompt_multiline prompt_immediate prompt_not_immediate prompt_simple kilo menu menu_window menu_window_24bit keys colors read_stdin RUNTIME DESTINATION bin/examples)
+endif()
