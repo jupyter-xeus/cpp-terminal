@@ -139,6 +139,7 @@ bool Term::Private::has_ansi_escape_code() {
                 }
             }
         }
+        checked = true;
     }
     return has_ansi;
 #else
