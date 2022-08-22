@@ -130,7 +130,7 @@ std::vector<std::string> Term::split(const std::string& s) {
     return lines;
 }
 
-char32_t Term::U(const std::string& s) {
+char32_t Term::UU(const std::string& s) {
     std::u32string s2 = Private::utf8_to_utf32(s);
     if (s2.size() != 1)
         throw std::runtime_error("U(s): s not a codepoint.");
@@ -140,13 +140,13 @@ char32_t Term::U(const std::string& s) {
 void Term::print_left_curly_bracket(Term::Window& scr, int x, int y1, int y2) {
     int h = y2 - y1 + 1;
     if (h == 1) {
-        scr.set_char(x, y1, U("]"));
+        scr.set_char(x, y1, UU("]"));
     } else {
-        scr.set_char(x, y1, U("┐"));
+        scr.set_char(x, y1, UU("┐"));
         for (int j = y1 + 1; j <= y2 - 1; j++) {
-            scr.set_char(x, j, U("│"));
+            scr.set_char(x, j, UU("│"));
         }
-        scr.set_char(x, y2, U("┘"));
+        scr.set_char(x, y2, UU("┘"));
     }
 }
 

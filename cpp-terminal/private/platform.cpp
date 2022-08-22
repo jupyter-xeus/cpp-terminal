@@ -180,7 +180,8 @@ Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
         }
         DWORD flags = dwOriginalInMode;
         flags |= ENABLE_VIRTUAL_TERMINAL_INPUT;
-        flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
+        flags &=
+            ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
         if (!SetConsoleMode(hin, flags)) {
             throw std::runtime_error("SetConsoleMode() failed");
         }
