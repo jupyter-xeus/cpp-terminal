@@ -1,0 +1,15 @@
+name: pre-commit Check
+on: [push, pull_request]
+jobs:
+  formatting-check:
+    name: Formatting Check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: pre-commit
+      # You may pin to the exact commit or the version.
+      # uses: pre-commit/action@646c83fcd040023954eafda54b4db0192ce70507
+      uses: pre-commit/action@v3.0.0
+      with:
+      # options to pass to pre-commit run
+      extra_args: # optional, default is --all-files
