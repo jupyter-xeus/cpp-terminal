@@ -30,8 +30,8 @@ std::string Term::color24_fg(unsigned int red,
 }
 
 std::string Term::color24_fg(RGB color) {
-    return "\033[38;2;" + std::to_string(color.r) + ';' + std::to_string(color.g) +
-           ';' + std::to_string(color.b) + 'm';
+    return "\033[38;2;" + std::to_string(color.r) + ';' +
+           std::to_string(color.g) + ';' + std::to_string(color.b) + 'm';
 }
 
 std::string Term::color24_bg(unsigned int red,
@@ -42,44 +42,39 @@ std::string Term::color24_bg(unsigned int red,
 }
 
 std::string Term::color24_bg(RGB color) {
-    return "\033[48;2;" + std::to_string(color.r) + ';' + std::to_string(color.g) +
-           ';' + std::to_string(color.b) + 'm';
+    return "\033[48;2;" + std::to_string(color.r) + ';' +
+           std::to_string(color.g) + ';' + std::to_string(color.b) + 'm';
 }
 
 std::string Term::color24_auto_bg(uint8_t r, uint8_t g, uint8_t b) {
-    if(bit24_support()) {
+    if (bit24_support()) {
         return color24_bg(r, g, b);
-    }
-    else {
+    } else {
         return color8_bg(rgb_to_bit8(RGB{r, g, b}));
     }
 }
 std::string Term::color24_auto_bg(RGB color) {
     if (bit24_support()) {
         return color24_bg(color);
-    }
-    else {
+    } else {
         return color8_bg(rgb_to_bit8(color));
     }
 }
 
 std::string Term::color24_auto_fg(uint8_t r, uint8_t g, uint8_t b) {
-    if(bit24_support()) {
+    if (bit24_support()) {
         return color24_fg(r, g, b);
-    }
-    else {
+    } else {
         return color8_fg(rgb_to_bit8(RGB{r, g, b}));
     }
 }
 std::string Term::color24_auto_fg(RGB color) {
     if (bit24_support()) {
         return color24_fg(color);
-    }
-    else {
+    } else {
         return color8_fg(rgb_to_bit8(color));
     }
 }
-
 
 Term::RGB Term::bit24_to_rgb(uint8_t r, uint8_t g, uint8_t b) {
     return RGB{r, g, b};
@@ -127,11 +122,12 @@ Term::RGB Term::bit8_to_rgb(uint8_t color, Term::bit4_reference color_ref) {
         }
     }
     // convert the actual 8bit color space
-    else if(color <= 231) {
+    else if (color <= 231) {
         // TODO
-    }
-    else {
-        return {static_cast<uint8_t>(color / 24), static_cast<uint8_t>(color / 24), static_cast<uint8_t>(color / 24)};
+    } else {
+        return {static_cast<uint8_t>(color / 24),
+                static_cast<uint8_t>(color / 24),
+                static_cast<uint8_t>(color / 24)};
     }
     // not accessible, dummy error
     throw std::runtime_error("conversion from 8bit to Term::RGB failed");
@@ -235,20 +231,17 @@ uint16_t Term::rgb_diff(RGB color_first, RGB color_second) {
     uint16_t diff = 0;
     if (color_first.r > color_second.r) {
         diff += color_first.r - color_second.r;
-    }
-    else {
+    } else {
         diff += color_second.r - color_first.r;
     }
     if (color_first.g > color_second.g) {
         diff += color_first.g - color_second.g;
-    }
-    else {
+    } else {
         diff += color_second.g - color_first.g;
     }
     if (color_first.b > color_second.b) {
         diff += color_first.b - color_second.b;
-    }
-    else {
+    } else {
         diff += color_second.b - color_first.b;
     }
     return diff;
@@ -393,9 +386,9 @@ Term::fg Term::rgb_to_bit4_fg(RGB color) {
 }
 
 uint8_t Term::rgb_to_bit8(RGB color) {
-    return 16 + (color.r * 6 / 256) * 36 + (color.g * 6 / 256) * 6 + (color.b * 6 / 256);
+    return 16 + (color.r * 6 / 256) * 36 + (color.g * 6 / 256) * 6 +
+           (color.b * 6 / 256);
 }
-
 
 void Term::write(const std::string& s) {
     std::cout << s << std::flush;

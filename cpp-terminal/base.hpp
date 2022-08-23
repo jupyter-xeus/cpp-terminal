@@ -70,15 +70,15 @@ struct RGB {
 // used as reference values for converting 4bit colors to RGB
 // the default values can be changed if wished
 struct bit4_reference {
-    RGB black{0,0,0};
+    RGB black{0, 0, 0};
     RGB red{151, 12, 40};
     RGB green{1, 142, 66};
     RGB yellow{238, 198, 67};
     RGB blue{13, 33, 161};
     RGB magenta{255, 0, 144};
     RGB cyan{0, 159, 184};
-    RGB white{240,240,240};
-    RGB gray{127,127,127};
+    RGB white{240, 240, 240};
+    RGB gray{127, 127, 127};
     RGB bright_red{241, 85, 116};
     RGB bright_green{52, 254, 146};
     RGB bright_yellow{243, 215, 124};
@@ -142,7 +142,7 @@ uint16_t rgb_diff(RGB color_first, RGB color_second);
 // converts Term::RGB to 8bit colors
 uint8_t rgb_to_bit8(RGB color);
 // converts Term::RGB to 8bit colors
-//uint8_t rgb_to_bit8(RGB color);
+// uint8_t rgb_to_bit8(RGB color);
 // converts Term::RGB to 4bit colors foreground
 fg rgb_to_bit4_fg(RGB color);
 // converts Term::RGB to 4bit colors foreground
