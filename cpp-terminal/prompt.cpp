@@ -205,14 +205,14 @@ std::string Term::prompt_multiline(
     hist.push_back(concat(m.lines));  // Push back empty input
 
     Term::Window scr(cols, 1);
-    int key;
+    Key key{NO_KEY};
     render(scr, m, cols);
     std::cout << scr.render(1, row, term_attached) << std::flush;
     bool not_complete = true;
     while (not_complete) {
-        key = Term::read_key();
+        key = static_cast<Key>(Term::read_key());
         if ((key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') ||
-            (!iscntrl(key) && key < 128)) {
+            (Term::is_extended_ANSII(key) && !iscntrl(key))) {
             std::string before =
                 m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
             std::string newchar;

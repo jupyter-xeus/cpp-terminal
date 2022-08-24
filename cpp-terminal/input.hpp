@@ -1,45 +1,44 @@
 #pragma once
+#include <cstdint>
 #include <string>
 
 namespace Term {
-enum Key {
+enum Key : std::int32_t {
     NO_KEY = -1,
-    // Begin ASCII
+    // Begin ASCII (some ASCII names has been change to their CTRL + key part)
     NUL = 0,
-    SOH = 1,
-    STX = 2,
-    ETX = 3,
-    EOT = 4,
-    ENQ = 5,
-    ACK = 6,
-    BEL = 7,
-    BS = 8,
+    CTRL_A = 1,
+    CTRL_B = 2,
+    CTRL_C = 3,
+    CTRL_D = 4,
+    CTRL_E = 5,
+    CTRL_F = 6,
+    CTRL_G = 7,
     BACKSPACE = 8,
-    HT = 9,
     TAB = 9,
-    LF = 10,
     ENTER = 10,
-    VT = 11,
-    FF = 12,
-    CR = 13,
-    SO = 14,
-    SI = 15,
-    DLE = 16,
-    DC1 = 17,
-    DC2 = 18,
-    DC3 = 19,
-    DC4 = 20,
-    NAK = 21,
-    SYN = 22,
-    ETB = 23,
-    CAN = 24,
-    EM = 25,
-    SUB = 26,
+    LF = 10,
+    CTRL_K = 11,
+    CTRL_L = 12,
+    CR = 13,  // MAPED to ENTER
+    CTRL_N = 14,
+    CTRL_O = 15,
+    CTRL_P = 16,
+    CTRL_Q = 17,
+    CTRL_R = 18,
+    CTRL_S = 19,
+    CTRL_T = 20,
+    CTRL_U = 21,
+    CTRL_V = 22,
+    CTRL_W = 23,
+    CTRL_X = 24,
+    CTRL_Y = 25,
+    CTRL_Z = 26,
     ESC = 27,
-    FS = 28,
-    GS = 29,
-    RS = 30,
-    US = 31,
+    CTRL_SLASH = 28,
+    CTRL_CLOSE_BRACKET = 29,
+    CTRL_CARET = 30,
+    CTRL_UNDERSCORE = 31,
     SPACE = 32,
     EXCLAMATION_MARK = 33,
     QUOTE = 34,
@@ -140,7 +139,8 @@ enum Key {
     TILDE = 126,
     DEL = 127,
     // End ASCII
-    ALT_ENTER,
+    // Extended ANSII goes up to 255
+    ALT_ENTER = 256,
     ARROW_LEFT,
     ARROW_RIGHT,
     ARROW_UP,
@@ -167,20 +167,34 @@ enum Key {
     F10,
     F11,
     F12,
-    // special keys
-    CTRL = -96,
-    ALT = -128
+    // Keys bellow need to be under 512
+    // special keys (CTRL is special^2)
+    CTRL = -AROBASE,
+    // Now use << to for detecting special key + key press
+    ALT = (1 << 9)
 };
+
+// Detect if Key is convertible to ANSII
+bool is_ANSII(const Key&);
+
+// Detect if Key is convertible to Extended ANSII
+bool is_extended_ANSII(const Key&);
+
+// Detect if Key is CTRL+*
+bool is_CTRL(const Key&);
+
+// Detecti if Key is ALT+*
+bool is_ALT(const Key&);
 
 // Waits for a key press, translates escape codes
 // if Term:Terminal is not enabling the keyboard it'll loop for infinity
-int read_key();
+std::int32_t read_key();
 
 // If there was a key press, returns the translated key from escape codes,
 // otherwise returns 0. If the escape code is not supported it returns a
 // negative number.
 // if Term::Terminal is not enabling the keyboard it'll always return 0
-int read_key0();
+std::int32_t read_key0();
 
 // returns the stdin as a string
 // waits until the EOT signal is send
