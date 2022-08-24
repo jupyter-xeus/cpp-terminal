@@ -1,7 +1,6 @@
 #include <chrono>
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
-#include <iostream>
 #include <thread>
 #include "private/platform.hpp"
 
@@ -184,6 +183,8 @@ std::int32_t Term::read_key0() {
         return -4;
     } else {
         switch (c) {
+            case Key::DEL:
+                return Key::BACKSPACE;
             case Key::LF:
             case Key::CR:
                 return Key::ENTER;
