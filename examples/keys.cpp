@@ -39,7 +39,7 @@ int main() {
                 s = (std::string) "Alt+" +
                     (char)(key + Key::A -
                            (Key::ALT + Key::a));  // Convert to upper case
-            } else if (Term::is_extended_ANSII(key) && !iscntrl(key)) {
+            } else if (Term::is_extended_ASCII(key) && !iscntrl(key)) {
                 s = (char)key;
             } else {
                 switch (key) {

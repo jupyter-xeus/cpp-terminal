@@ -4,14 +4,14 @@
 #include <thread>
 #include "private/platform.hpp"
 
-bool Term::is_ANSII(const Term::Key& key) {
+bool Term::is_ASCII(const Term::Key& key) {
     if (key >= 0 && key <= 127)
         return true;
     else
         return false;
 }
 
-bool Term::is_extended_ANSII(const Term::Key& key) {
+bool Term::is_extended_ASCII(const Term::Key& key) {
     if (key >= 0 && key <= 255)
         return true;
     else

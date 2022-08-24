@@ -212,7 +212,7 @@ std::string Term::prompt_multiline(
     while (not_complete) {
         key = static_cast<Key>(Term::read_key());
         if ((key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') ||
-            (Term::is_extended_ANSII(key) && !iscntrl(key))) {
+            (Term::is_extended_ASCII(key) && !iscntrl(key))) {
             std::string before =
                 m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
             std::string newchar;

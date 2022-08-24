@@ -175,10 +175,10 @@ enum Key : std::int32_t {
 };
 
 // Detect if Key is convertible to ANSII
-bool is_ANSII(const Key&);
+bool is_ASCII(const Key&);
 
 // Detect if Key is convertible to Extended ANSII
-bool is_extended_ANSII(const Key&);
+bool is_extended_ASCII(const Key&);
 
 // Detect if Key is CTRL+*
 bool is_CTRL(const Key&);
