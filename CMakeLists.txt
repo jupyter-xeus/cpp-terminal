@@ -1,6 +1,17 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
-project(cpp-terminal 
+# see https://cmake.org/cmake/help/latest/policy/CMP0092.html
+set(CMAKE_CXX_FLAGS_OLD ${CMAKE_CXX_FLAGS})
+if(MSVC)
+  if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+    string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+  endif()
+endif()
+
+
+project(cpp-terminal
         VERSION 1.0.0
         DESCRIPTION "Small header only C++ library for writing multiplatform terminal applications"
         HOMEPAGE_URL "https://github.com/jupyter-xeus/cpp-terminal"
@@ -33,4 +44,8 @@ if (CPPTERMINAL_ENABLE_INSTALL)
   include(cmake/install.cmake)
   install_library(cpp-terminal)
 
+endif()
+
+if(MSVC)
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_OLD})
 endif()
