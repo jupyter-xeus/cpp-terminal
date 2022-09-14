@@ -19,6 +19,7 @@
 #endif
 #include <minwindef.h>
 #undef NOMINMAX
+#include <tuple>
 #else
 class termios;
 #include <memory>
