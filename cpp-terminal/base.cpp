@@ -191,12 +191,12 @@ uint8_t Term::rgb_to_bit8(RGB color) {
     }
 
     // check gray scale in 24 steps
-    if (color.r == color.g == color.b) {
+    if (color.r == color.g && color.r == color.b && color.g == color.b) {
         return 232 + color.r / 32 + color.g / 32 + color.b / 32;
     }
 
     // normal color space
-    return 16 + 36 * (color.r / 51) + 6 * (color.g / 51) + color.b;
+    return 16 + 36 * (color.r / 51) + 6 * (color.g / 51) + (color.b / 51);
 }
 
 bool Term::bit24_support() {
