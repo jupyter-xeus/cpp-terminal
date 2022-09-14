@@ -47,8 +47,8 @@ std::tuple<size_t, size_t> Term::Private::get_term_size() {
     }
     CONSOLE_SCREEN_BUFFER_INFO inf;
     if (GetConsoleScreenBufferInfo(hout, &inf)) {
-        cols = inf.srWindow.Right - inf.srWindow.Left + 1;
-        rows = inf.srWindow.Bottom - inf.srWindow.Top + 1;
+        size_t cols = inf.srWindow.Right - inf.srWindow.Left + 1;
+        size_t rows = inf.srWindow.Bottom - inf.srWindow.Top + 1;
         return {rows, cols};
     } else {
         // This happens when we are not connected to a terminal

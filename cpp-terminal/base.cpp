@@ -200,7 +200,7 @@ uint8_t Term::rgb_to_bit8(RGB color) {
 }
 
 bool Term::bit24_support() {
-    std::string colorterm = getenv("COLORTERM");
+    std::string colorterm = std::getenv("COLORTERM");
     if (colorterm == "truecolor" || colorterm == "24bit") {
         return true;
     }
