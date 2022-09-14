@@ -53,72 +53,107 @@ int main() {
         }
 
         std::cout << "\nColor conversion (4bit base):\n";
-        std::cout << "4bit original: " << Term::color_bg(Term::Color4::BLACK) << " "
-                  << Term::color_bg(Term::Color4::RED) << " " << Term::color_bg(Term::Color4::GREEN) << " "
-                  << Term::color_bg(Term::Color4::YELLOW) << " " << Term::color_bg(Term::Color4::BLUE) << " "
-                  << Term::color_bg(Term::Color4::MAGENTA) << " " << Term::color_bg(Term::Color4::CYAN) << " "
-                  << Term::color_bg(Term::Color4::WHITE) << " " << Term::color_bg(Term::Color4::GRAY) << " "
-                  << Term::color_bg(Term::Color4::RED_BRIGHT) << " " << Term::color_bg(Term::Color4::GREEN_BRIGHT)
-                  << " " << Term::color_bg(Term::Color4::YELLOW_BRIGHT) << " "
-                  << Term::color_bg(Term::Color4::BLUE_BRIGHT) << " " << Term::color_bg(Term::Color4::MAGENTA_BRIGHT)
-                  << " " << Term::color_bg(Term::Color4::CYAN_BRIGHT) << " "
-                  << Term::color_bg(Term::Color4::WHITE_BRIGHT) << " " << Term::color_bg(Term::Color4::NONE) << "\n";
+        std::cout << "4bit original: " << Term::color_bg(Term::Color4::BLACK)
+                  << " " << Term::color_bg(Term::Color4::RED) << " "
+                  << Term::color_bg(Term::Color4::GREEN) << " "
+                  << Term::color_bg(Term::Color4::YELLOW) << " "
+                  << Term::color_bg(Term::Color4::BLUE) << " "
+                  << Term::color_bg(Term::Color4::MAGENTA) << " "
+                  << Term::color_bg(Term::Color4::CYAN) << " "
+                  << Term::color_bg(Term::Color4::WHITE) << " "
+                  << Term::color_bg(Term::Color4::GRAY) << " "
+                  << Term::color_bg(Term::Color4::RED_BRIGHT) << " "
+                  << Term::color_bg(Term::Color4::GREEN_BRIGHT) << " "
+                  << Term::color_bg(Term::Color4::YELLOW_BRIGHT) << " "
+                  << Term::color_bg(Term::Color4::BLUE_BRIGHT) << " "
+                  << Term::color_bg(Term::Color4::MAGENTA_BRIGHT) << " "
+                  << Term::color_bg(Term::Color4::CYAN_BRIGHT) << " "
+                  << Term::color_bg(Term::Color4::WHITE_BRIGHT) << " "
+                  << Term::color_bg(Term::Color4::NONE) << "\n";
         std::cout
             << "4bit to 4bit:  "
-            << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::BLACK))) << " "
-            << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::RED))) << " "
-            << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::GREEN))) << " "
-            << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::YELLOW))) << " "
-            << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::BLUE))) << " "
-            << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::MAGENTA)))
-            << " " << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::CYAN)))
-            << " " << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::WHITE)))
-            << " " << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::GRAY)))
-            << " "
-            << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::RED_BRIGHT)))
-            << " "
-            << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::GREEN_BRIGHT)))
-            << " "
-            << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::YELLOW_BRIGHT)))
-            << " "
-            << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::BLUE_BRIGHT)))
+            << Term::color_bg(
+                   Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::BLACK)))
             << " "
             << Term::color_bg(
-                   Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::MAGENTA_BRIGHT)))
+                   Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::RED)))
             << " "
-            << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::CYAN_BRIGHT)))
+            << Term::color_bg(
+                   Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::GREEN)))
             << " "
-            << Term::color_bg(Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::WHITE_BRIGHT)))
+            << Term::color_bg(
+                   Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::YELLOW)))
+            << " "
+            << Term::color_bg(
+                   Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::BLUE)))
+            << " "
+            << Term::color_bg(
+                   Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::MAGENTA)))
+            << " "
+            << Term::color_bg(
+                   Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::CYAN)))
+            << " "
+            << Term::color_bg(
+                   Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::WHITE)))
+            << " "
+            << Term::color_bg(
+                   Term::rgb_to_bit4(Term::bit4_to_rgb(Term::Color4::GRAY)))
+            << " "
+            << Term::color_bg(Term::rgb_to_bit4(
+                   Term::bit4_to_rgb(Term::Color4::RED_BRIGHT)))
+            << " "
+            << Term::color_bg(Term::rgb_to_bit4(
+                   Term::bit4_to_rgb(Term::Color4::GREEN_BRIGHT)))
+            << " "
+            << Term::color_bg(Term::rgb_to_bit4(
+                   Term::bit4_to_rgb(Term::Color4::YELLOW_BRIGHT)))
+            << " "
+            << Term::color_bg(Term::rgb_to_bit4(
+                   Term::bit4_to_rgb(Term::Color4::BLUE_BRIGHT)))
+            << " "
+            << Term::color_bg(Term::rgb_to_bit4(
+                   Term::bit4_to_rgb(Term::Color4::MAGENTA_BRIGHT)))
+            << " "
+            << Term::color_bg(Term::rgb_to_bit4(
+                   Term::bit4_to_rgb(Term::Color4::CYAN_BRIGHT)))
+            << " "
+            << Term::color_bg(Term::rgb_to_bit4(
+                   Term::bit4_to_rgb(Term::Color4::WHITE_BRIGHT)))
             << " " << Term::color_bg(Term::Color4::NONE) << "\n";
 
-        std::cout << "4bit to 24bit: "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::BLACK)) << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::RED)) << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::GREEN)) << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::YELLOW)) << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::BLUE)) << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::MAGENTA)) << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::CYAN)) << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::WHITE)) << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::GRAY)) << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::RED_BRIGHT)) << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::GREEN_BRIGHT))
-                  << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::YELLOW_BRIGHT))
-                  << " " << Term::color_bg(Term::bit4_to_rgb(Term::Color4::BLUE_BRIGHT))
-                  << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::MAGENTA_BRIGHT))
-                  << " " << Term::color_bg(Term::bit4_to_rgb(Term::Color4::CYAN_BRIGHT))
-                  << " "
-                  << Term::color_bg(Term::bit4_to_rgb(Term::Color4::WHITE_BRIGHT))
-                  << " " << Term::color_bg(Term::Color4::NONE) << "\n";
+        std::cout
+            << "4bit to 24bit: "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::BLACK)) << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::RED)) << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::GREEN)) << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::YELLOW)) << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::BLUE)) << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::MAGENTA)) << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::CYAN)) << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::WHITE)) << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::GRAY)) << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::RED_BRIGHT))
+            << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::GREEN_BRIGHT))
+            << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::YELLOW_BRIGHT))
+            << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::BLUE_BRIGHT))
+            << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::MAGENTA_BRIGHT))
+            << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::CYAN_BRIGHT))
+            << " "
+            << Term::color_bg(Term::bit4_to_rgb(Term::Color4::WHITE_BRIGHT))
+            << " " << Term::color_bg(Term::Color4::NONE) << "\n";
 
         std::cout
             << "4bit to 8bit:  "
             << Term::color_bg(
                    Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::BLACK))) +
                    " "
-            << Term::color_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::RED))) +
+            << Term::color_bg(
+                   Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::RED))) +
                    " "
             << Term::color_bg(
                    Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::GREEN))) +
@@ -126,38 +161,41 @@ int main() {
             << Term::color_bg(
                    Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::YELLOW))) +
                    " "
-            << Term::color_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::BLUE))) +
+            << Term::color_bg(
+                   Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::BLUE))) +
+                   " "
+            << Term::color_bg(Term::rgb_to_bit8(
+                   Term::bit4_to_rgb(Term::Color4::MAGENTA))) +
                    " "
             << Term::color_bg(
-                   Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::MAGENTA))) +
-                   " "
-            << Term::color_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::CYAN))) +
+                   Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::CYAN))) +
                    " "
             << Term::color_bg(
                    Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::WHITE))) +
                    " "
-            << Term::color_bg(Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::GRAY))) +
-                   " "
             << Term::color_bg(
-                   Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::RED_BRIGHT))) +
+                   Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::GRAY))) +
                    " "
-            << Term::color_bg(
-                   Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::GREEN_BRIGHT))) +
+            << Term::color_bg(Term::rgb_to_bit8(
+                   Term::bit4_to_rgb(Term::Color4::RED_BRIGHT))) +
                    " "
-            << Term::color_bg(
-                   Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::YELLOW_BRIGHT))) +
+            << Term::color_bg(Term::rgb_to_bit8(
+                   Term::bit4_to_rgb(Term::Color4::GREEN_BRIGHT))) +
                    " "
-            << Term::color_bg(
-                   Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::BLUE_BRIGHT))) +
+            << Term::color_bg(Term::rgb_to_bit8(
+                   Term::bit4_to_rgb(Term::Color4::YELLOW_BRIGHT))) +
                    " "
-            << Term::color_bg(
-                   Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::MAGENTA_BRIGHT))) +
+            << Term::color_bg(Term::rgb_to_bit8(
+                   Term::bit4_to_rgb(Term::Color4::BLUE_BRIGHT))) +
                    " "
-            << Term::color_bg(
-                   Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::CYAN_BRIGHT))) +
+            << Term::color_bg(Term::rgb_to_bit8(
+                   Term::bit4_to_rgb(Term::Color4::MAGENTA_BRIGHT))) +
                    " "
-            << Term::color_bg(
-                   Term::rgb_to_bit8(Term::bit4_to_rgb(Term::Color4::WHITE_BRIGHT))) +
+            << Term::color_bg(Term::rgb_to_bit8(
+                   Term::bit4_to_rgb(Term::Color4::CYAN_BRIGHT))) +
+                   " "
+            << Term::color_bg(Term::rgb_to_bit8(
+                   Term::bit4_to_rgb(Term::Color4::WHITE_BRIGHT))) +
                    " "
             << Term::color_bg(Term::Color4::NONE) << "\n";
 
@@ -274,7 +312,6 @@ int main() {
                       << "\033[0m";
         }
         std::cout << "\n";
-
 
         std::cout << "\n";
         std::cout << "Press any key to quit" << std::endl;

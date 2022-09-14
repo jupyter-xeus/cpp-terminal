@@ -44,7 +44,7 @@ Term::RGB Term::bit4_to_rgb(const Term::Color4 color) {
             return Bit4_reference::WHITE_BRIGHT;
     }
     // impossible case
-    return{};
+    return {};
 }
 
 Term::RGB Term::bit24_to_rgb(uint8_t r, uint8_t g, uint8_t b) {
@@ -262,7 +262,7 @@ std::string Term::color_fg(Term::RGBF rgbf, Mode mode) {
             return rgb_to_bit24_auto_fg(rgbf.rgb_fg);
     }
     // impossible case
-    return{};
+    return {};
 }
 
 /* BACKGROUND COLORS */
@@ -301,7 +301,7 @@ std::string Term::color_bg(Term::RGBF rgbf, Mode mode) {
             return rgb_to_bit24_auto_bg(rgbf.rgb_bg);
     }
     // impossible case
-    return{};
+    return {};
 }
 std::string Term::style(Term::Style style) {
     return "\033[" + std::to_string((uint8_t)style) + 'm';
