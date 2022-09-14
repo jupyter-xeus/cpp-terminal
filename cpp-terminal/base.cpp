@@ -361,7 +361,7 @@ std::string Term::color_auto(Term::RGBF rgbf, Term::Mode mode) {
 }
 
 std::string Term::color_auto(Term::RGBF rgbf) {
-    return color_fg(rgbf) + color_bg(rgbf);
+    return color_fg(rgbf, Mode::AUTO24) + color_bg(rgbf, Mode::AUTO24);
 }
 
 std::tuple<size_t, size_t> Term::get_size() {
