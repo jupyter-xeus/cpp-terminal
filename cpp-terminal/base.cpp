@@ -357,11 +357,17 @@ Term::RGBF Term::rgbf_empty() {
 /* AUTOMATIC COLORS */
 
 std::string Term::color_auto(Term::RGBF rgbf, Term::Mode mode) {
-    return color_fg(rgbf, mode) + color_bg(rgbf, mode);
+    if (stdout_connected())
+        return color_fg(rgbf, mode) + color_bg(rgbf, mode);
+    else
+        return "";  // disable colors if stdout is not connected
 }
 
 std::string Term::color_auto(Term::RGBF rgbf) {
-    return color_fg(rgbf, Mode::AUTO24) + color_bg(rgbf, Mode::AUTO24);
+    if (stdout_connected())
+        return color_fg(rgbf, Mode::AUTO24) + color_bg(rgbf, Mode::AUTO24);
+    else
+        return "";
 }
 
 std::tuple<size_t, size_t> Term::get_size() {
