@@ -283,12 +283,18 @@ int main() {
         std::cout << "\n";
 
         std::cout << "\nAuto color for 24bit: \n";
-        if (Term::bit24_support()) {
-            std::cout << "24bit support: yes\n$COLORTERM: "
-                      << getenv("COLORTERM") << '\n';
+
+        // bit24_support doesn't work in CI
+        if (Term::stdout_connected()) {
+            if (Term::bit24_support()) {
+                std::cout << "24bit support: yes\n$COLORTERM: "
+                          << getenv("COLORTERM") << '\n';
+            } else {
+                std::cout << "24bit support: no\n$COLORTERM: "
+                          << getenv("COLORTERM") << '\n';
+            }
         } else {
-            std::cout << "24bit support: no\n$COLORTERM: "
-                      << getenv("COLORTERM") << '\n';
+            std::cout << "24bit support: Not connected to a terminal\n";
         }
         std::cout << "24bit auto function test:\n";
 
