@@ -197,6 +197,30 @@ uint8_t Term::rgb_to_bit8(RGB color) {
     return 16 + 36 * (color.r / 51) + 6 * (color.g / 51) + color.b;
 }
 
+bool Term::bit24_support() {
+    std::string colorterm = getenv("COLORTERM");
+    if (colorterm == "truecolor" || colorterm == "24bit") {
+        return true;
+    }
+    return false;
+}
+
+std::string Term::rgb_to_bit24_auto_fg(RGB color) {
+    if (bit24_support()) {
+        return color_fg(color);
+    } else {
+        return color_fg(rgb_to_bit8(color));
+    }
+}
+
+std::string Term::rgb_to_bit24_auto_bg(RGB color) {
+    if (bit24_support()) {
+        return color_bg(color);
+    } else {
+        return color_bg(rgb_to_bit8(color));
+    }
+}
+
 /* FOREGROUND COLORS */
 
 std::string Term::color_fg(Term::Color4 color) {
@@ -218,9 +242,12 @@ std::string Term::color_fg(Term::RGB rgb) {
     return "\033[38;2;" + std::to_string(rgb.r) + ';' + std::to_string(rgb.g) +
            ';' + std::to_string(rgb.b) + 'm';
 }
-
 std::string Term::color_fg(Term::RGBF rgbf) {
-    switch (rgbf.mode_fg) {
+    return color_fg(rgbf, rgbf.mode_fg);
+}
+
+std::string Term::color_fg(Term::RGBF rgbf, Mode mode) {
+    switch (mode) {
         case Mode::NONE:
             return color_fg(Color4::NONE);  // resets the current terminal color
         case Mode::BIT4:
@@ -230,8 +257,7 @@ std::string Term::color_fg(Term::RGBF rgbf) {
         case Mode::BIT24:
             return color_fg(rgbf.rgb_fg);
         case Mode::AUTO24:
-            // TODO: Implement
-            return {};
+            return rgb_to_bit24_auto_fg(rgbf.rgb_fg);
     }
 }
 
@@ -255,18 +281,20 @@ std::string Term::color_bg(Term::RGB rgb) {
            ';' + std::to_string(rgb.b) + 'm';
 }
 std::string Term::color_bg(Term::RGBF rgbf) {
-    switch (rgbf.mode_bg) {
+    return color_bg(rgbf, rgbf.mode_bg);
+}
+std::string Term::color_bg(Term::RGBF rgbf, Mode mode) {
+    switch (mode) {
         case Mode::NONE:
             return color_bg(Color4::NONE);  // resets the current terminal color
         case Mode::BIT4:
-            return color_bg(rgb_to_bit4(rgbf.rgb_fg));
+            return color_bg(rgb_to_bit4(rgbf.rgb_bg));
         case Mode::BIT8:
-            return color_bg(rgb_to_bit8(rgbf.rgb_fg));
+            return color_bg(rgb_to_bit8(rgbf.rgb_bg));
         case Mode::BIT24:
-            return color_bg(rgbf.rgb_fg);
+            return color_bg(rgbf.rgb_bg);
         case Mode::AUTO24:
-            // TODO: Implement
-            return {};
+            return rgb_to_bit24_auto_bg(rgbf.rgb_bg);
     }
 }
 std::string Term::style(Term::Style style) {
@@ -276,7 +304,6 @@ std::string Term::style(Term::Style style) {
 /* RGBF FUNCTIONS */
 
 std::string Term::colorf(Term::RGBF rgbf) {
-    // TODO: only change the color if it's not set already
     return color_fg(rgbf) + color_bg(rgbf);
 }
 
@@ -324,71 +351,11 @@ Term::RGBF Term::rgbf_empty() {
 /* AUTOMATIC COLORS */
 
 std::string Term::color_auto(Term::RGBF rgbf, Term::Mode mode) {
-    // TODO: remove declaration
-    std::string out{};
-    switch (mode) {
-        case Mode::NONE:
-            // TODO: only if colors are set already
-            return color_fg(Color4::NONE) + color_bg(Color4::NONE);
-        case Mode::BIT4:
-            // TODO: only if colors are set already
-            return color_fg(rgb_to_bit4(rgbf.rgb_fg)) +
-                   color_bg(rgb_to_bit4(rgbf.rgb_bg));
-        case Mode::BIT8:
-            // TODO: only if colors are set already
-            if (rgbf.mode_fg != Mode::NONE) {
-                out.append(color_fg(rgb_to_bit8(rgbf.rgb_fg)));
-            }
-            if (rgbf.mode_bg != Mode::NONE) {
-                out.append(color_bg(rgb_to_bit8(rgbf.rgb_bg)));
-            }
-            return out;
-        case Mode::BIT24:
-            // TODO: only if the colors are set already
-            return color_fg(rgbf.rgb_fg) + color_bg(rgbf.rgb_bg);
-        case Mode::AUTO24:
-            // TODO
-            return {};
-    }
+    return color_fg(rgbf, mode) + color_bg(rgbf, mode);
 }
 
 std::string Term::color_auto(Term::RGBF rgbf) {
-    // foreground
-    // TODO: only change color if not set already
-
-    // TODO: move into function
-
-    // TODO: remove include
-    std::string out{};
-    switch (rgbf.mode_fg) {
-        case Mode::NONE:
-            out = color_fg(Color4::NONE);  // turn off color
-        case Mode::BIT4:
-            out = color_fg(rgb_to_bit4(rgbf.rgb_fg));
-        case Mode::BIT8:
-            out = color_fg(rgb_to_bit8(rgbf.rgb_fg));
-        case Mode::BIT24:
-            out = color_fg(rgbf.rgb_fg);
-        case Mode::AUTO24:
-            // TODO
-            out = "";
-    }
-
-    // background
-    switch (rgbf.mode_bg) {
-        case Mode::NONE:
-            out.append(color_bg(Color4::NONE));  // turn off color
-        case Mode::BIT4:
-            out.append(color_bg(rgb_to_bit4(rgbf.rgb_bg)));
-        case Mode::BIT8:
-            out.append(color_bg(rgb_to_bit8(rgbf.rgb_bg)));
-        case Mode::BIT24:
-            out.append(color_bg(rgbf.rgb_bg));
-        case Mode::AUTO24:
-            // TODO
-            out.append("");
-    }
-    return out;
+    return color_fg(rgbf) + color_bg(rgbf);
 }
 
 std::tuple<size_t, size_t> Term::get_size() {

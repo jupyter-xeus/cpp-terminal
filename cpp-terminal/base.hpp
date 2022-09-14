@@ -125,6 +125,13 @@ Color4 rgb_to_bit4(RGB rgb);
 // Converts an RGB color to a 8bit color
 uint8_t rgb_to_bit8(RGB rgb);
 
+// checks if the terminal supports RGB (24bit) colors
+bool bit24_support();
+// returns ANSI code for 24bit colors, if not supported falls back to 8bit
+std::string rgb_to_bit24_auto_fg(RGB color);
+// returns ANSI code for 24bit colors, if not supported falls back to 8bit
+std::string rgb_to_bit24_auto_bg(RGB color);
+
 // Set the given 4bit color from Term::Color4
 std::string color_fg(Color4 color);
 // Set the given 4bit / 8bit color
@@ -134,7 +141,9 @@ std::string color_fg(uint8_t r, uint8_t g, uint8_t b);
 // Set the given RGB (24bit) color
 std::string color_fg(RGB rgb);
 // Set the given foreground color from the RGBF struct
-std::string color_fg(RGBF rgbf);  // TODO
+std::string color_fg(RGBF rgbf);
+// Set the given foreground color from the RGBF struct with an optional override
+std::string color_fg(RGBF rgbf, Mode mode);
 
 // Set the given 4bit color from Term::Color4
 std::string color_bg(Color4 color);
@@ -145,7 +154,9 @@ std::string color_bg(uint8_t r, uint8_t g, uint8_t b);
 // Set the given RGB (24bit) color
 std::string color_bg(RGB rgb);
 // Set the given background color from the RGBF struct
-std::string color_bg(RGBF rgbf);  // TODO
+std::string color_bg(RGBF rgbf);
+// Set the given background color from the RGBF struct with an optional override
+std::string color_bg(RGBF rgbf, Mode mode);
 
 std::string style(Style style);
 
