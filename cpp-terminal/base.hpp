@@ -1,109 +1,227 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
-// TODO: remove include
-#include "private/platform.hpp"
-
+#include "cpp-terminal/private/platform.hpp"
 namespace Term {
-
-enum class style {
-    reset = 0,
-    bold = 1,
-    dim = 2,
-    italic = 3,
-    underline = 4,
-    blink = 5,
-    blink_rapid = 6,
-    reversed = 7,
-    conceal = 8,
-    crossed = 9,
-    overline = 53
+/*
+ * The 3bit/4bit colors for the terminal
+ * get the foreground color: Color4 + 30, Background color: Color4 + 40
+ * See https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
+ */
+enum class Color4 : uint8_t {
+    // FG: 30, BG: 40
+    BLACK = 0,
+    // FG: 31, BG: 41
+    RED = 1,
+    // FG: 32, BG: 42
+    GREEN = 2,
+    // FG: 33, BG: 43
+    YELLOW = 3,
+    // FG: 34, BG: 44
+    BLUE = 4,
+    // FG: 35, BG: 45
+    MAGENTA = 5,
+    // FG: 36, BG: 46
+    CYAN = 6,
+    // FG: 37, BG: 47
+    WHITE = 7,
+    // disables color, FG: 39, BG: 49
+    NONE = 9,
+    // FG: 90, BG: 100
+    GRAY = 60,
+    // FG: 91, BG: 101
+    RED_BRIGHT = 61,
+    // FG: 92, BG: 102
+    GREEN_BRIGHT = 62,
+    // FG: 93, BG: 103
+    YELLOW_BRIGHT = 63,
+    // FG: 94, BG: 104
+    BLUE_BRIGHT = 64,
+    // FG: 95, BG: 105
+    MAGENTA_BRIGHT = 65,
+    // FG: 96, BG: 106
+    CYAN_BRIGHT = 66,
+    // FG: 97, BG: 107
+    WHITE_BRIGHT = 67
+};
+enum class Style : uint8_t {
+    RESET = 0,
+    BOLD = 1,
+    DIM = 2,
+    ITALIC = 3,
+    UNDERLINE = 4,
+    BLINK = 5,
+    BLINK_RAPID = 6,
+    REVERSED = 7,
+    CONCEAL = 8,
+    CROSSED = 9,
+    OVERLINE = 53
 };
 
-enum class fg {
-    black = 30,
-    red = 31,
-    green = 32,
-    yellow = 33,
-    blue = 34,
-    magenta = 35,
-    cyan = 36,
-    white = 37,
-    reset = 39,
-    gray = 90,
-    bright_red = 91,
-    bright_green = 92,
-    bright_yellow = 93,
-    bright_blue = 94,
-    bright_magenta = 95,
-    bright_cyan = 96,
-    bright_white = 97
+// Represents a RGB (24bit) color
+struct RGB {
+    uint8_t r{}, g{}, b{};
+    bool empty = false;
+};
+// indicates the color mode (basically the original color resolution)
+// also used to manually override the original color resolution
+enum class Mode {
+    // no color was used
+    NONE,
+    // a 4bit color was used
+    BIT4,
+    // a 8bit color was used
+    BIT8,
+    // a 24bit (RGB) color was used
+    BIT24,
+    // use 24bit colors, but fall back to 8bit if unsupported
+    AUTO24
+};
+// represents an RGB foreground and background color
+struct RGBF {
+    RGB rgb_fg;
+    Mode mode_fg{};
+    RGB rgb_bg;
+    Mode mode_bg{};
+};
+/*
+ * reference colors for converting RGB colors to 4bit colors and vice versa
+ */
+struct Bit4_reference {
+    static constexpr RGB BLACK{0, 0, 0, false};
+    static constexpr RGB RED{151, 12, 40, false};
+    static constexpr RGB GREEN{1, 142, 66, false};
+    static constexpr RGB YELLOW{238, 198, 67, false};
+    static constexpr RGB BLUE{13, 33, 161, false};
+    static constexpr RGB MAGENTA{255, 0, 144, false};
+    static constexpr RGB CYAN{0, 159, 184, false};
+    static constexpr RGB WHITE{240, 240, 240, false};
+    static constexpr RGB GRAY{127, 127, 127, false};
+    static constexpr RGB RED_BRIGHT{241, 85, 116, false};
+    static constexpr RGB GREEN_BRIGHT{52, 254, 146, false};
+    static constexpr RGB YELLOW_BRIGHT{243, 215, 124, false};
+    static constexpr RGB BLUE_BRIGHT{63, 136, 197, false};
+    static constexpr RGB MAGENTA_BRIGHT{255, 92, 184, false};
+    static constexpr RGB CYAN_BRIGHT{51, 228, 255, false};
+    static constexpr RGB WHITE_BRIGHT{255, 255, 255, false};
+    static constexpr RGB NONE{0, 0, 0, true};
 };
 
-enum class bg {
-    black = 40,
-    red = 41,
-    green = 42,
-    yellow = 43,
-    blue = 44,
-    magenta = 45,
-    cyan = 46,
-    white = 47,
-    reset = 49,
-    gray = 100,
-    bright_red = 101,
-    bright_green = 102,
-    bright_yellow = 103,
-    bright_blue = 104,
-    bright_magenta = 105,
-    bright_cyan = 106,
-    bright_white = 107
-};
+// Converts a 4bit color to Term::RGB
+RGB bit4_to_rgb(Color4 color);
+// Converts a 8bit color to Term::RGB
+RGB bit8_to_rgb(uint8_t color);
+// converts rgb values into Term::RGB
+RGB bit24_to_rgb(uint8_t r, uint8_t g, uint8_t b);
+// creates an empty rgb color
+RGB rgb_empty();
 
-std::string color(style);
-std::string color(fg);
-std::string color(bg);
+// compares two Term::RGB colors and returns how much they are different
+uint16_t rgb_compare(RGB rgb_first, RGB rgb_second);
 
-std::string color24_fg(unsigned int, unsigned int, unsigned int);
+// Converts an RGB color to a 4bit color
+Color4 rgb_to_bit4(RGB rgb);
+// Converts an RGB color to a 8bit color
+uint8_t rgb_to_bit8(RGB rgb);
 
-std::string color24_bg(unsigned int, unsigned int, unsigned int);
+// Set the given 4bit color from Term::Color4
+std::string color_fg(Color4 color);
+// Set the given 4bit / 8bit color
+std::string color_fg(uint8_t color);
+// Set the given 24bit color
+std::string color_fg(uint8_t r, uint8_t g, uint8_t b);
+// Set the given RGB (24bit) color
+std::string color_fg(RGB rgb);
+// Set the given foreground color from the RGBF struct
+std::string color_fg(RGBF rgbf);  // TODO
 
-void write(const std::string&);
+// Set the given 4bit color from Term::Color4
+std::string color_bg(Color4 color);
+// Set the given 4bit / 8bit color
+std::string color_bg(uint8_t color);
+// Set the given 24bit color
+std::string color_bg(uint8_t r, uint8_t g, uint8_t b);
+// Set the given RGB (24bit) color
+std::string color_bg(RGB rgb);
+// Set the given background color from the RGBF struct
+std::string color_bg(RGBF rgbf);  // TODO
 
+std::string style(Style style);
+
+// prints the given Term::RGBF color in its original color mode
+std::string colorf(RGBF rgbf);
+
+// Create a Term::RGBF color using a 4bit foreground color
+RGBF rgbf_fg(Color4 color);
+// Create a Term::RGBF color using a 24bit (RGB) foreground color
+RGBF rgbf_fg(uint8_t r, uint8_t g, uint8_t b);
+// Create a Term::RGBF color using a Term::RGB foreground color
+RGBF rgbf_fg(RGB rgb);
+
+// Create a Term::RGBF color using a 4bit background color
+RGBF rgbf_bg(Color4 color);
+// Create a Term::RGBF color using a 24bit (RGB) background color
+RGBF rgbf_bg(uint8_t r, uint8_t g, uint8_t b);
+// Create a Term::RGBF color using a Term::RGB background color
+RGBF rgbf_bg(RGB rgb);
+
+// Create a Term::RGBF color using a 4bit foreground and background color
+RGBF rgbf_fb(Color4 fg, Color4 bg);
+// Create a Term::RGBF color using a 24bit (RGB) fore- and background color
+RGBF rgbf_fb(uint8_t r_fg,
+             uint8_t g_fg,
+             uint8_t b_fg,
+             uint8_t r_bg,
+             uint8_t g_bg,
+             uint8_t b_bg);
+// Create a Term::RGBF color using a Term::RGB fore- and background color
+RGBF rgbf_fb(RGB rgb_fg, RGB rgb_bg);
+
+// Create an empty Term::RGBF color for disabling colors completely
+RGBF rgbf_empty();
+
+// Print the given Term::RGBF color in Term::Mode::AUTO
+std::string color_auto(RGBF rgbf);
+// print the given Term::RGBF color in the given color mode
+std::string color_auto(RGBF rgbf, Mode mode);
+
+// get the terminal size (row, column) / (Y, X)
+std::tuple<size_t, size_t> get_size();
+// check if stdin is connected to a TTY
+bool stdin_connected();
+// check if stdout is connected to a TTY
+bool stdout_connected();
+// turn off the cursor
 std::string cursor_off();
-
+// turn on the cursor
 std::string cursor_on();
-
+// clear the screen
 std::string clear_screen();
-
-// clears screen + scroll back buffer
-std::string clear_screen_buffer();
-
-// If an attempt is made to move the cursor out of the window, the result is
-// undefined.
-std::string move_cursor(size_t, size_t);
-
-// If an attempt is made to move the cursor to the right of the right margin,
-// the cursor stops at the right margin.
-std::string move_cursor_right(int);
-
-// If an attempt is made to move the cursor below the bottom margin, the cursor
-// stops at the bottom margin.
-std::string move_cursor_down(int);
-
+// clear the screen and the scroll-back buffer
+std::string clear_buffer();
+// move the cursor to the given (row, column) / (Y, X)
+std::string cursor_move(size_t row, size_t column);
+// move the cursor the given rows up
+std::string cursor_up(size_t rows);
+// move the cursor the given rows down
+std::string cursor_down(size_t rows);
+// move the cursor the given columns left
+std::string cursor_left(size_t columns);
+// move the cursor the given columns right
+std::string cursor_right(size_t columns);
+// returns the current cursor position (row, column) (Y, X)
+std::tuple<size_t, size_t> cursor_position();
+// the ANSI code to generate a cursor position report
 std::string cursor_position_report();
-
-std::string erase_to_eol();
-
-bool is_stdin_a_tty();
-bool is_stdout_a_tty();
-bool get_term_size(int&, int&);
-
-std::string restore_screen();
-
-std::string save_screen();
-
-void get_cursor_position(int&, int&);
+// clears the screen from the current cursor position to the end of the screen
+std::string clear_eol();
+// save the current terminal state
+std::string screen_save();
+// load a previously saved terminal state
+std::string screen_load();
+// change the title of the terminal, only supported by a few terminals
+std::string terminal_title(const std::string& title);
 
 // initializes the terminal
 class Terminal : public Private::BaseTerminal {
@@ -121,5 +239,4 @@ class Terminal : public Private::BaseTerminal {
 
     ~Terminal() override;
 };
-
 }  // namespace Term

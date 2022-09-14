@@ -3,12 +3,6 @@
 #include <cpp-terminal/window.hpp>
 #include <iostream>
 
-using Term::bg;
-using Term::fg;
-using Term::Key;
-using Term::style;
-using Term::Terminal;
-
 std::string render(Term::Window& scr,
                    int rows,
                    int cols,
@@ -26,16 +20,16 @@ std::string render(Term::Window& scr,
         scr.print_str(menux0 + 1, menuy0 + i, s);
         if (i == menupos) {
             scr.fill_fg(menux0 + 1, menuy0 + i, menux0 + s.size(), menuy0 + i,
-                        fg::red);
+                        Term::Color4::RED);  // FG
             scr.fill_bg(menux0 + 1, menuy0 + i, menux0 + menuwidth, menuy0 + i,
-                        bg::gray);
+                        Term::Color4::GRAY);  // BG
             scr.fill_style(menux0 + 1, menuy0 + i, menux0 + s.size(),
-                           menuy0 + i, style::bold);
+                           menuy0 + i, Term::Style::BOLD);
         } else {
             scr.fill_fg(menux0 + 1, menuy0 + i, menux0 + s.size(), menuy0 + i,
-                        fg::blue);
+                        Term::Color4::BLUE);
             scr.fill_bg(menux0 + 1, menuy0 + i, menux0 + menuwidth, menuy0 + i,
-                        bg::green);
+                        Term::Color4::GREEN);
         }
     }
 
@@ -51,14 +45,13 @@ std::string render(Term::Window& scr,
 int main() {
     try {
         // check if the terminal is capable of handling input
-        if (!Term::is_stdin_a_tty()) {
+        if (!Term::stdin_connected()) {
             std::cout << "The terminal is not attached to a TTY and therefore "
                          "can't catch user input. Exiting...\n";
             return 1;
         }
-        Terminal term(true, true, true, true);
-        int rows{}, cols{};
-        Term::get_term_size(rows, cols);
+        Term::Terminal term(true, true, true, true);
+        auto [rows, cols] = Term::get_size();
         int pos = 5;
         int h = 10;
         int w = 10;
@@ -68,31 +61,31 @@ int main() {
             std::cout << render(scr, rows, cols, h, w, pos) << std::flush;
             int key = Term::read_key();
             switch (key) {
-                case Key::ARROW_LEFT:
+                case Term::Key::ARROW_LEFT:
                     if (w > 10)
                         w--;
                     break;
-                case Key::ARROW_RIGHT:
+                case Term::Key::ARROW_RIGHT:
                     if (w < cols - 5)
                         w++;
                     break;
-                case Key::ARROW_UP:
+                case Term::Key::ARROW_UP:
                     if (pos > 1)
                         pos--;
                     break;
-                case Key::ARROW_DOWN:
+                case Term::Key::ARROW_DOWN:
                     if (pos < h)
                         pos++;
                     break;
-                case Key::HOME:
+                case Term::Key::HOME:
                     pos = 1;
                     break;
-                case Key::END:
+                case Term::Key::END:
                     pos = h;
                     break;
                 case 'q':
-                case Key::ESC:
-                case Key::CTRL + 'c':
+                case Term::Key::ESC:
+                case Term::Key::CTRL + 'c':
                     on = false;
                     break;
             }

@@ -39,7 +39,7 @@ bool Term::Private::is_stdout_a_tty() {
 #endif
 }
 
-bool Term::Private::get_term_size(int& rows, int& cols) {
+std::tuple<size_t, size_t> Term::Private::get_term_size() {
 #ifdef _WIN32
     HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hout == INVALID_HANDLE_VALUE) {
@@ -49,20 +49,20 @@ bool Term::Private::get_term_size(int& rows, int& cols) {
     if (GetConsoleScreenBufferInfo(hout, &inf)) {
         cols = inf.srWindow.Right - inf.srWindow.Left + 1;
         rows = inf.srWindow.Bottom - inf.srWindow.Top + 1;
-        return true;
+        return {rows, cols};
     } else {
         // This happens when we are not connected to a terminal
-        return false;
+        throw std::runtime_error(
+            "Couldn't get terminal size. Is it connected to a TTY?");
     }
 #else
     struct winsize ws {};
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
         // This happens when we are not connected to a terminal
-        return false;
+        throw std::runtime_error(
+            "Couldn't get terminal size. Is it connected to a TTY?");
     } else {
-        cols = ws.ws_col;
-        rows = ws.ws_row;
-        return true;
+        return {ws.ws_row, ws.ws_col};
     }
 #endif
 }

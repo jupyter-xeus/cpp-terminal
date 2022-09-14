@@ -26,7 +26,7 @@ class Window_24bit {
     std::vector<rgb> m_bg;
     std::vector<bool> m_fg_reset;
     std::vector<bool> m_bg_reset;
-    std::vector<style> m_style;
+    std::vector<Style> m_style;
 
     char32_t get_char(size_t, size_t);
 
@@ -35,7 +35,7 @@ class Window_24bit {
     rgb get_fg(size_t, size_t);
     rgb get_bg(size_t, size_t);
 
-    style get_style(size_t, size_t);
+    Style get_style(size_t, size_t);
 
    public:
     Window_24bit(size_t w, size_t h)
@@ -48,7 +48,7 @@ class Window_24bit {
           m_bg(w * h, {0, 0, 0}),
           m_fg_reset(w * h, true),
           m_bg_reset(w * h, true),
-          m_style(w * h, style::reset){};
+          m_style(w * h, Style::RESET){};
 
     [[nodiscard]] size_t get_w() const;
 
@@ -64,7 +64,7 @@ class Window_24bit {
 
     void set_bg(size_t, size_t, unsigned int, unsigned int, unsigned int);
 
-    void set_style(size_t, size_t, style);
+    void set_style(size_t, size_t, Style);
 
     void set_cursor_pos(int, int);
 
@@ -76,7 +76,7 @@ class Window_24bit {
 
     void fill_bg(int, int, int, int, unsigned int, unsigned int, unsigned int);
 
-    void fill_style(int, int, int, int, style);
+    void fill_style(int, int, int, int, Style);
 
     void print_border(bool = true);
 
@@ -107,17 +107,17 @@ class Window {
     size_t w{}, h{};              // width and height of the window
     size_t cursor_x, cursor_y;    // current cursor position
     std::vector<char32_t> chars;  // the characters in row first order
-    std::vector<fg> m_fg;
-    std::vector<bg> m_bg;
-    std::vector<style> m_style;
+    std::vector<Color4> m_fg;
+    std::vector<Color4> m_bg;
+    std::vector<Style> m_style;
 
     char32_t get_char(size_t, size_t);
 
-    fg get_fg(size_t, size_t);
+    Color4 get_fg(size_t, size_t);
 
-    bg get_bg(size_t, size_t);
+    Color4 get_bg(size_t, size_t);
 
-    style get_style(size_t, size_t);
+    Style get_style(size_t, size_t);
 
    public:
     Window(size_t w, size_t h)
@@ -126,9 +126,9 @@ class Window {
           cursor_x{1},
           cursor_y{1},
           chars(w * h, ' '),
-          m_fg(w * h, fg::reset),
-          m_bg(w * h, bg::reset),
-          m_style(w * h, style::reset){};
+          m_fg(w * h, Color4::NONE),
+          m_bg(w * h, Color4::NONE),
+          m_style(w * h, Style::RESET){};
 
     [[nodiscard]] size_t get_w() const;
 
@@ -136,11 +136,11 @@ class Window {
 
     void set_char(size_t, size_t, char32_t);
 
-    void set_fg(size_t, size_t, fg);
+    void set_fg(size_t, size_t, Color4);
 
-    void set_bg(size_t, size_t, bg);
+    void set_bg(size_t, size_t, Color4);
 
-    void set_style(size_t, size_t, style);
+    void set_style(size_t, size_t, Style);
 
     void set_cursor_pos(int, int);
 
@@ -148,11 +148,11 @@ class Window {
 
     void print_str(int, int, const std::string&, int = 0, bool = false);
 
-    void fill_fg(int, int, int, int, fg);
+    void fill_fg(int, int, int, int, Color4);
 
-    void fill_bg(int, int, int, int, bg);
+    void fill_bg(int, int, int, int, Color4);
 
-    void fill_style(int, int, int, int, style);
+    void fill_style(int, int, int, int, Style);
 
     void print_border(bool);
 

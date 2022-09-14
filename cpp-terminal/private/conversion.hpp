@@ -97,17 +97,34 @@ inline std::string utf32_to_utf8(const std::u32string& s) {
 }
 
 // coverts a string into an integer
-inline int convert_string_to_int(const char* string,
-                                 const char* format,
-                                 int* rows,
-                                 int* cols) {
+inline int unified_sscanf(const char* string,
+                          const char* format,
+                          size_t* rows,
+                          size_t* cols) {
 #ifdef _WIN32
-    // Windows provides its own alternative to sscanf()
+    // on windows it's recommended to use their own sscanf_s function
     return sscanf_s(string, format, rows, cols);
 #else
     // TODO move to a better way
     return sscanf(string, format, rows, cols);
 #endif
+}
+
+inline std::tuple<size_t, size_t> convert_string_to_size_t(const char* string,
+                                                           const char* format) {
+    size_t rows{}, cols{};
+#ifdef _WIN32
+    // Windows provides its own alternative to sscanf()
+    if (sscanf_s(string, format, rows, cols) != 2) {
+        throw std::runtime_error("Couldn't parse string: Invalid format");
+    }
+#else
+    // TODO move to a better way
+    if (sscanf(string, format, rows, cols) != 2) {
+        throw std::runtime_error("Couldn't parse string: Invalid format");
+    }
+#endif
+    return {rows, cols};
 }
 
 // converts a vector of char into a string

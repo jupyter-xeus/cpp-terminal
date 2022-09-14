@@ -14,8 +14,8 @@ Term::Result Term::prompt(const std::string& message,
     std::cout << message << " [" << first_option << '/' << second_option << ']'
               << prompt_indicator << ' ' << std::flush;
 
-    if (!Term::is_stdin_a_tty()) {
-        Term::write("\n");
+    if (!Term::stdin_connected()) {
+        std::cout << '\n' << std::flush;
         return Result::ERROR;
     }
 
@@ -25,20 +25,20 @@ Term::Result Term::prompt(const std::string& message,
         while (true) {
             key = Term::read_key();
             if (key == 'y' || key == 'Y') {
-                Term::write("\n");
+                std::cout << '\n' << std::flush;
                 return Result::YES;
             } else if (key == 'n' || key == 'N') {
-                Term::write("\n");
+                std::cout << '\n' << std::flush;
                 return Result::NO;
             } else if (key == Term::Key::CTRL + 'c' ||
                        key == Term::Key::CTRL + 'd') {
-                Term::write("\n");
+                std::cout << '\n' << std::flush;
                 return Result::ABORT;
             } else if (key == Term::Key::ENTER) {
-                Term::write("\n");
+                std::cout << '\n' << std::flush;
                 return Result::NONE;
             } else {
-                Term::write("\n");
+                std::cout << '\n' << std::flush;
                 return Result::INVALID;
             }
         }
@@ -71,17 +71,17 @@ Term::Result Term::prompt(const std::string& message,
             } else if (key == Term::Key::ENTER) {
                 if (Private::vector_to_string(input) == "y" ||
                     Private::vector_to_string(input) == "yes") {
-                    Term::write("\n");
+                    std::cout << '\n' << std::flush;
                     return Result::YES;
                 } else if (Private::vector_to_string(input) == "n" ||
                            Private::vector_to_string(input) == "no") {
-                    Term::write("\n");
+                    std::cout << '\n' << std::flush;
                     return Result::NO;
                 } else if (length == 0) {
-                    Term::write("\n");
+                    std::cout << '\n' << std::flush;
                     return Result::NONE;
                 } else {
-                    Term::write("\n");
+                    std::cout << '\n' << std::flush;
                     return Result::INVALID;
                 }
             }
@@ -160,9 +160,9 @@ void Term::render(Term::Window& scr, const Model& m, size_t cols) {
         if (j == 0) {
             scr.print_str(1, j + 1, m.prompt_string);
             scr.fill_fg(1, j + 1, m.prompt_string.size(), m.lines.size(),
-                        Term::fg::green);
+                        Term::Color4::GREEN);
             scr.fill_style(1, j + 1, m.prompt_string.size(), m.lines.size(),
-                           Term::style::bold);
+                           Term::Style::BOLD);
         } else {
             for (size_t i = 0; i < m.prompt_string.size() - 1; i++) {
                 scr.set_char(i + 1, j + 1, '.');
@@ -178,18 +178,12 @@ std::string Term::prompt_multiline(
     const std::string& prompt_string,
     std::vector<std::string>& history,
     std::function<bool(std::string)>& iscomplete) {
-    int row, col;
+    size_t row{1}, col{1};
+    size_t rows{25}, cols{80};
     bool term_attached = Private::is_stdin_a_tty();
-    if (term_attached) {
-        Term::get_cursor_position(row, col);
-    } else {
-        row = 1;
-        col = 1;
-    }
-    int rows, cols;
-    if (!Private::get_term_size(rows, cols)) {
-        rows = 25;
-        cols = 80;
+    if (stdin_connected()) {
+        std::tie(row, col) = cursor_position();
+        std::tie(rows, cols) = get_size();
     }
 
     Model m;

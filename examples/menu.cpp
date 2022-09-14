@@ -2,21 +2,11 @@
 #include <cpp-terminal/input.hpp>
 #include <iostream>
 
-using Term::bg;
-using Term::color;
-using Term::cursor_off;
-using Term::cursor_on;
-using Term::fg;
-using Term::Key;
-using Term::move_cursor;
-using Term::style;
-using Term::Terminal;
-
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
     std::string scr;
     scr.reserve(16 * 1024);
 
-    scr.append(move_cursor(1, 1));
+    scr.append(Term::cursor_move(1, 1));
 
     int menux0 = (cols - menuwidth) / 2;
     int menuy0 = (rows - menuheight) / 2;
@@ -40,21 +30,21 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
         }
         scr.append("│");
         if (i == menupos) {
-            scr.append(color(fg::red));
-            scr.append(color(bg::gray));
-            scr.append(color(style::bold));
+            scr.append(Term::color_fg(Term::Color4::RED));
+            scr.append(Term::color_bg(Term::Color4::GRAY));
+            scr.append(Term::style(Term::Style::BOLD));
         } else {
-            scr.append(color(fg::blue));
-            scr.append(color(bg::green));
+            scr.append(Term::color_fg(Term::Color4::BLUE));
+            scr.append(Term::color_bg(Term::Color4::GREEN));
         }
         std::string s = std::to_string(i) + ": item";
         scr.append(s);
         for (size_t j = 1; j <= menuwidth - s.size(); j++) {
             scr.append(" ");
         }
-        scr.append(color(bg::reset));
-        scr.append(color(fg::reset));
-        scr.append(color(style::reset));
+        scr.append(Term::color_bg(Term::Color4::NONE));
+        scr.append(Term::color_fg(Term::Color4::NONE));
+        scr.append(Term::style(Term::Style::RESET));
         scr.append("│");
         scr.append(" \n");
     }
@@ -68,7 +58,7 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
     scr.append("┘");
     scr.append(" \n");
 
-    scr.append(move_cursor(menuy0 + menuheight + 5, 1));
+    scr.append(Term::cursor_move(menuy0 + menuheight + 5, 1));
     scr.append("Selected item: " + std::to_string(menupos) + "      \n");
     scr.append("Menu width: " + std::to_string(menuwidth) + "       \n");
     scr.append("Menu height: " + std::to_string(menuheight) + "    \n");
@@ -79,14 +69,13 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
 int main() {
     try {
         // check if the terminal is capable of handling input
-        if (!Term::is_stdin_a_tty()) {
+        if (!Term::stdin_connected()) {
             std::cout << "The terminal is not attached to a TTY and therefore "
                          "can't catch user input. Exiting...\n";
             return 1;
         }
-        Terminal term(true, true, true, true);
-        int rows{}, cols{};
-        Term::get_term_size(rows, cols);
+        Term::Terminal term(true, true, true, true);
+        auto [rows, cols] = Term::get_size();
         int pos = 5;
         int h = 10;
         int w = 10;
@@ -95,31 +84,31 @@ int main() {
             render(rows, cols, h, w, pos);
             int key = Term::read_key();
             switch (key) {
-                case Key::ARROW_LEFT:
+                case Term::Key::ARROW_LEFT:
                     if (w > 10)
                         w--;
                     break;
-                case Key::ARROW_RIGHT:
+                case Term::Key::ARROW_RIGHT:
                     if (w < cols - 5)
                         w++;
                     break;
-                case Key::ARROW_UP:
+                case Term::Key::ARROW_UP:
                     if (pos > 1)
                         pos--;
                     break;
-                case Key::ARROW_DOWN:
+                case Term::Key::ARROW_DOWN:
                     if (pos < h)
                         pos++;
                     break;
-                case Key::HOME:
+                case Term::Key::HOME:
                     pos = 1;
                     break;
-                case Key::END:
+                case Term::Key::END:
                     pos = h;
                     break;
                 case 'q':
-                case Key::ESC:
-                case Key::CTRL + 'c':
+                case Term::Key::ESC:
+                case Term::Key::CTRL + 'c':
                     on = false;
                     break;
             }
