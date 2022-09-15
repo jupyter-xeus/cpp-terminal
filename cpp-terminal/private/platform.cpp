@@ -216,13 +216,10 @@ Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
         if (has_ansi_escape_code()) {
             flags |= ENABLE_VIRTUAL_TERMINAL_INPUT;
         }
-        if(disable_signal_keys)
-        {
-            flags &=
-                ~ENABLE_PROCESSED_INPUT;
+        if (disable_signal_keys) {
+            flags &= ~ENABLE_PROCESSED_INPUT;
         }
-        flags &=
-            ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
+        flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
         if (!SetConsoleMode(hin, flags)) {
             throw std::runtime_error("SetConsoleMode() failed");
         }
