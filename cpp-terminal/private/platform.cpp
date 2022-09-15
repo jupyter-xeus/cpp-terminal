@@ -144,7 +144,7 @@ Term::Private::BaseTerminal::~BaseTerminal() noexcept(false) {
 
 #ifdef _WIN32
 Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
-                                          bool /*disable_ctrl_c*/)
+                                          bool disable_signal_keys)
     : keyboard_enabled{enable_keyboard} {
     // silently disable raw mode for non-tty
     if (keyboard_enabled)
@@ -180,15 +180,20 @@ Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
         }
         DWORD flags = dwOriginalInMode;
         flags |= ENABLE_VIRTUAL_TERMINAL_INPUT;
+        if(disable_signal_keys)
+        {
+            flags &=
+                ~ENABLE_PROCESSED_INPUT;
+        }
         flags &=
-            ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
+            ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
         if (!SetConsoleMode(hin, flags)) {
             throw std::runtime_error("SetConsoleMode() failed");
         }
     }
 #else
 Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
-                                          bool disable_ctrl_c)
+                                          bool disable_signal_keys)
     : orig_termios{std::make_unique<termios>()},
       keyboard_enabled{enable_keyboard} {
     // silently disable raw mode for non-tty
@@ -211,7 +216,7 @@ Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
         // raw.c_oflag &= ~(OPOST);
         raw.c_cflag |= (CS8);
         raw.c_lflag &= ~(ECHO | ICANON | IEXTEN);
-        if (disable_ctrl_c) {
+        if (disable_signal_keys) {
             raw.c_lflag &= ~(ISIG);
         }
         raw.c_cc[VMIN] = 0;

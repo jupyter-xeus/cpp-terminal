@@ -59,7 +59,7 @@ class BaseTerminal {
 
    public:
     explicit BaseTerminal(bool enable_keyboard = false,
-                          bool disable_ctrl_c = true);
+                          bool disable_signal_keys = true);
 
     virtual ~BaseTerminal() noexcept(false);
 };
