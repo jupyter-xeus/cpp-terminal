@@ -58,6 +58,8 @@ int main() {
                       << "\033[0m";
         }
         std::cout << "\n";
+        std::cout << "Press any key to quit" << std::endl;
+        std::cin.get();
 
     } catch (const std::runtime_error& re) {
         std::cerr << "Runtime error: " << re.what() << std::endl;

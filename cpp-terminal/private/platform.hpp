@@ -36,6 +36,8 @@ bool get_term_size(int& rows, int& cols);
 // This can't be made inline
 bool read_raw(char* s);
 
+bool has_ansi_escape_code();
+
 /* Note: the code that uses Terminal must be inside try/catch block, otherwise
  * the destructors will not be called when an exception happens and the
  * terminal will not be left in a good state. Terminal uses exceptions when

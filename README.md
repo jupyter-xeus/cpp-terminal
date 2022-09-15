@@ -28,7 +28,7 @@ CPP-Terminal tries to be a small and simple replacement for ncurses. This approa
 
 ## Examples
 We have created serval examples to show possible use cases of CPP-Terminal and to get you started more quickly. Every example works natively on all platforms in the exact same way:
-- [base.cpp](examples/base.cpp): basic color, style and unicode demo
+- [colors.cpp](examples/colors.cpp): basic color, style and unicode demo
 - [kilo.cpp](examples/kilo.cpp): the [kilo](https://github.com/snaptoken/kilo-src) text editor
   ported to C++ and `CPP-Terminal` instead of using Linux specific API
 - [menu.cpp](examples/menu.cpp): An interactive menu using only the contents of `cpp-terminal/base.hpp`
