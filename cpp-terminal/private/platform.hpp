@@ -19,6 +19,7 @@
 #endif
 #include <minwindef.h>
 #undef NOMINMAX
+#include <tuple>
 #else
 class termios;
 #include <memory>
@@ -30,7 +31,9 @@ bool is_stdin_a_tty();
 // Returns true if the standard output is attached to a terminal
 bool is_stdout_a_tty();
 
-bool get_term_size(int& rows, int& cols);
+// returns the terminal size as (rows, columns) / (Y, X), throws a runtime error
+// if the console is not connected
+std::tuple<std::size_t, std::size_t> get_term_size();
 
 // Returns true if a character is read, otherwise immediately returns false
 // This can't be made inline

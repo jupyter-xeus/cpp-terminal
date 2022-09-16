@@ -58,7 +58,7 @@ struct Model {
         lines;  // The current input string in the prompt as
                 // a vector of lines, without '\n' at the end.
     // The current cursor position in the "input" string, starting from (1,1)
-    size_t cursor_col{}, cursor_row{};
+    std::size_t cursor_col{}, cursor_row{};
 };
 
 std::string concat(const std::vector<std::string>&);
@@ -69,7 +69,7 @@ char32_t UU(const std::string&);
 
 void print_left_curly_bracket(Term::Window&, int, int, int);
 
-void render(Term::Window&, const Model&, size_t);
+void render(Term::Window&, const Model&, std::size_t);
 
 std::string prompt_multiline(Terminal&,
                              const std::string&,

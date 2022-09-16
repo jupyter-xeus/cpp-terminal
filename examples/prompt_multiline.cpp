@@ -22,7 +22,7 @@ bool determine_completeness([[maybe_unused]] std::string command) {
 
 int main() {
     try {
-        if (!Term::is_stdin_a_tty()) {
+        if (!Term::stdin_connected()) {
             std::cout << "The terminal is not attached to a TTY and therefore "
                          "can't catch user input. Exiting...\n";
             return 1;
