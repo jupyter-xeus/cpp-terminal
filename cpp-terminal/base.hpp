@@ -114,7 +114,7 @@ class Terminal : public Private::BaseTerminal {
    public:
     Terminal(bool _clear_screen,
              bool enable_keyboard,
-             bool disable_ctrl_c,
+             bool disable_signal_keys,
              bool _hide_cursor);
     // providing no parameters will disable the keyboard and ctrl+c
     explicit Terminal(bool _clear_screen);

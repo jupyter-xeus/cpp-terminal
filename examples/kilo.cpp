@@ -857,7 +857,6 @@ bool editorProcessKeypress() {
             break;
 
         case Key::BACKSPACE:
-        case Key::CTRL + 'h':
         case Key::DEL:
             if (c == Key::DEL)
                 editorMoveCursor(Key::ARROW_RIGHT);

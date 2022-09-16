@@ -24,22 +24,22 @@ int main() {
         std::cout << "Press any key ('q' to quit):" << std::endl;
         bool on = true;
         while (on) {
-            int key = Term::read_key();
+            Key key{Term::read_key()};
             std::string s;
-            if (key >= 'a' && key <= 'z') {
-                s = (char)(key + 'A' - 'a');  // Convert to upper case
+            if (key >= Key::a && key <= Key::z) {
+                s = (char)(key + Key::A - Key::a);  // Convert to upper case
                 if (key == 'q')
                     on = false;
-            } else if (key >= 'A' && key <= 'Z') {
+            } else if (key >= Key::A && key <= Key::Z) {
                 s = (std::string) "Shift+" +
                     (char)key;  // Already in upper case;
-            } else if (key >= Key::CTRL + 'a' && key <= Key::CTRL + 'z') {
-                s = (std::string) "CTRL+" + (char)((-Key::CTRL + key) - 32);
-            } else if (key >= Key::ALT + 'a' && key <= Key::ALT + 'z') {
+            } else if (Term::is_CTRL(key)) {
+                s = (std::string) "CTRL+" + (char)((-Key::CTRL + key));
+            } else if (Term::is_ALT(key)) {
                 s = (std::string) "Alt+" +
-                    (char)(key + 'A' -
-                           (Key::ALT + 'a'));  // Convert to upper case
-            } else if (key > 0 && !iscntrl(key) && key < 128) {
+                    (char)(key + Key::A -
+                           (Key::ALT + Key::a));  // Convert to upper case
+            } else if (Term::is_extended_ASCII(key) && !iscntrl(key)) {
                 s = (char)key;
             } else {
                 switch (key) {

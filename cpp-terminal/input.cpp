@@ -4,21 +4,52 @@
 #include <thread>
 #include "private/platform.hpp"
 
-int Term::read_key() {
-    int key{};
-    while ((key = read_key0()) == 0) {
+bool Term::is_ASCII(const Term::Key& key) {
+    if (key >= 0 && key <= 127)
+        return true;
+    else
+        return false;
+}
+
+bool Term::is_extended_ASCII(const Term::Key& key) {
+    if (key >= 0 && key <= 255)
+        return true;
+    else
+        return false;
+}
+
+bool Term::is_CTRL(const Term::Key& key) {
+    // Need to supress the TAB etc...
+    if (key > 0 && key <= 31 && key != Key::BACKSPACE && key != Key::TAB &&
+        key != ESC && /* the two mapped to ENTER */ key != Key::LF && key != CR)
+        return true;
+    else
+        return false;
+}
+
+bool Term::is_ALT(const Term::Key& key) {
+    if ((key & Key::ALT) == Key::ALT)
+        return true;
+    else
+        return false;
+}
+
+std::int32_t Term::read_key() {
+    std::int32_t key{Key::NO_KEY};
+    while ((key = read_key0()) == Key::NO_KEY) {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     return key;
 }
 
-int Term::read_key0() {
-    char c{};
+std::int32_t Term::read_key0() {
+    char c{'\0'};
     if (!Private::read_raw(&c))
-        return 0;
-
-    if (c == '\x1b') {
-        char seq[4];
+        return Key::NO_KEY;
+    if (is_CTRL(static_cast<Term::Key>(c))) {
+        return c;
+    } else if (c == Key::ESC) {
+        char seq[4]{'\0', '\0', '\0', '\0'};
 
         if (!Private::read_raw(&seq[0]))
             return Key::ESC;
@@ -152,13 +183,11 @@ int Term::read_key0() {
         return -4;
     } else {
         switch (c) {
-            case '\x09':  // TAB
-                return Key::TAB;
-            case '\x0a':  // LF; falls-through
-            case '\x0d':  // CR
-                return Key::ENTER;
-            case '\x7f':  // DEL
+            case Key::DEL:
                 return Key::BACKSPACE;
+            case Key::LF:
+            case Key::CR:
+                return Key::ENTER;
         }
         if (c == '\xc3') {
             if (!Private::read_raw(&c)) {

@@ -122,9 +122,9 @@ void Term::get_cursor_position(int& rows, int& cols) {
 
 Term::Terminal::Terminal(bool _clear_screen,
                          bool enable_keyboard,
-                         bool disable_ctrl_c,
+                         bool disable_signal_keys,
                          bool _hide_cursor)
-    : BaseTerminal(enable_keyboard, disable_ctrl_c),
+    : BaseTerminal(enable_keyboard, disable_signal_keys),
       clear_screen{_clear_screen},
       hide_cursor{_hide_cursor} {
     if (clear_screen) {
