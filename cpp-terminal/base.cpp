@@ -24,7 +24,7 @@ Term::RGB Term::bit4_to_rgb(const Term::Color4 color) {
             return Bit4_reference::CYAN;
         case Color4::WHITE:
             return Bit4_reference::WHITE;
-        case Color4::NONE:
+        case Color4::DEFAULT:
             return Bit4_reference::NONE;
         case Color4::GRAY:
             return Bit4_reference::GRAY;
@@ -81,7 +81,7 @@ uint16_t Term::rgb_compare(RGB color_first, RGB color_second) {
 Term::Color4 Term::rgb_to_bit4(Term::RGB color) {
     // check if the RGB color is empty
     if (color.empty) {
-        return Color4::NONE;
+        return Color4::DEFAULT;
     }
 
     // set initial start value
@@ -239,7 +239,7 @@ std::string Term::color_fg(uint8_t r, uint8_t g, uint8_t b) {
 
 std::string Term::color_fg(Term::RGB rgb) {
     if (rgb.empty) {
-        return color_fg(Color4::NONE);  // resets the current terminal color
+        return color_fg(Color4::DEFAULT);  // resets the current terminal color
     }
     return "\033[38;2;" + std::to_string(rgb.r) + ';' + std::to_string(rgb.g) +
            ';' + std::to_string(rgb.b) + 'm';
@@ -251,7 +251,8 @@ std::string Term::color_fg(Term::RGBF rgbf) {
 std::string Term::color_fg(Term::RGBF rgbf, Mode mode) {
     switch (mode) {
         case Mode::NONE:
-            return color_fg(Color4::NONE);  // resets the current terminal color
+            return color_fg(
+                Color4::DEFAULT);  // resets the current terminal color
         case Mode::BIT4:
             return color_fg(rgb_to_bit4(rgbf.rgb_fg));
         case Mode::BIT8:
@@ -279,7 +280,7 @@ std::string Term::color_bg(uint8_t r, uint8_t g, uint8_t b) {
 }
 std::string Term::color_bg(Term::RGB rgb) {
     if (rgb.empty) {
-        return color_bg(Color4::NONE);  // resets the current terminal color
+        return color_bg(Color4::DEFAULT);  // resets the current terminal color
     }
     return "\033[48;2;" + std::to_string(rgb.r) + ';' + std::to_string(rgb.g) +
            ';' + std::to_string(rgb.b) + 'm';
@@ -290,7 +291,8 @@ std::string Term::color_bg(Term::RGBF rgbf) {
 std::string Term::color_bg(Term::RGBF rgbf, Mode mode) {
     switch (mode) {
         case Mode::NONE:
-            return color_bg(Color4::NONE);  // resets the current terminal color
+            return color_bg(
+                Color4::DEFAULT);  // resets the current terminal color
         case Mode::BIT4:
             return color_bg(rgb_to_bit4(rgbf.rgb_bg));
         case Mode::BIT8:

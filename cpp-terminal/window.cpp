@@ -289,13 +289,13 @@ std::string Term::Window_24bit::render(int x0, int y0, bool term) {
             if (update_style)
                 out.append(style(get_style(i, j)));
             if (update_fg_reset)
-                out.append(color_fg(Color4::NONE));
+                out.append(color_fg(Color4::DEFAULT));
             else if (update_fg) {
                 rgb color_tmp = get_fg(i, j);
                 out.append(color_fg(color_tmp.r, color_tmp.g, color_tmp.b));
             }
             if (update_bg_reset)
-                out.append(color_bg(Color4::NONE));
+                out.append(color_bg(Color4::DEFAULT));
             else if (update_bg) {
                 rgb color_tmp = get_bg(i, j);
                 out.append(color_bg(color_tmp.r, color_tmp.g, color_tmp.b));
@@ -306,9 +306,9 @@ std::string Term::Window_24bit::render(int x0, int y0, bool term) {
             out.append("\n");
     }
     if (!current_fg_reset)
-        out.append(color_fg(Color4::NONE));
+        out.append(color_fg(Color4::DEFAULT));
     if (!current_bg_reset)
-        out.append(color_bg(Color4::NONE));
+        out.append(color_bg(Color4::DEFAULT));
     if (current_style != Style::RESET)
         out.append(style(Style::RESET));
     if (term) {
@@ -373,8 +373,8 @@ void Term::Window::set_h(size_t new_h) {
     } else if (new_h > h) {
         size_t dc = (new_h - h) * w;
         chars.insert(chars.end(), dc, ' ');
-        m_fg.insert(m_fg.end(), dc, Color4::NONE);
-        m_bg.insert(m_bg.end(), dc, Color4::NONE);
+        m_fg.insert(m_fg.end(), dc, Color4::DEFAULT);
+        m_bg.insert(m_bg.end(), dc, Color4::DEFAULT);
         m_style.insert(m_style.end(), dc, Style::RESET);
         h = new_h;
     } else {
@@ -485,8 +485,8 @@ void Term::Window::clear() {
     for (size_t j = 1; j <= h; j++) {
         for (size_t i = 1; i <= w; i++) {
             set_char(i, j, ' ');
-            set_fg(i, j, Color4::NONE);
-            set_bg(i, j, Color4::NONE);
+            set_fg(i, j, Color4::DEFAULT);
+            set_bg(i, j, Color4::DEFAULT);
             set_style(i, j, Style::RESET);
         }
     }
@@ -497,8 +497,8 @@ std::string Term::Window::render(int x0, int y0, bool term) {
     if (term) {
         out.append(cursor_off());
     }
-    Color4 current_fg = Color4::NONE;
-    Color4 current_bg = Color4::NONE;
+    Color4 current_fg = Color4::DEFAULT;
+    Color4 current_bg = Color4::DEFAULT;
     Style current_style = Style::RESET;
     for (size_t j = 1; j <= h; j++) {
         if (term) {
@@ -524,8 +524,8 @@ std::string Term::Window::render(int x0, int y0, bool term) {
                     // set them again if they are non-default, but if fg or
                     // bg colors are reset, we do not update them, as
                     // style::reset already did that.
-                    update_fg = (current_fg != Color4::NONE);
-                    update_bg = (current_bg != Color4::NONE);
+                    update_fg = (current_fg != Color4::DEFAULT);
+                    update_bg = (current_bg != Color4::DEFAULT);
                 }
             }
             // Set style first, as style::reset will reset colors too
@@ -540,10 +540,10 @@ std::string Term::Window::render(int x0, int y0, bool term) {
         if (j < h)
             out.append("\n");
     }
-    if (current_fg != Color4::NONE)
-        out.append(color_fg(Color4::NONE));
-    if (current_bg != Color4::NONE)
-        out.append(color_bg(Color4::NONE));
+    if (current_fg != Color4::DEFAULT)
+        out.append(color_fg(Color4::DEFAULT));
+    if (current_bg != Color4::DEFAULT)
+        out.append(color_bg(Color4::DEFAULT));
     if (current_style != Style::RESET)
         out.append(style(Style::RESET));
     if (term) {

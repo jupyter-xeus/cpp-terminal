@@ -645,12 +645,12 @@ void editorDrawRows(std::string& ab) {
                     ab.append(style(Term::Style::REVERSED));
                     ab.append(std::string(&sym, 1));
                     ab.append(style(Term::Style::RESET));
-                    if (current_color != Term::Color4::NONE) {
+                    if (current_color != Term::Color4::DEFAULT) {
                         ab.append(color_fg(current_color));
                     }
                 } else if (hl[j] == HL_NORMAL) {
                     if (current_color != Term::Color4::BLACK) {
-                        ab.append(color_fg(Term::Color4::NONE));
+                        ab.append(color_fg(Term::Color4::DEFAULT));
                         current_color = Term::Color4::BLACK;
                     }
                     ab.append(std::string(&c[j], 1));
@@ -663,7 +663,7 @@ void editorDrawRows(std::string& ab) {
                     ab.append(std::string(&c[j], 1));
                 }
             }
-            ab.append(color_fg(Term::Color4::NONE));
+            ab.append(color_fg(Term::Color4::DEFAULT));
         }
 
         ab.append(Term::clear_eol());

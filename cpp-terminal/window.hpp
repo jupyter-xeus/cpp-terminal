@@ -126,8 +126,8 @@ class Window {
           cursor_x{1},
           cursor_y{1},
           chars(w * h, ' '),
-          m_fg(w * h, Color4::NONE),
-          m_bg(w * h, Color4::NONE),
+          m_fg(w * h, Color4::DEFAULT),
+          m_bg(w * h, Color4::DEFAULT),
           m_style(w * h, Style::RESET){};
 
     [[nodiscard]] size_t get_w() const;

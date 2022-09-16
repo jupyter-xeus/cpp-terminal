@@ -42,8 +42,8 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
         for (size_t j = 1; j <= menuwidth - s.size(); j++) {
             scr.append(" ");
         }
-        scr.append(Term::color_bg(Term::Color4::NONE));
-        scr.append(Term::color_fg(Term::Color4::NONE));
+        scr.append(Term::color_bg(Term::Color4::DEFAULT));
+        scr.append(Term::color_fg(Term::Color4::DEFAULT));
         scr.append(Term::style(Term::Style::RESET));
         scr.append("│");
         scr.append(" \n");

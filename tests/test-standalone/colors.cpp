@@ -17,7 +17,7 @@ int main() {
         std::string text =
             "Some text with " + Term::color_fg(Term::Color4::RED) +
             color_bg(Term::Color4::GREEN) + "red on green" +
-            color_bg(Term::Color4::NONE) + color_fg(Term::Color4::NONE) +
+            color_bg(Term::Color4::DEFAULT) + color_fg(Term::Color4::DEFAULT) +
             " and some " + style(Term::Style::BOLD) + "bold text" +
             style(Term::Style::RESET) + ".\n";
         text += "Unicode works too: originally written by Ondřej Čertík.";
@@ -26,7 +26,7 @@ int main() {
         std::string rgb_text = "Some Text in " + Term::color_fg(255, 0, 0) +
                                'R' + Term::color_fg(0, 255, 0) + 'G' +
                                Term::color_fg(0, 0, 255) + 'B' +
-                               Term::color_fg(Term::Color4::NONE);
+                               Term::color_fg(Term::Color4::DEFAULT);
 
         std::cout << rgb_text << std::endl;
 
@@ -69,7 +69,7 @@ int main() {
                   << Term::color_bg(Term::Color4::MAGENTA_BRIGHT) << " "
                   << Term::color_bg(Term::Color4::CYAN_BRIGHT) << " "
                   << Term::color_bg(Term::Color4::WHITE_BRIGHT) << " "
-                  << Term::color_bg(Term::Color4::NONE) << "\n";
+                  << Term::color_bg(Term::Color4::DEFAULT) << "\n";
         std::cout
             << "4bit to 4bit:  "
             << Term::color_bg(
@@ -119,7 +119,7 @@ int main() {
             << " "
             << Term::color_bg(Term::rgb_to_bit4(
                    Term::bit4_to_rgb(Term::Color4::WHITE_BRIGHT)))
-            << " " << Term::color_bg(Term::Color4::NONE) << "\n";
+            << " " << Term::color_bg(Term::Color4::DEFAULT) << "\n";
 
         std::cout
             << "4bit to 24bit: "
@@ -145,7 +145,7 @@ int main() {
             << Term::color_bg(Term::bit4_to_rgb(Term::Color4::CYAN_BRIGHT))
             << " "
             << Term::color_bg(Term::bit4_to_rgb(Term::Color4::WHITE_BRIGHT))
-            << " " << Term::color_bg(Term::Color4::NONE) << "\n";
+            << " " << Term::color_bg(Term::Color4::DEFAULT) << "\n";
 
         std::cout
             << "4bit to 8bit:  "
@@ -197,7 +197,7 @@ int main() {
             << Term::color_bg(Term::rgb_to_bit8(
                    Term::bit4_to_rgb(Term::Color4::WHITE_BRIGHT))) +
                    " "
-            << Term::color_bg(Term::Color4::NONE) << "\n";
+            << Term::color_bg(Term::Color4::DEFAULT) << "\n";
 
         std::cout << "\nColor conversion (24bit)\n";
         /* red color space */
@@ -283,12 +283,18 @@ int main() {
         std::cout << "\n";
 
         std::cout << "\nAuto color for 24bit: \n";
-        if (Term::bit24_support()) {
-            std::cout << "24bit support: yes\n$COLORTERM: "
-                      << getenv("COLORTERM") << '\n';
+
+        // bit24_support doesn't work in CI
+        if (Term::stdout_connected()) {
+            if (Term::bit24_support()) {
+                std::cout << "24bit support: yes\n$COLORTERM: "
+                          << getenv("COLORTERM") << '\n';
+            } else {
+                std::cout << "24bit support: no\n$COLORTERM: "
+                          << getenv("COLORTERM") << '\n';
+            }
         } else {
-            std::cout << "24bit support: no\n$COLORTERM: "
-                      << getenv("COLORTERM") << '\n';
+            std::cout << "24bit support: Not connected to a terminal\n";
         }
         std::cout << "24bit auto function test:\n";
 

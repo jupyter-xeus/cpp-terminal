@@ -26,8 +26,8 @@ enum class Color4 : uint8_t {
     CYAN = 6,
     // FG: 37, BG: 47
     WHITE = 7,
-    // disables color, FG: 39, BG: 49
-    NONE = 9,
+    // Use the default terminal color, FG: 39, BG: 49
+    DEFAULT = 9,
     // FG: 90, BG: 100
     GRAY = 60,
     // FG: 91, BG: 101
