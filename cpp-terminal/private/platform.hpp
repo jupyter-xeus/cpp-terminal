@@ -33,7 +33,7 @@ bool is_stdout_a_tty();
 
 // returns the terminal size as (rows, columns) / (Y, X), throws a runtime error
 // if the console is not connected
-std::tuple<size_t, size_t> get_term_size();
+std::tuple<std::size_t, std::size_t> get_term_size();
 
 // Returns true if a character is read, otherwise immediately returns false
 // This can't be made inline

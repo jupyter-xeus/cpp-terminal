@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 #include <string>
 #include "cpp-terminal/private/platform.hpp"
 namespace Term {
@@ -9,7 +8,7 @@ namespace Term {
  * get the foreground color: Color4 + 30, Background color: Color4 + 40
  * See https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
  */
-enum class Color4 : uint8_t {
+enum class Color4 : std::uint8_t {
     // FG: 30, BG: 40
     BLACK = 0,
     // FG: 31, BG: 41
@@ -48,7 +47,7 @@ enum class Color4 : uint8_t {
 /*
  * Styles for text in the terminal
  */
-enum class Style : uint8_t {
+enum class Style : std::uint8_t {
     // resets all attributes (styles and colors)
     RESET = 0,
     // Thick text font
@@ -71,7 +70,7 @@ enum class Style : uint8_t {
 
 // Represents a RGB (24bit) color
 struct RGB {
-    uint8_t r{}, g{}, b{};
+    std::uint8_t r{}, g{}, b{};
     bool empty = false;
 };
 // indicates the color mode (basically the original color resolution)
@@ -121,14 +120,14 @@ struct Bit4_reference {
 // Converts a 4bit color to Term::RGB
 RGB bit4_to_rgb(Color4 color);
 // Converts a 8bit color to Term::RGB
-RGB bit8_to_rgb(uint8_t color);
+RGB bit8_to_rgb(std::uint8_t color);
 // converts rgb values into Term::RGB
-RGB bit24_to_rgb(uint8_t r, uint8_t g, uint8_t b);
+RGB bit24_to_rgb(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 // creates an empty rgb color
 RGB rgb_empty();
 
 // compares two Term::RGB colors and returns how much they are different
-uint16_t rgb_compare(RGB rgb_first, RGB rgb_second);
+std::uint16_t rgb_compare(RGB rgb_first, RGB rgb_second);
 
 // Converts an RGB color to a 4bit color
 Color4 rgb_to_bit4(RGB rgb);
@@ -145,9 +144,9 @@ std::string rgb_to_bit24_auto_bg(RGB color);
 // Set the given 4bit color from Term::Color4
 std::string color_fg(Color4 color);
 // Set the given 4bit / 8bit color
-std::string color_fg(uint8_t color);
+std::string color_fg(std::uint8_t color);
 // Set the given 24bit color
-std::string color_fg(uint8_t r, uint8_t g, uint8_t b);
+std::string color_fg(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 // Set the given RGB (24bit) color
 std::string color_fg(RGB rgb);
 // Set the given foreground color from the RGBF struct
@@ -158,9 +157,9 @@ std::string color_fg(RGBF rgbf, Mode mode);
 // Set the given 4bit color from Term::Color4
 std::string color_bg(Color4 color);
 // Set the given 4bit / 8bit color
-std::string color_bg(uint8_t color);
+std::string color_bg(std::uint8_t color);
 // Set the given 24bit color
-std::string color_bg(uint8_t r, uint8_t g, uint8_t b);
+std::string color_bg(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 // Set the given RGB (24bit) color
 std::string color_bg(RGB rgb);
 // Set the given background color from the RGBF struct
@@ -176,26 +175,26 @@ std::string colorf(RGBF rgbf);
 // Create a Term::RGBF color using a 4bit foreground color
 RGBF rgbf_fg(Color4 color);
 // Create a Term::RGBF color using a 24bit (RGB) foreground color
-RGBF rgbf_fg(uint8_t r, uint8_t g, uint8_t b);
+RGBF rgbf_fg(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 // Create a Term::RGBF color using a Term::RGB foreground color
 RGBF rgbf_fg(RGB rgb);
 
 // Create a Term::RGBF color using a 4bit background color
 RGBF rgbf_bg(Color4 color);
 // Create a Term::RGBF color using a 24bit (RGB) background color
-RGBF rgbf_bg(uint8_t r, uint8_t g, uint8_t b);
+RGBF rgbf_bg(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 // Create a Term::RGBF color using a Term::RGB background color
 RGBF rgbf_bg(RGB rgb);
 
 // Create a Term::RGBF color using a 4bit foreground and background color
 RGBF rgbf_fb(Color4 fg, Color4 bg);
 // Create a Term::RGBF color using a 24bit (RGB) fore- and background color
-RGBF rgbf_fb(uint8_t r_fg,
-             uint8_t g_fg,
-             uint8_t b_fg,
-             uint8_t r_bg,
-             uint8_t g_bg,
-             uint8_t b_bg);
+RGBF rgbf_fb(std::uint8_t r_fg,
+             std::uint8_t g_fg,
+             std::uint8_t b_fg,
+             std::uint8_t r_bg,
+             std::uint8_t g_bg,
+             std::uint8_t b_bg);
 // Create a Term::RGBF color using a Term::RGB fore- and background color
 RGBF rgbf_fb(RGB rgb_fg, RGB rgb_bg);
 
@@ -208,7 +207,7 @@ std::string color_auto(RGBF rgbf);
 std::string color_auto(RGBF rgbf, Mode mode);
 
 // get the terminal size (row, column) / (Y, X)
-std::tuple<size_t, size_t> get_size();
+std::tuple<std::size_t, std::size_t> get_size();
 // check if stdin is connected to a TTY
 bool stdin_connected();
 // check if stdout is connected to a TTY
@@ -222,17 +221,17 @@ std::string clear_screen();
 // clear the screen and the scroll-back buffer
 std::string clear_buffer();
 // move the cursor to the given (row, column) / (Y, X)
-std::string cursor_move(size_t row, size_t column);
+std::string cursor_move(std::size_t row, std::size_t column);
 // move the cursor the given rows up
-std::string cursor_up(size_t rows);
+std::string cursor_up(std::size_t rows);
 // move the cursor the given rows down
-std::string cursor_down(size_t rows);
+std::string cursor_down(std::size_t rows);
 // move the cursor the given columns left
-std::string cursor_left(size_t columns);
+std::string cursor_left(std::size_t columns);
 // move the cursor the given columns right
-std::string cursor_right(size_t columns);
+std::string cursor_right(std::size_t columns);
 // returns the current cursor position (row, column) (Y, X)
-std::tuple<size_t, size_t> cursor_position();
+std::tuple<std::size_t, std::size_t> cursor_position();
 // the ANSI code to generate a cursor position report
 std::string cursor_position_report();
 // clears the screen from the current cursor position to the end of the screen

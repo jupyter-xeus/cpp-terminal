@@ -47,7 +47,7 @@ Term::RGB Term::bit4_to_rgb(const Term::Color4 color) {
     return {};
 }
 
-Term::RGB Term::bit24_to_rgb(uint8_t r, uint8_t g, uint8_t b) {
+Term::RGB Term::bit24_to_rgb(std::uint8_t r, std::uint8_t g, std::uint8_t b) {
     return {r, g, b, false};
 }
 Term::RGB Term::rgb_empty() {
@@ -55,7 +55,7 @@ Term::RGB Term::rgb_empty() {
 }
 
 uint16_t Term::rgb_compare(RGB color_first, RGB color_second) {
-    uint16_t diff = 0;
+    std::uint16_t diff = 0;
     // red
     if (color_first.r > color_second.r) {
         diff += color_first.r - color_second.r;
@@ -86,7 +86,7 @@ Term::Color4 Term::rgb_to_bit4(Term::RGB color) {
 
     // set initial start value
     Color4 color_result = Color4::BLACK;
-    uint16_t diff = rgb_compare(color, Term::Bit4_reference::BLACK);
+    std::uint16_t diff = rgb_compare(color, Term::Bit4_reference::BLACK);
 
     // compare all colors
     if (diff > rgb_compare(color, Bit4_reference::RED)) {
@@ -151,7 +151,7 @@ Term::Color4 Term::rgb_to_bit4(Term::RGB color) {
     return color_result;
 }
 
-uint8_t Term::rgb_to_bit8(RGB color) {
+std::uint8_t Term::rgb_to_bit8(RGB color) {
     if (color.empty) {
         return 0;  // there is not really a way to handle empty color here
     }
@@ -226,13 +226,13 @@ std::string Term::rgb_to_bit24_auto_bg(RGB color) {
 /* FOREGROUND COLORS */
 
 std::string Term::color_fg(Term::Color4 color) {
-    return "\033[" + std::to_string((uint8_t)color + 30) + 'm';
+    return "\033[" + std::to_string((std::uint8_t)color + 30) + 'm';
 }
 
-std::string Term::color_fg(uint8_t color) {
+std::string Term::color_fg(std::uint8_t color) {
     return "\033[38;5;" + std::to_string(color) + 'm';
 }
-std::string Term::color_fg(uint8_t r, uint8_t g, uint8_t b) {
+std::string Term::color_fg(std::uint8_t r, std::uint8_t g, std::uint8_t b) {
     return "\033[38;2;" + std::to_string(r) + ';' + std::to_string(g) + ';' +
            std::to_string(b) + 'm';
 }
@@ -271,10 +271,10 @@ std::string Term::color_fg(Term::RGBF rgbf, Mode mode) {
 std::string Term::color_bg(Term::Color4 color) {
     return "\033[" + std::to_string((uint8_t)color + 40) + 'm';
 }
-std::string Term::color_bg(uint8_t color) {
+std::string Term::color_bg(std::uint8_t color) {
     return "\033[48;5;" + std::to_string(color) + 'm';
 }
-std::string Term::color_bg(uint8_t r, uint8_t g, uint8_t b) {
+std::string Term::color_bg(std::uint8_t r, std::uint8_t g, std::uint8_t b) {
     return "\033[48;2;" + std::to_string(r) + ';' + std::to_string(g) + ';' +
            std::to_string(b) + 'm';
 }
@@ -306,7 +306,7 @@ std::string Term::color_bg(Term::RGBF rgbf, Mode mode) {
     return {};
 }
 std::string Term::style(Term::Style style) {
-    return "\033[" + std::to_string((uint8_t)style) + 'm';
+    return "\033[" + std::to_string((std::uint8_t)style) + 'm';
 }
 
 /* RGBF FUNCTIONS */
@@ -322,7 +322,7 @@ Term::RGBF Term::rgbf_fg(Term::RGB rgb) {
     return {rgb, Mode::BIT24, rgb_empty(), Mode::NONE};
 }
 
-Term::RGBF Term::rgbf_fg(uint8_t r, uint8_t g, uint8_t b) {
+Term::RGBF Term::rgbf_fg(std::uint8_t r, std::uint8_t g, std::uint8_t b) {
     return {{r, g, b}, Mode::BIT24, rgb_empty(), Mode::NONE};
 }
 
@@ -332,7 +332,7 @@ Term::RGBF Term::rgbf_bg(Term::Color4 color) {
 Term::RGBF Term::rgbf_bg(Term::RGB rgb) {
     return {rgb_empty(), Mode::NONE, rgb, Mode::BIT24};
 }
-Term::RGBF Term::rgbf_bg(uint8_t r, uint8_t g, uint8_t b) {
+Term::RGBF Term::rgbf_bg(std::uint8_t r, std::uint8_t g, std::uint8_t b) {
     return {rgb_empty(), Mode::NONE, {r, g, b}, Mode::BIT24};
 }
 
@@ -343,12 +343,12 @@ Term::RGBF Term::rgbf_fb(Term::Color4 fg, Term::Color4 bg) {
 Term::RGBF Term::rgbf_fb(Term::RGB rgb_fg, Term::RGB rgb_bg) {
     return {rgb_fg, Mode::BIT24, rgb_bg, Mode::BIT24};
 }
-Term::RGBF Term::rgbf_fb(uint8_t r_fg,
-                         uint8_t g_fg,
-                         uint8_t b_fg,
-                         uint8_t r_bg,
-                         uint8_t g_bg,
-                         uint8_t b_bg) {
+Term::RGBF Term::rgbf_fb(std::uint8_t r_fg,
+                         std::uint8_t g_fg,
+                         std::uint8_t b_fg,
+                         std::uint8_t r_bg,
+                         std::uint8_t g_bg,
+                         std::uint8_t b_bg) {
     return {{r_fg, g_fg, b_fg}, Mode::BIT24, {r_bg, g_bg, b_bg}, Mode::BIT24};
 }
 
@@ -372,7 +372,7 @@ std::string Term::color_auto(Term::RGBF rgbf) {
         return "";
 }
 
-std::tuple<size_t, size_t> Term::get_size() {
+std::tuple<std::size_t, std::size_t> Term::get_size() {
     return Private::get_term_size();  // function uses platform dependent code
 }
 
@@ -399,27 +399,27 @@ std::string Term::clear_buffer() {
     return "\033[3J";
 }
 
-std::string Term::cursor_move(size_t row, size_t column) {
+std::string Term::cursor_move(std::size_t row, std::size_t column) {
     return "\033[" + std::to_string(row) + ';' + std::to_string(column) + 'H';
 }
 
-std::string Term::cursor_up(size_t rows) {
+std::string Term::cursor_up(std::size_t rows) {
     return "\033[" + std::to_string(rows) + 'A';
 }
 
-std::string Term::cursor_down(size_t rows) {
+std::string Term::cursor_down(std::size_t rows) {
     return "\033[" + std::to_string(rows) + 'B';
 }
 
-std::string Term::cursor_right(size_t columns) {
+std::string Term::cursor_right(std::size_t columns) {
     return "\033[" + std::to_string(columns) + 'C';
 }
 
-std::string Term::cursor_left(size_t columns) {
+std::string Term::cursor_left(std::size_t columns) {
     return "\033[" + std::to_string(columns) + 'D';
 }
 
-std::tuple<size_t, size_t> Term::cursor_position() {
+std::tuple<std::size_t, std::size_t> Term::cursor_position() {
     char buf[32];
     // write cursor position report
     std::cout << cursor_position_report() << std::flush;
@@ -439,7 +439,7 @@ std::tuple<size_t, size_t> Term::cursor_position() {
     }
     // Find the result in the response, drop the rest:
     for (unsigned int i = 0; i < sizeof(buf) - 6; i++) {
-        size_t rows, columns;
+        std::size_t rows, columns;
         if (buf[i] == '\x1b' && buf[i + 1] == '[') {
             if (Private::unified_sscanf(&buf[i + 2], "%d;%d", &rows,
                                         &columns) != 2) {

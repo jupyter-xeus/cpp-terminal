@@ -39,7 +39,7 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
         }
         std::string s = std::to_string(i) + ": item";
         scr.append(s);
-        for (size_t j = 1; j <= menuwidth - s.size(); j++) {
+        for (std::size_t j = 1; j <= menuwidth - s.size(); j++) {
             scr.append(" ");
         }
         scr.append(Term::color_bg(Term::Color4::DEFAULT));

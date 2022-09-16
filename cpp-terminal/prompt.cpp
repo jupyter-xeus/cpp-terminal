@@ -114,12 +114,12 @@ std::string Term::concat(const std::vector<std::string>& lines) {
 }
 
 std::vector<std::string> Term::split(const std::string& s) {
-    size_t j = 0;
+    std::size_t j = 0;
     std::vector<std::string> lines;
     lines.emplace_back("");
     if (s[s.size() - 1] != '\n')
         throw std::runtime_error("\\n is required");
-    for (size_t i = 0; i < s.size() - 1; i++) {
+    for (std::size_t i = 0; i < s.size() - 1; i++) {
         if (s[i] == '\n') {
             j++;
             lines.emplace_back("");
@@ -150,13 +150,13 @@ void Term::print_left_curly_bracket(Term::Window& scr, int x, int y1, int y2) {
     }
 }
 
-void Term::render(Term::Window& scr, const Model& m, size_t cols) {
+void Term::render(Term::Window& scr, const Model& m, std::size_t cols) {
     scr.clear();
     print_left_curly_bracket(scr, cols, 1, m.lines.size());
     scr.print_str(
         cols - 6, m.lines.size(),
         std::to_string(m.cursor_row) + "," + std::to_string(m.cursor_col));
-    for (size_t j = 0; j < m.lines.size(); j++) {
+    for (std::size_t j = 0; j < m.lines.size(); j++) {
         if (j == 0) {
             scr.print_str(1, j + 1, m.prompt_string);
             scr.fill_fg(1, j + 1, m.prompt_string.size(), m.lines.size(),
@@ -164,7 +164,7 @@ void Term::render(Term::Window& scr, const Model& m, size_t cols) {
             scr.fill_style(1, j + 1, m.prompt_string.size(), m.lines.size(),
                            Term::Style::BOLD);
         } else {
-            for (size_t i = 0; i < m.prompt_string.size() - 1; i++) {
+            for (std::size_t i = 0; i < m.prompt_string.size() - 1; i++) {
                 scr.set_char(i + 1, j + 1, '.');
             }
         }
@@ -178,8 +178,8 @@ std::string Term::prompt_multiline(
     const std::string& prompt_string,
     std::vector<std::string>& history,
     std::function<bool(std::string)>& iscomplete) {
-    size_t row{1}, col{1};
-    size_t rows{25}, cols{80};
+    std::size_t row{1}, col{1};
+    std::size_t rows{25}, cols{80};
     bool term_attached = Private::is_stdin_a_tty();
     if (stdin_connected()) {
         std::tie(row, col) = cursor_position();
@@ -195,7 +195,7 @@ std::string Term::prompt_multiline(
     // Make a local copy of history that can be modified by the user. All
     // changes will be forgotten once a command is submitted.
     std::vector<std::string> hist = history;
-    size_t history_pos = hist.size();
+    std::size_t history_pos = hist.size();
     hist.push_back(concat(m.lines));  // Push back empty input
 
     Term::Window scr(cols, 1);
@@ -348,7 +348,7 @@ std::string Term::prompt_multiline(
         }
     }
     std::string line_skips;
-    for (size_t i = 0; i <= m.lines.size() - m.cursor_row; i++) {
+    for (std::size_t i = 0; i <= m.lines.size() - m.cursor_row; i++) {
         line_skips += "\n";
     }
     std::cout << line_skips << std::flush;

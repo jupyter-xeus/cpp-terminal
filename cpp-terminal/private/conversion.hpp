@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -11,28 +10,30 @@
 #include <sys/ioctl.h>
 #endif
 
-static constexpr uint8_t UTF8_ACCEPT = 0;
-static constexpr uint8_t UTF8_REJECT = 0xf;
+static constexpr std::uint8_t UTF8_ACCEPT = 0;
+static constexpr std::uint8_t UTF8_REJECT = 0xf;
 
 namespace Term::Private {
 
-inline uint8_t utf8_decode_step(uint8_t state, uint8_t octet, uint32_t* cpp) {
-    static const uint32_t utf8ClassTab[0x10] = {
+inline std::uint8_t utf8_decode_step(std::uint8_t state,
+                                     std::uint8_t octet,
+                                     std::uint32_t* cpp) {
+    static const std::uint32_t utf8ClassTab[0x10] = {
         0x88888888UL, 0x88888888UL, 0x99999999UL, 0x99999999UL,
         0xaaaaaaaaUL, 0xaaaaaaaaUL, 0xaaaaaaaaUL, 0xaaaaaaaaUL,
         0x222222ffUL, 0x22222222UL, 0x22222222UL, 0x22222222UL,
         0x3333333bUL, 0x33433333UL, 0xfff5666cUL, 0xffffffffUL,
     };
 
-    static const uint32_t utf8StateTab[0x10] = {
+    static const std::uint32_t utf8StateTab[0x10] = {
         0xfffffff0UL, 0xffffffffUL, 0xfffffff1UL, 0xfffffff3UL,
         0xfffffff4UL, 0xfffffff7UL, 0xfffffff6UL, 0xffffffffUL,
         0x33f11f0fUL, 0xf3311f0fUL, 0xf33f110fUL, 0xfffffff2UL,
         0xfffffff5UL, 0xffffffffUL, 0xffffffffUL, 0xffffffffUL,
     };
 
-    const uint8_t reject = (state >> 3), nonAscii = (octet >> 7);
-    const uint8_t class_ =
+    const std::uint8_t reject = (state >> 3), nonAscii = (octet >> 7);
+    const std::uint8_t class_ =
         (!nonAscii
              ? 0
              : (0xf & (utf8ClassTab[(octet >> 3) & 0xf] >> (4 * (octet & 7)))));
@@ -71,8 +72,8 @@ inline void codepoint_to_utf8(std::string& s, char32_t c) {
 }
 
 inline std::u32string utf8_to_utf32(const std::string& s) {
-    uint32_t codepoint{};
-    uint8_t state = UTF8_ACCEPT;
+    std::uint32_t codepoint{};
+    std::uint8_t state = UTF8_ACCEPT;
     std::u32string r{};
     for (char i : s) {
         state = utf8_decode_step(state, i, &codepoint);
@@ -99,8 +100,8 @@ inline std::string utf32_to_utf8(const std::u32string& s) {
 // coverts a string into an integer
 inline int unified_sscanf(const char* string,
                           const char* format,
-                          size_t* rows,
-                          size_t* cols) {
+                          std::size_t* rows,
+                          std::size_t* cols) {
 #ifdef _WIN32
     // on windows it's recommended to use their own sscanf_s function
     return sscanf_s(string, format, rows, cols);
@@ -110,8 +111,9 @@ inline int unified_sscanf(const char* string,
 #endif
 }
 
-inline std::tuple<size_t, size_t> convert_string_to_size_t(const char* string,
-                                                           const char* format) {
+inline std::tuple<std::size_t, std::size_t> convert_string_to_size_t(
+    const char* string,
+    const char* format) {
     size_t rows{}, cols{};
 #ifdef _WIN32
     // Windows provides its own alternative to sscanf()

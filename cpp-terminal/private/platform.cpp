@@ -39,7 +39,7 @@ bool Term::Private::is_stdout_a_tty() {
 #endif
 }
 
-std::tuple<size_t, size_t> Term::Private::get_term_size() {
+std::tuple<std::size_t, std::size_t> Term::Private::get_term_size() {
 #ifdef _WIN32
     HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hout == INVALID_HANDLE_VALUE) {
@@ -47,8 +47,8 @@ std::tuple<size_t, size_t> Term::Private::get_term_size() {
     }
     CONSOLE_SCREEN_BUFFER_INFO inf;
     if (GetConsoleScreenBufferInfo(hout, &inf)) {
-        size_t cols = inf.srWindow.Right - inf.srWindow.Left + 1;
-        size_t rows = inf.srWindow.Bottom - inf.srWindow.Top + 1;
+        std::size_t cols = inf.srWindow.Right - inf.srWindow.Left + 1;
+        std::size_t rows = inf.srWindow.Bottom - inf.srWindow.Top + 1;
         return {rows, cols};
     } else {
         // This happens when we are not connected to a terminal

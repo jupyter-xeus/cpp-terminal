@@ -318,7 +318,7 @@ void editorUpdateRow(erow* row) {
     editorUpdateSyntax(row);
 }
 
-void editorInsertRow(int at, const char* s, size_t len) {
+void editorInsertRow(int at, const char* s, std::size_t len) {
     if (at < 0 || at > E.numrows)
         return;
 
@@ -372,7 +372,7 @@ void editorRowInsertChar(erow* row, int at, int c) {
     E.dirty++;
 }
 
-void editorRowAppendString(erow* row, char* s, size_t len) {
+void editorRowAppendString(erow* row, char* s, std::size_t len) {
     row->chars = (char*)realloc(row->chars, row->size + len + 1);
     memcpy(&row->chars[row->size], s, len);
     row->size += len;
@@ -728,10 +728,10 @@ void editorRefreshScreen() {
 /*** input ***/
 
 char* editorPrompt(const char* prompt, void (*callback)(char*, int)) {
-    size_t bufsize = 128;
+    std::size_t bufsize = 128;
     char* buf = (char*)malloc(bufsize);
 
-    size_t buflen = 0;
+    std::size_t buflen = 0;
     buf[0] = '\0';
 
     while (true) {
