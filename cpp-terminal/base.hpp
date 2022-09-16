@@ -77,7 +77,7 @@ struct RGB {
 // also used to manually override the original color resolution
 enum class Mode {
     // no color was used
-    NONE,
+    UNSET,
     // a 4bit color was used
     BIT4,
     // a 8bit color was used

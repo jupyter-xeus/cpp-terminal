@@ -250,7 +250,7 @@ std::string Term::color_fg(Term::RGBF rgbf) {
 
 std::string Term::color_fg(Term::RGBF rgbf, Mode mode) {
     switch (mode) {
-        case Mode::NONE:
+        case Mode::UNSET:
             return color_fg(
                 Color4::DEFAULT);  // resets the current terminal color
         case Mode::BIT4:
@@ -290,7 +290,7 @@ std::string Term::color_bg(Term::RGBF rgbf) {
 }
 std::string Term::color_bg(Term::RGBF rgbf, Mode mode) {
     switch (mode) {
-        case Mode::NONE:
+        case Mode::UNSET:
             return color_bg(
                 Color4::DEFAULT);  // resets the current terminal color
         case Mode::BIT4:
@@ -316,24 +316,24 @@ std::string Term::colorf(Term::RGBF rgbf) {
 }
 
 Term::RGBF Term::rgbf_fg(Term::Color4 color) {
-    return {bit4_to_rgb(color), Mode::BIT4, rgb_empty(), Mode::NONE};
+    return {bit4_to_rgb(color), Mode::BIT4, rgb_empty(), Mode::UNSET};
 }
 Term::RGBF Term::rgbf_fg(Term::RGB rgb) {
-    return {rgb, Mode::BIT24, rgb_empty(), Mode::NONE};
+    return {rgb, Mode::BIT24, rgb_empty(), Mode::UNSET};
 }
 
 Term::RGBF Term::rgbf_fg(std::uint8_t r, std::uint8_t g, std::uint8_t b) {
-    return {{r, g, b}, Mode::BIT24, rgb_empty(), Mode::NONE};
+    return {{r, g, b}, Mode::BIT24, rgb_empty(), Mode::UNSET};
 }
 
 Term::RGBF Term::rgbf_bg(Term::Color4 color) {
-    return {rgb_empty(), Mode::NONE, bit4_to_rgb(color), Mode::BIT4};
+    return {rgb_empty(), Mode::UNSET, bit4_to_rgb(color), Mode::BIT4};
 }
 Term::RGBF Term::rgbf_bg(Term::RGB rgb) {
-    return {rgb_empty(), Mode::NONE, rgb, Mode::BIT24};
+    return {rgb_empty(), Mode::UNSET, rgb, Mode::BIT24};
 }
 Term::RGBF Term::rgbf_bg(std::uint8_t r, std::uint8_t g, std::uint8_t b) {
-    return {rgb_empty(), Mode::NONE, {r, g, b}, Mode::BIT24};
+    return {rgb_empty(), Mode::UNSET, {r, g, b}, Mode::BIT24};
 }
 
 Term::RGBF Term::rgbf_fb(Term::Color4 fg, Term::Color4 bg) {
@@ -353,7 +353,7 @@ Term::RGBF Term::rgbf_fb(std::uint8_t r_fg,
 }
 
 Term::RGBF Term::rgbf_empty() {
-    return {rgb_empty(), Mode::NONE, rgb_empty(), Mode::NONE};
+    return {rgb_empty(), Mode::UNSET, rgb_empty(), Mode::UNSET};
 }
 
 /* AUTOMATIC COLORS */
