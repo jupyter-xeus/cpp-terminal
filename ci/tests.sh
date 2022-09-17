@@ -2,7 +2,6 @@
 
 set -ex
 
-./tests/test_terminal
 ./examples/colors
 ./examples/read_stdin
 

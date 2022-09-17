@@ -5,8 +5,6 @@ on: [push, pull_request]
 jobs:
   Build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
 
     steps:
     - name: Checkout code
@@ -16,4 +14,4 @@ jobs:
       run: bash ci/compile_test.sh
 
     - name: Test      
-      run: bash ci/tests.sh
+      run: bash ci/tests.sh; ctest -VV

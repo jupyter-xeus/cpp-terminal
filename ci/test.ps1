@@ -1,6 +1,5 @@
 echo "running example programs"
 .\examples\Release\colors.exe
-.\tests\Release\test_terminal.exe
 .\examples\Release\read_stdin.exe
 
 echo "testing read_stind"
