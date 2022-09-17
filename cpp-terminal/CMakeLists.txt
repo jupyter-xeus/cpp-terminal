@@ -9,3 +9,5 @@ target_include_directories(cpp-terminal PRIVATE $<BUILD_INTERFACE:${PROJECT_SOUR
 set_target_properties(cpp-terminal PROPERTIES
     PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/version.h;${CMAKE_CURRENT_SOURCE_DIR}/base.hpp;${CMAKE_CURRENT_SOURCE_DIR}/prompt.hpp;${CMAKE_CURRENT_SOURCE_DIR}/window.hpp;${CMAKE_CURRENT_SOURCE_DIR}/input.hpp"
 )
+
+add_library(cpp-terminal::cpp-terminal ALIAS cpp-terminal)
