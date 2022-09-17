@@ -12,10 +12,10 @@ if [[ $(echo test | ./examples/read_stdin) != "Input from stdin: test" ]]; then
 fi
 
 echo "Expected to succeed:"
-./examples/colors < README.md
+./examples/colors < ../README.md
 echo "Expected to fail"
 set +e
-./examples/keys < README.md
+./examples/keys < ../README.md
 if [[ $? != 0 ]]; then
   echo "Success"
 else
