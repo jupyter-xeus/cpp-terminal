@@ -7,11 +7,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Build
-      run: bash ci/compile_test.sh
+      - name: Configure
+        run: cmake -S . -B ./build -DCMAKE_INSTALL_PREFIX=./inst -DCMAKE_BUILD_TYPE=Release
 
-    - name: Test      
-      run: bash ci/tests.sh; ctest -VV
+      - name: Build
+        run: cmake --build ./build --config Release
+
+      - name: Install
+        run: cmake --install ./build --config Release
+
+      - name: Test
+        working-directory: ./build
+        run: ctest --output-on-failure; bash ../ci/tests.sh;

@@ -7,11 +7,18 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Build
-      run: |
-          ci\compile_test.ps1
-    - name: Test
-      run: ci\test.ps1; ctest -VV
+      - name: Configure
+        run: cmake -S . -B ./build -DCMAKE_INSTALL_PREFIX=./inst -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build ./build --config Release
+
+      - name: Install
+        run: cmake --install ./build --config Release
+
+      - name: Test
+        working-directory: ./build
+        run: ctest --output-on-failure; bash ..\ci\test.ps1;
