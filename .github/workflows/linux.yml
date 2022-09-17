@@ -21,4 +21,4 @@ jobs:
 
       - name: Test
         working-directory: ./build
-        run: ctest --output-on-failure; bash ../ci/tests.sh;
+        run: ctest -C Release -VV --output-on-failure; bash ../ci/tests.sh;
