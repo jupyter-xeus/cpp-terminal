@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
+#include "doctest/doctest.h"
 
-#include "../cpp-terminal/private/conversion.hpp"
+#include "cpp-terminal/private/conversion.hpp"
 
 TEST_CASE("UTF conversions") {
     char32_t codepoint = U'\u0001';

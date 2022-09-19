@@ -10,7 +10,6 @@ if(MSVC)
   endif()
 endif()
 
-
 project(cpp-terminal
         VERSION 1.0.0
         DESCRIPTION "Small header only C++ library for writing multiplatform terminal applications"
@@ -19,9 +18,9 @@ project(cpp-terminal
 
 # set the C++ standard, if not set by the top level project
 if (NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 17
-        CACHE STRING "C++ standard" FORCE)
+    set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard" FORCE)
 endif ()
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE CACHE STRING "C++ standard required" FORCE)
 
 option(CPPTERMINAL_BUILD_EXAMPLES "Set to ON to build examples" ON)
 option(CPPTERMINAL_ENABLE_INSTALL "Set to ON to enable install" ON)
@@ -43,7 +42,6 @@ endif()
 if (CPPTERMINAL_ENABLE_INSTALL)
   include(cmake/install.cmake)
   install_library(cpp-terminal)
-
 endif()
 
 if(MSVC)
