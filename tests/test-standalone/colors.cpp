@@ -288,10 +288,10 @@ int main() {
         if (Term::stdout_connected()) {
             if (Term::bit24_support()) {
                 std::cout << "24bit support: yes\n$COLORTERM: "
-                          << getenv("COLORTERM") << '\n';
+                          << Term::Private::getenv("COLORTERM") << '\n';
             } else {
                 std::cout << "24bit support: no\n$COLORTERM: "
-                          << getenv("COLORTERM") << '\n';
+                          << Term::Private::getenv("COLORTERM") << '\n';
             }
         } else {
             std::cout << "24bit support: Not connected to a terminal\n";
