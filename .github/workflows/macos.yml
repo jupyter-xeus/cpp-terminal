@@ -26,4 +26,4 @@ jobs:
       run: bash ci/tests.sh
 
     - name: Standalone
-      run: cmake -DCMAKE_INSTALL_PREFIX=./standalone-install -DCMAKE_PREFIX_PATH=./install/ -S ./tests/test-standalone -B ./standalone-build; cmake --build ./standalone-build --config Release; cmake --install ./standalone-build --config Release
+      run: cmake -DCMAKE_INSTALL_PREFIX=./standalone-install -DCMAKE_PREFIX_PATH=${{ env.GITHUB_WORKSPACE }}/install/ -S ./tests/test-standalone -B ./standalone-build; cmake --build ./standalone-build --config Release; cmake --install ./standalone-build --config Release
