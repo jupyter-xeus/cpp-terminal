@@ -1,5 +1,5 @@
-#include <cpp-terminal/version.h>
-#include <cpp-terminal/base.hpp>
+#include "cpp-terminal/version.hpp"
+#include "cpp-terminal/base.hpp"
 #include <iostream>
 
 int main() {

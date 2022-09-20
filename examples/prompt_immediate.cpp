@@ -1,4 +1,4 @@
-#include <cpp-terminal/version.h>
+#include <cpp-terminal/version.hpp>
 #include <cpp-terminal/prompt.hpp>
 #include <iostream>
 
