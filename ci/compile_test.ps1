@@ -1,7 +1,7 @@
 #cmake -DCMAKE_INSTALL_PREFIX=.\inst .
-cmake .
+cmake -DCMAKE_INSTALL_PREFIX=./install .
 cmake --build . --config Release
-cmake --install ../binaries --config Release
+cmake --install . --config Release
 ctest --output-on-failure
 
 # Install on windows is complicated and not like on linux
