@@ -3,6 +3,6 @@
 set -ex
 
 cmake -DCMAKE_INSTALL_PREFIX=./install .
-cmake --build . --config Release
-cmake --install . --config Release
+cmake --build .
+cmake --install .
 ctest --output-on-failure
