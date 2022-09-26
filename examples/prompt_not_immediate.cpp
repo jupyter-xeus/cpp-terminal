@@ -1,5 +1,5 @@
-#include <cpp-terminal/version.h>
 #include <cpp-terminal/prompt.hpp>
+#include <cpp-terminal/version.hpp>
 #include <iostream>
 
 int main() {

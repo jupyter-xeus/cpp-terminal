@@ -1,6 +1,6 @@
-#include <cpp-terminal/version.h>
-#include <cpp-terminal/base.hpp>
 #include <iostream>
+#include "cpp-terminal/base.hpp"
+#include "cpp-terminal/version.hpp"
 
 int main() {
     std::cout << "Running cpp-terminal version: "

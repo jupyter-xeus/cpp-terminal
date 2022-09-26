@@ -2,11 +2,7 @@
 
 set -ex
 
-cmake -DCMAKE_INSTALL_PREFIX=./inst .
-cmake --build . --config Release
-cmake --install . --config Release
+cmake -DCMAKE_INSTALL_PREFIX=./install .
+cmake --build .
+cmake --install .
 ctest --output-on-failure
-
-cd tests/test-standalone
-cmake -DCMAKE_PREFIX_PATH=../../inst .
-cmake --build . --config Release

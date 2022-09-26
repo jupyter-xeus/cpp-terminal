@@ -24,3 +24,6 @@ jobs:
     
     - name: Test
       run: bash ci/tests.sh
+
+    - name: Standalone
+      run: cmake -DCMAKE_INSTALL_PREFIX=./standalone-install -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install/ -S ./tests/test-standalone -B ./standalone-build; cmake --build ./standalone-build ; cmake --install ./standalone-build

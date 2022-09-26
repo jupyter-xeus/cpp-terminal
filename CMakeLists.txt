@@ -10,6 +10,8 @@ if(MSVC)
   endif()
 endif()
 
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
+
 project(cpp-terminal
         VERSION 1.0.0
         DESCRIPTION "Small header only C++ library for writing multiplatform terminal applications"
@@ -40,8 +42,8 @@ if (CPPTERMINAL_BUILD_EXAMPLES)
 endif()
 
 if (CPPTERMINAL_ENABLE_INSTALL)
-  include(cmake/install.cmake)
-  install_library(cpp-terminal)
+  include(install)
+  install_library()
 endif()
 
 if(MSVC)
