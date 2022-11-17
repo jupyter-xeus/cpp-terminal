@@ -30,8 +30,8 @@ Term::Result Term::prompt(const std::string& message,
             } else if (key == 'n' || key == 'N') {
                 std::cout << '\n' << std::flush;
                 return Result::NO;
-            } else if (key == Term::Key::CTRL + 'c' ||
-                       key == Term::Key::CTRL + 'd') {
+            } else if (key == Term::Key::CTRL_C ||
+                       key == Term::Key::CTRL_D) {
                 std::cout << '\n' << std::flush;
                 return Result::ABORT;
             } else if (key == Term::Key::ENTER) {
@@ -56,8 +56,8 @@ Term::Result Term::prompt(const std::string& message,
                 length++;
                 input.push_back(static_cast<char>(
                     key + 32));  // convert upper case to lowercase
-            } else if (key == Term::Key::CTRL + 'c' ||
-                       key == Term::Key::CTRL + 'd') {
+            } else if (key == Term::Key::CTRL_C ||
+                       key == Term::Key::CTRL_D) {
                 std::cout << '\n';
                 return Result::ABORT;
             } else if (key == Term::Key::BACKSPACE) {
@@ -215,9 +215,9 @@ std::string Term::prompt_multiline(
                 m.lines[m.cursor_row - 1].substr(m.cursor_col - 1);
             m.lines[m.cursor_row - 1] = before += newchar += after;
             m.cursor_col++;
-        } else if (key == Key::CTRL + 'd') {
+        } else if (key == Key::CTRL_D) {
             if (m.lines.size() == 1 && m.lines[m.cursor_row - 1].empty()) {
-                m.lines[m.cursor_row - 1].push_back(Key::CTRL + 'd');
+                m.lines[m.cursor_row - 1].push_back(Key::CTRL_D);
                 std::cout << "\n" << std::flush;
                 history.push_back(m.lines[0]);
                 return m.lines[0];
