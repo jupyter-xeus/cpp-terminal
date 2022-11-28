@@ -30,7 +30,7 @@ jobs:
       fail-fast: false
       matrix:
         #https://www.msys2.org/docs/environments/
-        sys: [ msys, ucrt64 , clang64, clangarm64, clang32, mingw64, mingw32 ]
+        sys: [ msys, ucrt64 , clang64, clang32, mingw64, mingw32 ]
         standard: [ 11,14,17,20 ]
     defaults:
       run:
@@ -65,7 +65,7 @@ jobs:
       - name: 🎉 Install
         run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
       - name: ✅ Run examples
-        run: ci\examples.ps1
+        run: ci/examples.ps1
 
   msvc2019:
     runs-on: windows-2019
