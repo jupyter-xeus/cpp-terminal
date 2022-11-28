@@ -29,29 +29,41 @@ void Term::Private::BaseTerminal::store_and_restore() {
     static bool enabled{false};
 #ifdef _WIN32
     static DWORD dwOriginalOutMode{};
-    static UINT out_code_page{GetConsoleOutputCP()};
+    static UINT out_code_page{};
     static DWORD dwOriginalInMode{};
-    static UINT in_code_page{GetConsoleCP()};
+    static UINT in_code_page{};
     if (!enabled) {
-        if (!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE),
-                            &dwOriginalOutMode)) {
-            throw std::runtime_error("GetConsoleMode() failed");
+        if (is_stdout_a_tty()) {
+            out_code_page = GetConsoleOutputCP();
+            if (!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE),
+                                &dwOriginalOutMode)) {
+                throw std::runtime_error("GetConsoleMode() failed");
+            }
         }
-        if (!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE),
-                            &dwOriginalInMode)) {
-            throw std::runtime_error("GetConsoleMode() failed");
+        if (is_stdin_a_tty()) {
+            in_code_page = GetConsoleCP();
+            if (!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE),
+                                &dwOriginalInMode)) {
+                throw std::runtime_error("GetConsoleMode() failed");
+            }
         }
         enabled = true;
     } else {
-        // Should be safe to restore previous value all the time;
-        SetConsoleOutputCP(out_code_page);
-        if (!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE),
-                            dwOriginalOutMode)) {
-            throw std::runtime_error("SetConsoleMode() failed in destructor");
+        if (is_stdout_a_tty()) {
+            SetConsoleOutputCP(out_code_page);
+            if (!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE),
+                                dwOriginalOutMode)) {
+                throw std::runtime_error(
+                    "SetConsoleMode() failed in destructor");
+            }
         }
-        SetConsoleCP(in_code_page);
-        if (!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), dwOriginalInMode)) {
-            throw std::runtime_error("SetConsoleMode() failed in destructor");
+        if (is_stdin_a_tty()) {
+            SetConsoleCP(in_code_page);
+            if (!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE),
+                                dwOriginalInMode)) {
+                throw std::runtime_error(
+                    "SetConsoleMode() failed in destructor");
+            }
         }
     }
 #else
