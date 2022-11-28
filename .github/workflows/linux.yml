@@ -69,7 +69,7 @@ jobs:
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: cmake --install ${{ github.workspace }}/install --config Debug
+        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
   clang:
 
@@ -115,7 +115,7 @@ jobs:
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: cmake --install ${{ github.workspace }}/install --config Debug
+        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
   intel:
     runs-on: ubuntu-latest
@@ -145,4 +145,4 @@ jobs:
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: cmake --install ${{ github.workspace }}/install --config Debug
+        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug

@@ -45,7 +45,7 @@ jobs:
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: cmake --install ${{ github.workspace }}/install --config Debug
+        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
   msvc2019:
     runs-on: windows-2019
@@ -72,7 +72,7 @@ jobs:
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: cmake --install ${{ github.workspace }}/install --config Debug
+        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
   msvc2022:
     runs-on: windows-2022
@@ -99,7 +99,7 @@ jobs:
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: cmake --install ${{ github.workspace }}/install --config Debug
+        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
   clang:
     runs-on: windows-2019
@@ -124,7 +124,7 @@ jobs:
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: cmake --install ${{ github.workspace }}/install --config Debug
+        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
   clang-cl-11:
     runs-on: windows-2019
@@ -147,4 +147,4 @@ jobs:
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: cmake --install ${{ github.workspace }}/install --config Debug
+        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug

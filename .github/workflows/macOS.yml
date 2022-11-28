@@ -34,7 +34,7 @@ jobs:
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: cmake --install ${{ github.workspace }}/install --config Debug
+        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
   macos-12:
     runs-on: macos-12
@@ -59,7 +59,7 @@ jobs:
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: cmake --install ${{ github.workspace }}/install --config Debug
+        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
   gcc:
     runs-on: macos-11
@@ -85,4 +85,4 @@ jobs:
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: cmake --install ${{ github.workspace }}/install --config Debug
+        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug

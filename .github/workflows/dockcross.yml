@@ -34,7 +34,7 @@ jobs:
       - name: 🧪 Test
         run: ./dockcross-${{ matrix.image_name }} cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: ./dockcross-${{ matrix.image_name }} cmake --install ${{ github.workspace }}/install --config Debug
+        run: ./dockcross-${{ matrix.image_name }} cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
   linux:
     name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
@@ -60,7 +60,7 @@ jobs:
       - name: 🧪 Test
         run: ./dockcross-${{ matrix.image_name }} cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: ./dockcross-${{ matrix.image_name }} cmake --install ${{ github.workspace }}/install --config Debug
+        run: ./dockcross-${{ matrix.image_name }} cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
   windows:
     name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
@@ -85,7 +85,7 @@ jobs:
       - name: 🧪 Test
         run: ./dockcross-${{ matrix.image_name }} cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: ./dockcross-${{ matrix.image_name }} cmake --install ${{ github.workspace }}/install --config Debug
+        run: ./dockcross-${{ matrix.image_name }} cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
   web:
     name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
@@ -110,4 +110,4 @@ jobs:
       - name: 🧪 Test
         run: ./dockcross-${{ matrix.image_name }} cd build ; ctest -C Debug --output-on-failure
       - name: 🎉 Install
-        run: ./dockcross-${{ matrix.image_name }} cmake --install ${{ github.workspace }}/install --config Debug
+        run: ./dockcross-${{ matrix.image_name }} cmake --install build --prefix ${{ github.workspace }}/install --config Debug
