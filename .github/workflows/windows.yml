@@ -65,7 +65,7 @@ jobs:
       - name: 🎉 Install
         run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
       - name: ✅ Run examples
-        run: ci/examples.ps1
+        run: msys2 -c 'ci/examples.sh'
 
   msvc2019:
     runs-on: windows-2019
