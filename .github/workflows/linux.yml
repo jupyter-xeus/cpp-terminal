@@ -91,8 +91,11 @@ jobs:
         standard: [ 17 ]
         exclude:
           # 3.5
+          # 3.5 is buggy with c++17, skip it for now
           - version: 3.5
             standard: 20
+          - version: 3.5
+            standard: 17
           # 3.6
           - version: 3.6
             standard: 20
