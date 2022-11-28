@@ -33,15 +33,15 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
 
     steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
         uses: xom9ikk/dotenv@v2
         with:
           path: .github/workflows
-      - name: 📥 Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: 🔧 Configure
         run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
@@ -63,15 +63,15 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
 
     steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
         uses: xom9ikk/dotenv@v2
         with:
           path: .github/workflows
-      - name: 📥 Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: 🔧 Configure
         run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
@@ -91,15 +91,15 @@ jobs:
         standard: [ 11,14,17,20 ]
 
     steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
         uses: xom9ikk/dotenv@v2
         with:
           path: .github/workflows
-      - name: 📥 Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: 🔧 Configure
         env:
           CC: gcc-${{matrix.version}}

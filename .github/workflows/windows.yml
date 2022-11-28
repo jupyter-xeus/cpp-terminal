@@ -35,15 +35,15 @@ jobs:
         shell: msys2 {0}
 
     steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
         uses: xom9ikk/dotenv@v2
         with:
           path: .github/workflows
-      - name: 📥 Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: ✨ Setup MSYS2
         uses: msys2/setup-msys2@v2
         with:
@@ -72,15 +72,15 @@ jobs:
         standard: [ 11,14,17,20 ]
 
     steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
         uses: xom9ikk/dotenv@v2
         with:
           path: .github/workflows
-      - name: 📥 Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: ✨ Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1.12.0
         with:
@@ -104,15 +104,15 @@ jobs:
         standard: [ 11,14,17,20 ]
 
     steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
         uses: xom9ikk/dotenv@v2
         with:
           path: .github/workflows
-      - name: 📥 Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: ✨ Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1.12.0
         with:
@@ -136,15 +136,15 @@ jobs:
         standard: [ 11,14,17,20 ]
 
     steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
         uses: xom9ikk/dotenv@v2
         with:
           path: .github/workflows
-      - name: 📥 Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: ⬇️ Install Clang
         run: curl -fsSL -o LLVM${{ matrix.version }}.exe https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ matrix.version }}/LLVM-${{ matrix.version }}-win64.exe ; 7z x LLVM${{ matrix.version }}.exe -y -o"C:/Program Files/LLVM"
       - name: 🔧 Configure
@@ -166,15 +166,15 @@ jobs:
         standard: [ 11,14,17,20 ]
 
     steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
         uses: xom9ikk/dotenv@v2
         with:
           path: .github/workflows
-      - name: 📥 Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: 🔧 Configure
         run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G "Visual Studio 16 2019" -A ${{ matrix.architecture }} -T ClangCL -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
