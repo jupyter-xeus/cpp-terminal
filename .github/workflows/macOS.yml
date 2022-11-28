@@ -32,7 +32,7 @@ jobs:
       - name: ⚙️ Build
         run: cmake --build build --config Debug --parallel 2
       - name: 🧪 Test
-        run: cd build ; ctest -C Debug --output-on-failure
+        run: ctest --test-dir build -C Debug --output-on-failure
       - name: 🎉 Install
         run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
@@ -57,7 +57,7 @@ jobs:
       - name: ⚙️ Build
         run: cmake --build build --config Debug --parallel 2
       - name: 🧪 Test
-        run: cd build ; ctest -C Debug --output-on-failure
+        run: ctest --test-dir build -C Debug --output-on-failure
       - name: 🎉 Install
         run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
 
@@ -83,6 +83,6 @@ jobs:
       - name: ⚙️ Build
         run: cmake --build build --config Debug --parallel 2
       - name: 🧪 Test
-        run: cd build ; ctest -C Debug --output-on-failure
+        run: ctest --test-dir build -C Debug --output-on-failure
       - name: 🎉 Install
         run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
