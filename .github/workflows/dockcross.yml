@@ -35,7 +35,7 @@ jobs:
         run: ./dockcross-${{ matrix.image_name }} cd build ; ctest -C Debug --output-on-failure
 
   linux:
-    name: ${{ matrix.image_name }} ${{ matrix.build_type }}
+    name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -59,7 +59,7 @@ jobs:
         run: ./dockcross-${{ matrix.image_name }} cd build ; ctest -C Debug --output-on-failure
 
   windows:
-    name: ${{ matrix.image_name }} ${{ matrix.build_type }}
+    name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -82,13 +82,13 @@ jobs:
         run: ./dockcross-${{ matrix.image_name }} cd build ; ctest -C Debug --output-on-failure
 
   web:
-    name: ${{ matrix.image_name }} ${{ matrix.build_type }}
+    name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        # Remove images that you do not need
         image_name: [ web-wasm, web-wasi ]
+        standard: [ 11,14,17,20 ]
 
     steps:
       - name: 📥 Checkout
