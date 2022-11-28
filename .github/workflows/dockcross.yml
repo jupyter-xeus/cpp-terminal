@@ -119,7 +119,8 @@ jobs:
       fail-fast: false
       matrix:
         # WARNING Problem with doctest : supress Tests !!!
-        image_name: [ web-wasm, web-wasi ]
+        # web-wasi has not <thread> !
+        image_name: [ web-wasm ]
         standard: [ 17 ]
 
     steps:
