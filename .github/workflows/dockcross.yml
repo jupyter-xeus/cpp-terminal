@@ -53,7 +53,7 @@ jobs:
       - name: 🎉 Install
         run: ./dockcross-${{ matrix.image_name }} cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
       - name: ✅ Run examples
-        run: ci/examples.sh
+        run: ./dockcross-${{ matrix.image_name }} ci/examples.sh
 
   linux:
     name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
@@ -86,7 +86,7 @@ jobs:
       - name: 🎉 Install
         run: ./dockcross-${{ matrix.image_name }} cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
       - name: ✅ Run examples
-        run: ci/examples.sh
+        run: ./dockcross-${{ matrix.image_name }} ci/examples.sh
 
   windows:
     name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
@@ -118,7 +118,7 @@ jobs:
       - name: 🎉 Install
         run: ./dockcross-${{ matrix.image_name }} cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
       - name: ✅ Run examples
-        run: ci/examples.sh
+        run: ./dockcross-${{ matrix.image_name }} ci/examples.sh
 
   web:
     name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
@@ -150,4 +150,4 @@ jobs:
       - name: 🎉 Install
         run: ./dockcross-${{ matrix.image_name }} cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
       - name: ✅ Run examples
-        run: ci/examples.sh
+        run: ./dockcross-${{ matrix.image_name }} ci/examples.sh
