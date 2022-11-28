@@ -319,7 +319,7 @@ std::string Term::prompt_multiline(
                     } else {
                         break;
                     }
-                    [[fallthrough]];
+                    CPP_TERMINAL_FALLTHROUGH;
                 case Key::CTRL + 'n':
                 case Key::ALT_ENTER:
                     std::string before =

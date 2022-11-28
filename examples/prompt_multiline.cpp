@@ -9,7 +9,7 @@ using Term::Key;
 using Term::prompt_multiline;
 using Term::Terminal;
 
-bool determine_completeness([[maybe_unused]] std::string command) {
+bool determine_completeness(CPP_TERMINAL_MAYBE_UNUSED std::string command) {
     // Determine if the statement is complete
     bool complete;
     if (command.size() > 1 && command.substr(command.size() - 2, 1) == "\\") {
