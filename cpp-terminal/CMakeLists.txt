@@ -3,7 +3,9 @@ configure_file(version.hpp.in version.hpp)
 
 # create and configure library target
 add_library(cpp-terminal base.cpp prompt.cpp window.cpp input.cpp private/platform.cpp)
-
+if(CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
+  target_compile_options(cpp-terminal PUBLIC "-Wno-debug-disables-optimization")
+endif()
 target_include_directories(cpp-terminal PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> $<INSTALL_INTERFACE:include>)
 
 set_target_properties(cpp-terminal PROPERTIES
