@@ -78,7 +78,7 @@ jobs:
       - name: ✨ Make script dockcross-${{ matrix.image_name }}
         run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
       - name: 🔧 Configure
-        run: ./dockcross-${{ matrix.image_name }} -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G Ninja -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+        run: ./dockcross-${{ matrix.image_name }} cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G Ninja -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
         run: ./dockcross-${{ matrix.image_name }} cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
@@ -110,7 +110,7 @@ jobs:
       - name: ✨ Make script dockcross-${{ matrix.image_name }}
         run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
       - name: 🔧 Configure
-        run: ./dockcross-${{ matrix.image_name }} -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G Ninja -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+        run: ./dockcross-${{ matrix.image_name }} cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G Ninja -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
         run: ./dockcross-${{ matrix.image_name }} cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
@@ -142,7 +142,7 @@ jobs:
       - name: ✨ Make script dockcross-${{ matrix.image_name }}
         run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
       - name: 🔧 Configure
-        run: ./dockcross-${{ matrix.image_name }} -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G Ninja -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+        run: ./dockcross-${{ matrix.image_name }} cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G Ninja -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
         run: ./dockcross-${{ matrix.image_name }} cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
