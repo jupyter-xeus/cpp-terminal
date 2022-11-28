@@ -1,31 +1,7 @@
 #pragma once
 
-#ifdef _WIN32
-#define NOMINMAX
-#if defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || \
-    defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64)
-#ifndef _AMD64_
-#define _AMD64_
-#endif
-#elif defined(i386) || defined(__i386) || defined(__i386__) || \
-    defined(__i386__) || defined(_M_IX86)
-#ifndef _X86_
-#define _X86_
-#endif
-#elif defined(__arm__) || defined(_M_ARM) || defined(_M_ARMT)
-#ifndef _ARM_
-#define _ARM_
-#endif
-#endif
-#include <minwindef.h>
-#undef NOMINMAX
-#include <tuple>
-#else
-class termios;
-#include <memory>
-#endif
-
 #include <string>
+#include <tuple>
 
 namespace Term::Private {
 // Returns true if the standard input is attached to a terminal
@@ -52,18 +28,7 @@ bool has_ansi_escape_code();
  */
 class BaseTerminal {
    private:
-#ifdef _WIN32
-    HANDLE hout;
-    DWORD dwOriginalOutMode{};
-    bool out_console;
-    UINT out_code_page;
-
-    HANDLE hin;
-    DWORD dwOriginalInMode{};
-    UINT in_code_page;
-#else
-    std::unique_ptr<termios> orig_termios{nullptr};
-#endif
+    void store_and_restore();
     bool keyboard_enabled{};
 
    public:

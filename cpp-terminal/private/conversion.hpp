@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #ifdef _WIN32
