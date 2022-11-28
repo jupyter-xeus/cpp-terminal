@@ -59,11 +59,12 @@ jobs:
 
   gcc:
     runs-on: macos-11
-    name: macos-11 gcc-${{ matrix.xcode }} (c++${{ matrix.standard }})
+    name: macos-11 gcc-${{ matrix.version }} (c++${{ matrix.standard }})
     strategy:
       fail-fast: false
       matrix:
-        gcc: [ 9, 10, 11 ]
+        version: [ 9, 10, 11 ]
+        standard: [ 11,14,17,20 ]
 
     steps:
       - name: 📥 Checkout
@@ -72,8 +73,8 @@ jobs:
           fetch-depth: 0
       - name: 🔧 Configure
         env:
-          CC: gcc-${{matrix.gcc}}
-          CXX: g++-${{matrix.gcc}}
+          CC: gcc-${{matrix.version}}
+          CXX: g++-${{matrix.version}}
         run: cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
       - name: ⚙️ Build
         run: cmake --build build --config Debug --parallel 2
