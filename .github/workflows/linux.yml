@@ -66,6 +66,11 @@ jobs:
             standard: 20
 
     steps:
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
       - name: ⬇️ Install git & CMake
         run: apt-get install --no-install-recommends -y git cmake
       - name: 📥 Checkout
@@ -73,13 +78,13 @@ jobs:
         with:
           fetch-depth: 0
       - name: 🔧 Configure
-        run: cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
-        run: cmake --build build --config Debug --parallel 2
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
-        run: ctest --test-dir build -C Debug --output-on-failure
+        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
       - name: 🎉 Install
-        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
 
   clang:
 
@@ -112,6 +117,11 @@ jobs:
             standard: 20
 
     steps:
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
       - name: ⬇️ Install git & CMake
         run: apt-get install --no-install-recommends -y git cmake
       - name: 📥 Checkout
@@ -119,13 +129,13 @@ jobs:
         with:
           fetch-depth: 0
       - name: 🔧 Configure
-        run: cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
-        run: cmake --build build --config Debug --parallel 2
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
-        run: ctest --test-dir build -C Debug --output-on-failure
+        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
       - name: 🎉 Install
-        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
 
   intel:
     runs-on: ubuntu-latest
@@ -137,6 +147,11 @@ jobs:
         standard: [ 11,14,17,20 ]
 
     steps:
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
       - name: ⬇️ Install git & CMake
         run: apt-get install --no-install-recommends -y git cmake
       - name: 📥 Checkout
@@ -149,10 +164,10 @@ jobs:
         env:
           CC: icx
           CXX: icpx
-        run: . /opt/intel/oneapi/setvars.sh ; cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+        run: . /opt/intel/oneapi/setvars.sh ; cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
-        run: cmake --build build --config Debug --parallel 2
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
-        run: ctest --test-dir build -C Debug --output-on-failure
+        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
       - name: 🎉 Install
-        run: cmake --install build --prefix ${{ github.workspace }}/install --config Debug
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}

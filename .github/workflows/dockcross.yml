@@ -31,6 +31,11 @@ jobs:
         standard: [ 11,14,17,20 ]
 
     steps:
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
       - name: 📥 Checkout
         uses: actions/checkout@v3
         with:
@@ -38,13 +43,13 @@ jobs:
       - name: ✨ Make script dockcross-${{ matrix.image_name }}
         run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
       - name: 🔧 Configure
-        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+        run: ./dockcross-${{ matrix.image_name }} cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G Ninja -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
-        run: ./dockcross-${{ matrix.image_name }} ninja -C build
+        run: ./dockcross-${{ matrix.image_name }} cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
-        run: ./dockcross-${{ matrix.image_name }} ctest --test-dir build -C Debug --output-on-failure
+        run: ./dockcross-${{ matrix.image_name }} ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
       - name: 🎉 Install
-        run: ./dockcross-${{ matrix.image_name }} cmake --install build --prefix ${{ github.workspace }}/install --config Debug
+        run: ./dockcross-${{ matrix.image_name }} cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
 
   linux:
     name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
@@ -57,6 +62,11 @@ jobs:
         standard: [ 11,14,17,20 ]
 
     steps:
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
       - name: 📥 Checkout
         uses: actions/checkout@v3
         with:
@@ -64,13 +74,13 @@ jobs:
       - name: ✨ Make script dockcross-${{ matrix.image_name }}
         run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
       - name: 🔧 Configure
-        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+        run: ./dockcross-${{ matrix.image_name }} -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G Ninja -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
-        run: ./dockcross-${{ matrix.image_name }} cmake --build build --config Debug --parallel 2
+        run: ./dockcross-${{ matrix.image_name }} cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
-        run: ./dockcross-${{ matrix.image_name }} ctest --test-dir build -C Debug --output-on-failure
+        run: ./dockcross-${{ matrix.image_name }} ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
       - name: 🎉 Install
-        run: ./dockcross-${{ matrix.image_name }} cmake --install build --prefix ${{ github.workspace }}/install --config Debug
+        run: ./dockcross-${{ matrix.image_name }} cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
 
   windows:
     name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
@@ -82,6 +92,11 @@ jobs:
         standard: [ 11,14,17,20 ]
 
     steps:
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
       - name: 📥 Checkout
         uses: actions/checkout@v3
         with:
@@ -89,13 +104,13 @@ jobs:
       - name: ✨ Make script dockcross-${{ matrix.image_name }}
         run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
       - name: 🔧 Configure
-        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+        run: ./dockcross-${{ matrix.image_name }} -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G Ninja -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
-        run: ./dockcross-${{ matrix.image_name }} cmake --build build --config Debug --parallel 2
+        run: ./dockcross-${{ matrix.image_name }} cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
-        run: ./dockcross-${{ matrix.image_name }} ctest --test-dir build -C Debug --output-on-failure
+        run: ./dockcross-${{ matrix.image_name }} ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
       - name: 🎉 Install
-        run: ./dockcross-${{ matrix.image_name }} cmake --install build --prefix ${{ github.workspace }}/install --config Debug
+        run: ./dockcross-${{ matrix.image_name }} cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
 
   web:
     name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
@@ -107,6 +122,11 @@ jobs:
         standard: [ 11,14,17,20 ]
 
     steps:
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
       - name: 📥 Checkout
         uses: actions/checkout@v3
         with:
@@ -114,10 +134,10 @@ jobs:
       - name: ✨ Make script dockcross-${{ matrix.image_name }}
         run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
       - name: 🔧 Configure
-        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+        run: ./dockcross-${{ matrix.image_name }} -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G Ninja -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
-        run: ./dockcross-${{ matrix.image_name }} cmake --build build --config Debug --parallel 2
+        run: ./dockcross-${{ matrix.image_name }} cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
-        run: ./dockcross-${{ matrix.image_name }} ctest --test-dir build -C Debug --output-on-failure
+        run: ./dockcross-${{ matrix.image_name }} ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
       - name: 🎉 Install
-        run: ./dockcross-${{ matrix.image_name }} cmake --install build --prefix ${{ github.workspace }}/install --config Debug
+        run: ./dockcross-${{ matrix.image_name }} cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
