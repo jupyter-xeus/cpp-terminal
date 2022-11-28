@@ -247,8 +247,8 @@ void editorSelectSyntaxHighlight() {
 
     char* ext = strrchr(E.filename, '.');
 
-    for (auto& j : HLDB) {
-        struct editorSyntax* s = &j;
+    for (std::size_t j = 0; j != HLDB_ENTRIES; ++j) {
+        struct editorSyntax* s = &HLDB[j];
         unsigned int i = 0;
         while (s->filematch[i]) {
             int is_ext = (s->filematch[i][0] == '.');

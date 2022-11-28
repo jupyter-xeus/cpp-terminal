@@ -107,8 +107,8 @@ Term::Result_simple Term::prompt_simple(const std::string& message) {
 
 std::string Term::concat(const std::vector<std::string>& lines) {
     std::string s;
-    for (auto& line : lines) {
-        s.append(line + "\n");
+    for (std::size_t i = 0; i != lines.size(); ++i) {
+        s.append(lines[i] + "\n");
     }
     return s;
 }
