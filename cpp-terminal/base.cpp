@@ -446,7 +446,7 @@ std::tuple<std::size_t, std::size_t> Term::cursor_position() {
                 throw std::runtime_error(
                     "get_cursor_position(): result could not be parsed");
             }
-            return {rows, columns};
+            return std::tuple<std::size_t, std::size_t>{rows, columns};
         }
         if (buf[i] == '\0')
             break;

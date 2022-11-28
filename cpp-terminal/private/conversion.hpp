@@ -126,7 +126,7 @@ inline std::tuple<std::size_t, std::size_t> convert_string_to_size_t(
         throw std::runtime_error("Couldn't parse string: Invalid format");
     }
 #endif
-    return {rows, cols};
+    return std::tuple<std::size_t, std::size_t>{rows, cols};
 }
 
 // converts a vector of char into a string
