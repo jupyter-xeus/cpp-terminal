@@ -13,11 +13,12 @@ concurrency:
 jobs:
   msys2:
     runs-on: windows-latest
-    name: windows-latest ${{ matrix.sys }} (c++${{ matrix.standard }})
+    name: ${{ matrix.sys }} (c++${{ matrix.standard }})
     strategy:
       fail-fast: false
       matrix:
-        sys: [ mingw32, mingw64, ucrt64, clang64, clang32 ]
+        #https://www.msys2.org/docs/environments/
+        sys: [ msys, ucrt64 , clang64, clangarm64, clang32, mingw64, mingw32 ]
         standard: [ 11,14,17,20 ]
     defaults:
       run:
@@ -36,7 +37,6 @@ jobs:
           release: true
           update: true
           pacboy: >-
-            gcc:p
             cmake:p
       - name: 🔧 Configure
         run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
