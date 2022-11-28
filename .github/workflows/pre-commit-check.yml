@@ -1,8 +1,8 @@
-name: pre-commit Check
+name: pre-commit checks
 on: [push, pull_request]
 jobs:
   formatting-check:
-    name: Formatting Check
+    name: pre-commit
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
