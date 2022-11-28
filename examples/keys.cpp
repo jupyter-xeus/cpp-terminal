@@ -25,7 +25,7 @@ int main() {
         std::cout << "Press any key ('q' to quit):" << std::endl;
         bool on = true;
         while (on) {
-            Key key{Term::read_key()};
+            Key key{static_cast<Term::Key>(Term::read_key())};
             std::string s;
             if (key >= Key::a && key <= Key::z) {
                 s = (char)(key + Key::A - Key::a);  // Convert to upper case
