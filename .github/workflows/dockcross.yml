@@ -50,8 +50,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Some have problems : linux-armv6-musl, linux-armv7l-musl, linux-arm64-musl, linux-riscv64, linux-m68k-uclibc,
-        image_name: [ linux-arm64, linux-armv5, linux-armv5-musl, linux-armv5-uclibc, linux-armv6, linux-armv7, linux-armv7a, linux-mips, linux-mipsel-lts, linux-s390x, linux-ppc64le, linux-riscv32,
+        # Some have problems : linux-armv6-musl, linux-armv7l-musl, linux-arm64-musl, linux-riscv64, linux-m68k-uclibc, linux-riscv32,
+        image_name: [ linux-arm64, linux-armv5, linux-armv5-musl, linux-armv5-uclibc, linux-armv6, linux-armv7, linux-armv7a, linux-mips, linux-mipsel-lts, linux-s390x, linux-ppc64le,
                       linux-xtensa-uclibc, linux-x86, linux-x64, linux-x64-clang, linux-x64-tinycc ]
         standard: [ 17 ]
 
@@ -84,9 +84,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Some have problems : windows-shared-x86, windows-shared-x64, windows-shared-x64-posix
-        # TODO arm need CMAKE_BUILD_WITH_INSTALL_RPATH so pass it to all even if nnot required for *static
-        image_name: [ windows-static-x86, windows-static-x64, windows-static-x64-posix, windows-armv7, windows-arm64 ]
+        # Some have problems : windows-shared-x86, windows-shared-x64, windows-shared-x64-posix, windows-armv7, windows-arm64
+        # TODO arm need CMAKE_BUILD_WITH_INSTALL_RPATH
+        image_name: [ windows-static-x86, windows-static-x64, windows-static-x64-posix ]
         standard: [ 17 ]
 
     steps:
@@ -102,7 +102,7 @@ jobs:
       - name: ✨ Make script dockcross-${{ matrix.image_name }}
         run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
       - name: 🔧 Configure
-        run: ./dockcross-${{ matrix.image_name }} cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G Ninja -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }} -D CMAKE_BUILD_WITH_INSTALL_RPATH=TRUE
+        run: ./dockcross-${{ matrix.image_name }} cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G Ninja -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
         run: ./dockcross-${{ matrix.image_name }} cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
