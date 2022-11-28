@@ -30,7 +30,7 @@ jobs:
       fail-fast: false
       matrix:
         image_name: [ android-arm, android-arm64, android-x86, android-x86_64 ]
-        standard: [ 11,14,17,20 ]
+        standard: [ 17 ]
 
     steps:
       - name: 📥 Checkout
@@ -63,7 +63,7 @@ jobs:
       matrix:
         image_name: [ linux-arm64, linux-arm64-musl, linux-armv5, linux-armv5-musl, linux-armv5-uclibc, linux-armv6, linux-armv6-musl, linux-armv7, linux-armv7a, linux-armv7l-musl, linux-mips, linux-mipsel-lts, linux-s390x, linux-ppc64le, linux-riscv32,
                       linux-riscv64, linux-m68k-uclibc, linux-xtensa-uclibc, linux-x86, linux-x64, linux-x64-clang, linux-x64-tinycc ]
-        standard: [ 11,14,17,20 ]
+        standard: [ 17 ]
 
     steps:
       - name: 📥 Checkout
@@ -95,7 +95,7 @@ jobs:
       fail-fast: false
       matrix:
         image_name: [ windows-shared-x86, windows-shared-x64, windows-shared-x64-posix, windows-static-x86, windows-static-x64, windows-static-x64-posix, windows-armv7, windows-arm64 ]
-        standard: [ 11,14,17,20 ]
+        standard: [ 17 ]
 
     steps:
       - name: 📥 Checkout
@@ -127,7 +127,7 @@ jobs:
       fail-fast: false
       matrix:
         image_name: [ web-wasm, web-wasi ]
-        standard: [ 11,14,17,20 ]
+        standard: [ 17 ]
 
     steps:
       - name: 📥 Checkout

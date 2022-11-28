@@ -31,7 +31,7 @@ jobs:
       matrix:
         #https://www.msys2.org/docs/environments/
         sys: [ msys, ucrt64 , clang64, clang32, mingw64, mingw32 ]
-        standard: [ 11,14,17,20 ]
+        standard: [ 17 ]
     defaults:
       run:
         shell: msys2 {0}
@@ -74,7 +74,7 @@ jobs:
       fail-fast: false
       matrix:
         architecture: [ win32, x64 ]
-        standard: [ 11,14,17,20 ]
+        standard: [ 17 ]
 
     steps:
       - name: 📥 Checkout
@@ -108,7 +108,7 @@ jobs:
       fail-fast: false
       matrix:
         architecture: [ win32, x64 ]
-        standard: [ 11,14,17,20 ]
+        standard: [ 17 ]
 
     steps:
       - name: 📥 Checkout
@@ -142,7 +142,7 @@ jobs:
       fail-fast: false
       matrix:
         version: [ 11.1.0, 12.0.1, 13.0.1, 14.0.6, 15.0.2 ]
-        standard: [ 11,14,17,20 ]
+        standard: [ 17 ]
 
     steps:
       - name: 📥 Checkout
@@ -174,7 +174,7 @@ jobs:
       fail-fast: false
       matrix:
         architecture: [ Win32, x64 ]
-        standard: [ 11,14,17,20 ]
+        standard: [ 17 ]
 
     steps:
       - name: 📥 Checkout
