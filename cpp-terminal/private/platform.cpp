@@ -55,16 +55,16 @@ void Term::Private::BaseTerminal::store_and_restore() {
         }
     }
 #else
-    static termios orig_termios{};
+    static termios orig_termios;
     if (!enabled) {
-        if (keyboard_enabled) {
+        if (is_stdin_a_tty()) {
             if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) {
                 throw std::runtime_error("tcgetattr() failed");
             }
         }
         enabled = true;
     } else {
-        if (keyboard_enabled) {
+        if (is_stdin_a_tty()) {
             if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) {
                 throw std::runtime_error("tcsetattr() failed in destructor");
             }
