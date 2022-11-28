@@ -1,0 +1,142 @@
+---
+name: Linux
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  gcc:
+    runs-on: ubuntu-latest
+    name: gcc${{ matrix.version }} (c++${{ matrix.standard }})
+    container: ghcr.io/flagarde/ci-ubuntu-gcc-${{ matrix.version }}-x86_64:latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [ 4.6, 4.7, 4.8, 4.9, 5, 6, 7, 8, 9, 10, 11, 12 ]
+        standard: [ 11,14,17,20 ]
+        exclude:
+          # 4.6
+          - version: 4.6
+            standard: 14
+          - version: 4.6
+            standard: 17
+          - version: 4.6
+            standard: 20
+          # 4.7
+          - version: 4.7
+            standard: 14
+          - version: 4.7
+            standard: 17
+          - version: 4.7
+            standard: 20
+          # 4.8
+          - version: 4.8
+            standard: 17
+          - version: 4.8
+            standard: 20
+          # 4.9
+          - version: 4.9
+            standard: 17
+          - version: 4.9
+            standard: 20
+          # 5
+          - version: 5
+            standard: 20
+          # 6
+          - version: 6
+            standard: 20
+          # 7
+          - version: 7
+            standard: 20
+
+    steps:
+      - name: ⬇️ Install git & CMake
+        run: apt-get install --no-install-recommends -y git cmake
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 🔧 Configure
+        run: cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+      - name: ⚙️ Build
+        run: cmake --build build --config Debug --parallel 2
+      - name: 🧪 Test
+        run: cd build ; ctest -C Debug --output-on-failure
+
+  clang:
+
+    runs-on: ubuntu-latest
+    name: clang${{ matrix.version }} (c++${{ matrix.standard }})
+    container: ghcr.io/flagarde/ci-ubuntu-clang-${{ matrix.version }}-x86_64:latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [ 3.5, 3.6, 3.7, 3.8, 3.9, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ]
+        standard: [ 11,14,17,20 ]
+        exclude:
+          # 3.5
+          - version: 3.5
+            standard: 20
+          # 3.6
+          - version: 3.6
+            standard: 20
+          # 3.7
+          - version: 3.7
+            standard: 20
+          # 3.8
+          - version: 3.8
+            standard: 20
+          # 3.9
+          - version: 3.9
+            standard: 20
+          # 3.9
+          - version: 4
+            standard: 20
+
+    steps:
+      - name: ⬇️ Install git & CMake
+        run: apt-get install --no-install-recommends -y git cmake
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 🔧 Configure
+        run: cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+      - name: ⚙️ Build
+        run: cmake --build build --config Debug --parallel 2
+      - name: 🧪 Test
+        run: cd build ; ctest -C Debug --output-on-failure
+
+  intel:
+    runs-on: ubuntu-latest
+    name: intel-oneapi (c++${{ matrix.standard }})
+    container: ghcr.io/flagarde/ci-ubuntu-gcc-11-x86_64:latest
+    strategy:
+      fail-fast: false
+      matrix:
+        standard: [ 11,14,17,20 ]
+
+    steps:
+      - name: ⬇️ Install git & CMake
+        run: apt-get install --no-install-recommends -y git cmake
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: ⬇️ Install intel-oneapi
+        run: apt install --no-install-recommends -y intel-oneapi-compiler-dpcpp-cpp
+      - name: 🔧 Configure
+        env:
+          CC: icx
+          CXX: icpx
+        run: . /opt/intel/oneapi/setvars.sh ; cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+      - name: ⚙️ Build
+        run: cmake --build build --config Debug --parallel 2
+      - name: 🧪 Test
+        run: cd build ; ctest -C Debug --output-on-failure

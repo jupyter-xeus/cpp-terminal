@@ -1,0 +1,140 @@
+---
+name: Windows
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  msys2:
+    runs-on: windows-latest
+    name: windows-latest ${{ matrix.sys }} (c++${{ matrix.standard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        sys: [ mingw32, mingw64, ucrt64, clang64, clang32 ]
+        standard: [ 11,14,17,20 ]
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: ✨ Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{matrix.sys}}
+          path-type: minimal
+          release: true
+          update: true
+          pacboy: >-
+            gcc:p
+            cmake:p
+      - name: 🔧 Configure
+        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+      - name: ⚙️ Build
+        run: cmake --build build --config Debug --parallel 2
+      - name: 🧪 Test
+        run: cd build ; ctest -C Debug --output-on-failure
+
+  msvc2019:
+    runs-on: windows-2019
+    name: msvc2019 ${{ matrix.architecture }} (c++${{ matrix.standard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: [ win32, x64 ]
+        standard: [ 11,14,17,20 ]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: ✨ Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1.12.0
+        with:
+          arch: ${{ matrix.architecture }}
+      - name: 🔧 Configure
+        run: cmake -S . -B build -G "Visual Studio 16 2019" -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+      - name: ⚙️ Build
+        run: cmake --build build --config Debug --parallel 2
+      - name: 🧪 Test
+        run: cd build ; ctest -C Debug --output-on-failure
+
+  msvc2022:
+    runs-on: windows-2022
+    name: msvc2022 ${{ matrix.architecture }} (c++${{ matrix.standard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: [ win32, x64 ]
+        standard: [ 11,14,17,20 ]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: ✨ Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1.12.0
+        with:
+          arch: ${{ matrix.architecture }}
+      - name: Run CMake
+        run: cmake -S . -B build -G "Visual Studio 17 2022" -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+      - name: ⚙️ Build
+        run: cmake --build build --config Debug --parallel 2
+      - name: 🧪 Test
+        run: cd build ; ctest -C Debug --output-on-failure
+
+  clang:
+    runs-on: windows-2019
+    name: windows-2019 clang-${{ matrix.version }} (c++${{ matrix.standard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [ 11.1.0, 12.0.1, 13.0.1, 14.0.6, 15.0.2 ]
+        standard: [ 11,14,17,20 ]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: ⬇️ Install Clang
+        run: curl -fsSL -o LLVM${{ matrix.version }}.exe https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ matrix.version }}/LLVM-${{ matrix.version }}-win64.exe ; 7z x LLVM${{ matrix.version }}.exe -y -o"C:/Program Files/LLVM"
+      - name: 🔧 Configure
+        run: cmake -S . -B build -D CMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang++.exe" -D CMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -G "MinGW Makefiles" -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+      - name: ⚙️ Build
+        run: cmake --build build --config Debug --parallel 2
+      - name: 🧪 Test
+        run: cd build ; ctest -C Debug --output-on-failure
+
+  clang-cl-11:
+    runs-on: windows-2019
+    name: windows-2019 clang-cl-11 ${{ matrix.architecture }} (c++${{ matrix.standard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: [ Win32, x64 ]
+        standard: [ 11,14,17,20 ]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 🔧 Configure
+        run: cmake -S . -B build -G "Visual Studio 16 2019" -A ${{ matrix.architecture }} -T ClangCL -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+      - name: ⚙️ Build
+        run: cmake --build build --config Debug --parallel 2
+      - name: 🧪 Test
+        run: cd build ; ctest -C Debug --output-on-failure

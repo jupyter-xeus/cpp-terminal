@@ -1,0 +1,105 @@
+---
+name: Dockcross
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: ${{ matrix.image_name }} (c++${{ matrix.standard }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image_name: [ android-arm, android-arm64, android-x86, android-x86_64 ]
+        standard: [ 11,14,17,20 ]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: ✨ Make script dockcross-${{ matrix.image_name }}
+        run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
+      - name: 🔧 Configure
+        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+      - name: ⚙️ Build
+        run: ./dockcross-${{ matrix.image_name }} ninja -C build
+      - name: 🧪 Test
+        run: cd build ; ctest -C Debug --output-on-failure
+
+  linux:
+    name: Build ${{ matrix.image_name }} ${{ matrix.build_type }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image_name: [ linux-arm64, linux-arm64-musl, linux-armv5, linux-armv5-musl, linux-armv5-uclibc, linux-armv6, linux-armv6-musl, linux-armv7, linux-armv7a, linux-armv7l-musl, linux-mips, linux-mipsel-lts, linux-s390x, linux-ppc64le, linux-riscv32,
+                      linux-riscv64, linux-m68k-uclibc, linux-xtensa-uclibc, linux-x86, linux-x64, linux-x64-clang, linux-x64-tinycc ]
+        standard: [ 11,14,17,20 ]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: ✨ Make script dockcross-${{ matrix.image_name }}
+        run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
+      - name: 🔧 Configure
+        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+      - name: ⚙️ Build
+        run: ./dockcross-${{ matrix.image_name }} cmake --build build --config Debug --parallel 2
+      - name: 🧪 Test
+        run: cd build ; ctest -C Debug --output-on-failure
+
+  windows:
+    name: Build ${{ matrix.image_name }} ${{ matrix.build_type }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image_name: [ windows-shared-x86, windows-shared-x64, windows-shared-x64-posix, windows-static-x86, windows-static-x64, windows-static-x64-posix, windows-armv7, windows-arm64 ]
+        standard: [ 11,14,17,20 ]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: ✨ Make script dockcross-${{ matrix.image_name }}
+        run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
+      - name: 🔧 Configure
+        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+      - name: ⚙️ Build
+        run: ./dockcross-${{ matrix.image_name }} cmake --build build --config Debug --parallel 2
+      - name: 🧪 Test
+        run: cd build ; ctest -C Debug --output-on-failure
+
+  web:
+    name: Build ${{ matrix.image_name }} ${{ matrix.build_type }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Remove images that you do not need
+        image_name: [ web-wasm, web-wasi ]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: ✨ Make script dockcross-${{ matrix.image_name }}
+        run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
+      - name: 🔧 Configure
+        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+      - name: ⚙️ Build
+        run: ./dockcross-${{ matrix.image_name }} cmake --build build --config Debug --parallel 2
+      - name: 🧪 Test
+        run: cd build ; ctest -C Debug --output-on-failure
