@@ -50,9 +50,9 @@ class Window_24bit {
           m_bg_reset(w * h, true),
           m_style(w * h, Style::RESET){};
 
-    [[nodiscard]] std::size_t get_w() const;
+    CPP_TERMINAL_NODISCARD std::size_t get_w() const;
 
-    [[nodiscard]] std::size_t get_h() const;
+    CPP_TERMINAL_NODISCARD std::size_t get_h() const;
 
     void set_char(std::size_t, std::size_t, char32_t);
 

@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
+#include "cpp-terminal/private/macros.hpp"
 #include "cpp-terminal/private/platform.hpp"
+
 namespace Term {
 /*
  * The 3bit/4bit colors for the terminal
