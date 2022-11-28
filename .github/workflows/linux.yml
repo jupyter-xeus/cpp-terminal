@@ -68,6 +68,8 @@ jobs:
         run: cmake --build build --config Debug --parallel 2
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
+      - name: 🎉 Install
+        run: cmake --install ${{ github.workspace }}/install --config Debug
 
   clang:
 
@@ -112,6 +114,8 @@ jobs:
         run: cmake --build build --config Debug --parallel 2
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
+      - name: 🎉 Install
+        run: cmake --install ${{ github.workspace }}/install --config Debug
 
   intel:
     runs-on: ubuntu-latest
@@ -140,3 +144,5 @@ jobs:
         run: cmake --build build --config Debug --parallel 2
       - name: 🧪 Test
         run: cd build ; ctest -C Debug --output-on-failure
+      - name: 🎉 Install
+        run: cmake --install ${{ github.workspace }}/install --config Debug
