@@ -55,7 +55,7 @@ int main() {
         auto [rows, cols] = Term::get_size();
         int pos = 5;
         int h = 10;
-        int w = 10;
+        std::size_t w{10};
         bool on = true;
         Term::Window scr(cols, rows);
         while (on) {
@@ -67,7 +67,7 @@ int main() {
                         w--;
                     break;
                 case Term::Key::ARROW_RIGHT:
-                    if (w < cols - 5)
+                    if (w < static_cast<std::size_t>(cols - 5))
                         w++;
                     break;
                 case Term::Key::ARROW_UP:
