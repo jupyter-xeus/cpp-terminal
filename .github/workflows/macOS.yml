@@ -28,7 +28,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: 🔧 Configure
-        run: cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+        run: cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
       - name: ⚙️ Build
         run: cmake --build build --config Debug --parallel 2
       - name: 🧪 Test
@@ -51,7 +51,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: 🔧 Configure
-        run: cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+        run: cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
       - name: ⚙️ Build
         run: cmake --build build --config Debug --parallel 2
       - name: 🧪 Test
@@ -75,7 +75,7 @@ jobs:
         env:
           CC: gcc-${{matrix.version}}
           CXX: g++-${{matrix.version}}
-        run: cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+        run: cmake -S . -B ./build -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
       - name: ⚙️ Build
         run: cmake --build build --config Debug --parallel 2
       - name: 🧪 Test

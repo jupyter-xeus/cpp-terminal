@@ -28,7 +28,7 @@ jobs:
       - name: ✨ Make script dockcross-${{ matrix.image_name }}
         run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
       - name: 🔧 Configure
-        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
       - name: ⚙️ Build
         run: ./dockcross-${{ matrix.image_name }} ninja -C build
       - name: 🧪 Test
@@ -52,7 +52,7 @@ jobs:
       - name: ✨ Make script dockcross-${{ matrix.image_name }}
         run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
       - name: 🔧 Configure
-        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
       - name: ⚙️ Build
         run: ./dockcross-${{ matrix.image_name }} cmake --build build --config Debug --parallel 2
       - name: 🧪 Test
@@ -75,7 +75,7 @@ jobs:
       - name: ✨ Make script dockcross-${{ matrix.image_name }}
         run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
       - name: 🔧 Configure
-        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
       - name: ⚙️ Build
         run: ./dockcross-${{ matrix.image_name }} cmake --build build --config Debug --parallel 2
       - name: 🧪 Test
@@ -98,7 +98,7 @@ jobs:
       - name: ✨ Make script dockcross-${{ matrix.image_name }}
         run: docker run --rm dockcross/${{ matrix.image_name }} > ./dockcross-${{ matrix.image_name }}; chmod +x ./dockcross-${{ matrix.image_name }}
       - name: 🔧 Configure
-        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }}
+        run: ./dockcross-${{ matrix.image_name }} cmake -B build -S . -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
       - name: ⚙️ Build
         run: ./dockcross-${{ matrix.image_name }} cmake --build build --config Debug --parallel 2
       - name: 🧪 Test
