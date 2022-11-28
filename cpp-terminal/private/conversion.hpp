@@ -14,7 +14,8 @@
 static constexpr std::uint8_t UTF8_ACCEPT = 0;
 static constexpr std::uint8_t UTF8_REJECT = 0xf;
 
-namespace Term::Private {
+namespace Term {
+namespace Private {
 
 inline std::uint8_t utf8_decode_step(std::uint8_t state,
                                      std::uint8_t octet,
@@ -139,4 +140,5 @@ inline std::string vector_to_string(const std::vector<char>& vector) {
     return string;
 }
 
-}  // namespace Term::Private
+}  // namespace Private
+}  // namespace Term

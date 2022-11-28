@@ -3,7 +3,8 @@
 #include <string>
 #include <tuple>
 
-namespace Term::Private {
+namespace Term {
+namespace Private {
 // Returns true if the standard input is attached to a terminal
 bool is_stdin_a_tty();
 // Returns true if the standard output is attached to a terminal
@@ -40,4 +41,5 @@ class BaseTerminal {
 
 char read_raw_stdin();
 
-}  // namespace Term::Private
+}  // namespace Private
+}  // namespace Term
