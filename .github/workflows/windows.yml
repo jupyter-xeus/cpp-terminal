@@ -17,8 +17,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        #https://www.msys2.org/docs/environments/
-        sys: [ msys, ucrt64 , clang64, clang32, mingw64, mingw32 ]
+        # https://www.msys2.org/docs/environments/
+        # TODO Try to add msys
+        sys: [ ucrt64 , clang64, clang32, mingw64, mingw32 ]
         standard: [ 17 ]
     defaults:
       run:
@@ -52,8 +53,8 @@ jobs:
         run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
       - name: 🎉 Install
         run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
-      - name: ✅ Run examples
-        run: msys2 -c 'ci/examples.sh'
+      #- name: ✅ Run examples
+      #  run: msys2 -c 'ci/examples.sh'
 
   msvc2019:
     runs-on: windows-2019
