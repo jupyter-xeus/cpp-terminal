@@ -3,17 +3,7 @@ name: CodeQL
 
 on:
   push:
-    paths:
-      - '!docs/**'
-      - '!**.md'
-      - '!.github/workflows/**'
-      - '.github/workflows/codeql-analysis.yml'
   pull_request:
-    paths:
-      - '!docs/**'
-      - '!**.md'
-      - '!.github/workflows/**'
-      - '.github/workflows/codeql-analysis.yml'
   schedule:
     - cron: '18 23 * * 1'
 
