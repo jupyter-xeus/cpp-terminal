@@ -35,7 +35,7 @@ jobs:
         run: ./dockcross-${{ matrix.image_name }} cd build ; ctest -C Debug --output-on-failure
 
   linux:
-    name: Build ${{ matrix.image_name }} ${{ matrix.build_type }}
+    name: ${{ matrix.image_name }} ${{ matrix.build_type }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -59,7 +59,7 @@ jobs:
         run: ./dockcross-${{ matrix.image_name }} cd build ; ctest -C Debug --output-on-failure
 
   windows:
-    name: Build ${{ matrix.image_name }} ${{ matrix.build_type }}
+    name: ${{ matrix.image_name }} ${{ matrix.build_type }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -82,7 +82,7 @@ jobs:
         run: ./dockcross-${{ matrix.image_name }} cd build ; ctest -C Debug --output-on-failure
 
   web:
-    name: Build ${{ matrix.image_name }} ${{ matrix.build_type }}
+    name: ${{ matrix.image_name }} ${{ matrix.build_type }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
