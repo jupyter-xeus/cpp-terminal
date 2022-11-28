@@ -3,7 +3,17 @@ name: Dockcross
 
 on:
   push:
+    paths:
+      - '!docs/**'
+      - '!**.md'
+      - '!.github/workflows/**'
+      - '.github/workflows/dockcross.yml'
   pull_request:
+    paths:
+      - '!docs/**'
+      - '!**.md'
+      - '!.github/workflows/**'
+      - '.github/workflows/dockcross.yml'
   workflow_dispatch:
 
 concurrency:

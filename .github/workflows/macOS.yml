@@ -3,7 +3,17 @@ name: macOS
 
 on:
   push:
+    paths:
+      - '!docs/**'
+      - '!**.md'
+      - '!.github/workflows/**'
+      - '.github/workflows/macOS.yml'
   pull_request:
+    paths:
+      - '!docs/**'
+      - '!**.md'
+      - '!.github/workflows/**'
+      - '.github/workflows/macOS.yml'
   workflow_dispatch:
 
 concurrency:

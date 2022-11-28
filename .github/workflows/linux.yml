@@ -3,7 +3,17 @@ name: Linux
 
 on:
   push:
+    paths:
+      - '!docs/**'
+      - '!**.md'
+      - '!.github/workflows/**'
+      - '.github/workflows/linux.yml'
   pull_request:
+    paths:
+      - '!docs/**'
+      - '!**.md'
+      - '!.github/workflows/**'
+      - '.github/workflows/linux.yml'
   workflow_dispatch:
 
 concurrency:

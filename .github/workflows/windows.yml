@@ -3,7 +3,17 @@ name: Windows
 
 on:
   push:
+    paths:
+      - '!docs/**'
+      - '!**.md'
+      - '!.github/workflows/**'
+      - '.github/workflows/windows.yml'
   pull_request:
+    paths:
+      - '!docs/**'
+      - '!**.md'
+      - '!.github/workflows/**'
+      - '.github/workflows/windows.yml'
   workflow_dispatch:
 
 concurrency:
