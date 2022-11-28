@@ -70,8 +70,8 @@ enum class Style : std::uint8_t {
 
 // Represents a RGB (24bit) color
 struct RGB {
-    std::uint8_t r{}, g{}, b{};
-    bool empty = false;
+    std::uint8_t r{0}, g{0}, b{0};
+    bool empty{true};
 };
 // indicates the color mode (basically the original color resolution)
 // also used to manually override the original color resolution
@@ -97,24 +97,25 @@ struct RGBF {
 /*
  * reference colors for converting RGB colors to 4bit colors and vice versa
  */
-struct Bit4_reference {
-    static constexpr RGB BLACK{0, 0, 0, false};
-    static constexpr RGB RED{151, 12, 40, false};
-    static constexpr RGB GREEN{1, 142, 66, false};
-    static constexpr RGB YELLOW{238, 198, 67, false};
-    static constexpr RGB BLUE{13, 33, 161, false};
-    static constexpr RGB MAGENTA{255, 0, 144, false};
-    static constexpr RGB CYAN{0, 159, 184, false};
-    static constexpr RGB WHITE{240, 240, 240, false};
-    static constexpr RGB GRAY{127, 127, 127, false};
-    static constexpr RGB RED_BRIGHT{241, 85, 116, false};
-    static constexpr RGB GREEN_BRIGHT{52, 254, 146, false};
-    static constexpr RGB YELLOW_BRIGHT{243, 215, 124, false};
-    static constexpr RGB BLUE_BRIGHT{63, 136, 197, false};
-    static constexpr RGB MAGENTA_BRIGHT{255, 92, 184, false};
-    static constexpr RGB CYAN_BRIGHT{51, 228, 255, false};
-    static constexpr RGB WHITE_BRIGHT{255, 255, 255, false};
-    static constexpr RGB NONE{0, 0, 0, true};
+class Bit4_reference {
+   public:
+    static RGB BLACK;
+    static RGB RED;
+    static RGB GREEN;
+    static RGB YELLOW;
+    static RGB BLUE;
+    static RGB MAGENTA;
+    static RGB CYAN;
+    static RGB WHITE;
+    static RGB GRAY;
+    static RGB RED_BRIGHT;
+    static RGB GREEN_BRIGHT;
+    static RGB YELLOW_BRIGHT;
+    static RGB BLUE_BRIGHT;
+    static RGB MAGENTA_BRIGHT;
+    static RGB CYAN_BRIGHT;
+    static RGB WHITE_BRIGHT;
+    static RGB NONE;
 };
 
 // Converts a 4bit color to Term::RGB
