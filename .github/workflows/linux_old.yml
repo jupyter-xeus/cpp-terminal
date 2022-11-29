@@ -8,7 +8,7 @@ jobs:
 
     steps:
     - name: Setup CMake
-      uses: jwlawson/actions-setup-cmake@v1.12
+      uses: jwlawson/actions-setup-cmake@v1.13
       with:
         cmake-version: '3.24.x'
         github-api-token: ${{ secrets.GITHUB_TOKEN }}
