@@ -266,6 +266,6 @@ class Terminal : public Private::BaseTerminal {
     // providing no parameters will disable the keyboard and ctrl+c
     explicit Terminal(bool _clear_screen);
 
-    ~Terminal() override;
+    virtual ~Terminal() noexcept(false) override;
 };
 }  // namespace Term
