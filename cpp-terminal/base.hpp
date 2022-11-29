@@ -94,9 +94,12 @@ enum class Mode {
 };
 // represents an RGB foreground and background color
 struct RGBF {
-    RGB rgb_fg;
+    RGBF() {}
+    RGBF(const RGB& rfg, const Mode& mfg, const RGB& rfb, const Mode& mfb)
+        : rgb_fg(rfg), mode_fg(mfg), rgb_bg(rfb), mode_bg(mfb) {}
+    RGB rgb_fg{};
     Mode mode_fg{};
-    RGB rgb_bg;
+    RGB rgb_bg{};
     Mode mode_bg{};
 };
 /*

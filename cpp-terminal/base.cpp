@@ -334,44 +334,48 @@ std::string Term::colorf(Term::RGBF rgbf) {
 }
 
 Term::RGBF Term::rgbf_fg(Term::Color4 color) {
-    return {bit4_to_rgb(color), Mode::BIT4, rgb_empty(), Mode::UNSET};
+    return Term::RGBF(bit4_to_rgb(color), Mode::BIT4, rgb_empty(), Mode::UNSET);
 }
 Term::RGBF Term::rgbf_fg(Term::RGB rgb) {
-    return {rgb, Mode::BIT24, rgb_empty(), Mode::UNSET};
+    return Term::RGBF(rgb, Mode::BIT24, rgb_empty(), Mode::UNSET);
 }
 
 Term::RGBF Term::rgbf_fg(std::uint8_t r, std::uint8_t g, std::uint8_t b) {
-    return {{r, g, b}, Mode::BIT24, rgb_empty(), Mode::UNSET};
+    return Term::RGBF(RGB(r, g, b), Mode::BIT24, rgb_empty(), Mode::UNSET);
 }
 
 Term::RGBF Term::rgbf_bg(Term::Color4 color) {
-    return {rgb_empty(), Mode::UNSET, bit4_to_rgb(color), Mode::BIT4};
+    return Term::RGBF(rgb_empty(), Mode::UNSET, bit4_to_rgb(color), Mode::BIT4);
 }
+
 Term::RGBF Term::rgbf_bg(Term::RGB rgb) {
-    return {rgb_empty(), Mode::UNSET, rgb, Mode::BIT24};
+    return Term::RGBF(rgb_empty(), Mode::UNSET, rgb, Mode::BIT24);
 }
+
 Term::RGBF Term::rgbf_bg(std::uint8_t r, std::uint8_t g, std::uint8_t b) {
-    return {rgb_empty(), Mode::UNSET, {r, g, b}, Mode::BIT24};
+    return Term::RGBF(rgb_empty(), Mode::UNSET, RGB(r, g, b), Mode::BIT24);
 }
 
 Term::RGBF Term::rgbf_fb(Term::Color4 fg, Term::Color4 bg) {
-    return {bit4_to_rgb(fg), Mode::BIT4, bit4_to_rgb(bg), Mode::BIT4};
+    return Term::RGBF(bit4_to_rgb(fg), Mode::BIT4, bit4_to_rgb(bg), Mode::BIT4);
 }
 
 Term::RGBF Term::rgbf_fb(Term::RGB rgb_fg, Term::RGB rgb_bg) {
-    return {rgb_fg, Mode::BIT24, rgb_bg, Mode::BIT24};
+    return Term::RGBF(rgb_fg, Mode::BIT24, rgb_bg, Mode::BIT24);
 }
+
 Term::RGBF Term::rgbf_fb(std::uint8_t r_fg,
                          std::uint8_t g_fg,
                          std::uint8_t b_fg,
                          std::uint8_t r_bg,
                          std::uint8_t g_bg,
                          std::uint8_t b_bg) {
-    return {{r_fg, g_fg, b_fg}, Mode::BIT24, {r_bg, g_bg, b_bg}, Mode::BIT24};
+    return Term::RGBF(RGB(r_fg, g_fg, b_fg), Mode::BIT24, RGB(r_bg, g_bg, b_bg),
+                      Mode::BIT24);
 }
 
 Term::RGBF Term::rgbf_empty() {
-    return {rgb_empty(), Mode::UNSET, rgb_empty(), Mode::UNSET};
+    return Term::RGBF(rgb_empty(), Mode::UNSET, rgb_empty(), Mode::UNSET);
 }
 
 /* AUTOMATIC COLORS */
