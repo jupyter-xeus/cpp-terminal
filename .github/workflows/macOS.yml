@@ -1,5 +1,5 @@
 ---
-name: Linux
+name: macOS
 
 on:
   push:
@@ -11,54 +11,80 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  macos-11:
+    name: macos-11 xcode-${{ matrix.xcode }} (c++${{ matrix.standard }})
+    runs-on: macos-11
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode: [ '11.7', '12.4', '12.5.1', '13.0' ]
+        standard: [ 17 ]
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
+      - name: 🔧 Configure
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+      - name: ⚙️ Build
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
+      - name: 🧪 Test
+        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
+      - name: 🎉 Install
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
+      - name: ✅ Run examples
+        run: ci/examples.sh
+
+  macos-12:
+    runs-on: macos-12
+    name: macos-12 xcode-${{ matrix.xcode }} (c++${{ matrix.standard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode: [ '13.1', '13.2.1', '13.3.1', '13.4.1' ]
+        standard: [ 17 ]
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
+      - name: 🔧 Configure
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+      - name: ⚙️ Build
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
+      - name: 🧪 Test
+        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
+      - name: 🎉 Install
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
+      - name: ✅ Run examples
+        run: ci/examples.sh
+
   gcc:
-    runs-on: ubuntu-latest
-    name: gcc${{ matrix.version }} (c++${{ matrix.standard }})
-    container: ghcr.io/flagarde/ci-ubuntu-gcc-${{ matrix.version }}-x86_64:latest
+    runs-on: macos-11
+    name: macos-11 gcc-${{ matrix.version }} (c++${{ matrix.standard }})
     strategy:
       fail-fast: false
       matrix:
-        # Before 4.7 there is no Non-static data member initializers that's bad!
-        version: [ 4.7, 4.8, 4.9, 5, 6, 7, 8, 9, 10, 11, 12 ]
+        version: [ 9, 10, 11 ]
         standard: [ 17 ]
-        exclude:
-          # 4.6
-          - version: 4.6
-            standard: 14
-          - version: 4.6
-            standard: 17
-          - version: 4.6
-            standard: 20
-          # 4.7
-          - version: 4.7
-            standard: 14
-          - version: 4.7
-            standard: 17
-          - version: 4.7
-            standard: 20
-          # 4.8
-          - version: 4.8
-            standard: 17
-          - version: 4.8
-            standard: 20
-          # 4.9
-          - version: 4.9
-            standard: 17
-          - version: 4.9
-            standard: 20
-          # 5
-          - version: 5
-            standard: 20
-          # 6
-          - version: 6
-            standard: 20
-          # 7
-          - version: 7
-            standard: 20
 
     steps:
-      - name: ⬇️ Install git & CMake
-        run: apt-get install --no-install-recommends -y git cmake
       - name: 📥 Checkout
         uses: actions/checkout@v3
         with:
@@ -68,101 +94,11 @@ jobs:
         uses: xom9ikk/dotenv@v2
         with:
           path: .github/workflows
-      - name: 🔧 Configure
-        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
-      - name: ⚙️ Build
-        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
-      - name: 🧪 Test
-        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
-      - name: 🎉 Install
-        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
-      - name: ✅ Run examples
-        run: ci/examples.sh
-
-  clang:
-
-    runs-on: ubuntu-latest
-    name: clang${{ matrix.version }} (c++${{ matrix.standard }})
-    container: ghcr.io/flagarde/ci-ubuntu-clang-${{ matrix.version }}-x86_64:latest
-    strategy:
-      fail-fast: false
-      matrix:
-        version: [ 3.5, 3.6, 3.7, 3.8, 3.9, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ]
-        standard: [ 17 ]
-        exclude:
-          # 3.5
-          # 3.5 is buggy with c++17, skip it for now
-          - version: 3.5
-            standard: 20
-          - version: 3.5
-            standard: 17
-          # 3.6
-          - version: 3.6
-            standard: 20
-          # 3.7
-          - version: 3.7
-            standard: 20
-          # 3.8
-          - version: 3.8
-            standard: 20
-          # 3.9
-          - version: 3.9
-            standard: 20
-          # 3.9
-          - version: 4
-            standard: 20
-
-    steps:
-      - name: ⬇️ Install git & CMake
-        run: apt-get install --no-install-recommends -y git cmake
-      - name: 📥 Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: 📂 Load .env file
-        if: hashFiles('.github/workflows/.env') != ''
-        uses: xom9ikk/dotenv@v2
-        with:
-          path: .github/workflows
-      - name: 🔧 Configure
-        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
-      - name: ⚙️ Build
-        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
-      - name: 🧪 Test
-        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
-      - name: 🎉 Install
-        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
-      - name: ✅ Run examples
-        run: ci/examples.sh
-
-  intel:
-    runs-on: ubuntu-latest
-    name: intel-oneapi (c++${{ matrix.standard }})
-    container: ghcr.io/flagarde/ci-ubuntu-gcc-11-x86_64:latest
-    strategy:
-      fail-fast: false
-      matrix:
-        standard: [ 17 ]
-
-    steps:
-      - name: ⬇️ Install git & CMake
-        run: apt-get install --no-install-recommends -y git cmake
-      - name: 📥 Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: 📂 Load .env file
-        if: hashFiles('.github/workflows/.env') != ''
-        uses: xom9ikk/dotenv@v2
-        with:
-          path: .github/workflows
-      - name: ⬇️ Install intel-oneapi
-        run: apt install --no-install-recommends -y intel-oneapi-compiler-dpcpp-cpp
       - name: 🔧 Configure
         env:
-          CC: icx
-          CXX: icpx
-        run: . /opt/intel/oneapi/setvars.sh ; cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+          CC: gcc-${{matrix.version}}
+          CXX: g++-${{matrix.version}}
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
       - name: ⚙️ Build
         run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test

@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #ifdef _WIN32
@@ -13,7 +14,8 @@
 static constexpr std::uint8_t UTF8_ACCEPT = 0;
 static constexpr std::uint8_t UTF8_REJECT = 0xf;
 
-namespace Term::Private {
+namespace Term {
+namespace Private {
 
 inline std::uint8_t utf8_decode_step(std::uint8_t state,
                                      std::uint8_t octet,
@@ -126,7 +128,7 @@ inline std::tuple<std::size_t, std::size_t> convert_string_to_size_t(
         throw std::runtime_error("Couldn't parse string: Invalid format");
     }
 #endif
-    return {rows, cols};
+    return std::tuple<std::size_t, std::size_t>{rows, cols};
 }
 
 // converts a vector of char into a string
@@ -138,4 +140,5 @@ inline std::string vector_to_string(const std::vector<char>& vector) {
     return string;
 }
 
-}  // namespace Term::Private
+}  // namespace Private
+}  // namespace Term

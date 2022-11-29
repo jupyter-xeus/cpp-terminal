@@ -21,7 +21,69 @@ typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #include <cerrno>
 #endif
 
+#include <tuple>
+
 #include <stdexcept>
+
+void Term::Private::BaseTerminal::store_and_restore() {
+    static bool enabled{false};
+#ifdef _WIN32
+    static DWORD dwOriginalOutMode{};
+    static UINT out_code_page{};
+    static DWORD dwOriginalInMode{};
+    static UINT in_code_page{};
+    if (!enabled) {
+        if (is_stdout_a_tty()) {
+            out_code_page = GetConsoleOutputCP();
+            if (!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE),
+                                &dwOriginalOutMode)) {
+                throw std::runtime_error("GetConsoleMode() failed");
+            }
+        }
+        if (is_stdin_a_tty()) {
+            in_code_page = GetConsoleCP();
+            if (!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE),
+                                &dwOriginalInMode)) {
+                throw std::runtime_error("GetConsoleMode() failed");
+            }
+        }
+        enabled = true;
+    } else {
+        if (is_stdout_a_tty()) {
+            SetConsoleOutputCP(out_code_page);
+            if (!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE),
+                                dwOriginalOutMode)) {
+                throw std::runtime_error(
+                    "SetConsoleMode() failed in destructor");
+            }
+        }
+        if (is_stdin_a_tty()) {
+            SetConsoleCP(in_code_page);
+            if (!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE),
+                                dwOriginalInMode)) {
+                throw std::runtime_error(
+                    "SetConsoleMode() failed in destructor");
+            }
+        }
+    }
+#else
+    static termios orig_termios;
+    if (!enabled) {
+        if (is_stdin_a_tty()) {
+            if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) {
+                throw std::runtime_error("tcgetattr() failed");
+            }
+        }
+        enabled = true;
+    } else {
+        if (is_stdin_a_tty()) {
+            if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) {
+                throw std::runtime_error("tcsetattr() failed in destructor");
+            }
+        }
+    }
+#endif
+}
 
 bool Term::Private::is_stdin_a_tty() {
 #ifdef _WIN32
@@ -58,12 +120,11 @@ std::string Term::Private::getenv(const std::string& env) {
 
 std::tuple<std::size_t, std::size_t> Term::Private::get_term_size() {
 #ifdef _WIN32
-    HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (hout == INVALID_HANDLE_VALUE) {
+    if (GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) {
         throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed");
     }
     CONSOLE_SCREEN_BUFFER_INFO inf;
-    if (GetConsoleScreenBufferInfo(hout, &inf)) {
+    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &inf)) {
         std::size_t cols = inf.srWindow.Right - inf.srWindow.Left + 1;
         std::size_t rows = inf.srWindow.Bottom - inf.srWindow.Top + 1;
         return {rows, cols};
@@ -79,7 +140,7 @@ std::tuple<std::size_t, std::size_t> Term::Private::get_term_size() {
         throw std::runtime_error(
             "Couldn't get terminal size. Is it connected to a TTY?");
     } else {
-        return {ws.ws_row, ws.ws_col};
+        return std::tuple<std::size_t, std::size_t>{ws.ws_row, ws.ws_col};
     }
 #endif
 }
@@ -103,14 +164,14 @@ bool Term::Private::read_raw(char* s) {
         return false;
     }
 #ifdef _WIN32
-    HANDLE hin = GetStdHandle(STD_INPUT_HANDLE);
-    if (hin == INVALID_HANDLE_VALUE) {
+    if (GetStdHandle(STD_INPUT_HANDLE) == INVALID_HANDLE_VALUE) {
         throw std::runtime_error("GetStdHandle(STD_INPUT_HANDLE) failed");
     }
     char buf[1];
     DWORD nread;
     if (_kbhit()) {
-        if (!ReadFile(hin, buf, 1, &nread, nullptr)) {
+        if (!ReadFile(GetStdHandle(STD_INPUT_HANDLE), buf, 1, &nread,
+                      nullptr)) {
             throw std::runtime_error("ReadFile() failed");
         }
         if (nread == 1) {
@@ -166,70 +227,44 @@ bool Term::Private::has_ansi_escape_code() {
 }
 
 Term::Private::BaseTerminal::~BaseTerminal() noexcept(false) {
-#ifdef _WIN32
-    if (out_console) {
-        SetConsoleOutputCP(out_code_page);
-        if (!SetConsoleMode(hout, dwOriginalOutMode)) {
-            throw std::runtime_error("SetConsoleMode() failed in destructor");
-        }
-    }
-
-    if (keyboard_enabled) {
-        SetConsoleCP(in_code_page);
-        if (!SetConsoleMode(hin, dwOriginalInMode)) {
-            throw std::runtime_error("SetConsoleMode() failed in destructor");
-        }
-    }
-#else
-    if (keyboard_enabled) {
-        if (tcsetattr(STDIN_FILENO, TCSAFLUSH, orig_termios.get()) == -1) {
-            throw std::runtime_error("tcsetattr() failed in destructor");
-        }
-    }
-    // Just to let it living longer
-    orig_termios.get();
-#endif
+    store_and_restore();
 }
 
-#ifdef _WIN32
 Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
                                           bool disable_signal_keys)
     : keyboard_enabled{enable_keyboard} {
+    store_and_restore();
+#ifdef _WIN32
     // silently disable raw mode for non-tty
     if (keyboard_enabled)
         keyboard_enabled = is_stdin_a_tty();
-    out_console = is_stdout_a_tty();
-    if (out_console) {
-        hout = GetStdHandle(STD_OUTPUT_HANDLE);
-        out_code_page = GetConsoleOutputCP();
+    if (is_stdout_a_tty()) {
         SetConsoleOutputCP(65001);
-        if (hout == INVALID_HANDLE_VALUE) {
+        if (GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) {
             throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed");
         }
-        if (!GetConsoleMode(hout, &dwOriginalOutMode)) {
+        DWORD flags{0};
+        if (!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &flags)) {
             throw std::runtime_error("GetConsoleMode() failed");
         }
-        DWORD flags = dwOriginalOutMode;
         if (has_ansi_escape_code()) {
             flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
             flags |= DISABLE_NEWLINE_AUTO_RETURN;
         }
-        if (!SetConsoleMode(hout, flags)) {
+        if (!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), flags)) {
             throw std::runtime_error("SetConsoleMode() failed");
         }
     }
 
     if (keyboard_enabled) {
-        hin = GetStdHandle(STD_INPUT_HANDLE);
-        in_code_page = GetConsoleCP();
         SetConsoleCP(65001);
-        if (hin == INVALID_HANDLE_VALUE) {
+        if (GetStdHandle(STD_INPUT_HANDLE) == INVALID_HANDLE_VALUE) {
             throw std::runtime_error("GetStdHandle(STD_INPUT_HANDLE) failed");
         }
-        if (!GetConsoleMode(hin, &dwOriginalInMode)) {
+        DWORD flags{0};
+        if (!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &flags)) {
             throw std::runtime_error("GetConsoleMode() failed");
         }
-        DWORD flags = dwOriginalInMode;
         if (has_ansi_escape_code()) {
             flags |= ENABLE_VIRTUAL_TERMINAL_INPUT;
         }
@@ -237,26 +272,21 @@ Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
             flags &= ~ENABLE_PROCESSED_INPUT;
         }
         flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
-        if (!SetConsoleMode(hin, flags)) {
+        if (!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), flags)) {
             throw std::runtime_error("SetConsoleMode() failed");
         }
     }
 #else
-Term::Private::BaseTerminal::BaseTerminal(bool enable_keyboard,
-                                          bool disable_signal_keys)
-    : orig_termios{std::make_unique<termios>()},
-      keyboard_enabled{enable_keyboard} {
     // silently disable raw mode for non-tty
     if (keyboard_enabled)
         keyboard_enabled = is_stdin_a_tty();
+    termios raw{};
     if (keyboard_enabled) {
-        if (tcgetattr(STDIN_FILENO, orig_termios.get()) == -1) {
+        if (tcgetattr(STDIN_FILENO, &raw) == -1) {
             throw std::runtime_error("tcgetattr() failed");
         }
 
         // Put terminal in raw mode
-
-        auto raw = termios(*orig_termios);
 
         raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
 

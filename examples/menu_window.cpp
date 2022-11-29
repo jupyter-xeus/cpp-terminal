@@ -2,6 +2,7 @@
 #include <cpp-terminal/input.hpp>
 #include <cpp-terminal/window.hpp>
 #include <iostream>
+#include <tuple>
 
 std::string render(Term::Window& scr,
                    int rows,
@@ -51,14 +52,16 @@ int main() {
             return 1;
         }
         Term::Terminal term(true, true, true, true);
-        auto [rows, cols] = Term::get_size();
+        std::tuple<std::size_t, std::size_t> term_size = Term::get_size();
         int pos = 5;
         int h = 10;
-        int w = 10;
+        std::size_t w{10};
         bool on = true;
-        Term::Window scr(cols, rows);
+        Term::Window scr(std::get<1>(term_size), std::get<0>(term_size));
         while (on) {
-            std::cout << render(scr, rows, cols, h, w, pos) << std::flush;
+            std::cout << render(scr, std::get<0>(term_size),
+                                std::get<1>(term_size), h, w, pos)
+                      << std::flush;
             int key = Term::read_key();
             switch (key) {
                 case Term::Key::ARROW_LEFT:
@@ -66,7 +69,8 @@ int main() {
                         w--;
                     break;
                 case Term::Key::ARROW_RIGHT:
-                    if (w < cols - 5)
+                    if (w <
+                        static_cast<std::size_t>(std::get<1>(term_size) - 5))
                         w++;
                     break;
                 case Term::Key::ARROW_UP:

@@ -1,19 +1,187 @@
-name: Windows CI
+---
+name: Windows
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
-  Build:
+  msys2:
     runs-on: windows-latest
+    name: ${{ matrix.sys }} (c++${{ matrix.standard }})
     strategy:
       fail-fast: false
+      matrix:
+        # https://www.msys2.org/docs/environments/
+        # TODO Try to add msys
+        sys: [ ucrt64 , clang64, clang32, mingw64, mingw32 ]
+        standard: [ 17 ]
+    defaults:
+      run:
+        shell: msys2 {0}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
+      - name: ✨ Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{matrix.sys}}
+          path-type: minimal
+          release: true
+          update: true
+          pacboy: >-
+            gcc:p
+            cmake:p
+      - name: 🔧 Configure
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+      - name: ⚙️ Build
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
+      - name: 🧪 Test
+        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
+      - name: 🎉 Install
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
+      #- name: ✅ Run examples
+      #  run: msys2 -c 'ci/examples.sh'
 
-    - name: Build
-      run: |
-          ci\compile_test.ps1
-    - name: Test
-      run: ci\test.ps1
+  msvc2019:
+    runs-on: windows-2019
+    name: msvc2019 ${{ matrix.architecture }} (c++${{ matrix.standard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: [ win32, x64 ]
+        standard: [ 17 ]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
+      - name: ✨ Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1.12.0
+        with:
+          arch: ${{ matrix.architecture }}
+      - name: 🔧 Configure
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G "Visual Studio 16 2019" -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+      - name: ⚙️ Build
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
+      - name: 🧪 Test
+        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
+      - name: 🎉 Install
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
+      - name: ✅ Run examples
+        run: ci\examples.ps1
+
+  msvc2022:
+    runs-on: windows-2022
+    name: msvc2022 ${{ matrix.architecture }} (c++${{ matrix.standard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: [ win32, x64 ]
+        standard: [ 17 ]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
+      - name: ✨ Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1.12.0
+        with:
+          arch: ${{ matrix.architecture }}
+      - name: 🔧 Configure
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G "Visual Studio 17 2022" -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+      - name: ⚙️ Build
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
+      - name: 🧪 Test
+        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
+      - name: 🎉 Install
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
+      - name: ✅ Run examples
+        run: ci\examples.ps1
+
+  clang:
+    runs-on: windows-2019
+    name: windows-2019 clang-${{ matrix.version }} (c++${{ matrix.standard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [ 11.1.0, 12.0.1, 13.0.1, 14.0.6, 15.0.2 ]
+        standard: [ 17 ]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
+      - name: ⬇️ Install Clang
+        run: curl -fsSL -o LLVM${{ matrix.version }}.exe https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ matrix.version }}/LLVM-${{ matrix.version }}-win64.exe ; 7z x LLVM${{ matrix.version }}.exe -y -o"C:/Program Files/LLVM"
+      - name: 🔧 Configure
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang++.exe" -D CMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -G "MinGW Makefiles" -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+      - name: ⚙️ Build
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
+      - name: 🧪 Test
+        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
+      - name: 🎉 Install
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
+      - name: ✅ Run examples
+        run: ci\examples.ps1
+
+  clang-cl-11:
+    runs-on: windows-2019
+    name: windows-2019 clang-cl-11 ${{ matrix.architecture }} (c++${{ matrix.standard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: [ Win32, x64 ]
+        standard: [ 17 ]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
+      - name: 🔧 Configure
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G "Visual Studio 16 2019" -A ${{ matrix.architecture }} -T ClangCL -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+      - name: ⚙️ Build
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
+      - name: 🧪 Test
+        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
+      - name: 🎉 Install
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
+      - name: ✅ Run examples
+        run: ci\examples.ps1

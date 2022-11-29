@@ -105,8 +105,8 @@ Term::Result_simple Term::prompt_simple(const std::string& message) {
 
 std::string Term::concat(const std::vector<std::string>& lines) {
     std::string s;
-    for (auto& line : lines) {
-        s.append(line + "\n");
+    for (std::size_t i = 0; i != lines.size(); ++i) {
+        s.append(lines[i] + "\n");
     }
     return s;
 }
@@ -317,7 +317,7 @@ std::string Term::prompt_multiline(
                     } else {
                         break;
                     }
-                    [[fallthrough]];
+                    CPP_TERMINAL_FALLTHROUGH;
                 case Key::CTRL + 'n':
                 case Key::ALT_ENTER:
                     std::string before =

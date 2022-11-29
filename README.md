@@ -4,9 +4,10 @@
 
 [![Linux CI](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/linux.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/linux.yml)
 [![Windows CI](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/windows.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/windows.yml)
-[![MacOS CI](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/macos.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/macos.yml)
+[![MacOS CI](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/macOS.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/macOS.yml)
 [![CodeQL](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/codeql-analysis.yml)
-[![clang-format Check](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/clang-format.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/clang-format.yml)
+[![pre-commit](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/pre-commit-check.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/pre-commit-check.yml)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/jupyter-xeus/cpp-terminal/master.svg)](https://results.pre-commit.ci/latest/github/jupyter-xeus/cpp-terminal/maset)
 
 `CPP-Terminal` is a small and simple library for writing platform independent terminal applications. It works on Windows, MacOS and Linux and offers a simple programming interface. It
 supports colors, keyboard input and has all the basic features to write any
