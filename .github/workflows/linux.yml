@@ -91,11 +91,13 @@ jobs:
         standard: [ 14, 17 ]
         exclude:
           # 3.5
-          # 3.5 is buggy with c++17, skip it for now
+          # 3.5 is buggy with c++14,c++17, skip it for now
           - version: 3.5
             standard: 20
           - version: 3.5
             standard: 17
+          - version: 3.5
+            standard: 14
           # 3.6
           - version: 3.6
             standard: 20

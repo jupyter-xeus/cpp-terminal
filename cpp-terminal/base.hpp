@@ -72,6 +72,9 @@ enum class Style : std::uint8_t {
 
 // Represents a RGB (24bit) color
 struct RGB {
+    RGB() {}
+    RGB(const std::uint8_t& rr, const std::uint8_t& gg, const std::uint8_t& bb)
+        : r(rr), g(gg), b(bb), empty(false) {}
     std::uint8_t r{0}, g{0}, b{0};
     bool empty{true};
 };
