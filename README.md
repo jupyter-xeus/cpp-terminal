@@ -38,14 +38,14 @@ We have created serval examples to show possible use cases of CPP-Terminal and t
 
 ## Supported platforms
 
-| Platform | Supported versions | Coverage by unit test |
-| -------- | ------------------ | --------------------- |
-| Windows  | 10 and higher*     | MSVC                  |
-| (Windows) MSYS2    | All supported      | /                     |
-| (Windows) Cygwin | All supported | / |
-| (Windows) MinGW | All supoorted | / |
-| MacOS    | All supported      | Apple-clang           |
-| Linux    | All supported      | GCC                   |
+| Platform          | Supported versions | Coverage by unit test |
+|-------------------|--------------------|-----------------------|
+| Windows           | 10 and higher*     | MSVC                  |
+| (Windows) MSYS2   | All supported      | /                     |
+| (Windows) Cygwin  | All supported      | /                     |
+| (Windows) MinGW   | All supoorted      | /                     |
+| MacOS             | All supported      | Apple-clang           |
+| Linux             | All supported      | GCC>= 5 Clang >= 3.6  |
 
 > Windows versions prior Windows 10 are missing the Win32 API functionality for entering the "raw mode" and therefore won't work. They are also lacking ANSI support. See #173 for adding support to prior windows versions for MSVC / Win32.
 
