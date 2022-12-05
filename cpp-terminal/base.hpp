@@ -72,6 +72,9 @@ enum class Style : std::uint8_t {
 
 // Represents a RGB (24bit) color
 struct RGB {
+    RGB() {}
+    RGB(const std::uint8_t& rr, const std::uint8_t& gg, const std::uint8_t& bb)
+        : r(rr), g(gg), b(bb), empty(false) {}
     std::uint8_t r{0}, g{0}, b{0};
     bool empty{true};
 };
@@ -91,9 +94,12 @@ enum class Mode {
 };
 // represents an RGB foreground and background color
 struct RGBF {
-    RGB rgb_fg;
+    RGBF() {}
+    RGBF(const RGB& rfg, const Mode& mfg, const RGB& rfb, const Mode& mfb)
+        : rgb_fg(rfg), mode_fg(mfg), rgb_bg(rfb), mode_bg(mfb) {}
+    RGB rgb_fg{};
     Mode mode_fg{};
-    RGB rgb_bg;
+    RGB rgb_bg{};
     Mode mode_bg{};
 };
 /*
