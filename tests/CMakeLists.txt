@@ -1,3 +1,7 @@
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL 4.7)
+    return()
+endif()
+
 if (CMAKE_VERSION GREATER_EQUAL 3.11)
     include(FetchContent)
     FetchContent_Declare(doctest GIT_REPOSITORY https://github.com/doctest/doctest.git GIT_TAG v2.4.9)
