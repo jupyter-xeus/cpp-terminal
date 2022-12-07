@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 #include "cpp-terminal/base.hpp"
 #include "cpp-terminal/version.hpp"
 

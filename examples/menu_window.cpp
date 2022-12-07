@@ -2,6 +2,7 @@
 #include <cpp-terminal/input.hpp>
 #include <cpp-terminal/window.hpp>
 #include <iostream>
+#include <stdexcept>
 #include <tuple>
 
 std::string render(Term::Window& scr,

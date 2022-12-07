@@ -1,6 +1,7 @@
 #include <cpp-terminal/prompt.hpp>
 #include <cpp-terminal/version.hpp>
 #include <iostream>
+#include <stdexcept>
 
 int main() {
     std::cout << "Running cpp-terminal version: "

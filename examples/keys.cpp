@@ -4,6 +4,7 @@
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
 #include <iostream>
+#include <stdexcept>
 #include <tuple>
 
 using Term::Key;

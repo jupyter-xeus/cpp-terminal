@@ -1,6 +1,7 @@
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
 #include <iostream>
+#include <stdexcept>
 #include <tuple>
 
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {

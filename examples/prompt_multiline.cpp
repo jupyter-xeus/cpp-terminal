@@ -2,6 +2,7 @@
 #include <cpp-terminal/prompt.hpp>
 #include <functional>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
