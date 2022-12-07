@@ -1,8 +1,8 @@
 #include <cpp-terminal/prompt.hpp>
 #include <cpp-terminal/version.hpp>
+#include <exception>
 #include <iostream>
 #include <stdexcept>
-
 int main() {
     std::cout << "Running cpp-terminal version: "
               << CPP_TERMINAL_VERSION_COMPLETE << std::endl;

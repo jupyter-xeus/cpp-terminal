@@ -9,11 +9,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <exception>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <tuple>
-
 /*** defines ***/
 
 #define KILO_VERSION "0.0.1"
