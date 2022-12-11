@@ -1,7 +1,9 @@
 #include <cpp-terminal/input.hpp>
 #include <cpp-terminal/prompt.hpp>
+#include <exception>
 #include <functional>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 

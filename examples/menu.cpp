@@ -1,8 +1,9 @@
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
+#include <exception>
 #include <iostream>
+#include <stdexcept>
 #include <tuple>
-
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
     std::string scr;
     scr.reserve(16 * 1024);

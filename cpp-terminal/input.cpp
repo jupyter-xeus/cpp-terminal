@@ -1,6 +1,10 @@
 #include <chrono>
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
+// Bug in some GCC
+#if !defined(_GLIBCXX_USE_NANOSLEEP)
+#define _GLIBCXX_USE_NANOSLEEP
+#endif
 #include <thread>
 #include "private/platform.hpp"
 

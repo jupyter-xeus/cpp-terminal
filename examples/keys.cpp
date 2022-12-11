@@ -3,9 +3,10 @@
  */
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
+#include <exception>
 #include <iostream>
+#include <stdexcept>
 #include <tuple>
-
 using Term::Key;
 using Term::Terminal;
 
