@@ -19,9 +19,6 @@ target_link_libraries(menu cpp-terminal)
 add_executable(menu_window menu_window.cpp)
 target_link_libraries(menu_window cpp-terminal)
 
-add_executable(menu_window_24bit menu_window_24bit.cpp)
-target_link_libraries(menu_window_24bit cpp-terminal)
-
 add_executable(keys keys.cpp)
 target_link_libraries(keys cpp-terminal)
 
@@ -58,5 +55,5 @@ foreach(target kilo menu menu_window keys colors)
 endforeach()
 
 if(CPPTERMINAL_ENABLE_INSTALL)
-install(TARGETS prompt_multiline prompt_immediate prompt_not_immediate prompt_simple kilo menu menu_window menu_window_24bit keys colors read_stdin RUNTIME DESTINATION bin/examples)
+install(TARGETS prompt_multiline prompt_immediate prompt_not_immediate prompt_simple kilo menu menu_window keys colors read_stdin RUNTIME DESTINATION bin/examples)
 endif()
