@@ -17,10 +17,10 @@ namespace Term {
 class Window {
    private:
     std::size_t w{0};
-    std::size_t h{0}; // width and height of the window
+    std::size_t h{0};  // width and height of the window
     std::size_t cursor_x{0};
-    std::size_t cursor_y{0}; // current cursor position
-    std::vector<char32_t> chars;     // the characters in row first order
+    std::size_t cursor_y{0};      // current cursor position
+    std::vector<char32_t> chars;  // the characters in row first order
     std::vector<Term::RGB> m_fg;
     std::vector<Term::RGB> m_bg;
     std::vector<bool> m_fg_reset;
@@ -87,7 +87,7 @@ class Window {
 
     void clear();
 
-    static bool rgb_equal(const RGB&,const RGB&);
+    static bool rgb_equal(const RGB&, const RGB&);
 
     // TODO: add Window/Screen parameter here, to be used like this:
     // old_scr = scr;

@@ -1,7 +1,7 @@
 #include <stdexcept>
 
-#include "cpp-terminal/window.hpp"
 #include "cpp-terminal/private/conversion.hpp"
+#include "cpp-terminal/window.hpp"
 
 namespace Term {
 
@@ -92,10 +92,10 @@ void Term::Window::set_h(std::size_t new_h) {
 }
 
 void Term::Window::print_str(int x,
-                                   int y,
-                                   const std::string& s,
-                                   int indent,
-                                   bool move_cursor) {
+                             int y,
+                             const std::string& s,
+                             int indent,
+                             bool move_cursor) {
     std::u32string s2 = Private::utf8_to_utf32(s);
     std::size_t xpos = x;
     std::size_t ypos = y;
@@ -127,8 +127,7 @@ void Term::Window::print_str(int x,
     }
 }
 
-void Term::Window::fill_fg(int x1, int y1, int x2, int y2, const RGB& rgb)
-{
+void Term::Window::fill_fg(int x1, int y1, int x2, int y2, const RGB& rgb) {
     for (int j = y1; j <= y2; j++) {
         for (int i = x1; i <= x2; i++) {
             set_fg(i, j, rgb);
@@ -156,7 +155,11 @@ void Term::Window::print_border(bool unicode) {
     print_rect(1, 1, w, h, unicode);
 }
 
-void Term::Window::print_rect(std::size_t x1, std::size_t y1, std::size_t x2, std::size_t y2, bool unicode) {
+void Term::Window::print_rect(std::size_t x1,
+                              std::size_t y1,
+                              std::size_t x2,
+                              std::size_t y2,
+                              bool unicode) {
     std::u32string border = Private::utf8_to_utf32("│─┌┐└┘");
     if (unicode) {
         for (std::size_t j = y1 + 1; j <= y2 - 1; j++) {
@@ -198,7 +201,7 @@ void Term::Window::clear() {
     }
 }
 
-bool Term::Window::rgb_equal(const RGB& rgb_one,const  RGB& rgb_two) {
+bool Term::Window::rgb_equal(const RGB& rgb_one, const RGB& rgb_two) {
     return rgb_one.r == rgb_two.r && rgb_one.b == rgb_two.b &&
            rgb_one.g == rgb_two.g;
 }
