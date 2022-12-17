@@ -158,7 +158,7 @@ void Term::render(Term::Window& scr, const Model& m, std::size_t cols) {
         if (j == 0) {
             scr.print_str(1, j + 1, m.prompt_string);
             scr.fill_fg(1, j + 1, m.prompt_string.size(), m.lines.size(),
-                        Term::Color4::GREEN);
+                        Term::Bit4_reference::GREEN);
             scr.fill_style(1, j + 1, m.prompt_string.size(), m.lines.size(),
                            Term::Style::BOLD);
         } else {
