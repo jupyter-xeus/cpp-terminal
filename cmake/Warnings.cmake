@@ -76,9 +76,9 @@ set(CLANG_LIKE_WARNINGS
     )
 #Clang
 set(CLANG_CXX_WARNINGS
-    "-Winconsistent-missing-destructor-override"
-    "-Woverloaded-virtual"
-    "-Wunused-private-field"
+    #"-Winconsistent-missing-destructor-override"
+    #"-Woverloaded-virtual"
+    #"-Wunused-private-field"
     )
 #Intel
 set(INTEL_WARNINGS
