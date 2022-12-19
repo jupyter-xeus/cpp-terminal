@@ -19,8 +19,8 @@ add_library(${PROJECT_NAME}Warnings INTERFACE)
 
 #GCC like
 set(GCC_LIKE_WARNINGS
-    "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.9>:-fdiagnostics-color=auto>"
-    "-pedantic"
+    "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.8.0>:-pedantic>"
+    "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.9.0>:-fdiagnostics-color=auto>"
     "-Wall"
     "-Wcast-align"
     "-Wconversion"
