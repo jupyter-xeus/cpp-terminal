@@ -19,8 +19,6 @@ add_library(${PROJECT_NAME}Warnings INTERFACE)
 
 #GCC like
 set(GCC_LIKE_WARNINGS
-    "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.8.0>:-Wpedantic>"
-    "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.9.0>:-fdiagnostics-color=auto>"
     "-Wall"
     "-Wcast-align"
     "-Wconversion"
@@ -44,7 +42,8 @@ set(GCC_LIKE_CXX_WARNINGS
     )
 #GCC
 set(GCC_WARNINGS
-    "-fdiagnostics-color=auto"
+    "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.8.0>:-Wpedantic>"
+    "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.9.0>:-fdiagnostics-color=auto>"
     "-Wno-implicit-fallthrough"
     "-Wno-maybe-uninitialized"
     "-Wno-strict-overflow"
