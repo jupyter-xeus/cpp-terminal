@@ -57,7 +57,6 @@ set(GCC_WARNINGS
 set(GCC_CXX_WARNINGS
     "-Wdelete-non-virtual-dtor"
     "-Wnoexcept"
-    "-Wsuggest-override"
     )
 #Clang like
 set(CLANG_LIKE_WARNINGS
