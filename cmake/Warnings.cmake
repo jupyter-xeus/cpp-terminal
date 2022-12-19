@@ -19,7 +19,7 @@ add_library(${PROJECT_NAME}Warnings INTERFACE)
 
 #GCC like
 set(GCC_LIKE_WARNINGS
-    "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.8.0>:-pedantic>"
+    "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.8.0>:-Wpedantic>"
     "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.9.0>:-fdiagnostics-color=auto>"
     "-Wall"
     "-Wcast-align"
@@ -29,7 +29,6 @@ set(GCC_LIKE_WARNINGS
     "-Wno-missing-field-initializers"
     "-Wno-unknown-pragmas"
     "-Woverloaded-virtual"
-    "-Wpedantic"
     "-Wreorder"
     "-Wshadow"
     "-Wsign-compare"
