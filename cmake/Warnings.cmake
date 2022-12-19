@@ -20,25 +20,25 @@ add_library(${PROJECT_NAME}Warnings INTERFACE)
 #GCC like
 set(GCC_LIKE_WARNINGS
     "-Wall"
-    "-Wcast-align"
-    "-Wconversion"
     "-Wextra"
-    "-Wno-ignored-qualifiers"
-    "-Wno-missing-field-initializers"
-    "-Wno-unknown-pragmas"
-    "-Woverloaded-virtual"
-    "-Wreorder"
-    "-Wshadow"
-    "-Wsign-compare"
-    "-Wsign-conversion"
-    "-Wstrict-aliasing"
-    "-Wuninitialized"
-    "-Wunreachable-code"
-    "-Wunused-parameter"
+    #"-Wcast-align"
+    #"-Wconversion"
+    #"-Wno-ignored-qualifiers"
+    #"-Wno-missing-field-initializers"
+    #"-Wno-unknown-pragmas"
+    #"-Woverloaded-virtual"
+    #"-Wreorder"
+    #"-Wshadow"
+    #"-Wsign-compare"
+    #"-Wsign-conversion"
+    #"-Wstrict-aliasing"
+    #"-Wuninitialized"
+    #"-Wunreachable-code"
+    #"-Wunused-parameter"
     )
 set(GCC_LIKE_CXX_WARNINGS
-    "-Wnon-virtual-dtor"
-    "-Wzero-as-null-pointer-constant"
+    #"-Wnon-virtual-dtor"
+    #"-Wzero-as-null-pointer-constant"
     )
 #GCC
 set(GCC_WARNINGS
