@@ -63,7 +63,6 @@ set(GCC_CXX_WARNINGS
 set(CLANG_LIKE_WARNINGS
     "--extra-warnings"
     "-fcolor-diagnostics"
-    "-fdebug-macro"
     "-pedantic"
     "-Wbool-conversion"
     "-Wconditional-uninitialized"
