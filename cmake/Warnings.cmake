@@ -58,9 +58,9 @@ set(GCC_CXX_WARNINGS
     )
 #Clang like
 set(CLANG_LIKE_WARNINGS
-    "--extra-warnings"
-    "-fcolor-diagnostics"
-    "-pedantic"
+    #"--extra-warnings"
+    #"-fcolor-diagnostics"
+    #"-pedantic"
     #"-Wbool-conversion"
     #"-Wconditional-uninitialized"
     #"-Wconstant-conversion"
