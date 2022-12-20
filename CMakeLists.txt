@@ -20,7 +20,7 @@ project(cpp-terminal
 
 # set the C++ standard, if not set by the top level project
 if (NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard" FORCE)
+  set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard" FORCE)
 endif ()
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE CACHE STRING "C++ standard required" FORCE)
 
@@ -32,13 +32,13 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 add_subdirectory(cpp-terminal)
 
-if (CPPTERMINAL_ENABLE_TESING)
-    enable_testing()
-    add_subdirectory(tests)
+if(CPPTERMINAL_ENABLE_TESING)
+  enable_testing()
+  add_subdirectory(tests)
 endif()
 
 if (CPPTERMINAL_BUILD_EXAMPLES)
-    add_subdirectory(examples)
+  add_subdirectory(examples)
 endif()
 
 if (CPPTERMINAL_ENABLE_INSTALL)

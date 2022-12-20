@@ -3,12 +3,14 @@
 #include <string>
 #include <tuple>
 
-namespace Term {
-namespace Private {
+namespace Term
+{
+namespace Private
+{
 // Returns true if the standard input is attached to a terminal
-bool is_stdin_a_tty();
+bool        is_stdin_a_tty();
 // Returns true if the standard output is attached to a terminal
-bool is_stdout_a_tty();
+bool        is_stdout_a_tty();
 // Get the environment variable
 std::string getenv(const std::string&);
 
@@ -27,16 +29,16 @@ bool has_ansi_escape_code();
  * terminal will not be left in a good state. Terminal uses exceptions when
  * something goes wrong.
  */
-class BaseTerminal {
-   private:
-    void store_and_restore();
-    bool keyboard_enabled{};
+class BaseTerminal
+{
+private:
+  void store_and_restore();
+  bool keyboard_enabled{};
 
-   public:
-    explicit BaseTerminal(bool enable_keyboard = false,
-                          bool disable_signal_keys = true);
+public:
+  explicit BaseTerminal(bool enable_keyboard = false, bool disable_signal_keys = true);
 
-    virtual ~BaseTerminal() noexcept(false);
+  virtual ~BaseTerminal() noexcept(false);
 };
 
 char read_raw_stdin();

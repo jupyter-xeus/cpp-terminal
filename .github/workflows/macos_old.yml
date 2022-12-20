@@ -21,7 +21,7 @@ jobs:
 
     - name: Build
       run: bash ci/compile_test.sh
-    
+
     - name: Test
       run: bash ci/tests.sh
 

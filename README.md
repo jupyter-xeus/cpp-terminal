@@ -22,7 +22,7 @@ Until 2021, CPP-Terminal used to be a single header library. Now, CPP-Terminal c
 
 The library uses private header for platform dependent code:
 - `cpp-terminal/private/conversion.hpp`: Various conversions
-- `cpp-terminal/private/platform.hpp`: platform dependant code
+- `cpp-terminal/private/platform.hpp`: platform dependent code
 
 CPP-Terminal tries to be a small and simple replacement for ncurses. This approach keeps the code small and maintainable, but also easy to extend it's functionality. We limit ourselves to a subset of features that work on all supported platforms without needing to worry about style differences or other changes. Any application written with `CPP-Terminal` will work everywhere out of the box natively, without emulation or extra work. The small codebase makes CPP-Terminal easy to debug and extend, as well as understanding what happens behind the scenes in the library's core.
 

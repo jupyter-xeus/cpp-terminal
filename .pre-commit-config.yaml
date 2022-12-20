@@ -1,4 +1,7 @@
 ---
+ci:
+  skip: [ ]
+
 default_install_hook_types:
   - pre-commit
   - pre-merge-commit
@@ -14,7 +17,55 @@ fail_fast: false
 
 repos:
 
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-added-large-files
+        args: [ --maxkb=200 ]
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-vcs-permalinks
+      - id: destroyed-symlinks
+      - id: detect-private-key
+      - id: double-quote-string-fixer
+      - id: end-of-file-fixer
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+        args: [ --fix=lf ]
+      - id: trailing-whitespace
+        args: [ --markdown-linebreak-ext=md ]
+      - id: check-yaml
+        args: [ --allow-multiple-documents ]
+
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: 2.6.2
+    hooks:
+      - id: editorconfig-checker
+        name: check .editorconfig rules
+
   - repo: https://github.com/pre-commit/mirrors-clang-format
     rev: v15.0.4
     hooks:
       - id: clang-format
+
+  - repo: https://github.com/Kr4is/cmake-format-precommit
+    rev: v0.6.14
+    hooks:
+      - id: cmake-format
+        args: [ --config=.cmake-format.yml ]
+      - id: cmake-lint
+        args: [ --config=.cmake-linter.yml ]
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.2
+    hooks:
+      - id: codespell
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.3.1
+    hooks:
+      - id: remove-crlf
+      - id: remove-tabs
+        name: tabs remover
+        args: [ --whitespaces-count, '2' ]
