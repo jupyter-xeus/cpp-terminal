@@ -18,10 +18,12 @@ project(cpp-terminal
         HOMEPAGE_URL "https://github.com/jupyter-xeus/cpp-terminal"
         LANGUAGES CXX)
 
+include(Warnings)
+
 # set the C++ standard, if not set by the top level project
-if (NOT CMAKE_CXX_STANDARD)
+if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard" FORCE)
-endif ()
+endif()
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE CACHE STRING "C++ standard required" FORCE)
 
 option(CPPTERMINAL_BUILD_EXAMPLES "Set to ON to build examples" ON)
