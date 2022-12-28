@@ -34,12 +34,10 @@ set(GCC_LIKE_WARNINGS
     #"-Wstrict-aliasing"
     #"-Wuninitialized"
     #"-Wunreachable-code"
-    #"-Wunused-parameter"
-    )
+    #"-Wunused-parameter")
 set(GCC_LIKE_CXX_WARNINGS
     #"-Wnon-virtual-dtor"
-    #"-Wzero-as-null-pointer-constant"
-    )
+    #"-Wzero-as-null-pointer-constant")
 #GCC
 set(GCC_WARNINGS
     "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.8.0>:-Wpedantic>"
@@ -50,12 +48,10 @@ set(GCC_WARNINGS
     "-Wpointer-arith"
     "-Wredundant-decls"
     "-Wundef"
-    "-Wwrite-strings"
-    )
+    "-Wwrite-strings")
 set(GCC_CXX_WARNINGS
     "-Wdelete-non-virtual-dtor"
-    "-Wnoexcept"
-    )
+    "-Wnoexcept")
 #Clang like
 set(CLANG_LIKE_WARNINGS
     #"--extra-warnings"
@@ -70,14 +66,12 @@ set(CLANG_LIKE_WARNINGS
     #"-Wshadow-all"
     #"-Wshift-sign-overflow"
     #"-Wshorten-64-to-32"
-    #"-Wunused-variable"
-    )
+    #"-Wunused-variable")
 #Clang
 set(CLANG_CXX_WARNINGS
     #"-Winconsistent-missing-destructor-override"
     #"-Woverloaded-virtual"
-    #"-Wunused-private-field"
-    )
+    #"-Wunused-private-field")
 #Intel
 set(INTEL_WARNINGS
     "-w3"
@@ -93,18 +87,15 @@ set(INTEL_WARNINGS
     "-Wstrict-aliasing"
     "-Wuninitialized"
     "-Wwrite-strings"
-    "-Wno-debug-disables-optimization"
-    )
+    "-Wno-debug-disables-optimization")
 set(INTEL_WARNINGS_WINDOWS
     "/W5"
-    "/Wall"
-    )
+    "/Wall")
 #MSVC
 set(MSVC_WARNINGS
     "/W4"
     "/Wall"
-    "/WL"
-    )
+    "/WL")
 
 target_compile_options(
   ${PROJECT_NAME}Warnings
