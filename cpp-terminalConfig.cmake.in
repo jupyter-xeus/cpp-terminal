@@ -1,3 +1,0 @@
-@PACKAGE_INIT@
-
-include("${CMAKE_INSTALL_PREFIX}/${ConfigPackageLocation}/cpp-terminalTargets.cmake")
