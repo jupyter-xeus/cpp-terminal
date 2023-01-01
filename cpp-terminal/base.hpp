@@ -1,129 +1,135 @@
 #pragma once
 
-#include <string>
 #include "cpp-terminal/private/macros.hpp"
 #include "cpp-terminal/private/platform.hpp"
 
-namespace Term {
+#include <string>
+
+namespace Term
+{
 /*
  * The 3bit/4bit colors for the terminal
  * get the foreground color: Color4 + 30, Background color: Color4 + 40
  * See https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit
  */
-enum class Color4 : std::uint8_t {
-    // FG: 30, BG: 40
-    BLACK = 0,
-    // FG: 31, BG: 41
-    RED = 1,
-    // FG: 32, BG: 42
-    GREEN = 2,
-    // FG: 33, BG: 43
-    YELLOW = 3,
-    // FG: 34, BG: 44
-    BLUE = 4,
-    // FG: 35, BG: 45
-    MAGENTA = 5,
-    // FG: 36, BG: 46
-    CYAN = 6,
-    // FG: 37, BG: 47
-    WHITE = 7,
-    // Use the default terminal color, FG: 39, BG: 49
-    DEFAULT = 9,
-    // FG: 90, BG: 100
-    GRAY = 60,
-    // FG: 91, BG: 101
-    RED_BRIGHT = 61,
-    // FG: 92, BG: 102
-    GREEN_BRIGHT = 62,
-    // FG: 93, BG: 103
-    YELLOW_BRIGHT = 63,
-    // FG: 94, BG: 104
-    BLUE_BRIGHT = 64,
-    // FG: 95, BG: 105
-    MAGENTA_BRIGHT = 65,
-    // FG: 96, BG: 106
-    CYAN_BRIGHT = 66,
-    // FG: 97, BG: 107
-    WHITE_BRIGHT = 67
+enum class Color4 : std::uint8_t
+{
+  // FG: 30, BG: 40
+  BLACK          = 0,
+  // FG: 31, BG: 41
+  RED            = 1,
+  // FG: 32, BG: 42
+  GREEN          = 2,
+  // FG: 33, BG: 43
+  YELLOW         = 3,
+  // FG: 34, BG: 44
+  BLUE           = 4,
+  // FG: 35, BG: 45
+  MAGENTA        = 5,
+  // FG: 36, BG: 46
+  CYAN           = 6,
+  // FG: 37, BG: 47
+  WHITE          = 7,
+  // Use the default terminal color, FG: 39, BG: 49
+  DEFAULT        = 9,
+  // FG: 90, BG: 100
+  GRAY           = 60,
+  // FG: 91, BG: 101
+  RED_BRIGHT     = 61,
+  // FG: 92, BG: 102
+  GREEN_BRIGHT   = 62,
+  // FG: 93, BG: 103
+  YELLOW_BRIGHT  = 63,
+  // FG: 94, BG: 104
+  BLUE_BRIGHT    = 64,
+  // FG: 95, BG: 105
+  MAGENTA_BRIGHT = 65,
+  // FG: 96, BG: 106
+  CYAN_BRIGHT    = 66,
+  // FG: 97, BG: 107
+  WHITE_BRIGHT   = 67
 };
 /*
  * Styles for text in the terminal
  */
-enum class Style : std::uint8_t {
-    // resets all attributes (styles and colors)
-    RESET = 0,
-    // Thick text font
-    BOLD = 1,
-    // lighter, slimmer text font
-    DIM = 2,
-    // slightly bend text font
-    ITALIC = 3,
-    // draws a line below the text
-    UNDERLINE = 4,
-    BLINK = 5,
-    BLINK_RAPID = 6,
-    REVERSED = 7,
-    CONCEAL = 8,
-    // strikes through the text, mostly supported
-    CROSSED = 9,
-    // draws a line over the text, barely supported
-    OVERLINE = 53
+enum class Style : std::uint8_t
+{
+  // resets all attributes (styles and colors)
+  RESET       = 0,
+  // Thick text font
+  BOLD        = 1,
+  // lighter, slimmer text font
+  DIM         = 2,
+  // slightly bend text font
+  ITALIC      = 3,
+  // draws a line below the text
+  UNDERLINE   = 4,
+  BLINK       = 5,
+  BLINK_RAPID = 6,
+  REVERSED    = 7,
+  CONCEAL     = 8,
+  // strikes through the text, mostly supported
+  CROSSED     = 9,
+  // draws a line over the text, barely supported
+  OVERLINE    = 53
 };
 
 // Represents a RGB (24bit) color
-struct RGB {
-    RGB() {}
-    RGB(const std::uint8_t& rr, const std::uint8_t& gg, const std::uint8_t& bb)
-        : r(rr), g(gg), b(bb), empty(false) {}
-    std::uint8_t r{0}, g{0}, b{0};
-    bool empty{true};
+struct RGB
+{
+  RGB() {}
+  RGB(const std::uint8_t& rr, const std::uint8_t& gg, const std::uint8_t& bb) : r(rr), g(gg), b(bb), empty(false) {}
+  std::uint8_t r{0}, g{0}, b{0};
+  bool         empty{true};
 };
 // indicates the color mode (basically the original color resolution)
 // also used to manually override the original color resolution
-enum class Mode {
-    // no color was used
-    UNSET,
-    // a 4bit color was used
-    BIT4,
-    // a 8bit color was used
-    BIT8,
-    // a 24bit (RGB) color was used
-    BIT24,
-    // use 24bit colors, but fall back to 8bit if unsupported
-    AUTO24
+enum class Mode
+{
+  // no color was used
+  UNSET,
+  // a 4bit color was used
+  BIT4,
+  // a 8bit color was used
+  BIT8,
+  // a 24bit (RGB) color was used
+  BIT24,
+  // use 24bit colors, but fall back to 8bit if unsupported
+  AUTO24
 };
 // represents an RGB foreground and background color
-struct RGBF {
-    RGBF() {}
-    RGBF(const RGB& rfg, const Mode& mfg, const RGB& rfb, const Mode& mfb)
-        : rgb_fg(rfg), mode_fg(mfg), rgb_bg(rfb), mode_bg(mfb) {}
-    RGB rgb_fg{};
-    Mode mode_fg{};
-    RGB rgb_bg{};
-    Mode mode_bg{};
+struct RGBF
+{
+  RGBF() {}
+  RGBF(const RGB& rfg, const Mode& mfg, const RGB& rfb, const Mode& mfb) : rgb_fg(rfg), mode_fg(mfg), rgb_bg(rfb), mode_bg(mfb) {}
+  RGB  rgb_fg{};
+  Mode mode_fg{};
+  RGB  rgb_bg{};
+  Mode mode_bg{};
 };
 /*
  * reference colors for converting RGB colors to 4bit colors and vice versa
  */
-class Bit4_reference {
-   public:
-    static RGB BLACK;
-    static RGB RED;
-    static RGB GREEN;
-    static RGB YELLOW;
-    static RGB BLUE;
-    static RGB MAGENTA;
-    static RGB CYAN;
-    static RGB WHITE;
-    static RGB GRAY;
-    static RGB RED_BRIGHT;
-    static RGB GREEN_BRIGHT;
-    static RGB YELLOW_BRIGHT;
-    static RGB BLUE_BRIGHT;
-    static RGB MAGENTA_BRIGHT;
-    static RGB CYAN_BRIGHT;
-    static RGB WHITE_BRIGHT;
-    static RGB NONE;
+class Bit4_reference
+{
+public:
+  static RGB BLACK;
+  static RGB RED;
+  static RGB GREEN;
+  static RGB YELLOW;
+  static RGB BLUE;
+  static RGB MAGENTA;
+  static RGB CYAN;
+  static RGB WHITE;
+  static RGB GRAY;
+  static RGB RED_BRIGHT;
+  static RGB GREEN_BRIGHT;
+  static RGB YELLOW_BRIGHT;
+  static RGB BLUE_BRIGHT;
+  static RGB MAGENTA_BRIGHT;
+  static RGB CYAN_BRIGHT;
+  static RGB WHITE_BRIGHT;
+  static RGB NONE;
 };
 
 // Converts a 4bit color to Term::RGB
@@ -139,12 +145,12 @@ RGB rgb_empty();
 std::uint16_t rgb_compare(RGB rgb_first, RGB rgb_second);
 
 // Converts an RGB color to a 4bit color
-Color4 rgb_to_bit4(RGB rgb);
+Color4  rgb_to_bit4(RGB rgb);
 // Converts an RGB color to a 8bit color
 uint8_t rgb_to_bit8(RGB rgb);
 
 // checks if the terminal supports RGB (24bit) colors
-bool bit24_support();
+bool        bit24_support();
 // returns ANSI code for 24bit colors, if not supported falls back to 8bit
 std::string rgb_to_bit24_auto_fg(RGB color);
 // returns ANSI code for 24bit colors, if not supported falls back to 8bit
@@ -198,12 +204,7 @@ RGBF rgbf_bg(RGB rgb);
 // Create a Term::RGBF color using a 4bit foreground and background color
 RGBF rgbf_fb(Color4 fg, Color4 bg);
 // Create a Term::RGBF color using a 24bit (RGB) fore- and background color
-RGBF rgbf_fb(std::uint8_t r_fg,
-             std::uint8_t g_fg,
-             std::uint8_t b_fg,
-             std::uint8_t r_bg,
-             std::uint8_t g_bg,
-             std::uint8_t b_bg);
+RGBF rgbf_fb(std::uint8_t r_fg, std::uint8_t g_fg, std::uint8_t b_fg, std::uint8_t r_bg, std::uint8_t g_bg, std::uint8_t b_bg);
 // Create a Term::RGBF color using a Term::RGB fore- and background color
 RGBF rgbf_fb(RGB rgb_fg, RGB rgb_bg);
 
@@ -218,54 +219,52 @@ std::string color_auto(RGBF rgbf, Mode mode);
 // get the terminal size (row, column) / (Y, X)
 std::tuple<std::size_t, std::size_t> get_size();
 // check if stdin is connected to a TTY
-bool stdin_connected();
+bool                                 stdin_connected();
 // check if stdout is connected to a TTY
-bool stdout_connected();
+bool                                 stdout_connected();
 // turn off the cursor
-std::string cursor_off();
+std::string                          cursor_off();
 // turn on the cursor
-std::string cursor_on();
+std::string                          cursor_on();
 // clear the screen
-std::string clear_screen();
+std::string                          clear_screen();
 // clear the screen and the scroll-back buffer
-std::string clear_buffer();
+std::string                          clear_buffer();
 // move the cursor to the given (row, column) / (Y, X)
-std::string cursor_move(std::size_t row, std::size_t column);
+std::string                          cursor_move(std::size_t row, std::size_t column);
 // move the cursor the given rows up
-std::string cursor_up(std::size_t rows);
+std::string                          cursor_up(std::size_t rows);
 // move the cursor the given rows down
-std::string cursor_down(std::size_t rows);
+std::string                          cursor_down(std::size_t rows);
 // move the cursor the given columns left
-std::string cursor_left(std::size_t columns);
+std::string                          cursor_left(std::size_t columns);
 // move the cursor the given columns right
-std::string cursor_right(std::size_t columns);
+std::string                          cursor_right(std::size_t columns);
 // returns the current cursor position (row, column) (Y, X)
 std::tuple<std::size_t, std::size_t> cursor_position();
 // the ANSI code to generate a cursor position report
-std::string cursor_position_report();
+std::string                          cursor_position_report();
 // clears the screen from the current cursor position to the end of the screen
-std::string clear_eol();
+std::string                          clear_eol();
 // save the current terminal state
-std::string screen_save();
+std::string                          screen_save();
 // load a previously saved terminal state
-std::string screen_load();
+std::string                          screen_load();
 // change the title of the terminal, only supported by a few terminals
-std::string terminal_title(const std::string& title);
+std::string                          terminal_title(const std::string& title);
 
 // initializes the terminal
-class Terminal : public Private::BaseTerminal {
-   private:
-    bool clear_screen{};
-    bool hide_cursor{};
+class Terminal : public Private::BaseTerminal
+{
+private:
+  bool clear_screen{};
+  bool hide_cursor{};
 
-   public:
-    Terminal(bool _clear_screen,
-             bool enable_keyboard,
-             bool disable_signal_keys,
-             bool _hide_cursor);
-    // providing no parameters will disable the keyboard and ctrl+c
-    explicit Terminal(bool _clear_screen);
+public:
+  Terminal(bool _clear_screen, bool enable_keyboard, bool disable_signal_keys, bool _hide_cursor);
+  // providing no parameters will disable the keyboard and ctrl+c
+  explicit Terminal(bool _clear_screen);
 
-    virtual ~Terminal() noexcept(false) override;
+  virtual ~Terminal() noexcept(false) override;
 };
 }  // namespace Term

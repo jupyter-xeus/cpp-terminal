@@ -1,0 +1,47 @@
+---
+parse:
+  additional_commands: { }
+  override_spec: { }
+  vartags: [ ]
+  proptags: [ ]
+format:
+  disable: false
+  line_width: 250
+  tab_size: 2
+  use_tabchars: false
+  fractional_tab_policy: use-space
+  max_subgroups_hwrap: 5
+  max_pargs_hwrap: 6
+  max_rows_cmdline: 2
+  separate_ctrl_name_with_space: false
+  separate_fn_name_with_space: false
+  dangle_parens: false
+  dangle_align: child
+  min_prefix_chars: 4
+  max_prefix_chars: 50
+  max_lines_hwrap: 2
+  line_ending: unix
+  command_case: lower
+  keyword_case: upper
+  always_wrap: [ ]
+  enable_sort: true
+  autosort: true
+  require_valid_layout: false
+  layout_passes: { }
+markup:
+  bullet_char: '*'
+  enum_char: .
+  first_comment_is_literal: false
+  literal_comment_pattern:
+  fence_pattern: ^\s*([`~]{3}[`~]*)(.*)$
+  ruler_pattern: ^\s*[^\w\s]{3}.*[^\w\s]{3}$
+  explicit_trailing_pattern: '#<'
+  hashruler_min_length: 10
+  canonicalize_hashrulers: true
+  enable_markup: true
+encode:
+  emit_byteorder_mark: false
+  input_encoding: utf-8
+  output_encoding: utf-8
+misc:
+  per_command: { }

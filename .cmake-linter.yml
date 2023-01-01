@@ -1,0 +1,22 @@
+---
+format:
+  line_width: 250
+lint:
+  disabled_codes: [ ]
+  function_pattern: '[0-9a-z_]+'
+  macro_pattern: '[0-9A-Z_]+'
+  global_var_pattern: '[A-Za-z][0-9a-zA-Z_]+'
+  internal_var_pattern: '[_A-Za-z][0-9a-zA-Z_]+'
+  local_var_pattern: '[A-Za-z][A-Za-z0-9_]+'
+  private_var_pattern: _[0-9a-z_]+
+  public_var_pattern: '[A-Z][0-9A-Z_]+'
+  argument_var_pattern: '[A-Za-z][A-Za-z0-9_]+'
+  keyword_pattern: '[A-Z][0-9A-Z_]+'
+  max_conditionals_custom_parser: 2
+  min_statement_spacing: 1
+  max_statement_spacing: 2
+  max_returns: 6
+  max_branches: 30
+  max_arguments: 5
+  max_localvars: 15
+  max_statements: 150

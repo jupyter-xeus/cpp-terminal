@@ -4,124 +4,113 @@
 #include <iostream>
 #include <stdexcept>
 #include <tuple>
-void render(int rows, int cols, int menuheight, int menuwidth, int menupos) {
-    std::string scr;
-    scr.reserve(16 * 1024);
 
-    scr.append(Term::cursor_move(1, 1));
+void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
+{
+  std::string scr;
+  scr.reserve(16 * 1024);
 
-    int menux0 = (cols - menuwidth) / 2;
-    int menuy0 = (rows - menuheight) / 2;
+  scr.append(Term::cursor_move(1, 1));
 
-    for (int j = 1; j <= menuy0; j++) {
-        scr.append("\n");
+  int menux0 = (cols - menuwidth) / 2;
+  int menuy0 = (rows - menuheight) / 2;
+
+  for(int j = 1; j <= menuy0; j++) { scr.append("\n"); }
+
+  for(int j = 1; j <= menux0; j++) { scr.append(" "); }
+  scr.append("┌");
+  for(int j = 1; j <= menuwidth; j++) { scr.append("─"); }
+  scr.append("┐");
+  scr.append(" \n");
+  for(int i = 1; i <= menuheight; i++)
+  {
+    for(int j = 1; j <= menux0; j++) { scr.append(" "); }
+    scr.append("│");
+    if(i == menupos)
+    {
+      scr.append(Term::color_fg(Term::Color4::RED));
+      scr.append(Term::color_bg(Term::Color4::GRAY));
+      scr.append(Term::style(Term::Style::BOLD));
     }
-
-    for (int j = 1; j <= menux0; j++) {
-        scr.append(" ");
+    else
+    {
+      scr.append(Term::color_fg(Term::Color4::BLUE));
+      scr.append(Term::color_bg(Term::Color4::GREEN));
     }
-    scr.append("┌");
-    for (int j = 1; j <= menuwidth; j++) {
-        scr.append("─");
-    }
-    scr.append("┐");
+    std::string s = std::to_string(i) + ": item";
+    scr.append(s);
+    for(std::size_t j = 1; j <= menuwidth - s.size(); j++) { scr.append(" "); }
+    scr.append(Term::color_bg(Term::Color4::DEFAULT));
+    scr.append(Term::color_fg(Term::Color4::DEFAULT));
+    scr.append(Term::style(Term::Style::RESET));
+    scr.append("│");
     scr.append(" \n");
-    for (int i = 1; i <= menuheight; i++) {
-        for (int j = 1; j <= menux0; j++) {
-            scr.append(" ");
-        }
-        scr.append("│");
-        if (i == menupos) {
-            scr.append(Term::color_fg(Term::Color4::RED));
-            scr.append(Term::color_bg(Term::Color4::GRAY));
-            scr.append(Term::style(Term::Style::BOLD));
-        } else {
-            scr.append(Term::color_fg(Term::Color4::BLUE));
-            scr.append(Term::color_bg(Term::Color4::GREEN));
-        }
-        std::string s = std::to_string(i) + ": item";
-        scr.append(s);
-        for (std::size_t j = 1; j <= menuwidth - s.size(); j++) {
-            scr.append(" ");
-        }
-        scr.append(Term::color_bg(Term::Color4::DEFAULT));
-        scr.append(Term::color_fg(Term::Color4::DEFAULT));
-        scr.append(Term::style(Term::Style::RESET));
-        scr.append("│");
-        scr.append(" \n");
-    }
-    for (int j = 1; j <= menux0; j++) {
-        scr.append(" ");
-    }
-    scr.append("└");
-    for (int j = 1; j <= menuwidth; j++) {
-        scr.append("─");
-    }
-    scr.append("┘");
-    scr.append(" \n");
+  }
+  for(int j = 1; j <= menux0; j++) { scr.append(" "); }
+  scr.append("└");
+  for(int j = 1; j <= menuwidth; j++) { scr.append("─"); }
+  scr.append("┘");
+  scr.append(" \n");
 
-    scr.append(Term::cursor_move(menuy0 + menuheight + 5, 1));
-    scr.append("Selected item: " + std::to_string(menupos) + "      \n");
-    scr.append("Menu width: " + std::to_string(menuwidth) + "       \n");
-    scr.append("Menu height: " + std::to_string(menuheight) + "    \n");
+  scr.append(Term::cursor_move(menuy0 + menuheight + 5, 1));
+  scr.append("Selected item: " + std::to_string(menupos) + "      \n");
+  scr.append("Menu width: " + std::to_string(menuwidth) + "       \n");
+  scr.append("Menu height: " + std::to_string(menuheight) + "    \n");
 
-    std::cout << scr << std::flush;
+  std::cout << scr << std::flush;
 }
 
-int main() {
-    try {
-        // check if the terminal is capable of handling input
-        if (!Term::stdin_connected()) {
-            std::cout << "The terminal is not attached to a TTY and therefore "
-                         "can't catch user input. Exiting...\n";
-            return 1;
-        }
-        Term::Terminal term(true, true, true, true);
-        std::tuple<std::size_t, std::size_t> term_size = Term::get_size();
-        int pos = 5;
-        int h = 10;
-        std::size_t w{10};
-        bool on = true;
-        while (on) {
-            render(std::get<0>(term_size), std::get<1>(term_size), h, w, pos);
-            int key = Term::read_key();
-            switch (key) {
-                case Term::Key::ARROW_LEFT:
-                    if (w > 10)
-                        w--;
-                    break;
-                case Term::Key::ARROW_RIGHT:
-                    if (w <
-                        static_cast<std::size_t>(std::get<1>(term_size) - 5))
-                        w++;
-                    break;
-                case Term::Key::ARROW_UP:
-                    if (pos > 1)
-                        pos--;
-                    break;
-                case Term::Key::ARROW_DOWN:
-                    if (pos < h)
-                        pos++;
-                    break;
-                case Term::Key::HOME:
-                    pos = 1;
-                    break;
-                case Term::Key::END:
-                    pos = h;
-                    break;
-                case 'q':
-                case Term::Key::ESC:
-                case Term::Key::CTRL + 'c':
-                    on = false;
-                    break;
-            }
-        }
-    } catch (const std::runtime_error& re) {
-        std::cerr << "Runtime error: " << re.what() << std::endl;
-        return 2;
-    } catch (...) {
-        std::cerr << "Unknown error." << std::endl;
-        return 1;
+int main()
+{
+  try
+  {
+    // check if the terminal is capable of handling input
+    if(!Term::stdin_connected())
+    {
+      std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
+      return 1;
     }
-    return 0;
+    Term::Terminal                       term(true, true, true, true);
+    std::tuple<std::size_t, std::size_t> term_size = Term::get_size();
+    int                                  pos       = 5;
+    int                                  h         = 10;
+    std::size_t                          w{10};
+    bool                                 on = true;
+    while(on)
+    {
+      render(std::get<0>(term_size), std::get<1>(term_size), h, w, pos);
+      int key = Term::read_key();
+      switch(key)
+      {
+        case Term::Key::ARROW_LEFT:
+          if(w > 10) w--;
+          break;
+        case Term::Key::ARROW_RIGHT:
+          if(w < static_cast<std::size_t>(std::get<1>(term_size) - 5)) w++;
+          break;
+        case Term::Key::ARROW_UP:
+          if(pos > 1) pos--;
+          break;
+        case Term::Key::ARROW_DOWN:
+          if(pos < h) pos++;
+          break;
+        case Term::Key::HOME: pos = 1; break;
+        case Term::Key::END: pos = h; break;
+        case 'q':
+        case Term::Key::ESC:
+        case Term::Key::CTRL + 'c': on = false; break;
+      }
+    }
+  }
+  catch(const std::runtime_error& re)
+  {
+    std::cerr << "Runtime error: " << re.what() << std::endl;
+    return 2;
+  }
+  catch(...)
+  {
+    std::cerr << "Unknown error." << std::endl;
+    return 1;
+  }
+  return 0;
 }
