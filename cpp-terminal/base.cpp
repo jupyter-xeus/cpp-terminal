@@ -374,31 +374,3 @@ std::string Term::screen_load()
 }
 
 std::string Term::terminal_title(const std::string& title) { return "\033]0;" + title + '\a'; }
-
-Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_signal_keys, bool _hide_cursor) : BaseTerminal(enable_keyboard, disable_signal_keys), clear_screen{_clear_screen}, hide_cursor{_hide_cursor}
-{
-  if(clear_screen)
-  {
-    std::cout << screen_save() + clear_buffer();  // Fix consoles that ignore save_screen()
-  }
-  if(hide_cursor) std::cout << cursor_off();
-
-  // flush stdout
-  std::cout << std::flush;
-}
-Term::Terminal::Terminal(bool _clear_screen) : BaseTerminal(false, true), clear_screen{_clear_screen}
-{
-  if(clear_screen) { std::cout << screen_save() << clear_buffer() << std::flush; }
-}
-Term::Terminal::~Terminal()
-{
-  if(clear_screen)
-  {
-    // Fix consoles that ignore save_screen()
-    std::cout << style(Style::RESET) << clear_buffer() << cursor_move(1, 1) << screen_load();
-  }
-  if(hide_cursor) std::cout << cursor_on();
-
-  // flush the output stream
-  std::cout << std::flush;
-}

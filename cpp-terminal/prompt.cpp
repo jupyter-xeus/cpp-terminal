@@ -1,5 +1,5 @@
+#include "cpp-terminal/terminal.hpp"
 #include "private/conversion.hpp"
-#include "private/platform.hpp"
 
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
@@ -129,7 +129,7 @@ Term::Result_simple Term::prompt_simple(const std::string& message)
 std::string Term::concat(const std::vector<std::string>& lines)
 {
   std::string s;
-  for(std::size_t i = 0; i != lines.size(); ++i) { s.append(lines[i] + "\n"); }
+  for(auto& line: lines) { s.append(line + "\n"); }
   return s;
 }
 
@@ -179,9 +179,9 @@ void Term::render(Term::Window& scr, const Model& m, std::size_t cols)
   {
     if(j == 0)
     {
-      scr.print_str(1, j + 1, m.prompt_string);
       scr.fill_fg(1, j + 1, m.prompt_string.size(), m.lines.size(), Term::Bit4_reference::GREEN);
       scr.fill_style(1, j + 1, m.prompt_string.size(), m.lines.size(), Term::Style::BOLD);
+      scr.print_str(1, j + 1, m.prompt_string);
     }
     else
     {
@@ -192,7 +192,7 @@ void Term::render(Term::Window& scr, const Model& m, std::size_t cols)
   scr.set_cursor_pos(m.prompt_string.size() + m.cursor_col, m.cursor_row);
 }
 
-std::string Term::prompt_multiline(Terminal& term, const std::string& prompt_string, std::vector<std::string>& _history, std::function<bool(std::string)>& iscomplete)
+std::string Term::prompt_multiline(const std::string& prompt_string, std::vector<std::string>& m_history, std::function<bool(std::string)>& iscomplete)
 {
   std::size_t row{1}, col{1};
   std::size_t rows{25}, cols{80};
@@ -205,12 +205,10 @@ std::string Term::prompt_multiline(Terminal& term, const std::string& prompt_str
 
   Model m;
   m.prompt_string = prompt_string;
-  m.lines.emplace_back("");
-  m.cursor_col = 1;
-  m.cursor_row = 1;
 
-  // Make a local copy of history that can be modified by the user. All changes will be forgotten once a command is submitted.
-  std::vector<std::string> history     = _history;
+  // Make a local copy of history that can be modified by the user. All
+  // changes will be forgotten once a command is submitted.
+  std::vector<std::string> history     = m_history;
   std::size_t              history_pos = history.size();
   history.push_back(concat(m.lines));  // Push back empty input
 
@@ -237,7 +235,7 @@ std::string Term::prompt_multiline(Terminal& term, const std::string& prompt_str
       {
         m.lines[m.cursor_row - 1].push_back(Key::CTRL_D);
         std::cout << "\n" << std::flush;
-        history.push_back(m.lines[0]);
+        m_history.push_back(m.lines[0]);
         return m.lines[0];
       }
     }
@@ -317,11 +315,13 @@ std::string Term::prompt_multiline(Terminal& term, const std::string& prompt_str
           break;
         case Key::ENTER:
           not_complete = !iscomplete(concat(m.lines));
-          if(not_complete) { key = Key::ALT_ENTER; }
-          else { break; }
+          if(not_complete) key = Key::ALT_ENTER;
+          else
+            break;
           CPP_TERMINAL_FALLTHROUGH;
-        case Key::CTRL + 'n':
+        case Key::CTRL_N:
         case Key::ALT_ENTER:
+        {
           std::string before        = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
           std::string after         = m.lines[m.cursor_row - 1].substr(m.cursor_col - 1);
           m.lines[m.cursor_row - 1] = before;
@@ -334,6 +334,9 @@ std::string Term::prompt_multiline(Terminal& term, const std::string& prompt_str
           m.cursor_col = 1;
           m.cursor_row++;
           if(m.lines.size() > scr.get_h()) { scr.set_h(m.lines.size()); }
+          break;
+        }
+        default: break;
       }
     }
     render(scr, m, cols);
@@ -347,6 +350,6 @@ std::string Term::prompt_multiline(Terminal& term, const std::string& prompt_str
   std::string line_skips;
   for(std::size_t i = 0; i <= m.lines.size() - m.cursor_row; i++) { line_skips += "\n"; }
   std::cout << line_skips << std::flush;
-  history.push_back(concat(m.lines));
+  m_history.push_back(concat(m.lines));
   return concat(m.lines);
 }

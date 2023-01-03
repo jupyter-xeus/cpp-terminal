@@ -1,6 +1,8 @@
 #pragma once
 
-#include <cpp-terminal/window.hpp>
+#include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/window.hpp"
+
 #include <functional>
 
 namespace Term
@@ -51,12 +53,14 @@ Result_simple prompt_simple(const std::string& message);
 
 // This model contains all the information about the state of the prompt in an
 // abstract way, irrespective of where or how it is rendered.
-struct Model
+class Model
 {
+public:
   std::string              prompt_string;  // The string to show as the prompt
-  std::vector<std::string> lines;          // The current input string in the prompt as a vector of lines, without '\n' at the end.
+  std::vector<std::string> lines{""};      // The current input string in the prompt as a vector of lines, without '\n' at the end.
   // The current cursor position in the "input" string, starting from (1,1)
-  std::size_t              cursor_col{}, cursor_row{};
+  std::size_t              cursor_col{1};
+  std::size_t              cursor_row{1};
 };
 
 std::string concat(const std::vector<std::string>&);
@@ -69,5 +73,5 @@ void print_left_curly_bracket(Term::Window&, int, int, int);
 
 void render(Term::Window&, const Model&, std::size_t);
 
-std::string prompt_multiline(Terminal&, const std::string&, std::vector<std::string>&, std::function<bool(std::string)>&);
+std::string prompt_multiline(const std::string&, std::vector<std::string>&, std::function<bool(std::string)>&);
 }  // namespace Term

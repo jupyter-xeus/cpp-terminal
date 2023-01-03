@@ -1,3 +1,5 @@
+#include "cpp-terminal/terminal.hpp"
+
 #include <cctype>
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/input.hpp>
@@ -831,7 +833,7 @@ bool editorProcessKeypress()
   {
     case Term::Key::ENTER: editorInsertNewline(); break;
 
-    case Term::Key::CTRL + 'q':
+    case Term::Key::CTRL_Q:
       if(E.dirty && quit_times > 0)
       {
         editorSetStatusMessage("WARNING!!! File has unsaved changes. Press Ctrl-Q %d more times to quit.", quit_times);
@@ -841,7 +843,7 @@ bool editorProcessKeypress()
       return false;
       break;
 
-    case Term::Key::CTRL + 's': editorSave(); break;
+    case Term::Key::CTRL_S: editorSave(); break;
 
     case Term::Key::HOME: E.cx = 0; break;
 
@@ -849,7 +851,7 @@ bool editorProcessKeypress()
       if(E.cy < E.numrows) E.cx = E.row[E.cy].size;
       break;
 
-    case Term::Key::CTRL + 'f': editorFind(); break;
+    case Term::Key::CTRL_F: editorFind(); break;
 
     case Term::Key::BACKSPACE:
     case Term::Key::DEL:
@@ -877,7 +879,7 @@ bool editorProcessKeypress()
     case Term::Key::ARROW_LEFT:
     case Term::Key::ARROW_RIGHT: editorMoveCursor(c); break;
 
-    case Term::Key::CTRL + 'l':
+    case Term::Key::CTRL_L:
     case Term::Key::ESC: break;
 
     case Term::Key::TAB: editorInsertChar('\t'); break;
@@ -923,7 +925,7 @@ int main(int argc, char* argv[])
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal term(true, true, false, false);
+    Term::Terminal term(true, true, true, false);
     initEditor();
     if(argc >= 2) { editorOpen(argv[1]); }
 

@@ -253,18 +253,4 @@ std::string                          screen_load();
 // change the title of the terminal, only supported by a few terminals
 std::string                          terminal_title(const std::string& title);
 
-// initializes the terminal
-class Terminal : public Private::BaseTerminal
-{
-private:
-  bool clear_screen{};
-  bool hide_cursor{};
-
-public:
-  Terminal(bool _clear_screen, bool enable_keyboard, bool disable_signal_keys, bool _hide_cursor);
-  // providing no parameters will disable the keyboard and ctrl+c
-  explicit Terminal(bool _clear_screen);
-
-  virtual ~Terminal() noexcept(false) override;
-};
 }  // namespace Term

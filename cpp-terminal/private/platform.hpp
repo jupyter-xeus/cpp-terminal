@@ -24,23 +24,6 @@ bool read_raw(char* s);
 
 bool has_ansi_escape_code();
 
-/* Note: the code that uses Terminal must be inside try/catch block, otherwise
- * the destructors will not be called when an exception happens and the
- * terminal will not be left in a good state. Terminal uses exceptions when
- * something goes wrong.
- */
-class BaseTerminal
-{
-private:
-  void store_and_restore();
-  bool keyboard_enabled{};
-
-public:
-  explicit BaseTerminal(bool enable_keyboard = false, bool disable_signal_keys = true);
-
-  virtual ~BaseTerminal() noexcept(false);
-};
-
 char read_raw_stdin();
 
 }  // namespace Private
