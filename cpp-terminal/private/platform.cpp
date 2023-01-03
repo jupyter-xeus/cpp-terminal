@@ -44,7 +44,7 @@ bool Term::Private::is_stdout_a_tty()
 
 std::string Term::Private::getenv(const std::string& env)
 {
-#if _WIN32
+#ifdef _WIN32
   std::size_t requiredSize{0};
   getenv_s(&requiredSize, nullptr, 0, env.c_str());
   if(requiredSize == 0) return std::string();
@@ -78,6 +78,7 @@ std::tuple<std::size_t, std::size_t> Term::Private::get_term_size()
   struct winsize ws
   {
   };
+  {};
   if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0)
   {
     // This happens when we are not connected to a terminal

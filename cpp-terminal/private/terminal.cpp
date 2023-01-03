@@ -3,6 +3,7 @@
 #include "cpp-terminal/base.hpp"
 
 #include <iostream>
+#include <stdexcept>
 
 #ifdef _WIN32
   #include <conio.h>
