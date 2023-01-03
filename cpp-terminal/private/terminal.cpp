@@ -33,12 +33,12 @@ void Term::Terminal::store_and_restore()
   static UINT  in_code_page{};
   if(!enabled)
   {
-    if(is_stdout_a_tty())
+    if(Term::Private::is_stdout_a_tty())
     {
       out_code_page = GetConsoleOutputCP();
       if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &dwOriginalOutMode)) { throw std::runtime_error("GetConsoleMode() failed"); }
     }
-    if(is_stdin_a_tty())
+    if(Term::Private::is_stdin_a_tty())
     {
       in_code_page = GetConsoleCP();
       if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &dwOriginalInMode)) { throw std::runtime_error("GetConsoleMode() failed"); }
@@ -47,12 +47,12 @@ void Term::Terminal::store_and_restore()
   }
   else
   {
-    if(is_stdout_a_tty())
+    if(Term::Private::is_stdout_a_tty())
     {
       SetConsoleOutputCP(out_code_page);
       if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), dwOriginalOutMode)) { throw std::runtime_error("SetConsoleMode() failed in destructor"); }
     }
-    if(is_stdin_a_tty())
+    if(Term::Private::is_stdin_a_tty())
     {
       SetConsoleCP(in_code_page);
       if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), dwOriginalInMode)) { throw std::runtime_error("SetConsoleMode() failed in destructor"); }
@@ -83,14 +83,14 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
   store_and_restore();
 #ifdef _WIN32
   // silently disable raw mode for non-tty
-  if(keyboard_enabled) keyboard_enabled = is_stdin_a_tty();
-  if(is_stdout_a_tty())
+  if(keyboard_enabled) keyboard_enabled = Term::Private::is_stdin_a_tty();
+  if(Term::Private::is_stdout_a_tty())
   {
     SetConsoleOutputCP(65001);
     if(GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed"); }
     DWORD flags{0};
     if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &flags)) { throw std::runtime_error("GetConsoleMode() failed"); }
-    if(has_ansi_escape_code())
+    if(Term::Private::has_ansi_escape_code())
     {
       flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
       flags |= DISABLE_NEWLINE_AUTO_RETURN;
@@ -149,7 +149,7 @@ Term::Terminal::Terminal(bool _clear_screen) : keyboard_enabled{false}, disable_
 #ifdef _WIN32
   // silently disable raw mode for non-tty
   if(keyboard_enabled) keyboard_enabled = Term::Private::is_stdin_a_tty();
-  if(is_stdout_a_tty())
+  if(Term::Private::is_stdout_a_tty())
   {
     SetConsoleOutputCP(65001);
     if(GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed"); }
