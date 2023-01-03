@@ -104,7 +104,7 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
     if(GetStdHandle(STD_INPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_INPUT_HANDLE) failed"); }
     DWORD flags{0};
     if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &flags)) { throw std::runtime_error("GetConsoleMode() failed"); }
-    if(has_ansi_escape_code()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
+    if(Term::Private::has_ansi_escape_code()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
     if(disable_signal_keys) { flags &= ~ENABLE_PROCESSED_INPUT; }
     flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
     if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), flags)) { throw std::runtime_error("SetConsoleMode() failed"); }
@@ -155,7 +155,7 @@ Term::Terminal::Terminal(bool _clear_screen) : keyboard_enabled{false}, disable_
     if(GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed"); }
     DWORD flags{0};
     if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &flags)) { throw std::runtime_error("GetConsoleMode() failed"); }
-    if(has_ansi_escape_code())
+    if(Term::Private::has_ansi_escape_code())
     {
       flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
       flags |= DISABLE_NEWLINE_AUTO_RETURN;
@@ -169,7 +169,7 @@ Term::Terminal::Terminal(bool _clear_screen) : keyboard_enabled{false}, disable_
     if(GetStdHandle(STD_INPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_INPUT_HANDLE) failed"); }
     DWORD flags{0};
     if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &flags)) { throw std::runtime_error("GetConsoleMode() failed"); }
-    if(has_ansi_escape_code()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
+    if(Term::Private::has_ansi_escape_code()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
     if(disable_signal_keys) { flags &= ~ENABLE_PROCESSED_INPUT; }
     flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
     if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), flags)) { throw std::runtime_error("SetConsoleMode() failed"); }

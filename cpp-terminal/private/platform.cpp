@@ -17,7 +17,6 @@ typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #else
   #include <cerrno>
   #include <sys/ioctl.h>
-  #include <termios.h>
   #include <unistd.h>
 #endif
 
@@ -78,7 +77,6 @@ std::tuple<std::size_t, std::size_t> Term::Private::get_term_size()
   struct winsize ws
   {
   };
-  {};
   if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0)
   {
     // This happens when we are not connected to a terminal

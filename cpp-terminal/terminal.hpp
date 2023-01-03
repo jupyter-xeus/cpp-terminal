@@ -14,7 +14,7 @@ public:
   Terminal(bool _clear_screen, bool enable_keyboard, bool disable_signal_keys, bool _hide_cursor);
   // providing no parameters will disable the keyboard and ctrl+c
   explicit Terminal(bool _clear_screen);
-  virtual ~Terminal();
+  ~Terminal();
 
 private:
   void store_and_restore();
