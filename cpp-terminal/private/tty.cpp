@@ -6,29 +6,19 @@
   #include <unistd.h>
 #endif
 
-bool Term::is_stdin_a_tty()
+#include <cstdio>
+
+bool is_a_tty(const FILE* fd)
 {
 #ifdef _WIN32
-  return _isatty(_fileno(stdin));
+  return _isatty(_fileno(const_cast<FILE*>(fd)));
 #else
-  return isatty(0);
+  return isatty(fileno(const_cast<FILE*>(fd)));
 #endif
 }
 
-bool Term::is_stdout_a_tty()
-{
-#ifdef _WIN32
-  return _isatty(_fileno(stdout));
-#else
-  return isatty(1);
-#endif
-}
+bool Term::is_stdin_a_tty() { return is_a_tty(stdin); }
 
-bool Term::is_stderr_a_tty()
-{
-#ifdef _WIN32
-  return _isatty(_fileno(stderr));
-#else
-  return ::isatty(2);
-#endif
-}
+bool Term::is_stdout_a_tty() { return is_a_tty(stdout); }
+
+bool Term::is_stderr_a_tty() { return is_a_tty(stderr); }
