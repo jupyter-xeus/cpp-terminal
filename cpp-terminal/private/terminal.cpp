@@ -1,13 +1,55 @@
 #include "cpp-terminal/terminal.hpp"
-
+#include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/base.hpp"
 
 #include <iostream>
 #include <stdexcept>
 
 #ifdef _WIN32
-  #include <conio.h>
-  #include <io.h>
+  // The most slimmed-down version of Windows.h.
+  #define WIN32_LEAN_AND_MEAN
+  #define WIN32_EXTRA_LEAN
+
+  // Enable components based on necessity.
+  #define NOGDICAPMASKS
+  #define NOVIRTUALKEYCODES
+  #define NOWINMESSAGES
+  #define NOWINSTYLES
+  #define NOSYSMETRICS
+  #define NOMENUS
+  #define NOICONS
+  #define NOKEYSTATES
+  #define NOSYSCOMMANDS
+  #define NORASTEROPS
+  #define NOSHOWWINDOW
+  #define OEMRESOURCE
+  #define NOATOM
+  #define NOCLIPBOARD
+  #define NOCOLOR
+  #define NOCTLMGR
+  #define NODRAWTEXT
+  #define NOGDI
+  #define NOKERNEL
+  #define NOUSER
+  #define NONLS
+  #define NOMB
+  #define NOMEMMGR
+  #define NOMETAFILE
+  #define NOMINMAX
+  #define NOMSG
+  #define NOOPENFILE
+  #define NOSCROLL
+  #define NOSERVICE
+  #define NOSOUND
+  #define NOTEXTMETRIC
+  #define NOWH
+  #define NOWINOFFSETS
+  #define NOCOMM
+  #define NOKANJI
+  #define NOHELP
+  #define NOPROFILER
+  #define NODEFERWINDOWPOS
+  #define NOMCX
   #include <windows.h>
   #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
     #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
@@ -33,12 +75,12 @@ void Term::Terminal::store_and_restore()
   static UINT  in_code_page{};
   if(!enabled)
   {
-    if(Term::Private::is_stdout_a_tty())
+    if(Term::is_stdout_a_tty())
     {
       out_code_page = GetConsoleOutputCP();
       if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &dwOriginalOutMode)) { throw std::runtime_error("GetConsoleMode() failed"); }
     }
-    if(Term::Private::is_stdin_a_tty())
+    if(Term::is_stdin_a_tty())
     {
       in_code_page = GetConsoleCP();
       if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &dwOriginalInMode)) { throw std::runtime_error("GetConsoleMode() failed"); }
@@ -47,12 +89,12 @@ void Term::Terminal::store_and_restore()
   }
   else
   {
-    if(Term::Private::is_stdout_a_tty())
+    if(Term::is_stdout_a_tty())
     {
       SetConsoleOutputCP(out_code_page);
       if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), dwOriginalOutMode)) { throw std::runtime_error("SetConsoleMode() failed in destructor"); }
     }
-    if(Term::Private::is_stdin_a_tty())
+    if(Term::is_stdin_a_tty())
     {
       SetConsoleCP(in_code_page);
       if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), dwOriginalInMode)) { throw std::runtime_error("SetConsoleMode() failed in destructor"); }
@@ -62,7 +104,7 @@ void Term::Terminal::store_and_restore()
   static termios orig_termios;
   if(!enabled)
   {
-    if(Term::Private::is_stdin_a_tty())
+    if(Term::is_stdin_a_tty())
     {
       if(tcgetattr(STDIN_FILENO, &orig_termios) == -1) { throw std::runtime_error("tcgetattr() failed"); }
     }
@@ -70,7 +112,7 @@ void Term::Terminal::store_and_restore()
   }
   else
   {
-    if(Term::Private::is_stdin_a_tty())
+    if(Term::is_stdin_a_tty())
     {
       if(tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) { throw std::runtime_error("tcsetattr() failed in destructor"); }
     }
@@ -83,8 +125,8 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
   store_and_restore();
 #ifdef _WIN32
   // silently disable raw mode for non-tty
-  if(keyboard_enabled) keyboard_enabled = Term::Private::is_stdin_a_tty();
-  if(Term::Private::is_stdout_a_tty())
+  if(keyboard_enabled) keyboard_enabled = Term::is_stdin_a_tty();
+  if(Term::is_stdout_a_tty())
   {
     SetConsoleOutputCP(65001);
     if(GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed"); }
@@ -111,7 +153,7 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
   }
 #else
   // silently disable raw mode for non-tty
-  if(keyboard_enabled) keyboard_enabled = Term::Private::is_stdin_a_tty();
+  if(keyboard_enabled) keyboard_enabled = Term::is_stdin_a_tty();
   termios raw{};
   if(keyboard_enabled)
   {
@@ -148,8 +190,8 @@ Term::Terminal::Terminal(bool _clear_screen) : keyboard_enabled{false}, disable_
   store_and_restore();
 #ifdef _WIN32
   // silently disable raw mode for non-tty
-  if(keyboard_enabled) keyboard_enabled = Term::Private::is_stdin_a_tty();
-  if(Term::Private::is_stdout_a_tty())
+  if(keyboard_enabled) keyboard_enabled = Term::is_stdin_a_tty();
+  if(Term::is_stdout_a_tty())
   {
     SetConsoleOutputCP(65001);
     if(GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed"); }
@@ -176,7 +218,7 @@ Term::Terminal::Terminal(bool _clear_screen) : keyboard_enabled{false}, disable_
   }
 #else
   // silently disable raw mode for non-tty
-  if(keyboard_enabled) keyboard_enabled = Term::Private::is_stdin_a_tty();
+  if(keyboard_enabled) keyboard_enabled = Term::is_stdin_a_tty();
   termios raw{};
   if(keyboard_enabled)
   {

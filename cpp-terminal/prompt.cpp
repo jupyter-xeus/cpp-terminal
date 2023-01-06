@@ -1,9 +1,9 @@
+#include "cpp-terminal/prompt.hpp"
 #include "cpp-terminal/terminal.hpp"
-#include "private/conversion.hpp"
+#include "cpp-terminal/private/conversion.hpp"
+#include "cpp-terminal/input.hpp"
+#include "cpp-terminal/tty.hpp"
 
-#include <cpp-terminal/base.hpp>
-#include <cpp-terminal/input.hpp>
-#include <cpp-terminal/prompt.hpp>
 #include <iostream>
 
 Term::Result Term::prompt(const std::string& message, const std::string& first_option, const std::string& second_option, const std::string& prompt_indicator, bool immediate)
@@ -196,7 +196,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
 {
   std::size_t row{1}, col{1};
   std::size_t rows{25}, cols{80};
-  bool        term_attached = Private::is_stdin_a_tty();
+  bool        term_attached = Term::is_stdin_a_tty();
   if(stdin_connected())
   {
     std::tie(row, col)   = cursor_position();

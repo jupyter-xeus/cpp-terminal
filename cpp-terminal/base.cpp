@@ -1,4 +1,5 @@
 #include "cpp-terminal/private/conversion.hpp"
+#include "cpp-terminal/tty.hpp"
 
 #include <cpp-terminal/base.hpp>
 #include <cpp-terminal/private/platform.hpp>
@@ -308,9 +309,9 @@ std::tuple<std::size_t, std::size_t> Term::get_size()
   return Private::get_term_size();  // function uses platform dependent code
 }
 
-bool Term::stdin_connected() { return Private::is_stdin_a_tty(); }
+bool Term::stdin_connected() { return Term::is_stdin_a_tty(); }
 
-bool Term::stdout_connected() { return Private::is_stdout_a_tty(); }
+bool Term::stdout_connected() { return Term::is_stdout_a_tty(); }
 
 std::string Term::cursor_off() { return "\x1b[?25l"; }
 

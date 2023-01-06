@@ -7,10 +7,7 @@ namespace Term
 {
 namespace Private
 {
-// Returns true if the standard input is attached to a terminal
-bool        is_stdin_a_tty();
-// Returns true if the standard output is attached to a terminal
-bool        is_stdout_a_tty();
+
 // Get the environment variable
 std::string getenv(const std::string&);
 

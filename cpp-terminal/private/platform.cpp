@@ -1,19 +1,53 @@
-#include "platform.hpp"
+#include "cpp-terminal/private/platform.hpp"
+#include "cpp-terminal/tty.hpp"
+
 
 #ifdef _WIN32
-  #include <conio.h>
-  #include <io.h>
+  // The most slimmed-down version of Windows.h.
+  //#define WIN32_LEAN_AND_MEAN
+  #define WIN32_EXTRA_LEAN
+  // Enable components based on necessity.
+  #define NOGDICAPMASKS
+  #define NOVIRTUALKEYCODES
+  #define NOWINMESSAGES
+  #define NOWINSTYLES
+  #define NOSYSMETRICS
+  #define NOMENUS
+  #define NOICONS
+  #define NOKEYSTATES
+  #define NOSYSCOMMANDS
+  #define NORASTEROPS
+  #define NOSHOWWINDOW
+  #define OEMRESOURCE
+  #define NOATOM
+  #define NOCLIPBOARD
+  #define NOCOLOR
+  #define NOCTLMGR
+  #define NODRAWTEXT
+  #define NOGDI
+  #define NOKERNEL
+  #define NOUSER
+  #define NONLS
+  #define NOMB
+  #define NOMEMMGR
+  #define NOMETAFILE
+  #define NOMINMAX
+  #define NOMSG
+  #define NOOPENFILE
+  #define NOSCROLL
+  #define NOSERVICE
+  #define NOSOUND
+  #define NOTEXTMETRIC
+  #define NOWH
+  #define NOWINOFFSETS
+  #define NOCOMM
+  #define NOKANJI
+  #define NOHELP
+  #define NOPROFILER
+  #define NODEFERWINDOWPOS
+  #define NOMCX
   #include <windows.h>
-typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
-  #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
-    #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
-  #endif
-  #ifndef DISABLE_NEWLINE_AUTO_RETURN
-    #define DISABLE_NEWLINE_AUTO_RETURN 0x0008
-  #endif
-  #ifndef ENABLE_VIRTUAL_TERMINAL_INPUT
-    #define ENABLE_VIRTUAL_TERMINAL_INPUT 0x0200
-  #endif
+  typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #else
   #include <cerrno>
   #include <sys/ioctl.h>
@@ -23,23 +57,7 @@ typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #include <stdexcept>
 #include <tuple>
 
-bool Term::Private::is_stdin_a_tty()
-{
-#ifdef _WIN32
-  return _isatty(_fileno(stdin));
-#else
-  return isatty(STDIN_FILENO);
-#endif
-}
 
-bool Term::Private::is_stdout_a_tty()
-{
-#ifdef _WIN32
-  return _isatty(_fileno(stdout));
-#else
-  return isatty(STDOUT_FILENO);
-#endif
-}
 
 std::string Term::Private::getenv(const std::string& env)
 {
@@ -105,11 +123,11 @@ bool Term::Private::read_raw(char* s)
   // do nothing when TTY is not connected
   if(!is_stdin_a_tty()) { return false; }
 #ifdef _WIN32
-  if(GetStdHandle(STD_INPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_INPUT_HANDLE) failed"); }
-  char  buf[1];
-  DWORD nread;
-  if(_kbhit())
+  DWORD nread{0};
+  GetNumberOfConsoleInputEvents(GetStdHandle(STD_INPUT_HANDLE), &nread);
+  if(nread>=1)
   {
+    char buf[1];
     if(!ReadFile(GetStdHandle(STD_INPUT_HANDLE), buf, 1, &nread, nullptr)) { throw std::runtime_error("ReadFile() failed"); }
     if(nread == 1)
     {
