@@ -3,49 +3,6 @@
 #include "cpp-terminal/tty.hpp"
 
 #ifdef _WIN32
-  // The most slimmed-down version of Windows.h.
-  //#define WIN32_LEAN_AND_MEAN
-  #define WIN32_EXTRA_LEAN
-  // Enable components based on necessity.
-  #define NOGDICAPMASKS
-  #define NOVIRTUALKEYCODES
-  #define NOWINMESSAGES
-  #define NOWINSTYLES
-  #define NOSYSMETRICS
-  #define NOMENUS
-  #define NOICONS
-  #define NOKEYSTATES
-  #define NOSYSCOMMANDS
-  #define NORASTEROPS
-  #define NOSHOWWINDOW
-  #define OEMRESOURCE
-  #define NOATOM
-  #define NOCLIPBOARD
-  #define NOCOLOR
-  #define NOCTLMGR
-  #define NODRAWTEXT
-  #define NOGDI
-  #define NOKERNEL
-  #define NOUSER
-  #define NONLS
-  #define NOMB
-  #define NOMEMMGR
-  #define NOMETAFILE
-  #define NOMINMAX
-  #define NOMSG
-  #define NOOPENFILE
-  #define NOSCROLL
-  #define NOSERVICE
-  #define NOSOUND
-  #define NOTEXTMETRIC
-  #define NOWH
-  #define NOWINOFFSETS
-  #define NOCOMM
-  #define NOKANJI
-  #define NOHELP
-  #define NOPROFILER
-  #define NODEFERWINDOWPOS
-  #define NOMCX
   #include <windows.h>
 typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #else
