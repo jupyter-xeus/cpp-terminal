@@ -2,7 +2,6 @@
 
 #ifdef _WIN32
  #include <io.h>
- #include <stdio.h>
 #else
   #include <sys/ioctl.h>
 #endif
