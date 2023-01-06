@@ -1,6 +1,6 @@
 #include "cpp-terminal/private/platform.hpp"
-#include "cpp-terminal/tty.hpp"
 
+#include "cpp-terminal/tty.hpp"
 
 #ifdef _WIN32
   // The most slimmed-down version of Windows.h.
@@ -47,7 +47,7 @@
   #define NODEFERWINDOWPOS
   #define NOMCX
   #include <windows.h>
-  typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
+typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #else
   #include <cerrno>
   #include <sys/ioctl.h>
@@ -56,8 +56,6 @@
 
 #include <stdexcept>
 #include <tuple>
-
-
 
 std::string Term::Private::getenv(const std::string& env)
 {
@@ -125,7 +123,7 @@ bool Term::Private::read_raw(char* s)
 #ifdef _WIN32
   DWORD nread{0};
   GetNumberOfConsoleInputEvents(GetStdHandle(STD_INPUT_HANDLE), &nread);
-  if(nread>=1)
+  if(nread >= 1)
   {
     char buf[1];
     if(!ReadFile(GetStdHandle(STD_INPUT_HANDLE), buf, 1, &nread, nullptr)) { throw std::runtime_error("ReadFile() failed"); }
