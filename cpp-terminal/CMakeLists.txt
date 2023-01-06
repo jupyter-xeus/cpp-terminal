@@ -8,11 +8,11 @@ target_include_directories(cpp-terminal PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURC
 
 set_target_properties(cpp-terminal PROPERTIES
                       PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/version.hpp;
-                                     ${CMAKE_CURRENT_SOURCE_DIR}/tty.hpp;
-                                     ${CMAKE_CURRENT_SOURCE_DIR}/terminal.hpp;
-                                     ${CMAKE_CURRENT_SOURCE_DIR}/base.hpp;
-                                     ${CMAKE_CURRENT_SOURCE_DIR}/prompt.hpp;
-                                     ${CMAKE_CURRENT_SOURCE_DIR}/window.hpp"
+                                    ${CMAKE_CURRENT_SOURCE_DIR}/tty.hpp;
+                                    ${CMAKE_CURRENT_SOURCE_DIR}/terminal.hpp;
+                                    ${CMAKE_CURRENT_SOURCE_DIR}/base.hpp;
+                                    ${CMAKE_CURRENT_SOURCE_DIR}/prompt.hpp;
+                                    ${CMAKE_CURRENT_SOURCE_DIR}/window.hpp"
                       PRIVATE_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/private/conversion.hpp;${CMAKE_CURRENT_SOURCE_DIR}/private/platform.hpp;${CMAKE_CURRENT_SOURCE_DIR}/private/macros.hpp")
 
 add_library(cpp-terminal::cpp-terminal ALIAS cpp-terminal)
