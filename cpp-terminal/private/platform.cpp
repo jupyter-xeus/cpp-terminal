@@ -6,6 +6,7 @@
   #include <windows.h>
 typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #else
+  #include <cerrno>
   #include <sys/ioctl.h>
   #include <unistd.h>
 #endif
