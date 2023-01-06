@@ -1,8 +1,8 @@
 #include "cpp-terminal/tty.hpp"
 
 #ifdef _WIN32
- #include <io.h>
- #include <stdio.h>
+  #include <io.h>
+  #include <stdio.h>
 #else
   #include <sys/ioctl.h>
 #endif
@@ -37,4 +37,4 @@ bool Term::is_stderr_a_tty()
 #endif
 }
 
-}
+}  // namespace Term
