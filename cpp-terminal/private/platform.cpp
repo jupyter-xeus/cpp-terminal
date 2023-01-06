@@ -49,7 +49,6 @@
   #include <windows.h>
 typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #else
-  #include <cerrno>
   #include <sys/ioctl.h>
   #include <unistd.h>
 #endif
@@ -136,7 +135,7 @@ bool Term::Private::read_raw(char* s)
   }
   else { return false; }
 #else
-  int nread = read(STDIN_FILENO, s, 1);
+  int nread = read(0, s, 1);
   if(nread == -1 && errno != EAGAIN) { throw std::runtime_error("read() failed"); }
   return (nread == 1);
 #endif

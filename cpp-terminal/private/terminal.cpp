@@ -63,7 +63,6 @@
   #endif
 #else
   #include <termios.h>
-  #include <unistd.h>
 #endif
 
 void Term::Terminal::store_and_restore()
@@ -107,7 +106,7 @@ void Term::Terminal::store_and_restore()
   {
     if(Term::is_stdin_a_tty())
     {
-      if(tcgetattr(STDIN_FILENO, &orig_termios) == -1) { throw std::runtime_error("tcgetattr() failed"); }
+      if(tcgetattr(0, &orig_termios) == -1) { throw std::runtime_error("tcgetattr() failed"); }
     }
     enabled = true;
   }
@@ -115,7 +114,7 @@ void Term::Terminal::store_and_restore()
   {
     if(Term::is_stdin_a_tty())
     {
-      if(tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) { throw std::runtime_error("tcsetattr() failed in destructor"); }
+      if(tcsetattr(0, TCSAFLUSH, &orig_termios) == -1) { throw std::runtime_error("tcsetattr() failed in destructor"); }
     }
   }
 #endif
@@ -158,7 +157,7 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
   termios raw{};
   if(keyboard_enabled)
   {
-    if(tcgetattr(STDIN_FILENO, &raw) == -1) { throw std::runtime_error("tcgetattr() failed"); }
+    if(tcgetattr(0, &raw) == -1) { throw std::runtime_error("tcgetattr() failed"); }
 
     // Put terminal in raw mode
 
@@ -174,7 +173,7 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
     raw.c_cc[VMIN]  = 0;
     raw.c_cc[VTIME] = 0;
 
-    if(tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) { throw std::runtime_error("tcsetattr() failed"); }
+    if(tcsetattr(0, TCSAFLUSH, &raw) == -1) { throw std::runtime_error("tcsetattr() failed"); }
   }
 #endif
   if(clear_screen)
@@ -223,7 +222,7 @@ Term::Terminal::Terminal(bool _clear_screen) : keyboard_enabled{false}, disable_
   termios raw{};
   if(keyboard_enabled)
   {
-    if(tcgetattr(STDIN_FILENO, &raw) == -1) { throw std::runtime_error("tcgetattr() failed"); }
+    if(tcgetattr(0, &raw) == -1) { throw std::runtime_error("tcgetattr() failed"); }
 
     // Put terminal in raw mode
 
@@ -239,7 +238,7 @@ Term::Terminal::Terminal(bool _clear_screen) : keyboard_enabled{false}, disable_
     raw.c_cc[VMIN]  = 0;
     raw.c_cc[VTIME] = 0;
 
-    if(tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) { throw std::runtime_error("tcsetattr() failed"); }
+    if(tcsetattr(0, TCSAFLUSH, &raw) == -1) { throw std::runtime_error("tcsetattr() failed"); }
   }
 #endif
   if(clear_screen) { std::cout << screen_save() << clear_buffer() << std::flush; }

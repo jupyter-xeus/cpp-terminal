@@ -3,20 +3,15 @@
 #ifdef _WIN32
   #include <io.h>
 #else
-  #include <sys/ioctl.h>
+  #include <unistd.h>
 #endif
-
-#include <stdio.h>
-
-namespace Term
-{
 
 bool Term::is_stdin_a_tty()
 {
 #ifdef _WIN32
   return _isatty(_fileno(stdin));
 #else
-  return isatty(STDIN_FILENO);
+  return isatty(0);
 #endif
 }
 
@@ -25,7 +20,7 @@ bool Term::is_stdout_a_tty()
 #ifdef _WIN32
   return _isatty(_fileno(stdout));
 #else
-  return isatty(STDOUT_FILENO);
+  return isatty(1);
 #endif
 }
 
@@ -34,8 +29,6 @@ bool Term::is_stderr_a_tty()
 #ifdef _WIN32
   return _isatty(_fileno(stderr));
 #else
-  return isatty(STDERR_FILENO);
+  return ::isatty(2);
 #endif
 }
-
-}  // namespace Term
