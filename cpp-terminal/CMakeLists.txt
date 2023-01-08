@@ -4,7 +4,7 @@ configure_file(version.hpp.in version.hpp)
 # create and configure library target
 add_library(cpp-terminal base.cpp prompt.cpp window.cpp input.cpp platforms/platform.cpp platforms/terminal.cpp platforms/tty.cpp)
 target_link_libraries(cpp-terminal PRIVATE Warnings::Warnings)
-target_compile_options(cpp-terminal PRIVATE "$<$<C_COMPILER_ID:MSVC>:/utf-8>" $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
+target_compile_options(cpp-terminal PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
 target_include_directories(cpp-terminal PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> $<INSTALL_INTERFACE:include>)
 
 set_target_properties(cpp-terminal PROPERTIES
