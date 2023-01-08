@@ -1,4 +1,4 @@
-#include "cpp-terminal/private/platform.hpp"
+#include "cpp-terminal/platforms/platform.hpp"
 
 #include "cpp-terminal/tty.hpp"
 

@@ -2,12 +2,13 @@
 configure_file(version.hpp.in version.hpp)
 
 # create and configure library target
-add_library(cpp-terminal base.cpp prompt.cpp window.cpp input.cpp private/platform.cpp private/terminal.cpp private/tty.cpp)
+add_library(cpp-terminal base.cpp prompt.cpp window.cpp input.cpp platforms/platform.cpp platforms/terminal.cpp platforms/tty.cpp)
 target_link_libraries(cpp-terminal PRIVATE Warnings::Warnings)
+target_compile_options(cpp-terminal PRIVATE "$<$<C_COMPILER_ID:MSVC>:/utf-8>" $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
 target_include_directories(cpp-terminal PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> $<INSTALL_INTERFACE:include>)
 
 set_target_properties(cpp-terminal PROPERTIES
                       PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/version.hpp;${CMAKE_CURRENT_SOURCE_DIR}/tty.hpp;${CMAKE_CURRENT_SOURCE_DIR}/terminal.hpp;${CMAKE_CURRENT_SOURCE_DIR}/base.hpp;${CMAKE_CURRENT_SOURCE_DIR}/prompt.hpp;${CMAKE_CURRENT_SOURCE_DIR}/window.hpp"
-                      PRIVATE_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/private/conversion.hpp;${CMAKE_CURRENT_SOURCE_DIR}/private/platform.hpp;${CMAKE_CURRENT_SOURCE_DIR}/private/macros.hpp")
+                      PRIVATE_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/platforms/conversion.hpp;${CMAKE_CURRENT_SOURCE_DIR}/private/platform.hpp;${CMAKE_CURRENT_SOURCE_DIR}/private/macros.hpp")
 
 add_library(cpp-terminal::cpp-terminal ALIAS cpp-terminal)

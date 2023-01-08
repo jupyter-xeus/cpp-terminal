@@ -1,7 +1,7 @@
 #pragma once
 
-#include "cpp-terminal/private/macros.hpp"
-#include "cpp-terminal/private/platform.hpp"
+#include "cpp-terminal/platforms/macros.hpp"
+#include "cpp-terminal/platforms/platform.hpp"
 
 #include <string>
 

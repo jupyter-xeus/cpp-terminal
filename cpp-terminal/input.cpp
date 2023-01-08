@@ -7,7 +7,7 @@
 #if !defined(_GLIBCXX_USE_NANOSLEEP)
   #define _GLIBCXX_USE_NANOSLEEP
 #endif
-#include "private/platform.hpp"
+#include "cpp-terminal/platforms/platform.hpp"
 
 #include <thread>
 

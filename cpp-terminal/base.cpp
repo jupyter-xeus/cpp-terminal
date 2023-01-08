@@ -1,8 +1,8 @@
-#include "cpp-terminal/private/conversion.hpp"
+#include "cpp-terminal/platforms/conversion.hpp"
 #include "cpp-terminal/tty.hpp"
 
 #include <cpp-terminal/base.hpp>
-#include <cpp-terminal/private/platform.hpp>
+#include <cpp-terminal/platforms/platform.hpp>
 #include <iostream>
 #include <stdexcept>
 
