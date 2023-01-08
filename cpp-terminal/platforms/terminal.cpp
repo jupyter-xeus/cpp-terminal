@@ -7,18 +7,7 @@
 #include <stdexcept>
 
 #ifdef _WIN32
-  // clang-format off
-  #if !defined(__MINGW32__)
-    __pragma(warning(push))
-    __pragma(warning(disable : 4514))
-    __pragma(warning(disable : 4710))
-    __pragma(warning(disable : 4668))
-  #endif
   #include <windows.h>
-  #if !defined(__MINGW32__)
-    __pragma(warning(pop))
-  #endif
-  // clang-format on
   #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
     #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
   #endif
@@ -32,7 +21,7 @@
   #include <termios.h>
 #endif
 
-    void Term::Terminal::store_and_restore()
+void Term::Terminal::store_and_restore()
 {
   static bool enabled{false};
 #ifdef _WIN32
