@@ -129,7 +129,7 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
   if(clear_screen)
   {
     // Fix consoles that ignore save_screen()
-    std::cout <<  screen_save() << clear_buffer() << style(Style::RESET) << cursor_move(1, 1) ;
+    std::cout << screen_save() << clear_buffer() << style(Style::RESET) << cursor_move(1, 1);
   }
   if(hide_cursor) std::cout << cursor_off();
   // flush stdout
@@ -141,7 +141,7 @@ Term::Terminal::~Terminal()
   if(clear_screen)
   {
     // Fix consoles that ignore save_screen()
-    std::cout <<  clear_buffer() << style(Style::RESET) << cursor_move(1, 1) << screen_load();
+    std::cout << clear_buffer() << style(Style::RESET) << cursor_move(1, 1) << screen_load();
   }
   if(hide_cursor) std::cout << cursor_on();
   // flush the output stream
