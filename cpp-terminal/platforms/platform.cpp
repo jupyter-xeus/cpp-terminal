@@ -3,8 +3,9 @@
 #include "cpp-terminal/tty.hpp"
 
 #ifdef _WIN32
+__pragma(warning(push)) __pragma(warning(disable : 4514)) __pragma(warning(disable : 4710)) __pragma(warning(disable : 4668))
   #include <windows.h>
-typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
+  __pragma(warning(pop)) typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #else
   #include <cerrno>
   #include <sys/ioctl.h>
