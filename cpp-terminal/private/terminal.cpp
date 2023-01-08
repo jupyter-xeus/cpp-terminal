@@ -85,7 +85,6 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
   if(Term::is_stdout_a_tty())
   {
     SetConsoleOutputCP(65001);
-    if(GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed"); }
     DWORD flags{0};
     if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &flags)) { throw std::runtime_error("GetConsoleMode() failed"); }
     if(Term::Private::has_ansi_escape_code())
@@ -99,7 +98,6 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
   if(keyboard_enabled)
   {
     SetConsoleCP(65001);
-    if(GetStdHandle(STD_INPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_INPUT_HANDLE) failed"); }
     DWORD flags{0};
     if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &flags)) { throw std::runtime_error("GetConsoleMode() failed"); }
     if(Term::Private::has_ansi_escape_code()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
@@ -110,15 +108,12 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
 #else
   // silently disable raw mode for non-tty
   if(keyboard_enabled) keyboard_enabled = Term::is_stdin_a_tty();
-  termios raw{};
   if(keyboard_enabled)
   {
+    termios raw{};
     if(tcgetattr(0, &raw) == -1) { throw std::runtime_error("tcgetattr() failed"); }
-
     // Put terminal in raw mode
-
     raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-
     // This disables output post-processing, requiring explicit \r\n. We
     // keep it enabled, so that in C++, one can still just use std::endl
     // for EOL instead of "\r\n".
@@ -128,16 +123,15 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
     if(disable_signal_keys) { raw.c_lflag &= ~(ISIG); }
     raw.c_cc[VMIN]  = 0;
     raw.c_cc[VTIME] = 0;
-
     if(tcsetattr(0, TCSAFLUSH, &raw) == -1) { throw std::runtime_error("tcsetattr() failed"); }
   }
 #endif
   if(clear_screen)
   {
-    std::cout << screen_save() << clear_buffer();  // Fix consoles that ignore save_screen()
+    // Fix consoles that ignore save_screen()
+    std::cout <<  screen_save() << clear_buffer() << style(Style::RESET) << cursor_move(1, 1) ;
   }
   if(hide_cursor) std::cout << cursor_off();
-
   // flush stdout
   std::cout << std::flush;
 }
@@ -147,10 +141,9 @@ Term::Terminal::~Terminal()
   if(clear_screen)
   {
     // Fix consoles that ignore save_screen()
-    std::cout << style(Style::RESET) << clear_buffer() << cursor_move(1, 1) << screen_load();
+    std::cout <<  clear_buffer() << style(Style::RESET) << cursor_move(1, 1) << screen_load();
   }
   if(hide_cursor) std::cout << cursor_on();
-
   // flush the output stream
   std::cout << std::flush;
   store_and_restore();
