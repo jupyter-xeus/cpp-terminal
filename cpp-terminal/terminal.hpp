@@ -11,7 +11,7 @@ namespace Term
 class Terminal
 {
 public:
-  Terminal(bool _clear_screen = false, bool enable_keyboard = false, bool disable_signal_keys=true, bool _hide_cursor=false);
+  Terminal(bool _clear_screen = false, bool enable_keyboard = false, bool disable_signal_keys = true, bool _hide_cursor = false);
   ~Terminal();
 
 private:
