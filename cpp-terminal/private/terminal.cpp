@@ -134,70 +134,12 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
 #endif
   if(clear_screen)
   {
-    std::cout << screen_save() + clear_buffer();  // Fix consoles that ignore save_screen()
+    std::cout << screen_save() << clear_buffer();  // Fix consoles that ignore save_screen()
   }
   if(hide_cursor) std::cout << cursor_off();
 
   // flush stdout
   std::cout << std::flush;
-}
-Term::Terminal::Terminal(bool _clear_screen) : keyboard_enabled{false}, disable_signal_keys{true}, clear_screen{_clear_screen}
-{
-  store_and_restore();
-#ifdef _WIN32
-  // silently disable raw mode for non-tty
-  if(keyboard_enabled) keyboard_enabled = Term::is_stdin_a_tty();
-  if(Term::is_stdout_a_tty())
-  {
-    SetConsoleOutputCP(65001);
-    if(GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed"); }
-    DWORD flags{0};
-    if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &flags)) { throw std::runtime_error("GetConsoleMode() failed"); }
-    if(Term::Private::has_ansi_escape_code())
-    {
-      flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-      flags |= DISABLE_NEWLINE_AUTO_RETURN;
-    }
-    if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), flags)) { throw std::runtime_error("SetConsoleMode() failed"); }
-  }
-
-  if(keyboard_enabled)
-  {
-    SetConsoleCP(65001);
-    if(GetStdHandle(STD_INPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_INPUT_HANDLE) failed"); }
-    DWORD flags{0};
-    if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &flags)) { throw std::runtime_error("GetConsoleMode() failed"); }
-    if(Term::Private::has_ansi_escape_code()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
-    if(disable_signal_keys) { flags &= ~ENABLE_PROCESSED_INPUT; }
-    flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
-    if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), flags)) { throw std::runtime_error("SetConsoleMode() failed"); }
-  }
-#else
-  // silently disable raw mode for non-tty
-  if(keyboard_enabled) keyboard_enabled = Term::is_stdin_a_tty();
-  termios raw{};
-  if(keyboard_enabled)
-  {
-    if(tcgetattr(0, &raw) == -1) { throw std::runtime_error("tcgetattr() failed"); }
-
-    // Put terminal in raw mode
-
-    raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-
-    // This disables output post-processing, requiring explicit \r\n. We
-    // keep it enabled, so that in C++, one can still just use std::endl
-    // for EOL instead of "\r\n".
-    // raw.c_oflag &= ~(OPOST);
-    raw.c_cflag |= (CS8);
-    raw.c_lflag &= ~(ECHO | ICANON | IEXTEN);
-    if(disable_signal_keys) { raw.c_lflag &= ~(ISIG); }
-    raw.c_cc[VMIN]  = 0;
-    raw.c_cc[VTIME] = 0;
-
-    if(tcsetattr(0, TCSAFLUSH, &raw) == -1) { throw std::runtime_error("tcsetattr() failed"); }
-  }
-#endif
-  if(clear_screen) { std::cout << screen_save() << clear_buffer() << std::flush; }
 }
 
 Term::Terminal::~Terminal()
