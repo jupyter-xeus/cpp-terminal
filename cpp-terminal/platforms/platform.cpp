@@ -3,9 +3,19 @@
 #include "cpp-terminal/tty.hpp"
 
 #ifdef _WIN32
-__pragma(warning(push)) __pragma(warning(disable : 4514)) __pragma(warning(disable : 4710)) __pragma(warning(disable : 4668))
+  // clang-format off
+  #if !defined(__MINGW32__)
+    __pragma(warning(push))
+    __pragma(warning(disable : 4514))
+    __pragma(warning(disable : 4710))
+    __pragma(warning(disable : 4668))
+  #endif
   #include <windows.h>
-  __pragma(warning(pop)) typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
+  #if !defined(__MINGW32__)
+    __pragma(warning(pop))
+  #endif
+  // clang-format on
+  typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #else
   #include <cerrno>
   #include <sys/ioctl.h>
