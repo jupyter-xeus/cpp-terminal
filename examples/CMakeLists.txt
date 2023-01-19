@@ -28,9 +28,6 @@ target_link_libraries(colors PRIVATE cpp-terminal::cpp-terminal Warnings::Warnin
 add_executable(read_stdin read_stdin.cpp)
 target_link_libraries(read_stdin PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
 
-## Check if it's necessary
-##target_compile_options(${target} PUBLIC "/utf-8")
-
 if(CPPTERMINAL_ENABLE_INSTALL)
   install(TARGETS prompt_multiline prompt_immediate prompt_not_immediate prompt_simple kilo menu menu_window keys colors read_stdin RUNTIME DESTINATION bin/examples)
 endif()

@@ -6,7 +6,7 @@ parse:
   proptags: [ ]
 format:
   disable: false
-  line_width: 250
+  line_width: 450
   tab_size: 2
   use_tabchars: false
   fractional_tab_policy: use-space

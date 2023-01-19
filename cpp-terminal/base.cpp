@@ -1,7 +1,8 @@
-#include "cpp-terminal/private/conversion.hpp"
+#include "cpp-terminal/platforms/conversion.hpp"
+#include "cpp-terminal/tty.hpp"
 
 #include <cpp-terminal/base.hpp>
-#include <cpp-terminal/private/platform.hpp>
+#include <cpp-terminal/platforms/platform.hpp>
 #include <iostream>
 #include <stdexcept>
 
@@ -308,9 +309,9 @@ std::tuple<std::size_t, std::size_t> Term::get_size()
   return Private::get_term_size();  // function uses platform dependent code
 }
 
-bool Term::stdin_connected() { return Private::is_stdin_a_tty(); }
+bool Term::stdin_connected() { return Term::is_stdin_a_tty(); }
 
-bool Term::stdout_connected() { return Private::is_stdout_a_tty(); }
+bool Term::stdout_connected() { return Term::is_stdout_a_tty(); }
 
 std::string Term::cursor_off() { return "\x1b[?25l"; }
 
@@ -374,31 +375,3 @@ std::string Term::screen_load()
 }
 
 std::string Term::terminal_title(const std::string& title) { return "\033]0;" + title + '\a'; }
-
-Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_signal_keys, bool _hide_cursor) : BaseTerminal(enable_keyboard, disable_signal_keys), clear_screen{_clear_screen}, hide_cursor{_hide_cursor}
-{
-  if(clear_screen)
-  {
-    std::cout << screen_save() + clear_buffer();  // Fix consoles that ignore save_screen()
-  }
-  if(hide_cursor) std::cout << cursor_off();
-
-  // flush stdout
-  std::cout << std::flush;
-}
-Term::Terminal::Terminal(bool _clear_screen) : BaseTerminal(false, true), clear_screen{_clear_screen}
-{
-  if(clear_screen) { std::cout << screen_save() << clear_buffer() << std::flush; }
-}
-Term::Terminal::~Terminal()
-{
-  if(clear_screen)
-  {
-    // Fix consoles that ignore save_screen()
-    std::cout << style(Style::RESET) << clear_buffer() << cursor_move(1, 1) << screen_load();
-  }
-  if(hide_cursor) std::cout << cursor_on();
-
-  // flush the output stream
-  std::cout << std::flush;
-}

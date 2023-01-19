@@ -1,6 +1,6 @@
 #include "cpp-terminal/window.hpp"
 
-#include "cpp-terminal/private/conversion.hpp"
+#include "cpp-terminal/platforms/conversion.hpp"
 
 #include <stdexcept>
 

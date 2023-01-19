@@ -1,5 +1,5 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "cpp-terminal/private/conversion.hpp"
+#include "cpp-terminal/platforms/conversion.hpp"
 #include "doctest/doctest.h"
 
 TEST_CASE("UTF conversions")

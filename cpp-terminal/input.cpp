@@ -1,11 +1,13 @@
+#include "cpp-terminal/input.hpp"
+
+#include "cpp-terminal/terminal.hpp"
+
 #include <chrono>
-#include <cpp-terminal/base.hpp>
-#include <cpp-terminal/input.hpp>
 // Bug in some GCC
 #if !defined(_GLIBCXX_USE_NANOSLEEP)
   #define _GLIBCXX_USE_NANOSLEEP
 #endif
-#include "private/platform.hpp"
+#include "cpp-terminal/platforms/platform.hpp"
 
 #include <thread>
 
