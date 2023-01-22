@@ -75,7 +75,7 @@ void Term::Terminal::store_and_restore()
 #endif
 }
 
-Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_signal_keys, bool _hide_cursor) : clear_screen{_clear_screen}, keyboard_enabled{enable_keyboard}, disable_signal_keys{disable_signal_keys}, hide_cursor{_hide_cursor}
+Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_signal, bool _hide_cursor) : clear_screen{_clear_screen}, keyboard_enabled{enable_keyboard}, disable_signal_keys{disable_signal}, hide_cursor{_hide_cursor}
 {
   store_and_restore();
 #ifdef _WIN32
