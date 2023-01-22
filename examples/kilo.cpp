@@ -1,14 +1,12 @@
 #include <cstdarg>
 #include <cstring>
-#include <exception>
 #include <fstream>
 #include <iostream>
-#include <stdexcept>
-/*** defines ***/
 
 #include "cpp-terminal/terminal.hpp"
-#include <cpp-terminal/base.hpp>
-#include <cpp-terminal/input.hpp>
+#include "cpp-terminal/base.hpp"
+#include "cpp-terminal/input.hpp"
+#include "cpp-terminal/exception.hpp"
 
 const std::string KILO_VERSION{"0.0.1"};
 const int KILO_TAB_STOP{8};
@@ -930,9 +928,9 @@ int main(int argc, char* argv[])
     editorRefreshScreen();
     while(editorProcessKeypress()) { editorRefreshScreen(); }
   }
-  catch(const std::runtime_error& re)
+  catch(const Term::Exception& re)
   {
-    std::cerr << "Runtime error: " << re.what() << std::endl;
+    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)

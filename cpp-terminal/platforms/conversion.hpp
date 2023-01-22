@@ -1,9 +1,10 @@
 #pragma once
 
 #include <cstdint>
-#include <stdexcept>
 #include <string>
 #include <vector>
+
+#include "cpp-terminal/exception.hpp"
 
 static constexpr std::uint8_t UTF8_ACCEPT = 0;
 static constexpr std::uint8_t UTF8_REJECT = 0xf;
@@ -33,7 +34,7 @@ inline std::uint8_t utf8_decode_step(std::uint8_t state, std::uint8_t octet, std
 
 inline void codepoint_to_utf8(std::string& s, char32_t c)
 {
-  if(c > 0x0010FFFF) { throw std::runtime_error("Invalid UTF32 codepoint."); }
+  if(c > 0x0010FFFF) { throw Term::Exception("Invalid UTF32 codepoint."); }
   char     bytes[4];
   int      nbytes = 1;
   char32_t d      = c;
@@ -69,9 +70,9 @@ inline std::u32string utf8_to_utf32(const std::string& s)
   {
     state = utf8_decode_step(state, i, &codepoint);
     if(state == UTF8_ACCEPT) { r.push_back(codepoint); }
-    else if(state == UTF8_REJECT) { throw std::runtime_error("Invalid byte in UTF8 encoded string"); }
+    else if(state == UTF8_REJECT) { throw Term::Exception("Invalid byte in UTF8 encoded string"); }
   }
-  if(state != UTF8_ACCEPT) { throw std::runtime_error("Expected more bytes in UTF8 encoded string"); }
+  if(state != UTF8_ACCEPT) { throw Term::Exception("Expected more bytes in UTF8 encoded string"); }
   return r;
 }
 

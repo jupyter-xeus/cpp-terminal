@@ -1,12 +1,11 @@
-#include <exception>
 #include <functional>
 #include <iostream>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/prompt.hpp"
+#include "cpp-terminal/exception.hpp"
 
 bool determine_completeness(CPP_TERMINAL_MAYBE_UNUSED const std::string& command)
 {
@@ -43,9 +42,9 @@ int main()
       std::cout << "Submitted text: " << answer << std::endl;
     }
   }
-  catch(const std::runtime_error& re)
+  catch(const Term::Exception& re)
   {
-    std::cerr << "Runtime error: " << re.what() << std::endl;
+    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)

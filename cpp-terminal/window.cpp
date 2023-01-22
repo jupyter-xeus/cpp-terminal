@@ -1,7 +1,6 @@
-#include <stdexcept>
-
 #include "cpp-terminal/window.hpp"
 #include "cpp-terminal/platforms/conversion.hpp"
+#include "cpp-terminal/exception.hpp"
 
 namespace Term
 {
@@ -25,7 +24,7 @@ std::size_t Term::Window::get_h() const { return h; }
 void Term::Window::set_char(std::size_t x, std::size_t y, char32_t c)
 {
   if(x >= 1 && y >= 1 && x <= w && y <= h) { chars[(y - 1) * w + (x - 1)] = c; }
-  else { throw std::runtime_error("set_char(): (x,y) out of bounds"); }
+  else { throw Term::Exception("set_char(): (x,y) out of bounds"); }
 }
 
 void Term::Window::set_fg_reset(std::size_t x, std::size_t y)
@@ -74,7 +73,7 @@ void Term::Window::set_h(std::size_t new_h)
     m_style.insert(m_style.end(), dc, Style::RESET);
     h = new_h;
   }
-  else { throw std::runtime_error("Shrinking height not supported."); }
+  else { throw Term::Exception("Shrinking height not supported."); }
 }
 
 void Term::Window::print_str(int x, int y, const std::string& s, int indent, bool move_cursor)

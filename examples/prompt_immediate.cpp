@@ -1,9 +1,8 @@
-#include <exception>
 #include <iostream>
-#include <stdexcept>
 
 #include "cpp-terminal/prompt.hpp"
 #include "cpp-terminal/version.hpp"
+#include "cpp-terminal/exception.hpp"
 
 int main()
 {
@@ -26,9 +25,9 @@ int main()
         break;
     }
   }
-  catch(const std::runtime_error& re)
+  catch(const Term::Exception& re)
   {
-    std::cerr << "Runtime error: " << re.what() << std::endl;
+    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)

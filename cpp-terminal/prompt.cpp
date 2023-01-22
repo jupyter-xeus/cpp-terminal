@@ -138,7 +138,7 @@ std::vector<std::string> Term::split(const std::string& s)
   std::size_t              j = 0;
   std::vector<std::string> lines;
   lines.emplace_back("");
-  if(s[s.size() - 1] != '\n') throw std::runtime_error("\\n is required");
+  if(s[s.size() - 1] != '\n') throw Term::Exception("\\n is required");
   for(std::size_t i = 0; i < s.size() - 1; i++)
   {
     if(s[i] == '\n')
@@ -154,7 +154,7 @@ std::vector<std::string> Term::split(const std::string& s)
 char32_t Term::UU(const std::string& s)
 {
   std::u32string s2 = Private::utf8_to_utf32(s);
-  if(s2.size() != 1) throw std::runtime_error("U(s): s not a codepoint.");
+  if(s2.size() != 1) throw Term::Exception("U(s): s not a codepoint.");
   return s2[0];
 }
 

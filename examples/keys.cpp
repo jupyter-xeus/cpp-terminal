@@ -1,14 +1,13 @@
 /*
  * This example shows how to interpret keys presses from Terminal.
  */
-#include <exception>
 #include <iostream>
-#include <stdexcept>
 #include <utility>
 
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/base.hpp"
 #include "cpp-terminal/input.hpp"
+#include "cpp-terminal/exception.hpp"
 
 int main()
 {
@@ -88,9 +87,9 @@ int main()
       std::cout << "Key: " << s << std::endl;
     }
   }
-  catch(const std::runtime_error& re)
+  catch(const Term::Exception& re)
   {
-    std::cerr << "Runtime error: " << re.what() << std::endl;
+    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)

@@ -14,11 +14,11 @@
 #endif
 
 #include <iostream>
-#include <stdexcept>
 
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/base.hpp"
 #include "cpp-terminal/tty.hpp"
+#include "cpp-terminal/exception.hpp"
 
 void Term::Terminal::store_and_restore()
 {
@@ -33,12 +33,12 @@ void Term::Terminal::store_and_restore()
     if(Term::is_stdout_a_tty())
     {
       out_code_page = GetConsoleOutputCP();
-      if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &dwOriginalOutMode)) { throw std::runtime_error("GetConsoleMode() failed"); }
+      if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
     }
     if(Term::is_stdin_a_tty())
     {
       in_code_page = GetConsoleCP();
-      if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &dwOriginalInMode)) { throw std::runtime_error("GetConsoleMode() failed"); }
+      if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
     }
     enabled = true;
   }
@@ -47,12 +47,12 @@ void Term::Terminal::store_and_restore()
     if(Term::is_stdout_a_tty())
     {
       SetConsoleOutputCP(out_code_page);
-      if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), dwOriginalOutMode)) { throw std::runtime_error("SetConsoleMode() failed in destructor"); }
+      if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     }
     if(Term::is_stdin_a_tty())
     {
       SetConsoleCP(in_code_page);
-      if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), dwOriginalInMode)) { throw std::runtime_error("SetConsoleMode() failed in destructor"); }
+      if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     }
   }
 #else
@@ -61,7 +61,7 @@ void Term::Terminal::store_and_restore()
   {
     if(Term::is_stdin_a_tty())
     {
-      if(tcgetattr(0, &orig_termios) == -1) { throw std::runtime_error("tcgetattr() failed"); }
+      if(tcgetattr(0, &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
     }
     enabled = true;
   }
@@ -69,7 +69,7 @@ void Term::Terminal::store_and_restore()
   {
     if(Term::is_stdin_a_tty())
     {
-      if(tcsetattr(0, TCSAFLUSH, &orig_termios) == -1) { throw std::runtime_error("tcsetattr() failed in destructor"); }
+      if(tcsetattr(0, TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
     }
   }
 #endif
@@ -85,24 +85,24 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
   {
     SetConsoleOutputCP(65001);
     DWORD flags{0};
-    if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &flags)) { throw std::runtime_error("GetConsoleMode() failed"); }
+    if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
     if(Term::Private::has_ansi_escape_code())
     {
       flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
       flags |= DISABLE_NEWLINE_AUTO_RETURN;
     }
-    if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), flags)) { throw std::runtime_error("SetConsoleMode() failed"); }
+    if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
   }
 
   if(keyboard_enabled)
   {
     SetConsoleCP(65001);
     DWORD flags{0};
-    if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &flags)) { throw std::runtime_error("GetConsoleMode() failed"); }
+    if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
     if(Term::Private::has_ansi_escape_code()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
     if(disable_signal_keys) { flags &= ~ENABLE_PROCESSED_INPUT; }
     flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
-    if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), flags)) { throw std::runtime_error("SetConsoleMode() failed"); }
+    if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
   }
 #else
   // silently disable raw mode for non-tty
@@ -110,7 +110,7 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
   if(keyboard_enabled)
   {
     termios raw{};
-    if(tcgetattr(0, &raw) == -1) { throw std::runtime_error("tcgetattr() failed"); }
+    if(tcgetattr(0, &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
     // Put terminal in raw mode
     raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
     // This disables output post-processing, requiring explicit \r\n. We
@@ -122,7 +122,7 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
     if(disable_signal_keys) { raw.c_lflag &= ~ISIG; }
     raw.c_cc[VMIN]  = 0;
     raw.c_cc[VTIME] = 0;
-    if(tcsetattr(0, TCSAFLUSH, &raw) == -1) { throw std::runtime_error("tcsetattr() failed"); }
+    if(tcsetattr(0, TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
   }
 #endif
   if(clear_screen)

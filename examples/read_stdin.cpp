@@ -1,4 +1,3 @@
-#include <exception>
 #include <iostream>
 
 #include "cpp-terminal/input.hpp"

@@ -1,10 +1,9 @@
-#include <exception>
 #include <iostream>
-#include <stdexcept>
 
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/base.hpp"
 #include "cpp-terminal/input.hpp"
+#include "cpp-terminal/exception.hpp"
 
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
 {
@@ -103,9 +102,9 @@ int main()
       }
     }
   }
-  catch(const std::runtime_error& re)
+  catch(const Term::Exception& re)
   {
-    std::cerr << "Runtime error: " << re.what() << std::endl;
+    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)

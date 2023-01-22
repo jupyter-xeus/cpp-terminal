@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdexcept>
 #include <utility>
 
 #include "cpp-terminal/tty.hpp"
