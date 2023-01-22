@@ -1,8 +1,8 @@
-#include <iostream>
-
+#include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/prompt.hpp"
 #include "cpp-terminal/version.hpp"
-#include "cpp-terminal/exception.hpp"
+
+#include <iostream>
 
 int main()
 {

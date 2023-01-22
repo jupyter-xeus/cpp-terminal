@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
-
 #include "cpp-terminal/base.hpp"
+
+#include <vector>
 
 namespace Term
 {

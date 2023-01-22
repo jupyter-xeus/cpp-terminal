@@ -1,12 +1,12 @@
+#include "cpp-terminal/base.hpp"
+#include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/input.hpp"
+#include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/window.hpp"
+
 #include <iostream>
 
-#include "cpp-terminal/terminal.hpp"
-#include "cpp-terminal/base.hpp"
-#include "cpp-terminal/input.hpp"
-#include "cpp-terminal/window.hpp"
-#include "cpp-terminal/exception.hpp"
-
-std::string render(Term::Window& scr,const std::size_t& rows, const std::size_t& cols, const std::size_t& menuheight, const std::size_t& menuwidth, const std::size_t& menupos)
+std::string render(Term::Window& scr, const std::size_t& rows, const std::size_t& cols, const std::size_t& menuheight, const std::size_t& menuwidth, const std::size_t& menupos)
 {
   scr.clear();
   std::size_t menux0 = (cols - menuwidth) / 2 + 1;
@@ -19,7 +19,7 @@ std::string render(Term::Window& scr,const std::size_t& rows, const std::size_t&
     scr.print_str(menux0 + 1, menuy0 + i, s);
     if(i == menupos)
     {
-      scr.fill_fg(menux0 + 1, menuy0 + i, menux0 + s.size(), menuy0 + i, Term::Bit4_reference::RED);  // FG
+      scr.fill_fg(menux0 + 1, menuy0 + i, menux0 + s.size(), menuy0 + i, Term::Bit4_reference::RED);    // FG
       scr.fill_bg(menux0 + 1, menuy0 + i, menux0 + menuwidth, menuy0 + i, Term::Bit4_reference::GRAY);  // BG
       scr.fill_style(menux0 + 1, menuy0 + i, menux0 + s.size(), menuy0 + i, Term::Style::BOLD);
     }
@@ -49,13 +49,13 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal                       term(true, true, true, true);
+    Term::Terminal                      term(true, true, true, true);
     std::pair<std::size_t, std::size_t> term_size = Term::get_size();
-    int                                  pos       = 5;
-    int                                  h         = 10;
-    std::size_t                          w{10};
-    bool                                 on = true;
-    Term::Window                         scr(std::get<1>(term_size), std::get<0>(term_size));
+    int                                 pos       = 5;
+    int                                 h         = 10;
+    std::size_t                         w{10};
+    bool                                on = true;
+    Term::Window                        scr(std::get<1>(term_size), std::get<0>(term_size));
     while(on)
     {
       std::cout << render(scr, std::get<0>(term_size), std::get<1>(term_size), h, w, pos) << std::flush;

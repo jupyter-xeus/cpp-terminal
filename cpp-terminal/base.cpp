@@ -1,9 +1,10 @@
+#include "cpp-terminal/base.hpp"
+
+#include "cpp-terminal/platforms/platform.hpp"
+#include "cpp-terminal/tty.hpp"
+
 #include <iostream>
 #include <utility>
-
-#include "cpp-terminal/tty.hpp"
-#include "cpp-terminal/base.hpp"
-#include "cpp-terminal/platforms/platform.hpp"
 
 /* COLOR CONVERSION */
 
@@ -335,24 +336,25 @@ std::pair<std::size_t, std::size_t> Term::cursor_position()
   std::cout << cursor_position_report() << std::flush;
   // read input buffer
   std::string buf;
-  char c{'\0'};
-  do
-  {
-    while(!Private::read_raw(&c));
+  char        c{'\0'};
+  do {
+    while(!Private::read_raw(&c))
+      ;
     buf.push_back(c);
-  }
-  while(c!='R');
+  } while(c != 'R');
 
-  bool found{false};
+  bool        found{false};
   std::size_t row{0};
   std::size_t column{0};
   for(std::size_t i = 2; i < buf.size(); i++)
   {
-		if (buf[i]==';') found=true;
-    else if (found== false && buf[i]>='0' && buf[i]<='9') row=row*10+(buf[i]-'0');
-    else if (found== true && buf[i]>='0' && buf[i]<='9') column=column*10+(buf[i]-'0');
+    if(buf[i] == ';') found = true;
+    else if(found == false && buf[i] >= '0' && buf[i] <= '9')
+      row = row * 10 + (buf[i] - '0');
+    else if(found == true && buf[i] >= '0' && buf[i] <= '9')
+      column = column * 10 + (buf[i] - '0');
   }
-  return std::pair<std::size_t ,std::size_t>(row,column);
+  return std::pair<std::size_t, std::size_t>(row, column);
 }
 
 std::string Term::cursor_position_report() { return "\x1b[6n"; }

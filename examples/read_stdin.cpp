@@ -1,7 +1,7 @@
-#include <iostream>
-
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/terminal.hpp"
+
+#include <iostream>
 
 int main()
 {

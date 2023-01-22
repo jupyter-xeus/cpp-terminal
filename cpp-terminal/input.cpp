@@ -3,11 +3,12 @@
   #define _GLIBCXX_USE_NANOSLEEP
 #endif
 
-#include <thread>
-#include <chrono>
-
 #include "cpp-terminal/input.hpp"
+
 #include "cpp-terminal/platforms/platform.hpp"
+
+#include <chrono>
+#include <thread>
 
 bool Term::is_ASCII(const Term::Key& key)
 {
@@ -209,7 +210,7 @@ std::int32_t Term::read_key0()
 std::string Term::read_stdin()
 {
   std::string file;
-  char c{'\0'};
+  char        c{'\0'};
   while(true)
   {
     c = Private::read_raw_stdin();

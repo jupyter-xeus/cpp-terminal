@@ -1,6 +1,7 @@
 #include "cpp-terminal/window.hpp"
-#include "cpp-terminal/platforms/conversion.hpp"
+
 #include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/platforms/conversion.hpp"
 
 namespace Term
 {

@@ -1,15 +1,15 @@
 #ifdef _WIN32
   #include <windows.h>
-  typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
+typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #else
   #include <cerrno>
   #include <sys/ioctl.h>
   #include <unistd.h>
 #endif
 
+#include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/platforms/platform.hpp"
 #include "cpp-terminal/tty.hpp"
-#include "cpp-terminal/exception.hpp"
 
 std::string Term::Private::getenv(const std::string& env)
 {

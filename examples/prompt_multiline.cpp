@@ -1,17 +1,18 @@
+#include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/input.hpp"
+#include "cpp-terminal/prompt.hpp"
+
 #include <functional>
 #include <iostream>
 #include <string>
 #include <vector>
 
-#include "cpp-terminal/input.hpp"
-#include "cpp-terminal/prompt.hpp"
-#include "cpp-terminal/exception.hpp"
-
 bool determine_completeness(CPP_TERMINAL_MAYBE_UNUSED const std::string& command)
 {
   // Determine if the statement is complete
   if(command.size() > 1 && command.substr(command.size() - 2, 1) == "\\") return false;
-  else return true;
+  else
+    return true;
 }
 
 int main()

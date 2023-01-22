@@ -1,10 +1,10 @@
 #pragma once
 
+#include "cpp-terminal/exception.hpp"
+
 #include <cstdint>
 #include <string>
 #include <vector>
-
-#include "cpp-terminal/exception.hpp"
 
 static constexpr std::uint8_t UTF8_ACCEPT = 0;
 static constexpr std::uint8_t UTF8_REJECT = 0xf;

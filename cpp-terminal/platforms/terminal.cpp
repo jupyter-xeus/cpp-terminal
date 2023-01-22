@@ -13,12 +13,12 @@
   #include <termios.h>
 #endif
 
-#include <iostream>
-
-#include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/base.hpp"
-#include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/tty.hpp"
+
+#include <iostream>
 
 void Term::Terminal::store_and_restore()
 {
@@ -75,7 +75,7 @@ void Term::Terminal::store_and_restore()
 #endif
 }
 
-Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_signal_keys, bool _hide_cursor) : clear_screen{_clear_screen},keyboard_enabled{enable_keyboard}, disable_signal_keys{disable_signal_keys},  hide_cursor{_hide_cursor}
+Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_signal_keys, bool _hide_cursor) : clear_screen{_clear_screen}, keyboard_enabled{enable_keyboard}, disable_signal_keys{disable_signal_keys}, hide_cursor{_hide_cursor}
 {
   store_and_restore();
 #ifdef _WIN32
