@@ -9,6 +9,7 @@
 
 #include <chrono>
 #include <thread>
+#include <type_traits>
 
 bool Term::is_ASCII(const Term::Key& key)
 {
