@@ -8,6 +8,7 @@
 int main()
 {
   std::cout << "Running cpp-terminal version: " << Term::Version << " website : " << Term::Homepage << std::endl;
+
   try
   {
     Term::Terminal term;

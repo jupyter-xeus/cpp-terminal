@@ -3,6 +3,8 @@
 #include "cpp-terminal/platforms/macros.hpp"
 #include "cpp-terminal/platforms/platform.hpp"
 
+#include <iomanip>
+#include <iostream>
 #include <string>
 #include <utility>
 
@@ -76,15 +78,17 @@ enum class Style : std::uint8_t
 };
 
 // Represents a RGB (24bit) color
-struct RGB
+class rgb
 {
-  RGB() = default;
-  RGB(const std::uint8_t& rr, const std::uint8_t& gg, const std::uint8_t& bb) : r(rr), g(gg), b(bb), empty(false) {}
+public:
+  rgb() = default;
+  rgb(const std::uint8_t& rr, const std::uint8_t& gg, const std::uint8_t& bb) : r(rr), g(gg), b(bb), empty(false) {}
   std::uint8_t r{0};
   std::uint8_t g{0};
   std::uint8_t b{0};
   bool         empty{true};
 };
+
 // indicates the color mode (basically the original color resolution)
 // also used to manually override the original color resolution
 enum class Mode
@@ -101,13 +105,13 @@ enum class Mode
   AUTO24
 };
 // represents an RGB foreground and background color
-struct RGBF
+struct rgbf
 {
-  RGBF() = default;
-  RGBF(const RGB& rfg, const Mode& mfg, const RGB& rfb, const Mode& mfb) : rgb_fg(rfg), mode_fg(mfg), rgb_bg(rfb), mode_bg(mfb) {}
-  RGB  rgb_fg{};
+  rgbf() = default;
+  rgbf(const rgb& rfg, const Mode& mfg, const rgb& rfb, const Mode& mfb) : rgb_fg(rfg), mode_fg(mfg), rgb_bg(rfb), mode_bg(mfb) {}
+  rgb  rgb_fg{};
   Mode mode_fg{};
-  RGB  rgb_bg{};
+  rgb  rgb_bg{};
   Mode mode_bg{};
 };
 /*
@@ -116,48 +120,48 @@ struct RGBF
 class Bit4_reference
 {
 public:
-  static RGB BLACK;
-  static RGB RED;
-  static RGB GREEN;
-  static RGB YELLOW;
-  static RGB BLUE;
-  static RGB MAGENTA;
-  static RGB CYAN;
-  static RGB WHITE;
-  static RGB GRAY;
-  static RGB RED_BRIGHT;
-  static RGB GREEN_BRIGHT;
-  static RGB YELLOW_BRIGHT;
-  static RGB BLUE_BRIGHT;
-  static RGB MAGENTA_BRIGHT;
-  static RGB CYAN_BRIGHT;
-  static RGB WHITE_BRIGHT;
-  static RGB NONE;
+  static rgb BLACK;
+  static rgb RED;
+  static rgb GREEN;
+  static rgb YELLOW;
+  static rgb BLUE;
+  static rgb MAGENTA;
+  static rgb CYAN;
+  static rgb WHITE;
+  static rgb GRAY;
+  static rgb RED_BRIGHT;
+  static rgb GREEN_BRIGHT;
+  static rgb YELLOW_BRIGHT;
+  static rgb BLUE_BRIGHT;
+  static rgb MAGENTA_BRIGHT;
+  static rgb CYAN_BRIGHT;
+  static rgb WHITE_BRIGHT;
+  static rgb NONE;
 };
 
 // Converts a 4bit color to Term::RGB
-RGB bit4_to_rgb(Color4 color);
+rgb bit4_to_rgb(Color4 color);
 // Converts a 8bit color to Term::RGB
-RGB bit8_to_rgb(std::uint8_t color);
+rgb bit8_to_rgb(std::uint8_t color);
 // converts rgb values into Term::RGB
-RGB bit24_to_rgb(std::uint8_t r, std::uint8_t g, std::uint8_t b);
+rgb bit24_to_rgb(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 // creates an empty rgb color
-RGB rgb_empty();
+rgb rgb_empty();
 
 // compares two Term::RGB colors and returns how much they are different
-std::uint16_t rgb_compare(RGB rgb_first, RGB rgb_second);
+std::uint16_t rgb_compare(rgb rgb_first, rgb rgb_second);
 
 // Converts an RGB color to a 4bit color
-Color4  rgb_to_bit4(RGB rgb);
+Color4  rgb_to_bit4(rgb rgb);
 // Converts an RGB color to a 8bit color
-uint8_t rgb_to_bit8(RGB rgb);
+uint8_t rgb_to_bit8(rgb rgb);
 
 // checks if the terminal supports RGB (24bit) colors
 bool        bit24_support();
 // returns ANSI code for 24bit colors, if not supported falls back to 8bit
-std::string rgb_to_bit24_auto_fg(RGB color);
+std::string rgb_to_bit24_auto_fg(rgb color);
 // returns ANSI code for 24bit colors, if not supported falls back to 8bit
-std::string rgb_to_bit24_auto_bg(RGB color);
+std::string rgb_to_bit24_auto_bg(rgb color);
 
 // Set the given 4bit color from Term::Color4
 std::string color_fg(Color4 color);
@@ -166,11 +170,11 @@ std::string color_fg(std::uint8_t color);
 // Set the given 24bit color
 std::string color_fg(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 // Set the given RGB (24bit) color
-std::string color_fg(RGB rgb);
+std::string color_fg(rgb rgb);
 // Set the given foreground color from the RGBF struct
-std::string color_fg(RGBF rgbf);
+std::string color_fg(rgbf rgbf);
 // Set the given foreground color from the RGBF struct with an optional override
-std::string color_fg(RGBF rgbf, Mode mode);
+std::string color_fg(rgbf rgbf, Mode mode);
 
 // Set the given 4bit color from Term::Color4
 std::string color_bg(Color4 color);
@@ -179,45 +183,45 @@ std::string color_bg(std::uint8_t color);
 // Set the given 24bit color
 std::string color_bg(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 // Set the given RGB (24bit) color
-std::string color_bg(RGB rgb);
+std::string color_bg(rgb rgb);
 // Set the given background color from the RGBF struct
-std::string color_bg(RGBF rgbf);
+std::string color_bg(rgbf rgbf);
 // Set the given background color from the RGBF struct with an optional override
-std::string color_bg(RGBF rgbf, Mode mode);
+std::string color_bg(rgbf rgbf, Mode mode);
 
 std::string style(Style style);
 
 // prints the given Term::RGBF color in its original color mode
-std::string colorf(RGBF rgbf);
+std::string colorf(rgbf rgbf);
 
 // Create a Term::RGBF color using a 4bit foreground color
-RGBF rgbf_fg(Color4 color);
+rgbf rgbf_fg(Color4 color);
 // Create a Term::RGBF color using a 24bit (RGB) foreground color
-RGBF rgbf_fg(std::uint8_t r, std::uint8_t g, std::uint8_t b);
+rgbf rgbf_fg(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 // Create a Term::RGBF color using a Term::RGB foreground color
-RGBF rgbf_fg(RGB rgb);
+rgbf rgbf_fg(rgb rgb);
 
 // Create a Term::RGBF color using a 4bit background color
-RGBF rgbf_bg(Color4 color);
+rgbf rgbf_bg(Color4 color);
 // Create a Term::RGBF color using a 24bit (RGB) background color
-RGBF rgbf_bg(std::uint8_t r, std::uint8_t g, std::uint8_t b);
+rgbf rgbf_bg(std::uint8_t r, std::uint8_t g, std::uint8_t b);
 // Create a Term::RGBF color using a Term::RGB background color
-RGBF rgbf_bg(RGB rgb);
+rgbf rgbf_bg(rgb rgb);
 
 // Create a Term::RGBF color using a 4bit foreground and background color
-RGBF rgbf_fb(Color4 fg, Color4 bg);
+rgbf rgbf_fb(Color4 fg, Color4 bg);
 // Create a Term::RGBF color using a 24bit (RGB) fore- and background color
-RGBF rgbf_fb(std::uint8_t r_fg, std::uint8_t g_fg, std::uint8_t b_fg, std::uint8_t r_bg, std::uint8_t g_bg, std::uint8_t b_bg);
+rgbf rgbf_fb(std::uint8_t r_fg, std::uint8_t g_fg, std::uint8_t b_fg, std::uint8_t r_bg, std::uint8_t g_bg, std::uint8_t b_bg);
 // Create a Term::RGBF color using a Term::RGB fore- and background color
-RGBF rgbf_fb(RGB rgb_fg, RGB rgb_bg);
+rgbf rgbf_fb(rgb rgb_fg, rgb rgb_bg);
 
 // Create an empty Term::RGBF color for disabling colors completely
-RGBF rgbf_empty();
+rgbf rgbf_empty();
 
 // Print the given Term::RGBF color in Term::Mode::AUTO
-std::string color_auto(RGBF rgbf);
+std::string color_auto(rgbf rgbf);
 // print the given Term::RGBF color in the given color mode
-std::string color_auto(RGBF rgbf, Mode mode);
+std::string color_auto(rgbf rgbf, Mode mode);
 
 // get the terminal size (row, column) / (Y, X)
 std::pair<std::size_t, std::size_t> get_size();

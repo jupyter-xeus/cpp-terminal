@@ -21,68 +21,68 @@ class Window
 private:
   std::size_t            w{0};
   std::size_t            h{0};  // width and height of the window
-  std::size_t            cursor_x{0};
-  std::size_t            cursor_y{0};  // current cursor position
+  std::size_t            cursor_x{1};
+  std::size_t            cursor_y{1};  // current cursor position
   std::vector<char32_t>  chars;        // the characters in row first order
-  std::vector<Term::RGB> m_fg;
-  std::vector<Term::RGB> m_bg;
+  std::vector<Term::rgb> m_fg;
+  std::vector<Term::rgb> m_bg;
   std::vector<bool>      m_fg_reset;
   std::vector<bool>      m_bg_reset;
   std::vector<Style>     m_style;
 
-  char32_t get_char(std::size_t, std::size_t);
+  char32_t get_char(const std::size_t&, const std::size_t&);
 
-  bool      get_fg_reset(std::size_t, std::size_t);
-  bool      get_bg_reset(std::size_t, std::size_t);
-  Term::RGB get_fg(std::size_t, std::size_t);
-  Term::RGB get_bg(std::size_t, std::size_t);
+  bool      get_fg_reset(const std::size_t&, const std::size_t&);
+  bool      get_bg_reset(const std::size_t&, const std::size_t&);
+  Term::rgb get_fg(const std::size_t&, const std::size_t&);
+  Term::rgb get_bg(const std::size_t&, const std::size_t&);
 
-  Style get_style(std::size_t, std::size_t);
+  Style get_style(const std::size_t&, const std::size_t&);
 
 public:
-  Window(std::size_t w, std::size_t h) : w{w}, h{h}, cursor_x{1}, cursor_y{1}, chars(w * h, ' '), m_fg(w * h, {0, 0, 0}), m_bg(w * h, {0, 0, 0}), m_fg_reset(w * h, true), m_bg_reset(w * h, true), m_style(w * h, Style::RESET){};
+  Window(const std::size_t& w, const std::size_t& h) : w{w}, h{h}, chars(w * h, ' '), m_fg(w * h, {0, 0, 0}), m_bg(w * h, {0, 0, 0}), m_fg_reset(w * h, true), m_bg_reset(w * h, true), m_style(w * h, Style::RESET){};
 
   CPP_TERMINAL_NODISCARD std::size_t get_w() const;
 
   CPP_TERMINAL_NODISCARD std::size_t get_h() const;
 
-  void set_char(std::size_t, std::size_t, char32_t);
+  void set_char(const std::size_t&, const std::size_t&, const char32_t&);
 
-  void set_fg_reset(std::size_t, std::size_t);
+  void set_fg_reset(const std::size_t&, const std::size_t&);
 
-  void set_bg_reset(std::size_t, std::size_t);
+  void set_bg_reset(const std::size_t&, const std::size_t&);
 
-  void set_fg(std::size_t, std::size_t, const RGB&);
+  void set_fg(const std::size_t&, const std::size_t&, const rgb&);
 
-  void set_bg(std::size_t, std::size_t, const RGB&);
+  void set_bg(const std::size_t&, const std::size_t&, const rgb&);
 
-  void set_style(std::size_t, std::size_t, Style);
+  void set_style(const std::size_t&, const std::size_t&, const Style&);
 
-  void set_cursor_pos(int, int);
+  void set_cursor_pos(const std::size_t&, const std::size_t&);
 
-  void set_h(std::size_t);
+  void set_h(const std::size_t&);
 
-  void print_str(int, int, const std::string&, int = 0, bool = false);
+  void print_str(const std::size_t&, const std::size_t&, const std::string&, const std::size_t& = 0, bool = false);
 
-  void fill_fg(int, int, int, int, const RGB&);
+  void fill_fg(const std::size_t&, const std::size_t&, const std::size_t&, const std::size_t&, const rgb&);
 
-  void fill_bg(int, int, int, int, const RGB&);
+  void fill_bg(const std::size_t&, const std::size_t&, const std::size_t&, const std::size_t&, const rgb&);
 
-  void fill_style(int, int, int, int, Style);
+  void fill_style(const std::size_t&, const std::size_t&, const std::size_t&, const std::size_t&, const Style&);
 
   void print_border(bool = true);
 
-  void print_rect(std::size_t, std::size_t, std::size_t, std::size_t, bool = true);
+  void print_rect(const std::size_t&, const std::size_t&, const std::size_t&, const std::size_t&, bool = true);
 
   void clear();
 
-  static bool rgb_equal(const RGB&, const RGB&);
+  static bool rgb_equal(const rgb&, const rgb&);
 
   // TODO: add Window/Screen parameter here, to be used like this:
   // old_scr = scr;
   // scr.print_str(...)
   // scr.render(1, 1, old_scr)
-  std::string render(int, int, bool);
+  std::string render(const std::size_t&, const std::size_t&, bool);
 };
 
 }  // namespace Term

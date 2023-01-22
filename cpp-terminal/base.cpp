@@ -8,25 +8,25 @@
 
 /* COLOR CONVERSION */
 
-Term::RGB Term::Bit4_reference::BLACK(0, 0, 0);
-Term::RGB Term::Bit4_reference::RED(151, 12, 40);
-Term::RGB Term::Bit4_reference::GREEN(1, 142, 66);
-Term::RGB Term::Bit4_reference::YELLOW(238, 198, 67);
-Term::RGB Term::Bit4_reference::BLUE(13, 33, 161);
-Term::RGB Term::Bit4_reference::MAGENTA(255, 0, 144);
-Term::RGB Term::Bit4_reference::CYAN(0, 159, 184);
-Term::RGB Term::Bit4_reference::WHITE(240, 240, 240);
-Term::RGB Term::Bit4_reference::GRAY(127, 127, 127);
-Term::RGB Term::Bit4_reference::RED_BRIGHT(241, 85, 116);
-Term::RGB Term::Bit4_reference::GREEN_BRIGHT(52, 254, 146);
-Term::RGB Term::Bit4_reference::YELLOW_BRIGHT(243, 215, 124);
-Term::RGB Term::Bit4_reference::BLUE_BRIGHT(63, 136, 197);
-Term::RGB Term::Bit4_reference::MAGENTA_BRIGHT(255, 92, 184);
-Term::RGB Term::Bit4_reference::CYAN_BRIGHT(51, 228, 255);
-Term::RGB Term::Bit4_reference::WHITE_BRIGHT(255, 255, 255);
-Term::RGB Term::Bit4_reference::NONE{};
+Term::rgb Term::Bit4_reference::BLACK(0, 0, 0);
+Term::rgb Term::Bit4_reference::RED(151, 12, 40);
+Term::rgb Term::Bit4_reference::GREEN(1, 142, 66);
+Term::rgb Term::Bit4_reference::YELLOW(238, 198, 67);
+Term::rgb Term::Bit4_reference::BLUE(13, 33, 161);
+Term::rgb Term::Bit4_reference::MAGENTA(255, 0, 144);
+Term::rgb Term::Bit4_reference::CYAN(0, 159, 184);
+Term::rgb Term::Bit4_reference::WHITE(240, 240, 240);
+Term::rgb Term::Bit4_reference::GRAY(127, 127, 127);
+Term::rgb Term::Bit4_reference::RED_BRIGHT(241, 85, 116);
+Term::rgb Term::Bit4_reference::GREEN_BRIGHT(52, 254, 146);
+Term::rgb Term::Bit4_reference::YELLOW_BRIGHT(243, 215, 124);
+Term::rgb Term::Bit4_reference::BLUE_BRIGHT(63, 136, 197);
+Term::rgb Term::Bit4_reference::MAGENTA_BRIGHT(255, 92, 184);
+Term::rgb Term::Bit4_reference::CYAN_BRIGHT(51, 228, 255);
+Term::rgb Term::Bit4_reference::WHITE_BRIGHT(255, 255, 255);
+Term::rgb Term::Bit4_reference::NONE{};
 
-Term::RGB Term::bit4_to_rgb(const Term::Color4 color)
+Term::rgb Term::bit4_to_rgb(const Term::Color4 color)
 {
   switch(color)
   {
@@ -52,10 +52,10 @@ Term::RGB Term::bit4_to_rgb(const Term::Color4 color)
   return {};
 }
 
-Term::RGB Term::bit24_to_rgb(std::uint8_t r, std::uint8_t g, std::uint8_t b) { return RGB(r, g, b); }
-Term::RGB Term::rgb_empty() { return RGB{}; }
+Term::rgb Term::bit24_to_rgb(std::uint8_t r, std::uint8_t g, std::uint8_t b) { return rgb(r, g, b); }
+Term::rgb Term::rgb_empty() { return rgb{}; }
 
-uint16_t Term::rgb_compare(RGB color_first, RGB color_second)
+uint16_t Term::rgb_compare(rgb color_first, rgb color_second)
 {
   std::uint16_t diff = 0;
   // red
@@ -71,7 +71,7 @@ uint16_t Term::rgb_compare(RGB color_first, RGB color_second)
   return diff;
 }
 
-Term::Color4 Term::rgb_to_bit4(Term::RGB color)
+Term::Color4 Term::rgb_to_bit4(Term::rgb color)
 {
   // check if the RGB color is empty
   if(color.empty) { return Color4::DEFAULT; }
@@ -155,7 +155,7 @@ Term::Color4 Term::rgb_to_bit4(Term::RGB color)
   return color_result;
 }
 
-std::uint8_t Term::rgb_to_bit8(RGB color)
+std::uint8_t Term::rgb_to_bit8(rgb color)
 {
   if(color.empty)
   {
@@ -193,13 +193,13 @@ bool Term::bit24_support()
   return false;
 }
 
-std::string Term::rgb_to_bit24_auto_fg(RGB color)
+std::string Term::rgb_to_bit24_auto_fg(rgb color)
 {
   if(bit24_support()) { return color_fg(color); }
   else { return color_fg(rgb_to_bit8(color)); }
 }
 
-std::string Term::rgb_to_bit24_auto_bg(RGB color)
+std::string Term::rgb_to_bit24_auto_bg(rgb color)
 {
   if(bit24_support()) { return color_bg(color); }
   else { return color_bg(rgb_to_bit8(color)); }
@@ -212,7 +212,7 @@ std::string Term::color_fg(Term::Color4 color) { return "\033[" + std::to_string
 std::string Term::color_fg(std::uint8_t color) { return "\033[38;5;" + std::to_string(color) + 'm'; }
 std::string Term::color_fg(std::uint8_t r, std::uint8_t g, std::uint8_t b) { return "\033[38;2;" + std::to_string(r) + ';' + std::to_string(g) + ';' + std::to_string(b) + 'm'; }
 
-std::string Term::color_fg(Term::RGB rgb)
+std::string Term::color_fg(Term::rgb rgb)
 {
   if(rgb.empty)
   {
@@ -220,9 +220,9 @@ std::string Term::color_fg(Term::RGB rgb)
   }
   return "\033[38;2;" + std::to_string(rgb.r) + ';' + std::to_string(rgb.g) + ';' + std::to_string(rgb.b) + 'm';
 }
-std::string Term::color_fg(Term::RGBF rgbf) { return color_fg(rgbf, rgbf.mode_fg); }
+std::string Term::color_fg(Term::rgbf rgbf) { return color_fg(rgbf, rgbf.mode_fg); }
 
-std::string Term::color_fg(Term::RGBF rgbf, Mode mode)
+std::string Term::color_fg(Term::rgbf rgbf, Mode mode)
 {
   switch(mode)
   {
@@ -241,7 +241,7 @@ std::string Term::color_fg(Term::RGBF rgbf, Mode mode)
 std::string Term::color_bg(Term::Color4 color) { return "\033[" + std::to_string((uint8_t)color + 40) + 'm'; }
 std::string Term::color_bg(std::uint8_t color) { return "\033[48;5;" + std::to_string(color) + 'm'; }
 std::string Term::color_bg(std::uint8_t r, std::uint8_t g, std::uint8_t b) { return "\033[48;2;" + std::to_string(r) + ';' + std::to_string(g) + ';' + std::to_string(b) + 'm'; }
-std::string Term::color_bg(Term::RGB rgb)
+std::string Term::color_bg(Term::rgb rgb)
 {
   if(rgb.empty)
   {
@@ -249,8 +249,8 @@ std::string Term::color_bg(Term::RGB rgb)
   }
   return "\033[48;2;" + std::to_string(rgb.r) + ';' + std::to_string(rgb.g) + ';' + std::to_string(rgb.b) + 'm';
 }
-std::string Term::color_bg(Term::RGBF rgbf) { return color_bg(rgbf, rgbf.mode_bg); }
-std::string Term::color_bg(Term::RGBF rgbf, Mode mode)
+std::string Term::color_bg(Term::rgbf rgbf) { return color_bg(rgbf, rgbf.mode_bg); }
+std::string Term::color_bg(Term::rgbf rgbf, Mode mode)
 {
   switch(mode)
   {
@@ -267,37 +267,37 @@ std::string Term::style(Term::Style style) { return "\033[" + std::to_string((st
 
 /* RGBF FUNCTIONS */
 
-std::string Term::colorf(Term::RGBF rgbf) { return color_fg(rgbf) + color_bg(rgbf); }
+std::string Term::colorf(Term::rgbf rgbf) { return color_fg(rgbf) + color_bg(rgbf); }
 
-Term::RGBF Term::rgbf_fg(Term::Color4 color) { return Term::RGBF(bit4_to_rgb(color), Mode::BIT4, rgb_empty(), Mode::UNSET); }
-Term::RGBF Term::rgbf_fg(Term::RGB rgb) { return Term::RGBF(rgb, Mode::BIT24, rgb_empty(), Mode::UNSET); }
+Term::rgbf Term::rgbf_fg(Term::Color4 color) { return Term::rgbf(bit4_to_rgb(color), Mode::BIT4, rgb_empty(), Mode::UNSET); }
+Term::rgbf Term::rgbf_fg(Term::rgb rgb) { return Term::rgbf(rgb, Mode::BIT24, rgb_empty(), Mode::UNSET); }
 
-Term::RGBF Term::rgbf_fg(std::uint8_t r, std::uint8_t g, std::uint8_t b) { return Term::RGBF(RGB(r, g, b), Mode::BIT24, rgb_empty(), Mode::UNSET); }
+Term::rgbf Term::rgbf_fg(std::uint8_t r, std::uint8_t g, std::uint8_t b) { return Term::rgbf(rgb(r, g, b), Mode::BIT24, rgb_empty(), Mode::UNSET); }
 
-Term::RGBF Term::rgbf_bg(Term::Color4 color) { return Term::RGBF(rgb_empty(), Mode::UNSET, bit4_to_rgb(color), Mode::BIT4); }
+Term::rgbf Term::rgbf_bg(Term::Color4 color) { return Term::rgbf(rgb_empty(), Mode::UNSET, bit4_to_rgb(color), Mode::BIT4); }
 
-Term::RGBF Term::rgbf_bg(Term::RGB rgb) { return Term::RGBF(rgb_empty(), Mode::UNSET, rgb, Mode::BIT24); }
+Term::rgbf Term::rgbf_bg(Term::rgb rgb) { return Term::rgbf(rgb_empty(), Mode::UNSET, rgb, Mode::BIT24); }
 
-Term::RGBF Term::rgbf_bg(std::uint8_t r, std::uint8_t g, std::uint8_t b) { return Term::RGBF(rgb_empty(), Mode::UNSET, RGB(r, g, b), Mode::BIT24); }
+Term::rgbf Term::rgbf_bg(std::uint8_t r, std::uint8_t g, std::uint8_t b) { return Term::rgbf(rgb_empty(), Mode::UNSET, rgb(r, g, b), Mode::BIT24); }
 
-Term::RGBF Term::rgbf_fb(Term::Color4 fg, Term::Color4 bg) { return Term::RGBF(bit4_to_rgb(fg), Mode::BIT4, bit4_to_rgb(bg), Mode::BIT4); }
+Term::rgbf Term::rgbf_fb(Term::Color4 fg, Term::Color4 bg) { return Term::rgbf(bit4_to_rgb(fg), Mode::BIT4, bit4_to_rgb(bg), Mode::BIT4); }
 
-Term::RGBF Term::rgbf_fb(Term::RGB rgb_fg, Term::RGB rgb_bg) { return Term::RGBF(rgb_fg, Mode::BIT24, rgb_bg, Mode::BIT24); }
+Term::rgbf Term::rgbf_fb(Term::rgb rgb_fg, Term::rgb rgb_bg) { return Term::rgbf(rgb_fg, Mode::BIT24, rgb_bg, Mode::BIT24); }
 
-Term::RGBF Term::rgbf_fb(std::uint8_t r_fg, std::uint8_t g_fg, std::uint8_t b_fg, std::uint8_t r_bg, std::uint8_t g_bg, std::uint8_t b_bg) { return Term::RGBF(RGB(r_fg, g_fg, b_fg), Mode::BIT24, RGB(r_bg, g_bg, b_bg), Mode::BIT24); }
+Term::rgbf Term::rgbf_fb(std::uint8_t r_fg, std::uint8_t g_fg, std::uint8_t b_fg, std::uint8_t r_bg, std::uint8_t g_bg, std::uint8_t b_bg) { return Term::rgbf(rgb(r_fg, g_fg, b_fg), Mode::BIT24, rgb(r_bg, g_bg, b_bg), Mode::BIT24); }
 
-Term::RGBF Term::rgbf_empty() { return Term::RGBF(rgb_empty(), Mode::UNSET, rgb_empty(), Mode::UNSET); }
+Term::rgbf Term::rgbf_empty() { return Term::rgbf(rgb_empty(), Mode::UNSET, rgb_empty(), Mode::UNSET); }
 
 /* AUTOMATIC COLORS */
 
-std::string Term::color_auto(Term::RGBF rgbf, Term::Mode mode)
+std::string Term::color_auto(Term::rgbf rgbf, Term::Mode mode)
 {
   if(stdout_connected()) return color_fg(rgbf, mode) + color_bg(rgbf, mode);
   else
     return "";  // disable colors if stdout is not connected
 }
 
-std::string Term::color_auto(Term::RGBF rgbf)
+std::string Term::color_auto(Term::rgbf rgbf)
 {
   if(stdout_connected()) return color_fg(rgbf, Mode::AUTO24) + color_bg(rgbf, Mode::AUTO24);
   else

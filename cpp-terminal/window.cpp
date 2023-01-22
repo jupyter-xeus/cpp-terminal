@@ -6,61 +6,61 @@
 namespace Term
 {
 
-char32_t Term::Window::get_char(std::size_t x, std::size_t y) { return chars[(y - 1) * w + (x - 1)]; }
+char32_t Term::Window::get_char(const std::size_t& x, const std::size_t& y) { return chars[(y - 1) * w + (x - 1)]; }
 
-bool Term::Window::get_fg_reset(std::size_t x, std::size_t y) { return m_fg_reset[(y - 1) * w + (x - 1)]; }
+bool Term::Window::get_fg_reset(const std::size_t& x, const std::size_t& y) { return m_fg_reset[(y - 1) * w + (x - 1)]; }
 
-bool Term::Window::get_bg_reset(std::size_t x, std::size_t y) { return m_bg_reset[(y - 1) * w + (x - 1)]; }
+bool Term::Window::get_bg_reset(const std::size_t& x, const std::size_t& y) { return m_bg_reset[(y - 1) * w + (x - 1)]; }
 
-Term::RGB Term::Window::get_fg(std::size_t x, std::size_t y) { return m_fg[(y - 1) * w + (x - 1)]; }
+Term::rgb Term::Window::get_fg(const std::size_t& x, const std::size_t& y) { return m_fg[(y - 1) * w + (x - 1)]; }
 
-Term::RGB Term::Window::get_bg(std::size_t x, std::size_t y) { return m_bg[(y - 1) * w + (x - 1)]; }
+Term::rgb Term::Window::get_bg(const std::size_t& x, const std::size_t& y) { return m_bg[(y - 1) * w + (x - 1)]; }
 
-Term::Style Term::Window::get_style(std::size_t x, std::size_t y) { return m_style[(y - 1) * w + (x - 1)]; }
+Term::Style Term::Window::get_style(const std::size_t& x, const std::size_t& y) { return m_style[(y - 1) * w + (x - 1)]; }
 
 std::size_t Term::Window::get_w() const { return w; }
 
 std::size_t Term::Window::get_h() const { return h; }
 
-void Term::Window::set_char(std::size_t x, std::size_t y, char32_t c)
+void Term::Window::set_char(const std::size_t& x, const std::size_t& y, const char32_t& c)
 {
   if(x >= 1 && y >= 1 && x <= w && y <= h) { chars[(y - 1) * w + (x - 1)] = c; }
   else { throw Term::Exception("set_char(): (x,y) out of bounds"); }
 }
 
-void Term::Window::set_fg_reset(std::size_t x, std::size_t y)
+void Term::Window::set_fg_reset(const std::size_t& x, const std::size_t& y)
 {
   m_fg_reset[(y - 1) * w + (x - 1)] = true;
   m_fg[(y - 1) * w + (x - 1)]       = {255, 255, 255};
 }
 
-void Term::Window::set_bg_reset(std::size_t x, std::size_t y)
+void Term::Window::set_bg_reset(const std::size_t& x, const std::size_t& y)
 {
   m_bg_reset[(y - 1) * w + (x - 1)] = true;
   m_fg[(y - 1) * w + (x - 1)]       = {255, 255, 255};
 }
 
-void Term::Window::set_fg(std::size_t x, std::size_t y, const RGB& rgb)
+void Term::Window::set_fg(const std::size_t& x, const std::size_t& y, const rgb& rgb)
 {
   m_fg_reset[(y - 1) * w + (x - 1)] = false;
   m_fg[(y - 1) * w + (x - 1)]       = rgb;
 }
 
-void Term::Window::set_bg(std::size_t x, std::size_t y, const RGB& rgb)
+void Term::Window::set_bg(const std::size_t& x, const std::size_t& y, const rgb& rgb)
 {
   m_bg_reset[(y - 1) * w + (x - 1)] = false;
   m_bg[(y - 1) * w + (x - 1)]       = rgb;
 }
 
-void Term::Window::set_style(std::size_t x, std::size_t y, Style c) { m_style[(y - 1) * w + (x - 1)] = c; }
+void Term::Window::set_style(const std::size_t& x, const std::size_t& y, const Style& c) { m_style[(y - 1) * w + (x - 1)] = c; }
 
-void Term::Window::set_cursor_pos(int x, int y)
+void Term::Window::set_cursor_pos(const std::size_t& x, const std::size_t& y)
 {
   cursor_x = x;
   cursor_y = y;
 }
 
-void Term::Window::set_h(std::size_t new_h)
+void Term::Window::set_h(const std::size_t& new_h)
 {
   if(new_h == h) { return; }
   else if(new_h > h)
@@ -77,7 +77,7 @@ void Term::Window::set_h(std::size_t new_h)
   else { throw Term::Exception("Shrinking height not supported."); }
 }
 
-void Term::Window::print_str(int x, int y, const std::string& s, int indent, bool move_cursor)
+void Term::Window::print_str(const std::size_t& x, const std::size_t& y, const std::string& s, const std::size_t& indent, bool move_cursor)
 {
   std::u32string s2   = Private::utf8_to_utf32(s);
   std::size_t    xpos = x;
@@ -90,7 +90,7 @@ void Term::Window::print_str(int x, int y, const std::string& s, int indent, boo
       ypos++;
       if(xpos <= w && ypos <= h)
       {
-        for(int j = 0; j < indent; j++) { set_char(x + j, ypos, '.'); }
+        for(std::size_t j = 0; j < indent; j++) { set_char(x + j, ypos, '.'); }
       }
       else
       {
@@ -116,33 +116,33 @@ void Term::Window::print_str(int x, int y, const std::string& s, int indent, boo
   }
 }
 
-void Term::Window::fill_fg(int x1, int y1, int x2, int y2, const RGB& rgb)
+void Term::Window::fill_fg(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2, const rgb& rgb)
 {
-  for(int j = y1; j <= y2; j++)
+  for(std::size_t j = y1; j <= y2; j++)
   {
-    for(int i = x1; i <= x2; i++) { set_fg(i, j, rgb); }
+    for(std::size_t i = x1; i <= x2; i++) { set_fg(i, j, rgb); }
   }
 }
 
-void Term::Window::fill_bg(int x1, int y1, int x2, int y2, const RGB& rgb)
+void Term::Window::fill_bg(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2, const rgb& rgb)
 {
-  for(int j = y1; j <= y2; j++)
+  for(std::size_t j = y1; j <= y2; j++)
   {
-    for(int i = x1; i <= x2; i++) { set_bg(i, j, rgb); }
+    for(std::size_t i = x1; i <= x2; i++) { set_bg(i, j, rgb); }
   }
 }
 
-void Term::Window::fill_style(int x1, int y1, int x2, int y2, Style color)
+void Term::Window::fill_style(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2, const Style& color)
 {
-  for(int j = y1; j <= y2; j++)
+  for(std::size_t j = y1; j <= y2; j++)
   {
-    for(int i = x1; i <= x2; i++) { set_style(i, j, color); }
+    for(std::size_t i = x1; i <= x2; i++) { set_style(i, j, color); }
   }
 }
 
 void Term::Window::print_border(bool unicode) { print_rect(1, 1, w, h, unicode); }
 
-void Term::Window::print_rect(std::size_t x1, std::size_t y1, std::size_t x2, std::size_t y2, bool unicode)
+void Term::Window::print_rect(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2, bool unicode)
 {
   std::u32string border = Private::utf8_to_utf32("│─┌┐└┘");
   if(unicode)
@@ -195,14 +195,14 @@ void Term::Window::clear()
   }
 }
 
-bool Term::Window::rgb_equal(const RGB& rgb_one, const RGB& rgb_two) { return rgb_one.r == rgb_two.r && rgb_one.b == rgb_two.b && rgb_one.g == rgb_two.g; }
+bool Term::Window::rgb_equal(const rgb& rgb_one, const rgb& rgb_two) { return rgb_one.r == rgb_two.r && rgb_one.b == rgb_two.b && rgb_one.g == rgb_two.g; }
 
-std::string Term::Window::render(int x0, int y0, bool term)
+std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, bool term)
 {
   std::string out;
   if(term) { out.append(cursor_off()); }
-  RGB   current_fg       = {255, 255, 255};
-  RGB   current_bg       = {255, 255, 255};
+  rgb   current_fg       = {255, 255, 255};
+  rgb   current_bg       = {255, 255, 255};
   bool  current_fg_reset = true;
   bool  current_bg_reset = true;
   Style current_style    = Style::RESET;
@@ -272,13 +272,13 @@ std::string Term::Window::render(int x0, int y0, bool term)
       if(update_fg_reset) out.append(color_fg(Color4::DEFAULT));
       else if(update_fg)
       {
-        Term::RGB color_tmp = get_fg(i, j);
+        Term::rgb color_tmp = get_fg(i, j);
         out.append(color_fg(color_tmp.r, color_tmp.g, color_tmp.b));
       }
       if(update_bg_reset) out.append(color_bg(Color4::DEFAULT));
       else if(update_bg)
       {
-        Term::RGB color_tmp = get_bg(i, j);
+        Term::rgb color_tmp = get_bg(i, j);
         out.append(color_bg(color_tmp.r, color_tmp.g, color_tmp.b));
       }
       Private::codepoint_to_utf8(out, get_char(i, j));

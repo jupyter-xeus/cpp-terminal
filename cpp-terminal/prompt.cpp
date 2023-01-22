@@ -171,7 +171,7 @@ void Term::print_left_curly_bracket(Term::Window& scr, int x, int y1, int y2)
   }
 }
 
-void Term::render(Term::Window& scr, const Model& m, std::size_t cols)
+void Term::render(Term::Window& scr, const Model& m, const std::size_t& cols)
 {
   scr.clear();
   print_left_curly_bracket(scr, cols, 1, m.lines.size());

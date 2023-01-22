@@ -71,7 +71,7 @@ char32_t UU(const std::string&);
 
 void print_left_curly_bracket(Term::Window&, int, int, int);
 
-void render(Term::Window&, const Model&, std::size_t);
+void render(Term::Window&, const Model&, const std::size_t&);
 
 std::string prompt_multiline(const std::string&, std::vector<std::string>&, std::function<bool(std::string)>&);
 }  // namespace Term
