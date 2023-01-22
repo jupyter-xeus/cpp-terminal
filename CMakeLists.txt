@@ -28,7 +28,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE CACHE STRING "C++ standard required" FORCE)
 
 option(CPPTERMINAL_BUILD_EXAMPLES "Set to ON to build examples" ON)
 option(CPPTERMINAL_ENABLE_INSTALL "Set to ON to enable install" ON)
-option(CPPTERMINAL_ENABLE_TESING "Set to ON to enable testing" ON)
+option(CPPTERMINAL_ENABLE_TESTING "Set to ON to enable testing" ON)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
