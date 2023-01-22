@@ -113,6 +113,12 @@ jobs:
           # 3.9
           - version: 4
             standard: 20
+          # 6 has problem
+          - version: 6
+            standard: 20
+          # 7 has problem
+          - version: 7
+            standard: 20
 
     steps:
       - name: ⬇️ Install git & CMake
