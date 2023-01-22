@@ -1,5 +1,4 @@
 #include "cpp-terminal/prompt.hpp"
-
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/platforms/conversion.hpp"
 #include "cpp-terminal/terminal.hpp"
@@ -244,6 +243,12 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     {
       switch(key)
       {
+        case Key::ENTER:
+          not_complete = !iscomplete(concat(m.lines));
+          if(not_complete) key = Key::ALT_ENTER;
+          else
+            break;
+          CPP_TERMINAL_FALLTHROUGH;
         case Key::BACKSPACE:
           if(m.cursor_col > 1)
           {
@@ -314,12 +319,6 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
             if(m.cursor_col > m.lines[m.cursor_row - 1].size() + 1) { m.cursor_col = m.lines[m.cursor_row - 1].size() + 1; }
           }
           break;
-        case Key::ENTER:
-          not_complete = !iscomplete(concat(m.lines));
-          if(not_complete) key = Key::ALT_ENTER;
-          else
-            break;
-          CPP_TERMINAL_FALLTHROUGH;
         case Key::CTRL_N:
         case Key::ALT_ENTER:
         {

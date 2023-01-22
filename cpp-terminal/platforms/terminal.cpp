@@ -1,11 +1,3 @@
-#include "cpp-terminal/terminal.hpp"
-
-#include "cpp-terminal/base.hpp"
-#include "cpp-terminal/tty.hpp"
-
-#include <iostream>
-#include <stdexcept>
-
 #ifdef _WIN32
   #include <windows.h>
   #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
@@ -20,6 +12,13 @@
 #else
   #include <termios.h>
 #endif
+
+#include <iostream>
+#include <stdexcept>
+
+#include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/base.hpp"
+#include "cpp-terminal/tty.hpp"
 
 void Term::Terminal::store_and_restore()
 {
@@ -76,7 +75,7 @@ void Term::Terminal::store_and_restore()
 #endif
 }
 
-Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_signal_keys, bool _hide_cursor) : keyboard_enabled{enable_keyboard}, disable_signal_keys{disable_signal_keys}, clear_screen{_clear_screen}, hide_cursor{_hide_cursor}
+Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_signal_keys, bool _hide_cursor) : clear_screen{_clear_screen},keyboard_enabled{enable_keyboard}, disable_signal_keys{disable_signal_keys},  hide_cursor{_hide_cursor}
 {
   store_and_restore();
 #ifdef _WIN32
@@ -118,9 +117,9 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
     // keep it enabled, so that in C++, one can still just use std::endl
     // for EOL instead of "\r\n".
     // raw.c_oflag &= ~(OPOST);
-    raw.c_cflag |= (CS8);
+    raw.c_cflag |= CS8;
     raw.c_lflag &= ~(ECHO | ICANON | IEXTEN);
-    if(disable_signal_keys) { raw.c_lflag &= ~(ISIG); }
+    if(disable_signal_keys) { raw.c_lflag &= ~ISIG; }
     raw.c_cc[VMIN]  = 0;
     raw.c_cc[VTIME] = 0;
     if(tcsetattr(0, TCSAFLUSH, &raw) == -1) { throw std::runtime_error("tcsetattr() failed"); }

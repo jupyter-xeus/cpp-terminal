@@ -1,11 +1,13 @@
-#include <cpp-terminal/prompt.hpp>
-#include <cpp-terminal/version.hpp>
 #include <exception>
 #include <iostream>
 #include <stdexcept>
+
+#include "cpp-terminal/prompt.hpp"
+#include "cpp-terminal/version.hpp"
+
 int main()
 {
-  std::cout << "Running cpp-terminal version: " << CPP_TERMINAL_VERSION_COMPLETE << std::endl;
+  std::cout << "Running cpp-terminal version: " << Term::Version << std::endl;
   try
   {
     std::cout << "CPP-Terminal basic prompt example: \n\n";

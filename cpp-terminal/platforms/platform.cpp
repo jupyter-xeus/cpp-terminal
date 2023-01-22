@@ -1,18 +1,15 @@
-#include "cpp-terminal/platforms/platform.hpp"
-
-#include "cpp-terminal/tty.hpp"
-
 #ifdef _WIN32
   #include <windows.h>
-typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
+  typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #else
   #include <cerrno>
   #include <sys/ioctl.h>
   #include <unistd.h>
 #endif
-
 #include <stdexcept>
-#include <tuple>
+
+#include "cpp-terminal/platforms/platform.hpp"
+#include "cpp-terminal/tty.hpp"
 
 std::string Term::Private::getenv(const std::string& env)
 {
@@ -30,7 +27,7 @@ std::string Term::Private::getenv(const std::string& env)
 #endif
 }
 
-std::tuple<std::size_t, std::size_t> Term::Private::get_term_size()
+std::pair<std::size_t, std::size_t> Term::Private::get_term_size()
 {
 #ifdef _WIN32
   if(GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed"); }
@@ -55,13 +52,13 @@ std::tuple<std::size_t, std::size_t> Term::Private::get_term_size()
     // This happens when we are not connected to a terminal
     throw std::runtime_error("Couldn't get terminal size. Is it connected to a TTY?");
   }
-  else { return std::tuple<std::size_t, std::size_t>{ws.ws_row, ws.ws_col}; }
+  else { return std::pair<std::size_t, std::size_t>{ws.ws_row, ws.ws_col}; }
 #endif
 }
 
 char Term::Private::read_raw_stdin()
 {
-  int c = getchar();
+  char c = getchar();
   if(c >= 0) { return c; }
   else if(c == EOF)
   {
@@ -93,7 +90,7 @@ bool Term::Private::read_raw(char* s)
   }
   else { return false; }
 #else
-  int nread = read(0, s, 1);
+  ::ssize_t nread = ::read(0, s, 1);
   if(nread == -1 && errno != EAGAIN) { throw std::runtime_error("read() failed"); }
   return (nread == 1);
 #endif

@@ -1,15 +1,9 @@
 #pragma once
 
+#include <cstdint>
 #include <stdexcept>
 #include <string>
-#include <tuple>
 #include <vector>
-
-#ifdef _WIN32
-  #include <cstdio>
-#else
-  #include <sys/ioctl.h>
-#endif
 
 static constexpr std::uint8_t UTF8_ACCEPT = 0;
 static constexpr std::uint8_t UTF8_REJECT = 0xf;
@@ -86,31 +80,6 @@ inline std::string utf32_to_utf8(const std::u32string& s)
   std::string r{};
   for(char32_t i: s) { codepoint_to_utf8(r, i); }
   return r;
-}
-
-// coverts a string into an integer
-inline int unified_sscanf(const char* string, const char* format, std::size_t* rows, std::size_t* cols)
-{
-#ifdef _WIN32
-  // on windows it's recommended to use their own sscanf_s function
-  return sscanf_s(string, format, rows, cols);
-#else
-  // TODO move to a better way
-  return sscanf(string, format, rows, cols);
-#endif
-}
-
-inline std::tuple<std::size_t, std::size_t> convert_string_to_size_t(const char* string, const char* format)
-{
-  size_t rows{}, cols{};
-#ifdef _WIN32
-  // Windows provides its own alternative to sscanf()
-  if(sscanf_s(string, format, rows, cols) != 2) { throw std::runtime_error("Couldn't parse string: Invalid format"); }
-#else
-  // TODO move to a better way
-  if(sscanf(string, format, rows, cols) != 2) { throw std::runtime_error("Couldn't parse string: Invalid format"); }
-#endif
-  return std::tuple<std::size_t, std::size_t>{rows, cols};
 }
 
 // converts a vector of char into a string

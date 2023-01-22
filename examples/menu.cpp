@@ -1,11 +1,10 @@
-#include "cpp-terminal/terminal.hpp"
-
-#include <cpp-terminal/base.hpp>
-#include <cpp-terminal/input.hpp>
 #include <exception>
 #include <iostream>
 #include <stdexcept>
-#include <tuple>
+
+#include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/base.hpp"
+#include "cpp-terminal/input.hpp"
 
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
 {
@@ -73,7 +72,7 @@ int main()
       return 1;
     }
     Term::Terminal                       term(true, true, true, true);
-    std::tuple<std::size_t, std::size_t> term_size = Term::get_size();
+    std::pair<std::size_t, std::size_t> term_size = Term::get_size();
     int                                  pos       = 5;
     int                                  h         = 10;
     std::size_t                          w{10};
@@ -88,7 +87,7 @@ int main()
           if(w > 10) w--;
           break;
         case Term::Key::ARROW_RIGHT:
-          if(w < static_cast<std::size_t>(std::get<1>(term_size) - 5)) w++;
+          if(w < std::get<1>(term_size) - 5) w++;
           break;
         case Term::Key::ARROW_UP:
           if(pos > 1) pos--;

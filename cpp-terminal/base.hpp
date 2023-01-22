@@ -1,9 +1,10 @@
 #pragma once
 
+#include <string>
+#include <utility>
+
 #include "cpp-terminal/platforms/macros.hpp"
 #include "cpp-terminal/platforms/platform.hpp"
-
-#include <string>
 
 namespace Term
 {
@@ -77,9 +78,11 @@ enum class Style : std::uint8_t
 // Represents a RGB (24bit) color
 struct RGB
 {
-  RGB() {}
+  RGB() = default;
   RGB(const std::uint8_t& rr, const std::uint8_t& gg, const std::uint8_t& bb) : r(rr), g(gg), b(bb), empty(false) {}
-  std::uint8_t r{0}, g{0}, b{0};
+  std::uint8_t r{0};
+  std::uint8_t g{0};
+  std::uint8_t b{0};
   bool         empty{true};
 };
 // indicates the color mode (basically the original color resolution)
@@ -100,7 +103,7 @@ enum class Mode
 // represents an RGB foreground and background color
 struct RGBF
 {
-  RGBF() {}
+  RGBF() = default;
   RGBF(const RGB& rfg, const Mode& mfg, const RGB& rfb, const Mode& mfb) : rgb_fg(rfg), mode_fg(mfg), rgb_bg(rfb), mode_bg(mfb) {}
   RGB  rgb_fg{};
   Mode mode_fg{};
@@ -217,7 +220,7 @@ std::string color_auto(RGBF rgbf);
 std::string color_auto(RGBF rgbf, Mode mode);
 
 // get the terminal size (row, column) / (Y, X)
-std::tuple<std::size_t, std::size_t> get_size();
+std::pair<std::size_t, std::size_t> get_size();
 // check if stdin is connected to a TTY
 bool                                 stdin_connected();
 // check if stdout is connected to a TTY
@@ -241,7 +244,7 @@ std::string                          cursor_left(std::size_t columns);
 // move the cursor the given columns right
 std::string                          cursor_right(std::size_t columns);
 // returns the current cursor position (row, column) (Y, X)
-std::tuple<std::size_t, std::size_t> cursor_position();
+std::pair<std::size_t, std::size_t> cursor_position();
 // the ANSI code to generate a cursor position report
 std::string                          cursor_position_report();
 // clears the screen from the current cursor position to the end of the screen

@@ -1,10 +1,10 @@
-#include "cpp-terminal/platforms/conversion.hpp"
-#include "cpp-terminal/tty.hpp"
-
-#include <cpp-terminal/base.hpp>
-#include <cpp-terminal/platforms/platform.hpp>
 #include <iostream>
 #include <stdexcept>
+#include <utility>
+
+#include "cpp-terminal/tty.hpp"
+#include "cpp-terminal/base.hpp"
+#include "cpp-terminal/platforms/platform.hpp"
 
 /* COLOR CONVERSION */
 
@@ -304,7 +304,7 @@ std::string Term::color_auto(Term::RGBF rgbf)
     return "";
 }
 
-std::tuple<std::size_t, std::size_t> Term::get_size()
+std::pair<std::size_t, std::size_t> Term::get_size()
 {
   return Private::get_term_size();  // function uses platform dependent code
 }
@@ -330,35 +330,30 @@ std::string Term::cursor_right(std::size_t columns) { return "\033[" + std::to_s
 
 std::string Term::cursor_left(std::size_t columns) { return "\033[" + std::to_string(columns) + 'D'; }
 
-std::tuple<std::size_t, std::size_t> Term::cursor_position()
+std::pair<std::size_t, std::size_t> Term::cursor_position()
 {
-  char buf[32];
   // write cursor position report
   std::cout << cursor_position_report() << std::flush;
   // read input buffer
-  for(unsigned int i = 0; i < sizeof(buf) - 1; i++)
+  std::string buf;
+  char c{'\0'};
+  do
   {
-    while(!Private::read_raw(&buf[i]))
-      ;
-    if(buf[i] == 'R')
-    {
-      if(i < 5) { throw std::runtime_error("get_cursor_position(): too short response"); }
-      else { buf[i] = '\0'; }
-      break;
-    }
+    while(!Private::read_raw(&c));
+    buf.push_back(c);
   }
-  // Find the result in the response, drop the rest:
-  for(unsigned int i = 0; i < sizeof(buf) - 6; i++)
+  while(c!='R');
+
+  bool found{false};
+  std::size_t row{0};
+  std::size_t column{0};
+  for(std::size_t i = 2; i < buf.size(); i++)
   {
-    std::size_t rows, columns;
-    if(buf[i] == '\x1b' && buf[i + 1] == '[')
-    {
-      if(Private::unified_sscanf(&buf[i + 2], "%d;%d", &rows, &columns) != 2) { throw std::runtime_error("get_cursor_position(): result could not be parsed"); }
-      return std::tuple<std::size_t, std::size_t>{rows, columns};
-    }
-    if(buf[i] == '\0') break;
+		if (buf[i]==';') found=true;
+    else if (found== false && buf[i]>='0' && buf[i]<='9') row=row*10+(buf[i]-'0');
+    else if (found== true && buf[i]>='0' && buf[i]<='9') column=column*10+(buf[i]-'0');
   }
-  throw std::runtime_error("get_cursor_position(): result not found in the response");
+  return std::pair<std::size_t ,std::size_t>(row,column);
 }
 
 std::string Term::cursor_position_report() { return "\x1b[6n"; }

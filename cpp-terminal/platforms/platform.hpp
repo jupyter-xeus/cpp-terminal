@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <tuple>
+#include <utility>
 
 namespace Term
 {
@@ -13,7 +13,7 @@ std::string getenv(const std::string&);
 
 // returns the terminal size as (rows, columns) / (Y, X), throws a runtime error
 // if the console is not connected
-std::tuple<std::size_t, std::size_t> get_term_size();
+std::pair<std::size_t, std::size_t> get_term_size();
 
 // Returns true if a character is read, otherwise immediately returns false
 // This can't be made inline

@@ -1,8 +1,7 @@
-#include "cpp-terminal/window.hpp"
-
-#include "cpp-terminal/platforms/conversion.hpp"
-
 #include <stdexcept>
+
+#include "cpp-terminal/window.hpp"
+#include "cpp-terminal/platforms/conversion.hpp"
 
 namespace Term
 {

@@ -1,5 +1,3 @@
-#include <cpp-terminal/input.hpp>
-#include <cpp-terminal/prompt.hpp>
 #include <exception>
 #include <functional>
 #include <iostream>
@@ -7,16 +5,14 @@
 #include <string>
 #include <vector>
 
-using Term::Key;
-using Term::prompt_multiline;
-using Term::Terminal;
+#include "cpp-terminal/input.hpp"
+#include "cpp-terminal/prompt.hpp"
 
 bool determine_completeness(CPP_TERMINAL_MAYBE_UNUSED const std::string& command)
 {
   // Determine if the statement is complete
   if(command.size() > 1 && command.substr(command.size() - 2, 1) == "\\") return false;
-  else
-    return true;
+  else return true;
 }
 
 int main()
@@ -28,7 +24,7 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Terminal term(false, true, false, false);
+    Term::Terminal term(false, true, false, false);
     std::cout << "Interactive prompt.\n"
               << "  * Use Ctrl-D to exit.\n"
               << "  * Use Enter to submit.\n"
@@ -43,7 +39,7 @@ int main()
     while(true)
     {
       std::string answer = Term::prompt_multiline("> ", history, iscomplete);
-      if(answer.size() == 1 && answer[0] == Key::CTRL_D) break;
+      if(answer.size() == 1 && answer[0] == Term::Key::CTRL_D) break;
       std::cout << "Submitted text: " << answer << std::endl;
     }
   }
