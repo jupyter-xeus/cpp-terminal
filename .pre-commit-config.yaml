@@ -39,13 +39,13 @@ repos:
         args: [ --allow-multiple-documents ]
 
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
-    rev: 2.6.2
+    rev: 2.7.1
     hooks:
       - id: editorconfig-checker
         name: check .editorconfig rules
 
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v15.0.6
+    rev: v15.0.7
     hooks:
       - id: clang-format
 
@@ -63,7 +63,7 @@ repos:
       - id: codespell
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.3.1
+    rev: v1.4.1
     hooks:
       - id: remove-crlf
       - id: remove-tabs
