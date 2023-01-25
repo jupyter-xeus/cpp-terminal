@@ -20,7 +20,7 @@ jobs:
       matrix:
         # Before 4.7 there is no Non-static data member initializers that's bad!
         version: [ 4.7, 4.8, 4.9, 5, 6, 7, 8, 9, 10, 11, 12 ]
-        standard: [ 11, 14, 17 ]
+        standard: [ 11, 14, 17, 20 ]
         exclude:
           # 4.6
           - version: 4.6
@@ -88,7 +88,7 @@ jobs:
       fail-fast: false
       matrix:
         version: [ 3.5, 3.6, 3.7, 3.8, 3.9, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ]
-        standard: [ 11, 14, 17 ]
+        standard: [ 11, 14, 17, 20 ]
         exclude:
           # 3.5
           # 3.5 is buggy with c++14,c++17, skip it for now
@@ -112,6 +112,12 @@ jobs:
             standard: 20
           # 3.9
           - version: 4
+            standard: 20
+          # 6 has problem
+          - version: 6
+            standard: 20
+          # 7 has problem
+          - version: 7
             standard: 20
 
     steps:
@@ -144,7 +150,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        standard: [ 11, 14, 17 ]
+        standard: [ 11, 14, 17, 20 ]
 
     steps:
       - name: ⬇️ Install git & CMake

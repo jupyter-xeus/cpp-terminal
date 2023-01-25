@@ -1,11 +1,9 @@
+#include "cpp-terminal/base.hpp"
+#include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/input.hpp"
 #include "cpp-terminal/terminal.hpp"
 
-#include <cpp-terminal/base.hpp>
-#include <cpp-terminal/input.hpp>
-#include <exception>
 #include <iostream>
-#include <stdexcept>
-#include <tuple>
 
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
 {
@@ -72,12 +70,12 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal                       term(true, true, true, true);
-    std::tuple<std::size_t, std::size_t> term_size = Term::get_size();
-    int                                  pos       = 5;
-    int                                  h         = 10;
-    std::size_t                          w{10};
-    bool                                 on = true;
+    Term::Terminal                      term(true, true, true, true);
+    std::pair<std::size_t, std::size_t> term_size = Term::get_size();
+    int                                 pos       = 5;
+    int                                 h         = 10;
+    std::size_t                         w{10};
+    bool                                on = true;
     while(on)
     {
       render(std::get<0>(term_size), std::get<1>(term_size), h, w, pos);
@@ -88,7 +86,7 @@ int main()
           if(w > 10) w--;
           break;
         case Term::Key::ARROW_RIGHT:
-          if(w < static_cast<std::size_t>(std::get<1>(term_size) - 5)) w++;
+          if(w < std::get<1>(term_size) - 5) w++;
           break;
         case Term::Key::ARROW_UP:
           if(pos > 1) pos--;
@@ -104,9 +102,9 @@ int main()
       }
     }
   }
-  catch(const std::runtime_error& re)
+  catch(const Term::Exception& re)
   {
-    std::cerr << "Runtime error: " << re.what() << std::endl;
+    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)

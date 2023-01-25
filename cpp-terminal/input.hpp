@@ -204,9 +204,4 @@ std::int32_t read_key0();
 // the user presses CTRL+D (which sends the EOT signal)
 std::string read_stdin();
 
-// returns stdin as a string, Term::Terminal is used to enable input to make the
-// function non-blocking, use Term::read_stdin() when Term::Terminal is already
-// created
-std::string read_stdin_alone();
-
 }  // namespace Term

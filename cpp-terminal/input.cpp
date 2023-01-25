@@ -1,15 +1,15 @@
-#include "cpp-terminal/input.hpp"
-
-#include "cpp-terminal/terminal.hpp"
-
-#include <chrono>
 // Bug in some GCC
 #if !defined(_GLIBCXX_USE_NANOSLEEP)
   #define _GLIBCXX_USE_NANOSLEEP
 #endif
+
+#include "cpp-terminal/input.hpp"
+
 #include "cpp-terminal/platforms/platform.hpp"
 
+#include <chrono>
 #include <thread>
+#include <type_traits>
 
 bool Term::is_ASCII(const Term::Key& key)
 {
@@ -167,9 +167,6 @@ std::int32_t Term::read_key0()
         case 'S': return Key::F4;
       }
     }
-
-    // std::cout << "Unsupported escape sequence:" << std::endl;
-    // std::cout << seq[0] << seq[1] << seq[2] << seq[3] << std::endl;
     return -4;
   }
   else
@@ -214,20 +211,11 @@ std::int32_t Term::read_key0()
 std::string Term::read_stdin()
 {
   std::string file;
-  char        c;
+  char        c{'\0'};
   while(true)
   {
     c = Private::read_raw_stdin();
-    if(c == 0x04)
-    {  // check for end of transmission signal
-      return file;
-    }
-    else { file += c; }
+    if(c == 0x04) return file;
+    else { file.push_back(c); }
   }
-}
-std::string Term::read_stdin_alone()
-{
-  // temporarily enable raw mode
-  Term::Terminal term(false, true, false, false);
-  return Term::read_stdin();
 }

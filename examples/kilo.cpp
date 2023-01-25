@@ -1,23 +1,16 @@
+#include "cpp-terminal/base.hpp"
+#include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/input.hpp"
 #include "cpp-terminal/terminal.hpp"
 
-#include <cctype>
-#include <cpp-terminal/base.hpp>
-#include <cpp-terminal/input.hpp>
 #include <cstdarg>
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
-#include <ctime>
-#include <exception>
 #include <fstream>
 #include <iostream>
-#include <stdexcept>
-#include <tuple>
-/*** defines ***/
 
-#define KILO_VERSION    "0.0.1"
-#define KILO_TAB_STOP   8
-#define KILO_QUIT_TIMES 3
+const std::string KILO_VERSION{"0.0.1"};
+const int         KILO_TAB_STOP{8};
+const int         KILO_QUIT_TIMES{3};
 
 enum editorHighlight
 {
@@ -623,7 +616,7 @@ void editorDrawRows(std::string& ab)
       if(E.numrows == 0 && y == E.screenrows / 3)
       {
         char welcome[80];
-        int  welcomelen = snprintf(welcome, sizeof(welcome), "Kilo editor -- version %s", KILO_VERSION);
+        int  welcomelen = snprintf(welcome, sizeof(welcome), "Kilo editor -- version %s", KILO_VERSION.c_str());
         if(welcomelen > E.screencols) welcomelen = E.screencols;
         int padding = (E.screencols - welcomelen) / 2;
         if(padding)
@@ -895,20 +888,21 @@ bool editorProcessKeypress()
 
 void initEditor()
 {
-  E.cx             = 0;
-  E.cy             = 0;
-  E.rx             = 0;
-  E.rowoff         = 0;
-  E.coloff         = 0;
-  E.numrows        = 0;
-  E.row            = nullptr;
-  E.dirty          = 0;
-  E.filename       = nullptr;
-  E.statusmsg[0]   = '\0';
-  E.statusmsg_time = 0;
-  E.syntax         = nullptr;
-
-  std::tie(E.screenrows, E.screencols) = Term::get_size();
+  E.cx                                     = 0;
+  E.cy                                     = 0;
+  E.rx                                     = 0;
+  E.rowoff                                 = 0;
+  E.coloff                                 = 0;
+  E.numrows                                = 0;
+  E.row                                    = nullptr;
+  E.dirty                                  = 0;
+  E.filename                               = nullptr;
+  E.statusmsg[0]                           = '\0';
+  E.statusmsg_time                         = 0;
+  E.syntax                                 = nullptr;
+  std::pair<std::size_t, std::size_t> size = Term::get_size();
+  E.screenrows                             = size.first;
+  E.screencols                             = size.second;
   E.screenrows -= 2;
 }
 
@@ -934,9 +928,9 @@ int main(int argc, char* argv[])
     editorRefreshScreen();
     while(editorProcessKeypress()) { editorRefreshScreen(); }
   }
-  catch(const std::runtime_error& re)
+  catch(const Term::Exception& re)
   {
-    std::cerr << "Runtime error: " << re.what() << std::endl;
+    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)

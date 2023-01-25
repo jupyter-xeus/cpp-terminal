@@ -1,12 +1,12 @@
-#include <cpp-terminal/prompt.hpp>
-#include <cpp-terminal/version.hpp>
-#include <exception>
+#include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/prompt.hpp"
+#include "cpp-terminal/version.hpp"
+
 #include <iostream>
-#include <stdexcept>
 
 int main()
 {
-  std::cout << "Running cpp-terminal version: " << CPP_TERMINAL_VERSION_COMPLETE << std::endl;
+  std::cout << "Running cpp-terminal version: " << Term::Version << std::endl;
   try
   {
     std::cout << "CPP-Terminal basic prompt example: \n\n";
@@ -25,9 +25,9 @@ int main()
         break;
     }
   }
-  catch(const std::runtime_error& re)
+  catch(const Term::Exception& re)
   {
-    std::cerr << "Runtime error: " << re.what() << std::endl;
+    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)

@@ -1,15 +1,10 @@
 #pragma once
 
-#include <stdexcept>
-#include <string>
-#include <tuple>
-#include <vector>
+#include "cpp-terminal/exception.hpp"
 
-#ifdef _WIN32
-  #include <cstdio>
-#else
-  #include <sys/ioctl.h>
-#endif
+#include <cstdint>
+#include <string>
+#include <vector>
 
 static constexpr std::uint8_t UTF8_ACCEPT = 0;
 static constexpr std::uint8_t UTF8_REJECT = 0xf;
@@ -39,7 +34,7 @@ inline std::uint8_t utf8_decode_step(std::uint8_t state, std::uint8_t octet, std
 
 inline void codepoint_to_utf8(std::string& s, char32_t c)
 {
-  if(c > 0x0010FFFF) { throw std::runtime_error("Invalid UTF32 codepoint."); }
+  if(c > 0x0010FFFF) { throw Term::Exception("Invalid UTF32 codepoint."); }
   char     bytes[4];
   int      nbytes = 1;
   char32_t d      = c;
@@ -75,9 +70,9 @@ inline std::u32string utf8_to_utf32(const std::string& s)
   {
     state = utf8_decode_step(state, i, &codepoint);
     if(state == UTF8_ACCEPT) { r.push_back(codepoint); }
-    else if(state == UTF8_REJECT) { throw std::runtime_error("Invalid byte in UTF8 encoded string"); }
+    else if(state == UTF8_REJECT) { throw Term::Exception("Invalid byte in UTF8 encoded string"); }
   }
-  if(state != UTF8_ACCEPT) { throw std::runtime_error("Expected more bytes in UTF8 encoded string"); }
+  if(state != UTF8_ACCEPT) { throw Term::Exception("Expected more bytes in UTF8 encoded string"); }
   return r;
 }
 
@@ -86,31 +81,6 @@ inline std::string utf32_to_utf8(const std::u32string& s)
   std::string r{};
   for(char32_t i: s) { codepoint_to_utf8(r, i); }
   return r;
-}
-
-// coverts a string into an integer
-inline int unified_sscanf(const char* string, const char* format, std::size_t* rows, std::size_t* cols)
-{
-#ifdef _WIN32
-  // on windows it's recommended to use their own sscanf_s function
-  return sscanf_s(string, format, rows, cols);
-#else
-  // TODO move to a better way
-  return sscanf(string, format, rows, cols);
-#endif
-}
-
-inline std::tuple<std::size_t, std::size_t> convert_string_to_size_t(const char* string, const char* format)
-{
-  size_t rows{}, cols{};
-#ifdef _WIN32
-  // Windows provides its own alternative to sscanf()
-  if(sscanf_s(string, format, rows, cols) != 2) { throw std::runtime_error("Couldn't parse string: Invalid format"); }
-#else
-  // TODO move to a better way
-  if(sscanf(string, format, rows, cols) != 2) { throw std::runtime_error("Couldn't parse string: Invalid format"); }
-#endif
-  return std::tuple<std::size_t, std::size_t>{rows, cols};
 }
 
 // converts a vector of char into a string

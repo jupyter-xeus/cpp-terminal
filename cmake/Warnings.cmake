@@ -37,7 +37,8 @@ set(GCC_CXX_WARNINGS
     "-Wdelete-non-virtual-dtor"
     "-Wnoexcept")
 #Clang like
-set(CLANG_LIKE_WARNINGS)
+set(CLANG_LIKE_WARNINGS
+    "-Wno-c++98-compat")
 #Clang
 set(CLANG_CXX_WARNINGS)
 #Intel

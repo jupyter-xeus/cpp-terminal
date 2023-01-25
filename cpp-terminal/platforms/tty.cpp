@@ -1,4 +1,4 @@
-#include "cpp-terminal/tty.hpp"
+#include <cstdio>
 
 #ifdef _WIN32
   #include <io.h>
@@ -6,7 +6,7 @@
   #include <unistd.h>
 #endif
 
-#include <cstdio>
+#include "cpp-terminal/tty.hpp"
 
 bool is_a_tty(const FILE* fd)
 {

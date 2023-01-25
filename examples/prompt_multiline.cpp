@@ -1,15 +1,11 @@
-#include <cpp-terminal/input.hpp>
-#include <cpp-terminal/prompt.hpp>
-#include <exception>
+#include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/input.hpp"
+#include "cpp-terminal/prompt.hpp"
+
 #include <functional>
 #include <iostream>
-#include <stdexcept>
 #include <string>
 #include <vector>
-
-using Term::Key;
-using Term::prompt_multiline;
-using Term::Terminal;
 
 bool determine_completeness(CPP_TERMINAL_MAYBE_UNUSED const std::string& command)
 {
@@ -28,7 +24,7 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Terminal term(false, true, false, false);
+    Term::Terminal term(false, true, false, false);
     std::cout << "Interactive prompt.\n"
               << "  * Use Ctrl-D to exit.\n"
               << "  * Use Enter to submit.\n"
@@ -43,13 +39,13 @@ int main()
     while(true)
     {
       std::string answer = Term::prompt_multiline("> ", history, iscomplete);
-      if(answer.size() == 1 && answer[0] == Key::CTRL_D) break;
+      if(answer.size() == 1 && answer[0] == Term::Key::CTRL_D) break;
       std::cout << "Submitted text: " << answer << std::endl;
     }
   }
-  catch(const std::runtime_error& re)
+  catch(const Term::Exception& re)
   {
-    std::cerr << "Runtime error: " << re.what() << std::endl;
+    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)

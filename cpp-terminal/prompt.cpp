@@ -139,7 +139,7 @@ std::vector<std::string> Term::split(const std::string& s)
   std::size_t              j = 0;
   std::vector<std::string> lines;
   lines.emplace_back("");
-  if(s[s.size() - 1] != '\n') throw std::runtime_error("\\n is required");
+  if(s[s.size() - 1] != '\n') throw Term::Exception("\\n is required");
   for(std::size_t i = 0; i < s.size() - 1; i++)
   {
     if(s[i] == '\n')
@@ -155,7 +155,7 @@ std::vector<std::string> Term::split(const std::string& s)
 char32_t Term::UU(const std::string& s)
 {
   std::u32string s2 = Private::utf8_to_utf32(s);
-  if(s2.size() != 1) throw std::runtime_error("U(s): s not a codepoint.");
+  if(s2.size() != 1) throw Term::Exception("U(s): s not a codepoint.");
   return s2[0];
 }
 
@@ -171,7 +171,7 @@ void Term::print_left_curly_bracket(Term::Window& scr, int x, int y1, int y2)
   }
 }
 
-void Term::render(Term::Window& scr, const Model& m, std::size_t cols)
+void Term::render(Term::Window& scr, const Model& m, const std::size_t& cols)
 {
   scr.clear();
   print_left_curly_bracket(scr, cols, 1, m.lines.size());
@@ -244,6 +244,12 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     {
       switch(key)
       {
+        case Key::ENTER:
+          not_complete = !iscomplete(concat(m.lines));
+          if(not_complete) key = Key::ALT_ENTER;
+          else
+            break;
+          CPP_TERMINAL_FALLTHROUGH;
         case Key::BACKSPACE:
           if(m.cursor_col > 1)
           {
@@ -314,12 +320,6 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
             if(m.cursor_col > m.lines[m.cursor_row - 1].size() + 1) { m.cursor_col = m.lines[m.cursor_row - 1].size() + 1; }
           }
           break;
-        case Key::ENTER:
-          not_complete = !iscomplete(concat(m.lines));
-          if(not_complete) key = Key::ALT_ENTER;
-          else
-            break;
-          CPP_TERMINAL_FALLTHROUGH;
         case Key::CTRL_N:
         case Key::ALT_ENTER:
         {

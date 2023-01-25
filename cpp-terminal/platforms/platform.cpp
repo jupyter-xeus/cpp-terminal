@@ -1,7 +1,3 @@
-#include "cpp-terminal/platforms/platform.hpp"
-
-#include "cpp-terminal/tty.hpp"
-
 #ifdef _WIN32
   #include <windows.h>
 typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
@@ -11,8 +7,9 @@ typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
   #include <unistd.h>
 #endif
 
-#include <stdexcept>
-#include <tuple>
+#include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/platforms/platform.hpp"
+#include "cpp-terminal/tty.hpp"
 
 std::string Term::Private::getenv(const std::string& env)
 {
@@ -30,10 +27,10 @@ std::string Term::Private::getenv(const std::string& env)
 #endif
 }
 
-std::tuple<std::size_t, std::size_t> Term::Private::get_term_size()
+std::pair<std::size_t, std::size_t> Term::Private::get_term_size()
 {
 #ifdef _WIN32
-  if(GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw std::runtime_error("GetStdHandle(STD_OUTPUT_HANDLE) failed"); }
+  if(GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw Term::Exception("GetStdHandle(STD_OUTPUT_HANDLE) failed"); }
   CONSOLE_SCREEN_BUFFER_INFO inf;
   if(GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &inf))
   {
@@ -44,7 +41,7 @@ std::tuple<std::size_t, std::size_t> Term::Private::get_term_size()
   else
   {
     // This happens when we are not connected to a terminal
-    throw std::runtime_error("Couldn't get terminal size. Is it connected to a TTY?");
+    throw Term::Exception("Couldn't get terminal size. Is it connected to a TTY?");
   }
 #else
   struct winsize ws
@@ -53,15 +50,15 @@ std::tuple<std::size_t, std::size_t> Term::Private::get_term_size()
   if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0)
   {
     // This happens when we are not connected to a terminal
-    throw std::runtime_error("Couldn't get terminal size. Is it connected to a TTY?");
+    throw Term::Exception("Couldn't get terminal size. Is it connected to a TTY?");
   }
-  else { return std::tuple<std::size_t, std::size_t>{ws.ws_row, ws.ws_col}; }
+  else { return std::pair<std::size_t, std::size_t>{ws.ws_row, ws.ws_col}; }
 #endif
 }
 
 char Term::Private::read_raw_stdin()
 {
-  int c = getchar();
+  char c = getchar();
   if(c >= 0) { return c; }
   else if(c == EOF)
   {
@@ -70,7 +67,7 @@ char Term::Private::read_raw_stdin()
     // character (Ctrl-D)
     return 0x04;
   }
-  else { throw std::runtime_error("getchar() failed"); }
+  else { throw Term::Exception("getchar() failed"); }
 }
 
 bool Term::Private::read_raw(char* s)
@@ -83,18 +80,18 @@ bool Term::Private::read_raw(char* s)
   if(nread >= 1)
   {
     char buf[1];
-    if(!ReadFile(GetStdHandle(STD_INPUT_HANDLE), buf, 1, &nread, nullptr)) { throw std::runtime_error("ReadFile() failed"); }
+    if(!ReadFile(GetStdHandle(STD_INPUT_HANDLE), buf, 1, &nread, nullptr)) { Term::Exception("ReadFile() failed"); }
     if(nread == 1)
     {
       *s = buf[0];
       return true;
     }
-    else { throw std::runtime_error("kbhit() and ReadFile() inconsistent"); }
+    else { throw Term::Exception("kbhit() and ReadFile() inconsistent"); }
   }
   else { return false; }
 #else
-  int nread = read(0, s, 1);
-  if(nread == -1 && errno != EAGAIN) { throw std::runtime_error("read() failed"); }
+  ::ssize_t nread = ::read(0, s, 1);
+  if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
   return (nread == 1);
 #endif
 }
