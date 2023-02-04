@@ -57,7 +57,7 @@ jobs:
             standard: 20
 
     steps:
-      - name: ⬇️ Install git & CMake
+      - name: ⬇️ Install git
         run: apt-get update ; apt-get install --no-install-recommends -y git
       - name: ⬇️ Setup CMake
         uses: lukka/get-cmake@latest
@@ -126,7 +126,7 @@ jobs:
             standard: 20
 
     steps:
-      - name: ⬇️ Install git & CMake
+      - name: ⬇️ Install git
         run: apt-get update ; apt-get install --no-install-recommends -y git
       - name: ⬇️ Setup CMake
         uses: lukka/get-cmake@latest
@@ -163,7 +163,7 @@ jobs:
         standard: [ 11, 14, 17, 20 ]
 
     steps:
-      - name: ⬇️ Install git & CMake
+      - name: ⬇️ Install git
         run: apt-get update ; apt-get install --no-install-recommends -y git
       - name: ⬇️ Setup CMake
         uses: lukka/get-cmake@latest
