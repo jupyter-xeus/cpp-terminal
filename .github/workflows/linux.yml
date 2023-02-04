@@ -62,7 +62,7 @@ jobs:
       - name: ⬇️ Setup CMake
         uses: lukka/get-cmake@latest
         with:
-          cmakeVersion: ~3.0
+          cmakeVersion: ^3
           ninjaVersion: ^1.11.1
       - name: 📥 Checkout
         uses: actions/checkout@v3
@@ -131,7 +131,7 @@ jobs:
       - name: ⬇️ Setup CMake
         uses: lukka/get-cmake@latest
         with:
-          cmakeVersion: ~3.0
+          cmakeVersion: ^3
           ninjaVersion: ^1.11.1
       - name: 📥 Checkout
         uses: actions/checkout@v3
@@ -168,7 +168,7 @@ jobs:
       - name: ⬇️ Setup CMake
         uses: lukka/get-cmake@latest
         with:
-          cmakeVersion: ~3.0
+          cmakeVersion: ^3
           ninjaVersion: ^1.11.1
       - name: 📥 Checkout
         uses: actions/checkout@v3

@@ -30,7 +30,7 @@ jobs:
       - name: ⬇️ Setup CMake
         uses: lukka/get-cmake@latest
         with:
-          cmakeVersion: ~3.0
+          cmakeVersion: ^3
           ninjaVersion: ^1.11.1
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
@@ -67,7 +67,7 @@ jobs:
       - name: ⬇️ Setup CMake
         uses: lukka/get-cmake@latest
         with:
-          cmakeVersion: ~3.0
+          cmakeVersion: ^3
           ninjaVersion: ^1.11.1
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
@@ -102,7 +102,7 @@ jobs:
       - name: ⬇️ Setup CMake
         uses: lukka/get-cmake@latest
         with:
-          cmakeVersion: ~3.0
+          cmakeVersion: ^3
           ninjaVersion: ^1.11.1
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
