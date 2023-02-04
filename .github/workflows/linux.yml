@@ -58,7 +58,12 @@ jobs:
 
     steps:
       - name: ⬇️ Install git & CMake
-        run: apt-get install --no-install-recommends -y git cmake
+        run: apt-get install --no-install-recommends -y git
+      - name: ⬇️ Setup CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: ~3.0
+          ninjaVersion: ^1.11.1
       - name: 📥 Checkout
         uses: actions/checkout@v3
         with:
@@ -122,7 +127,12 @@ jobs:
 
     steps:
       - name: ⬇️ Install git & CMake
-        run: apt-get install --no-install-recommends -y git cmake
+        run: apt-get install --no-install-recommends -y git
+      - name: ⬇️ Setup CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: ~3.0
+          ninjaVersion: ^1.11.1
       - name: 📥 Checkout
         uses: actions/checkout@v3
         with:
@@ -154,7 +164,12 @@ jobs:
 
     steps:
       - name: ⬇️ Install git & CMake
-        run: apt-get install --no-install-recommends -y git cmake
+        run: apt-get install --no-install-recommends -y git
+      - name: ⬇️ Setup CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: ~3.0
+          ninjaVersion: ^1.11.1
       - name: 📥 Checkout
         uses: actions/checkout@v3
         with:
