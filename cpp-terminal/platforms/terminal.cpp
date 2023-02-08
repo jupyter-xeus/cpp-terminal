@@ -15,9 +15,8 @@
   #include <termios.h>
 #endif
 
-#include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/exception.hpp"
-
+#include "cpp-terminal/tty.hpp"
 
 void Term::Terminal::store_and_restore()
 {

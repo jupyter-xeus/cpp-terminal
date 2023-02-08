@@ -1,10 +1,12 @@
-#include "cpp-terminal/base.hpp"
 #include "cpp-terminal/terminal.hpp"
+
+#include "cpp-terminal/base.hpp"
 #include "cpp-terminal/tty.hpp"
 
 #include <iostream>
 
-Term::Terminal::Terminal(const bool& _clear_screen,const bool& _keyboard_enabled,const bool& _disable_signal_keys,const bool& _hide_cursor) : clear_screen{_clear_screen}, keyboard_enabled{_keyboard_enabled}, disable_signal_keys{_disable_signal_keys}, hide_cursor{_hide_cursor}
+Term::Terminal::Terminal(const bool& _clear_screen, const bool& _keyboard_enabled, const bool& _disable_signal_keys, const bool& _hide_cursor) :
+  clear_screen{_clear_screen}, keyboard_enabled{_keyboard_enabled}, disable_signal_keys{_disable_signal_keys}, hide_cursor{_hide_cursor}
 {
   store_and_restore();
   // silently disable raw mode for non-tty
