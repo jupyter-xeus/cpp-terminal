@@ -1,9 +1,11 @@
 # configure version information
 configure_file(version.hpp.in version.hpp)
 
+add_subdirectory(platforms)
+
 # create and configure library target
-add_library(cpp-terminal base.cpp prompt.cpp window.cpp input.cpp platforms/platform.cpp platforms/terminal.cpp platforms/tty.cpp)
-target_link_libraries(cpp-terminal PRIVATE Warnings::Warnings)
+add_library(cpp-terminal base.cpp prompt.cpp window.cpp input.cpp terminal.cpp)
+target_link_libraries(cpp-terminal PRIVATE Warnings::Warnings PRIVATE cpp-terminal::cpp-terminal-platforms)
 target_compile_options(cpp-terminal PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
 target_include_directories(cpp-terminal PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> $<INSTALL_INTERFACE:include>)
 

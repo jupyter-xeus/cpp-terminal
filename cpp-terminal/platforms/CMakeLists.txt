@@ -1,0 +1,5 @@
+add_library(cpp-terminal-platforms platform.cpp terminal.cpp tty.cpp)
+target_link_libraries(cpp-terminal-platforms PRIVATE Warnings::Warnings)
+target_compile_options(cpp-terminal-platforms PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
+target_include_directories(cpp-terminal-platforms PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> $<INSTALL_INTERFACE:include>)
+add_library(cpp-terminal::cpp-terminal-platforms ALIAS cpp-terminal-platforms)

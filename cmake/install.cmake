@@ -4,7 +4,7 @@ function(install_library)
   include(CMakePackageConfigHelpers)
   configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/cpp-terminalConfig.cmake.in" "${PROJECT_BINARY_DIR}/cmake/cpp-terminalConfig.cmake" INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/cpp-terminal")
   write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/cpp-terminalConfigVersion.cmake" COMPATIBILITY AnyNewerVersion)
-  install(TARGETS cpp-terminal cpp-terminalWarnings EXPORT cpp-terminalTargets
+  install(TARGETS cpp-terminal cpp-terminal-platforms cpp-terminalWarnings EXPORT cpp-terminalTargets
           LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
           ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
           RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
