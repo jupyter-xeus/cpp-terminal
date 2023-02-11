@@ -94,7 +94,7 @@ void Term::Terminal::setRawMode()
     SetConsoleCP(65001);
     DWORD flags{0};
     if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
-    if(Term::Private::has_ansi_escape_code()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
+    if(m_terminfo.hasANSIEscapeCode()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
     if(disable_signal_keys) { flags &= ~ENABLE_PROCESSED_INPUT; }
     flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
     if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), flags)) { throw Term::Exception("SetConsoleMode() failed"); }

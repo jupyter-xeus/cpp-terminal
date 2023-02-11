@@ -1,5 +1,7 @@
 #pragma once
 
+#include "cpp-terminal/terminfo.hpp"
+
 namespace Term
 {
 
@@ -21,6 +23,7 @@ private:
   bool keyboard_enabled{false};
   bool disable_signal_keys{true};
   bool hide_cursor{};
+  Term::Terminfo m_terminfo;
 };
 
 }  // namespace Term

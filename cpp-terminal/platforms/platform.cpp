@@ -1,6 +1,5 @@
 #ifdef _WIN32
   #include <windows.h>
-typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #else
   #include <cerrno>
   #include <sys/ioctl.h>
@@ -93,37 +92,5 @@ bool Term::Private::read_raw(char* s)
   ::ssize_t nread = ::read(0, s, 1);
   if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
   return (nread == 1);
-#endif
-}
-
-bool Term::Private::has_ansi_escape_code()
-{
-#ifdef _WIN32
-  static bool checked{false};
-  static bool has_ansi{false};
-  if(checked == false)
-  {
-    const DWORD MINV_MAJOR{10};
-    const DWORD MINV_MINOR{0};
-    const DWORD MINV_BUILD{10586};
-    HMODULE     hMod{GetModuleHandle(TEXT("ntdll.dll"))};
-    if(hMod)
-    {
-      RtlGetVersionPtr fn = {reinterpret_cast<RtlGetVersionPtr>(GetProcAddress(hMod, "RtlGetVersion"))};
-      if(fn != nullptr)
-      {
-        RTL_OSVERSIONINFOW rovi{0};
-        rovi.dwOSVersionInfoSize = sizeof(rovi);
-        if(fn(&rovi) == 0)
-        {
-          if(rovi.dwMajorVersion > MINV_MAJOR || (rovi.dwMajorVersion == MINV_MAJOR && (rovi.dwMinorVersion > MINV_MINOR || (rovi.dwMinorVersion == MINV_MINOR && rovi.dwBuildNumber >= MINV_BUILD)))) { has_ansi = true; }
-        }
-      }
-    }
-    checked = true;
-  }
-  return has_ansi;
-#else
-  return true;
 #endif
 }
