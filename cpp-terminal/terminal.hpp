@@ -17,12 +17,12 @@ public:
   ~Terminal();
 
 private:
-  void store_and_restore();
-  void setRawMode();
-  bool clear_screen{};
-  bool keyboard_enabled{false};
-  bool disable_signal_keys{true};
-  bool hide_cursor{};
+  void           store_and_restore();
+  void           setRawMode();
+  bool           clear_screen{};
+  bool           keyboard_enabled{false};
+  bool           disable_signal_keys{true};
+  bool           hide_cursor{};
   Term::Terminfo m_terminfo;
 };
 
