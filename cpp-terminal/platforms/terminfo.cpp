@@ -8,7 +8,8 @@ typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #ifdef _WIN32
 bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& patch)
 {
-  if(reinterpret_cast<RtlGetVersionPtr>(GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "RtlGetVersion")) != nullptr)
+  RtlGetVersionPtr fn = {reinterpret_cast<RtlGetVersionPtr>(GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "RtlGetVersion"))};
+  if(fn != nullptr)
   {
     RTL_OSVERSIONINFOW rovi;
     rovi.dwOSVersionInfoSize = sizeof(rovi);

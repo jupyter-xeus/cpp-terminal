@@ -81,7 +81,7 @@ void Term::Terminal::setRawMode()
     SetConsoleOutputCP(65001);
     DWORD flags{0};
     if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
-    if(Term::Private::has_ansi_escape_code())
+    if(m_terminfo.hasANSIEscapeCode())
     {
       flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
       flags |= DISABLE_NEWLINE_AUTO_RETURN;
