@@ -1,5 +1,7 @@
 #pragma once
 
+#include "cpp-terminal/terminfo.hpp"
+
 namespace Term
 {
 
@@ -11,15 +13,17 @@ namespace Term
 class Terminal
 {
 public:
-  Terminal(bool _clear_screen = false, bool enable_keyboard = false, bool disable_signal_keys = true, bool _hide_cursor = false);
+  Terminal(const bool& _clear_screen = false, const bool& _keyboard_enabled = false, const bool& _disable_signal_keys = true, const bool& _hide_cursor = false);
   ~Terminal();
 
 private:
-  void store_and_restore();
-  bool clear_screen{};
-  bool keyboard_enabled{false};
-  bool disable_signal_keys{true};
-  bool hide_cursor{};
+  void           store_and_restore();
+  void           setRawMode();
+  bool           clear_screen{};
+  bool           keyboard_enabled{false};
+  bool           disable_signal_keys{true};
+  bool           hide_cursor{};
+  Term::Terminfo m_terminfo;
 };
 
 }  // namespace Term

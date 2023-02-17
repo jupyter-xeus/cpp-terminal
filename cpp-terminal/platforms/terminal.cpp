@@ -1,3 +1,5 @@
+#include "cpp-terminal/terminal.hpp"
+
 #ifdef _WIN32
   #include <windows.h>
   #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
@@ -13,12 +15,8 @@
   #include <termios.h>
 #endif
 
-#include "cpp-terminal/base.hpp"
 #include "cpp-terminal/exception.hpp"
-#include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
-
-#include <iostream>
 
 void Term::Terminal::store_and_restore()
 {
@@ -75,18 +73,15 @@ void Term::Terminal::store_and_restore()
 #endif
 }
 
-Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_signal, bool _hide_cursor) : clear_screen{_clear_screen}, keyboard_enabled{enable_keyboard}, disable_signal_keys{disable_signal}, hide_cursor{_hide_cursor}
+void Term::Terminal::setRawMode()
 {
-  store_and_restore();
 #ifdef _WIN32
-  // silently disable raw mode for non-tty
-  if(keyboard_enabled) keyboard_enabled = Term::is_stdin_a_tty();
   if(Term::is_stdout_a_tty())
   {
     SetConsoleOutputCP(65001);
     DWORD flags{0};
     if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
-    if(Term::Private::has_ansi_escape_code())
+    if(m_terminfo.hasANSIEscapeCode())
     {
       flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
       flags |= DISABLE_NEWLINE_AUTO_RETURN;
@@ -99,14 +94,12 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
     SetConsoleCP(65001);
     DWORD flags{0};
     if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
-    if(Term::Private::has_ansi_escape_code()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
+    if(m_terminfo.hasANSIEscapeCode()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
     if(disable_signal_keys) { flags &= ~ENABLE_PROCESSED_INPUT; }
     flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
     if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
   }
 #else
-  // silently disable raw mode for non-tty
-  if(keyboard_enabled) keyboard_enabled = Term::is_stdin_a_tty();
   if(keyboard_enabled)
   {
     termios raw{};
@@ -125,25 +118,4 @@ Term::Terminal::Terminal(bool _clear_screen, bool enable_keyboard, bool disable_
     if(tcsetattr(0, TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
   }
 #endif
-  if(clear_screen)
-  {
-    // Fix consoles that ignore save_screen()
-    std::cout << screen_save() << clear_buffer() << style(Style::RESET) << cursor_move(1, 1);
-  }
-  if(hide_cursor) std::cout << cursor_off();
-  // flush stdout
-  std::cout << std::flush;
-}
-
-Term::Terminal::~Terminal()
-{
-  if(clear_screen)
-  {
-    // Fix consoles that ignore save_screen()
-    std::cout << clear_buffer() << style(Style::RESET) << cursor_move(1, 1) << screen_load();
-  }
-  if(hide_cursor) std::cout << cursor_on();
-  // flush the output stream
-  std::cout << std::flush;
-  store_and_restore();
 }
