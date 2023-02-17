@@ -34,7 +34,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 add_subdirectory(cpp-terminal)
 
-if(CPPTERMINAL_ENABLE_TESING)
+if(CPPTERMINAL_ENABLE_TESTING)
   enable_testing()
   add_subdirectory(tests)
 endif()

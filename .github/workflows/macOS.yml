@@ -27,6 +27,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: ⬇️ Setup CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: ^3
+          ninjaVersion: ^1.11.1
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
         uses: xom9ikk/dotenv@v2
@@ -59,6 +64,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: ⬇️ Setup CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: ^3
+          ninjaVersion: ^1.11.1
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
         uses: xom9ikk/dotenv@v2
@@ -89,6 +99,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: ⬇️ Setup CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: ^3
+          ninjaVersion: ^1.11.1
       - name: 📂 Load .env file
         if: hashFiles('.github/workflows/.env') != ''
         uses: xom9ikk/dotenv@v2
