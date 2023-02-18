@@ -18,7 +18,13 @@ Term::Color::Color(const Term::Color::Name& name) : m_Type(Type::Bit4), m_bit8(s
 
 Term::Color::Color(const std::uint8_t& color) : m_Type(Type::Bit8), m_bit8(color) {}
 
-Term::Color::Color(const std::uint8_t& r, const std::uint8_t& b, const std::uint8_t& g) : m_Type(Type::Bit24), m_bit24(std::array<std::uint8_t, 3>({r, b, g})) {}
+Term::Color::Color(const std::uint8_t& r, const std::uint8_t& b, const std::uint8_t& g) : m_Type(Type::Bit24)
+{
+  // Hack for gcc4.7
+  m_bit24[0]=r;
+  m_bit24[1]=b;
+  m_bit24[2]=g;
+}
 
 Term::Color::Type Term::Color::getType() const { return m_Type; }
 
@@ -39,7 +45,7 @@ Term::Color::Name Term::Color::to4bits() const
 {
   //https://ajalt.github.io/colormath/converter/
   // clang-format off
-  static const std::uint8_t table[256] ={
+  static const std::array<std::uint8_t,256> table ={
     0,  1,  2,  3,  4,  5,  6,  7,  60, 61, 62, 63, 64, 65, 66, 67, 0,  4,  4,  4,  64, 64, 2,  6,  4,  4,  64, 64, 2,  2,  6,  4,  64, 64, 2,  2,  2,  6,  64, 64, 62, 62, 62, 62, 66, 64, 62, 62, 62, 62, 62, 66,
     1,  5,  4,  4,  64, 64, 3,  60, 4,  4,  64, 64, 2,  2,  6,  4,  64, 64, 2,  2,  2,  6,  64, 64, 62, 62, 62, 62, 66, 64, 62, 62, 62, 62, 62, 66, 1,  1,  5,  4,  64, 64, 1,  1,  5,  4,  64, 64, 3,  3,  60, 4,
     64, 64, 2,  2,  2,  6,  64, 64, 62, 62, 62, 62, 66, 64, 62, 62, 62, 62, 62, 66, 1,  1,  1,  5,  64, 64, 1,  1,  1,  5,  64, 64, 1,  1,  1,  5,  64, 64, 3,  3,  3,  7,  64, 64, 62, 62, 62, 62, 66, 64, 62, 62,
