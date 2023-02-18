@@ -18,7 +18,7 @@ Term::Color::Color(const Term::Color::Name& name) : m_Type(Type::Bit4), m_bit8(s
 
 Term::Color::Color(const std::uint8_t& color) : m_Type(Type::Bit8), m_bit8(color) {}
 
-Term::Color::Color(const std::uint8_t& r, const std::uint8_t& b, const std::uint8_t& g) : m_Type(Type::Bit24), m_bit24(std::array<std::uint8_t,3>({r, b, g})) {}
+Term::Color::Color(const std::uint8_t& r, const std::uint8_t& b, const std::uint8_t& g) : m_Type(Type::Bit24), m_bit24(std::array<std::uint8_t, 3>({r, b, g})) {}
 
 Term::Color::Type Term::Color::getType() const { return m_Type; }
 
