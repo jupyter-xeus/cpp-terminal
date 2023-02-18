@@ -42,7 +42,7 @@ std::string getenv(const std::string& env)
     return std::string();
 #endif
 }
-}
+}  // namespace Private
 
 Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{Term::Terminfo::ColorMode::Unset};
 
