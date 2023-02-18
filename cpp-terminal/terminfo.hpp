@@ -24,12 +24,12 @@ public:
   };
   Terminfo();
   static ColorMode getColorMode() { return m_colorMode; }
-  bool hasANSIEscapeCode();
+  bool             hasANSIEscapeCode();
 
 private:
-  void   setANSIEscapeCode();
-  bool   m_ANSIEscapeCode{true};
-  void   setColorMode();
+  void             setANSIEscapeCode();
+  bool             m_ANSIEscapeCode{true};
+  void             setColorMode();
   static ColorMode m_colorMode;
 };
 

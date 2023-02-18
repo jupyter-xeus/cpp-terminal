@@ -19,21 +19,21 @@ namespace Term
 class Window
 {
 private:
-  std::size_t            w{0};
-  std::size_t            h{0};  // width and height of the window
-  std::size_t            cursor_x{1};
-  std::size_t            cursor_y{1};  // current cursor position
-  std::vector<char32_t>  chars;        // the characters in row first order
+  std::size_t              w{0};
+  std::size_t              h{0};  // width and height of the window
+  std::size_t              cursor_x{1};
+  std::size_t              cursor_y{1};  // current cursor position
+  std::vector<char32_t>    chars;        // the characters in row first order
   std::vector<Term::Color> m_fg;
   std::vector<Term::Color> m_bg;
-  std::vector<bool>      m_fg_reset;
-  std::vector<bool>      m_bg_reset;
-  std::vector<Style>     m_style;
+  std::vector<bool>        m_fg_reset;
+  std::vector<bool>        m_bg_reset;
+  std::vector<Style>       m_style;
 
   char32_t get_char(const std::size_t&, const std::size_t&);
 
-  bool      get_fg_reset(const std::size_t&, const std::size_t&);
-  bool      get_bg_reset(const std::size_t&, const std::size_t&);
+  bool        get_fg_reset(const std::size_t&, const std::size_t&);
+  bool        get_bg_reset(const std::size_t&, const std::size_t&);
   Term::Color get_fg(const std::size_t&, const std::size_t&);
   Term::Color get_bg(const std::size_t&, const std::size_t&);
 

@@ -1,8 +1,8 @@
 #pragma once
 
+#include "cpp-terminal/color.hpp"
 #include "cpp-terminal/platforms/macros.hpp"
 #include "cpp-terminal/platforms/platform.hpp"
-#include "cpp-terminal/color.hpp"
 
 #include <iomanip>
 #include <iostream>

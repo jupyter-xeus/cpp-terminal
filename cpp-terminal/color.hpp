@@ -71,8 +71,8 @@ public:
   Color(const std::uint8_t&);
   Color(const std::uint8_t&, const std::uint8_t&, const std::uint8_t&);
   Type                        getType() const;
-  Name                to3bits() const;
-  Name               to4bits() const;
+  Name                        to3bits() const;
+  Name                        to4bits() const;
   std::uint8_t                to8bits() const;
   std::array<std::uint8_t, 3> to24bits() const;
 

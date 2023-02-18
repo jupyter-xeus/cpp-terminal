@@ -199,8 +199,8 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
 {
   std::string out;
   if(term) { out.append(cursor_off()); }
-  Color   current_fg       = {255, 255, 255};
-  Color   current_bg       = {255, 255, 255};
+  Color current_fg       = {255, 255, 255};
+  Color current_bg       = {255, 255, 255};
   bool  current_fg_reset = true;
   bool  current_bg_reset = true;
   Style current_style    = Style::RESET;
@@ -236,7 +236,7 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
 
       if(!current_fg_reset)
       {
-        if(!(current_fg ==get_fg(i, j)))
+        if(!(current_fg == get_fg(i, j)))
         {
           current_fg = get_fg(i, j);
           update_fg  = true;
@@ -245,7 +245,7 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
 
       if(!current_fg_reset)
       {
-        if(!(current_bg  ==get_bg(i, j)))
+        if(!(current_bg == get_bg(i, j)))
         {
           current_bg = get_bg(i, j);
           update_bg  = true;

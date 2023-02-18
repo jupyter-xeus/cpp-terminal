@@ -636,7 +636,7 @@ void editorDrawRows(std::string& ab)
       if(len > E.screencols) len = E.screencols;
       char*          c             = &E.row[filerow].render[E.coloff];
       unsigned char* hl            = &E.row[filerow].hl[E.coloff];
-      Term::Color   current_color = Term::Color::Name::Black;  // black is not used in editorSyntaxToColor
+      Term::Color    current_color = Term::Color::Name::Black;  // black is not used in editorSyntaxToColor
       int            j;
       for(j = 0; j < len; j++)
       {

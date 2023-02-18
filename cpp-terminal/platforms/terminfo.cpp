@@ -4,8 +4,8 @@ typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #endif
 
 #include "cpp-terminal/terminfo.hpp"
-#include <string>
 
+#include <string>
 
 #ifdef _WIN32
 bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& patch)
@@ -43,7 +43,9 @@ std::string getenv(const std::string& env)
 
 Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{Term::Terminfo::ColorMode::Unset};
 
-Term::Terminfo::Terminfo() { setANSIEscapeCode();
+Term::Terminfo::Terminfo()
+{
+  setANSIEscapeCode();
   setColorMode();
 }
 
