@@ -25,6 +25,8 @@ bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& 
 }
 #endif
 
+namespace Private
+{
 std::string getenv(const std::string& env)
 {
 #ifdef _WIN32
@@ -40,6 +42,7 @@ std::string getenv(const std::string& env)
     return std::string();
 #endif
 }
+}
 
 Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{Term::Terminfo::ColorMode::Unset};
 
@@ -53,7 +56,7 @@ bool Term::Terminfo::hasANSIEscapeCode() { return m_ANSIEscapeCode; }
 
 void Term::Terminfo::setColorMode()
 {
-  std::string colorterm = getenv("COLORTERM");
+  std::string colorterm = Private::getenv("COLORTERM");
   if(colorterm == "truecolor" || colorterm == "24bit") m_colorMode = Term::Terminfo::ColorMode::Bit24;
   else
     m_colorMode = Term::Terminfo::ColorMode::Bit8;
