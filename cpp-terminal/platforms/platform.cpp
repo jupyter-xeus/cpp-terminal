@@ -10,22 +10,6 @@
 #include "cpp-terminal/platforms/platform.hpp"
 #include "cpp-terminal/tty.hpp"
 
-std::string Term::Private::getenv(const std::string& env)
-{
-#ifdef _WIN32
-  std::size_t requiredSize{0};
-  getenv_s(&requiredSize, nullptr, 0, env.c_str());
-  if(requiredSize == 0) return std::string();
-  std::string ret;
-  ret.reserve(requiredSize * sizeof(char));
-  getenv_s(&requiredSize, &ret[0], requiredSize, env.c_str());
-#else
-  if(std::getenv(env.c_str()) != nullptr) return static_cast<std::string>(std::getenv(env.c_str()));
-  else
-    return std::string();
-#endif
-}
-
 std::pair<std::size_t, std::size_t> Term::Private::get_term_size()
 {
 #ifdef _WIN32

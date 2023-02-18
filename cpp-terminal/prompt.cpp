@@ -180,7 +180,7 @@ void Term::render(Term::Window& scr, const Model& m, const std::size_t& cols)
   {
     if(j == 0)
     {
-      scr.fill_fg(1, j + 1, m.prompt_string.size(), m.lines.size(), Term::Bit4_reference::GREEN);
+      scr.fill_fg(1, j + 1, m.prompt_string.size(), m.lines.size(), Term::Color::Name::Green);
       scr.fill_style(1, j + 1, m.prompt_string.size(), m.lines.size(), Term::Style::BOLD);
       scr.print_str(1, j + 1, m.prompt_string);
     }

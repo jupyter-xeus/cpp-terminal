@@ -28,20 +28,20 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
     scr.append("│");
     if(i == menupos)
     {
-      scr.append(Term::color_fg(Term::Color4::RED));
-      scr.append(Term::color_bg(Term::Color4::GRAY));
+      scr.append(Term::color_fg(Term::Color::Name::Red));
+      scr.append(Term::color_bg(Term::Color::Name::Gray));
       scr.append(Term::style(Term::Style::BOLD));
     }
     else
     {
-      scr.append(Term::color_fg(Term::Color4::BLUE));
-      scr.append(Term::color_bg(Term::Color4::GREEN));
+      scr.append(Term::color_fg(Term::Color::Name::Blue));
+      scr.append(Term::color_bg(Term::Color::Name::Green));
     }
     std::string s = std::to_string(i) + ": item";
     scr.append(s);
     for(std::size_t j = 1; j <= menuwidth - s.size(); j++) { scr.append(" "); }
-    scr.append(Term::color_bg(Term::Color4::DEFAULT));
-    scr.append(Term::color_fg(Term::Color4::DEFAULT));
+    scr.append(Term::color_bg(Term::Color::Name::Default));
+    scr.append(Term::color_fg(Term::Color::Name::Default));
     scr.append(Term::style(Term::Style::RESET));
     scr.append("│");
     scr.append(" \n");

@@ -224,18 +224,18 @@ void editorUpdateSyntax(erow* row)
   if(changed && row->idx + 1 < E.numrows) editorUpdateSyntax(&E.row[row->idx + 1]);
 }
 
-Term::Color4 editorSyntaxToColor(int hl)
+Term::Color editorSyntaxToColor(int hl)
 {
   switch(hl)
   {
     case HL_COMMENT:
-    case HL_MLCOMMENT: return Term::Color4::CYAN;
-    case HL_KEYWORD1: return Term::Color4::YELLOW;
-    case HL_KEYWORD2: return Term::Color4::GREEN;
-    case HL_STRING: return Term::Color4::MAGENTA;
-    case HL_NUMBER: return Term::Color4::RED;
-    case HL_MATCH: return Term::Color4::BLUE;
-    default: return Term::Color4::GRAY;
+    case HL_MLCOMMENT: return Term::Color::Name::Cyan;
+    case HL_KEYWORD1: return Term::Color::Name::Yellow;
+    case HL_KEYWORD2: return Term::Color::Name::Green;
+    case HL_STRING: return Term::Color::Name::Magenta;
+    case HL_NUMBER: return Term::Color::Name::Red;
+    case HL_MATCH: return Term::Color::Name::Blue;
+    default: return Term::Color::Name::Gray;
   }
 }
 
@@ -636,7 +636,7 @@ void editorDrawRows(std::string& ab)
       if(len > E.screencols) len = E.screencols;
       char*          c             = &E.row[filerow].render[E.coloff];
       unsigned char* hl            = &E.row[filerow].hl[E.coloff];
-      Term::Color4   current_color = Term::Color4::BLACK;  // black is not used in editorSyntaxToColor
+      Term::Color   current_color = Term::Color::Name::Black;  // black is not used in editorSyntaxToColor
       int            j;
       for(j = 0; j < len; j++)
       {
@@ -646,20 +646,20 @@ void editorDrawRows(std::string& ab)
           ab.append(style(Term::Style::REVERSED));
           ab.append(std::string(&sym, 1));
           ab.append(style(Term::Style::RESET));
-          if(current_color != Term::Color4::DEFAULT) { ab.append(color_fg(current_color)); }
+          if(current_color != Term::Color::Name::Default) { ab.append(color_fg(current_color)); }
         }
         else if(hl[j] == HL_NORMAL)
         {
-          if(current_color != Term::Color4::BLACK)
+          if(current_color != Term::Color::Name::Black)
           {
-            ab.append(color_fg(Term::Color4::DEFAULT));
-            current_color = Term::Color4::BLACK;
+            ab.append(color_fg(Term::Color::Name::Default));
+            current_color = Term::Color::Name::Black;
           }
           ab.append(std::string(&c[j], 1));
         }
         else
         {
-          Term::Color4 color = editorSyntaxToColor(hl[j]);
+          Term::Color color = editorSyntaxToColor(hl[j]);
           if(color != current_color)
           {
             current_color = color;
@@ -668,7 +668,7 @@ void editorDrawRows(std::string& ab)
           ab.append(std::string(&c[j], 1));
         }
       }
-      ab.append(color_fg(Term::Color4::DEFAULT));
+      ab.append(color_fg(Term::Color::Name::Default));
     }
 
     ab.append(Term::clear_eol());
