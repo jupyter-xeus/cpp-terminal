@@ -22,52 +22,49 @@ Term::Color::Color(const std::uint8_t& r, const std::uint8_t& b, const std::uint
 
 Term::Color::Type Term::Color::getType() const { return m_Type; }
 
-std::uint8_t Term::Color::to3bits() const
+Term::Color::Name Term::Color::to3bits() const
 {
-  std::uint8_t ret{to4bits()};
-  if(ret <= 7) return ret;
-  else if(ret == static_cast<std::uint8_t>(Term::Color::Name::Default))
-    return static_cast<std::uint8_t>(Term::Color::Name::Default);
-  else if(ret>7 && ret<=15) return static_cast<std::uint8_t>(ret - 8);
-  else if(ret > 67)
-    return static_cast<std::uint8_t>(Term::Color::Name::Default);
-  else if(ret >= 60)
-    return static_cast<std::uint8_t>(ret - 60);
+  if(getType()==Type::Bit3) return static_cast<Term::Color::Name>(m_bit8);
   else
-    return ret;
+  {
+    Term::Color::Name ret{to4bits()};
+    if(ret >= Term::Color::Name::Gray) return static_cast<Term::Color::Name>(static_cast<uint8_t>(ret)-static_cast<uint8_t>(Term::Color::Name::Gray));
+    else return ret;
+  }
 }
 
 // Convert 24bits and 8bits to 4bits
-std::uint8_t Term::Color::to4bits() const
+Term::Color::Name Term::Color::to4bits() const
 {
   //https://ajalt.github.io/colormath/converter/
   // clang-format off
-static const std::array<std::uint8_t,256> table {
-0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,
-0,  4,  4,  4, 12, 12,  2,  6,  4,  4, 12, 12,  2,  2,  6,  4,
-12, 12,  2,  2,  2,  6, 12, 12, 10, 10, 10, 10, 14, 12, 10, 10,
-10, 10, 10, 14,  1,  5,  4,  4, 12, 12,  3,  8,  4,  4, 12, 12,
-2,  2,  6,  4, 12, 12,  2,  2,  2,  6, 12, 12, 10, 10, 10, 10,
-14, 12, 10, 10, 10, 10, 10, 14,  1,  1,  5,  4, 12, 12,  1,  1,
-5,  4, 12, 12,  3,  3,  8,  4, 12, 12,  2,  2,  2,  6, 12, 12,
-10, 10, 10, 10, 14, 12, 10, 10, 10, 10, 10, 14,  1,  1,  1,  5,
-12, 12,  1,  1,  1,  5, 12, 12,  1,  1,  1,  5, 12, 12,  3,  3,
-3,  7, 12, 12, 10, 10, 10, 10, 14, 12, 10, 10, 10, 10, 10, 14,
-9,  9,  9,  9, 13, 12,  9,  9,  9,  9, 13, 12,  9,  9,  9,  9,
-13, 12,  9,  9,  9,  9, 13, 12, 11, 11, 11, 11,  7, 12, 10, 10,
-10, 10, 10, 14,  9,  9,  9,  9,  9, 13,  9,  9,  9,  9,  9, 13,
-9,  9,  9,  9,  9, 13,  9,  9,  9,  9,  9, 13,  9,  9,  9,  9,
-9, 13, 11, 11, 11, 11, 11, 15,  0,  0,  0,  0,  0,  0,  8,  8,
-8,  8,  8,  8,  7,  7,  7,  7,  7,  7, 15, 15, 15, 15, 15, 15
-};
+static const std::array<uint8_t ,256> table
+{
+		 0,  1,  2,  3,  4,  5,  6,  7,  60,  61, 62, 63, 64, 65, 66, 67,
+		 0,  4,  4,  4, 64, 64,  2,  6,  4,  4, 64, 64,  2,  2,  6,  4,
+		64, 64,  2,  2,  2,  6, 64, 64, 62, 62, 62, 62, 66, 64, 62, 62,
+		62, 62, 62, 66,  1,  5,  4,  4, 64, 64,  3,  60,  4,  4, 64, 64,
+		 2,  2,  6,  4, 64, 64,  2,  2,  2,  6, 64, 64, 62, 62, 62, 62,
+		66, 64, 62, 62, 62, 62, 62, 66,  1,  1,  5,  4, 64, 64,  1,  1,
+		 5,  4, 64, 64,  3,  3,  60,  4, 64, 64,  2,  2,  2,  6, 64, 64,
+		62, 62, 62, 62, 66, 64, 62, 62, 62, 62, 62, 66,  1,  1,  1,  5,
+		64, 64,  1,  1,  1,  5, 64, 64,  1,  1,  1,  5, 64, 64,  3,  3,
+		 3,  7, 64, 64, 62, 62, 62, 62, 66, 64, 62, 62, 62, 62, 62, 66,
+		 61,  61,  61,  61, 65, 64,  61,  61,  61,  61, 65, 64,  61,  61,  61,  61,
+		65, 64,  61,  61,  61,  61, 65, 64, 63, 63, 63, 63,  7, 64, 62, 62,
+		62, 62, 62, 66,  61,  61,  61,  61,  61, 65,  61,  61,  61,  61,  61, 65,
+		 61,  61,  61,  61,  61, 65,  61,  61,  61,  61,  61, 65,  61,  61,  61,  61,
+		 61, 65, 63, 63, 63, 63, 63, 67,  0,  0,  0,  0,  0,  0,  60,  60,
+		 60,  60,  60,  60,  7,  7,  7,  7,  7,  7, 67, 67, 67, 67, 67, 67
+	};
 
   // clang-format on
   if(getType() == Term::Color::Type::Bit24 || getType() == Term::Color::Type::Bit8)
   {
-    return table[to8bits()];
+    return static_cast<Term::Color::Name>(table[to8bits()]);
   }
   else
-    return m_bit8;
+    return static_cast<Term::Color::Name>(m_bit8);
 }
 
 // Convert 24bits to 8bits
@@ -103,14 +100,14 @@ std::string Term::color_bg(const Color& color)
     {
       case Term::Terminfo::ColorMode::Unset:
       case Term::Terminfo::ColorMode::NoColor: return "";
-      case Term::Terminfo::ColorMode::Bit3: return "\033[" + std::to_string(color.to3bits() + 40) + "m\033[K";
-      case Term::Terminfo::ColorMode::Bit4: return "\033[" + std::to_string(color.to4bits() + 40) + "m\033[K";
+      case Term::Terminfo::ColorMode::Bit3: return "\033[" + std::to_string(static_cast<uint8_t>(color.to3bits()) + 40) + "m\033[K";
+      case Term::Terminfo::ColorMode::Bit4: return "\033[" + std::to_string(static_cast<uint8_t>(color.to4bits()) + 40) + "m\033[K";
       case Term::Terminfo::ColorMode::Bit8:
-        if(color.getType() == Term::Color::Type::Bit4 || color.getType() == Term::Color::Type::Bit3) return "\033[" + std::to_string(color.to4bits() + 40) + "m\033[K";
+        if(color.getType() == Term::Color::Type::Bit4 || color.getType() == Term::Color::Type::Bit3) return "\033[" + std::to_string(static_cast<uint8_t>(color.to4bits()) + 40) + "m\033[K";
         else
           return "\033[48;5;" + std::to_string(color.to8bits()) + "m\033[K";
       case Term::Terminfo::ColorMode::Bit24:
-        if(color.getType() == Term::Color::Type::Bit3 || color.getType() == Term::Color::Type::Bit4) return "\033[" + std::to_string(color.to4bits() + 40) + "m\033[K";
+        if(color.getType() == Term::Color::Type::Bit3 || color.getType() == Term::Color::Type::Bit4) return "\033[" + std::to_string(static_cast<uint8_t>(color.to4bits()) + 40) + "m\033[K";
         else if(color.getType() == Term::Color::Type::Bit8)
           return "\033[48;5;" + std::to_string(color.to8bits()) + "m\033[K";
         else
@@ -133,14 +130,14 @@ std::string Term::color_fg(const Color& color)
     {
       case Term::Terminfo::ColorMode::Unset:
       case Term::Terminfo::ColorMode::NoColor: return "";
-      case Term::Terminfo::ColorMode::Bit3: return "\033[" + std::to_string(color.to3bits() + 30) + "m";
-      case Term::Terminfo::ColorMode::Bit4: return "\033[" + std::to_string(color.to4bits() + 30) + "m";
+      case Term::Terminfo::ColorMode::Bit3: return "\033[" + std::to_string(static_cast<uint8_t>(color.to3bits()) + 30) + "m";
+      case Term::Terminfo::ColorMode::Bit4: return "\033[" + std::to_string(static_cast<uint8_t>(color.to4bits()) + 30) + "m";
       case Term::Terminfo::ColorMode::Bit8:
-        if(color.getType() == Term::Color::Type::Bit4 || color.getType() == Term::Color::Type::Bit3) return "\033[" + std::to_string(color.to4bits() + 30) + "m";
+        if(color.getType() == Term::Color::Type::Bit4 || color.getType() == Term::Color::Type::Bit3) return "\033[" + std::to_string(static_cast<uint8_t>(color.to4bits()) + 30) + "m";
         else
           return "\033[38;5;" + std::to_string(color.to8bits()) + "m";
       case Term::Terminfo::ColorMode::Bit24:
-        if(color.getType() == Term::Color::Type::Bit3 || color.getType() == Term::Color::Type::Bit4) return "\033[" + std::to_string(color.to4bits() + 30) + "m";
+        if(color.getType() == Term::Color::Type::Bit3 || color.getType() == Term::Color::Type::Bit4) return "\033[" + std::to_string(static_cast<uint8_t>(color.to4bits()) + 30) + "m";
         else if(color.getType() == Term::Color::Type::Bit8)
           return "\033[38;5;" + std::to_string(color.to8bits()) + "m";
         else
