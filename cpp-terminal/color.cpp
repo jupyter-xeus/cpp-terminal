@@ -1,4 +1,5 @@
 #include "cpp-terminal/color.hpp"
+
 #include "cpp-terminal/terminfo.hpp"
 
 #include <array>
