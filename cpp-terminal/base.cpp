@@ -1,8 +1,8 @@
 #include "cpp-terminal/base.hpp"
 
+#include "cpp-terminal/input.hpp"
 #include "cpp-terminal/platforms/platform.hpp"
 #include "cpp-terminal/tty.hpp"
-#include "cpp-terminal/input.hpp"
 
 #include <iostream>
 #include <utility>

@@ -6,10 +6,9 @@
   #include <unistd.h>
 #endif
 
+#include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/tty.hpp"
-#include "cpp-terminal/exception.hpp"
-
 
 char Term::Platform::read_raw_stdin()
 {
@@ -35,7 +34,7 @@ bool Term::Platform::read_raw(char* s)
   if(nread >= 1)
   {
     INPUT_RECORD buf;
-    if(!ReadConsoleInput(GetStdHandle(STD_INPUT_HANDLE),&buf,1,&nread)) { Term::Exception("ReadFile() failed"); }
+    if(!ReadConsoleInput(GetStdHandle(STD_INPUT_HANDLE), &buf, 1, &nread)) { Term::Exception("ReadFile() failed"); }
     if(nread == 1)
     {
       switch(buf.EventType)
@@ -43,7 +42,7 @@ bool Term::Platform::read_raw(char* s)
         case KEY_EVENT:
         {
           WORD skip = buf.Event.KeyEvent.wVirtualKeyCode;  //skip them for now
-          if(skip == VK_SHIFT|| skip==VK_LWIN || skip ==VK_RWIN || skip==VK_APPS || skip == VK_CONTROL || skip == VK_MENU || skip == VK_CAPITAL) { return false; }
+          if(skip == VK_SHIFT || skip == VK_LWIN || skip == VK_RWIN || skip == VK_APPS || skip == VK_CONTROL || skip == VK_MENU || skip == VK_CAPITAL) { return false; }
           if(buf.Event.KeyEvent.bKeyDown)
           {
             *s = buf.Event.KeyEvent.uChar.AsciiChar;
@@ -56,13 +55,13 @@ bool Term::Platform::read_raw(char* s)
         case MENU_EVENT:
         case MOUSE_EVENT:
         case WINDOW_BUFFER_SIZE_EVENT:
-        default:
-          return false;
+        default: return false;
       }
     }
     else { throw Term::Exception("kbhit() and ReadFile() inconsistent"); }
   }
-  else return false;
+  else
+    return false;
 #else
   ::ssize_t nread = ::read(0, s, 1);
   if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }

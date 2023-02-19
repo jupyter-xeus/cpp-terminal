@@ -195,8 +195,7 @@ namespace Platform
 bool read_raw(char* s);
 
 char read_raw_stdin();
-}
-
+}  // namespace Platform
 
 // Waits for a key press, translates escape codes
 // if Term:Terminal is not enabling the keyboard it'll loop for infinity
