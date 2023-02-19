@@ -5,8 +5,6 @@
 
 #include "cpp-terminal/input.hpp"
 
-#include "cpp-terminal/platforms/platform.hpp"
-
 #include <chrono>
 #include <thread>
 #include <type_traits>
@@ -50,14 +48,14 @@ std::int32_t Term::read_key()
 std::int32_t Term::read_key0()
 {
   char c{'\0'};
-  if(!Private::read_raw(&c)) return Key::NO_KEY;
+  if(!Platform::read_raw(&c)) return Key::NO_KEY;
   if(is_CTRL(static_cast<Term::Key>(c))) { return c; }
   else if(c == Key::ESC)
   {
     char seq[4]{'\0', '\0', '\0', '\0'};
 
-    if(!Private::read_raw(&seq[0])) return Key::ESC;
-    if(!Private::read_raw(&seq[1]))
+    if(!Platform::read_raw(&seq[0])) return Key::ESC;
+    if(!Platform::read_raw(&seq[1]))
     {
       if(seq[0] >= 'a' && seq[0] <= 'z')
       {
@@ -76,7 +74,7 @@ std::int32_t Term::read_key0()
     {
       if(seq[1] >= '0' && seq[1] <= '9')
       {
-        if(!Private::read_raw(&seq[2])) { return -2; }
+        if(!Platform::read_raw(&seq[2])) { return -2; }
         if(seq[2] == '~')
         {
           switch(seq[1])
@@ -95,8 +93,8 @@ std::int32_t Term::read_key0()
         {
           if(seq[1] == '1')
           {
-            if(!Private::read_raw(&seq[2])) { return -10; }
-            if(!Private::read_raw(&seq[3])) { return -11; }
+            if(!Platform::read_raw(&seq[2])) { return -10; }
+            if(!Platform::read_raw(&seq[3])) { return -11; }
             if(seq[2] == '5')
             {
               switch(seq[3])
@@ -114,7 +112,7 @@ std::int32_t Term::read_key0()
         {
           if(seq[2] >= '0' && seq[2] <= '9')
           {
-            if(!Private::read_raw(&seq[3])) { return -3; }
+            if(!Platform::read_raw(&seq[3])) { return -3; }
             if(seq[3] == '~')
             {
               if(seq[1] == '1')
@@ -179,7 +177,7 @@ std::int32_t Term::read_key0()
     }
     if(c == '\xc3')
     {
-      if(!Private::read_raw(&c)) { return -8; }
+      if(!Platform::read_raw(&c)) { return -8; }
       else
       {
         if(c >= '\xa1' && c <= '\xba')
@@ -192,7 +190,7 @@ std::int32_t Term::read_key0()
     }
     else if(c == '\xc2')
     {
-      if(!Private::read_raw(&c)) { return -10; }
+      if(!Platform::read_raw(&c)) { return -10; }
       else
       {
         if(c == '\x8d')
@@ -214,7 +212,7 @@ std::string Term::read_stdin()
   char        c{'\0'};
   while(true)
   {
-    c = Private::read_raw_stdin();
+    c = Platform::read_raw_stdin();
     if(c == 0x04) return file;
     else { file.push_back(c); }
   }

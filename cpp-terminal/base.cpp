@@ -2,6 +2,7 @@
 
 #include "cpp-terminal/platforms/platform.hpp"
 #include "cpp-terminal/tty.hpp"
+#include "cpp-terminal/input.hpp"
 
 #include <iostream>
 #include <utility>
@@ -338,7 +339,7 @@ std::pair<std::size_t, std::size_t> Term::cursor_position()
   std::string buf;
   char        c{'\0'};
   do {
-    while(!Private::read_raw(&c))
+    while(!Platform::read_raw(&c))
       ;
     buf.push_back(c);
   } while(c != 'R');

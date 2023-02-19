@@ -188,6 +188,16 @@ bool is_CTRL(const Key&);
 // Detecti if Key is ALT+*
 bool is_ALT(const Key&);
 
+namespace Platform
+{
+// Returns true if a character is read, otherwise immediately returns false
+// This can't be made inline
+bool read_raw(char* s);
+
+char read_raw_stdin();
+}
+
+
 // Waits for a key press, translates escape codes
 // if Term:Terminal is not enabling the keyboard it'll loop for infinity
 std::int32_t read_key();
