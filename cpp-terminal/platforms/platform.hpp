@@ -15,11 +15,5 @@ std::string getenv(const std::string&);
 // if the console is not connected
 std::pair<std::size_t, std::size_t> get_term_size();
 
-// Returns true if a character is read, otherwise immediately returns false
-// This can't be made inline
-bool read_raw(char* s);
-
-char read_raw_stdin();
-
 }  // namespace Private
 }  // namespace Term

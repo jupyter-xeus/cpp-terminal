@@ -20,6 +20,7 @@ bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& 
         return false;
     }
   }
+  return false;
 }
 #endif
 
