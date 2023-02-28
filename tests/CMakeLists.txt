@@ -34,4 +34,3 @@ if(WIN32)
   set_tests_properties(read_stdin_not_tty PROPERTIES PASS_REGULAR_EXPRESSION "Input from stdin: Hello world")
   set_tests_properties(keys_not_tty PROPERTIES WILL_FAIL TRUE)
 endif()
-
