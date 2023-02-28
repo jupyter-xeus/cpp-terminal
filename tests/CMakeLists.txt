@@ -34,4 +34,3 @@ if(WIN32)
   add_test(NAME keys_not_tty COMMAND "${CMAKE_BINARY_DIR}/examples/keys${CMAKE_EXECUTABLE_SUFFIX_CXX}")
   set_tests_properties(keys_not_tty PROPERTIES WILL_FAIL TRUE)
 endif()
-
