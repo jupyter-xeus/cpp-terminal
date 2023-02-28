@@ -24,7 +24,7 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal term(false, true, false, false);
+    Term::Terminal term(false, false, false);
     std::cout << "Interactive prompt.\n"
               << "  * Use Ctrl-D to exit.\n"
               << "  * Use Enter to submit.\n"

@@ -9,7 +9,7 @@
 
 Term::Result Term::prompt(const std::string& message, const std::string& first_option, const std::string& second_option, const std::string& prompt_indicator, bool immediate)
 {
-  Terminal term(false, true, true, false);
+  Terminal term(false, true, false);
   std::cout << message << " [" << first_option << '/' << second_option << ']' << prompt_indicator << ' ' << std::flush;
 
   if(!Term::stdin_connected())

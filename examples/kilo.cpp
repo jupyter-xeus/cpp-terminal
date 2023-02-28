@@ -919,7 +919,7 @@ int main(int argc, char* argv[])
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal term(true, true, true, false);
+    Term::Terminal term(true, true, false);
     initEditor();
     if(argc >= 2) { editorOpen(argv[1]); }
 
