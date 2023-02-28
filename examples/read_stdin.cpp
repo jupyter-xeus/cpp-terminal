@@ -3,9 +3,6 @@
 #include "cpp-terminal/tty.hpp"
 
 #include <iostream>
-#include <string>
-#include <thread>
-#include <chrono>
 
 int main()
 {
@@ -14,6 +11,5 @@ int main()
   else
   {
     std::cout<<"stdin is a tty"<<std::endl;
-    std::this_thread::sleep_for (std::chrono::seconds(1));
   }
 }
