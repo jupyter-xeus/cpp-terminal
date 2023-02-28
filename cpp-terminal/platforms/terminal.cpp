@@ -101,10 +101,12 @@ void Term::Terminal::setRawMode()
   }
 #else
   int i{-1};
-  if(Term::is_stdin_a_tty()) i=0;
-  else if(Term::is_stdout_a_tty()) i=1;
-  else if(Term::is_stderr_a_tty()) i=2;
-  if(i>0)
+  if(Term::is_stdin_a_tty()) i = 0;
+  else if(Term::is_stdout_a_tty())
+    i = 1;
+  else if(Term::is_stderr_a_tty())
+    i = 2;
+  if(i > 0)
   {
     termios raw{};
     if(tcgetattr(i, &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
