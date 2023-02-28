@@ -9,6 +9,7 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/tty.hpp"
+
 #include <iostream>
 
 char Term::Platform::read_raw_stdin()
