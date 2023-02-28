@@ -1,5 +1,6 @@
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/tty.hpp"
 
 #include <iostream>
 #include <string>
@@ -9,7 +10,10 @@
 int main()
 {
   Term::Terminal term(false, true, false);
-  //std::string in{Term::read_stdin()};
-  std::cout << "Input from stdin: " << Term::read_stdin() << std::endl;
-  std::this_thread::sleep_for (std::chrono::seconds(1));
+  if(!Term::is_stdin_a_tty()) std::cout << "Input from stdin: " << Term::read_stdin() << std::endl;
+  else
+  {
+    std::cout<<"stdin is a tty"<<std::endl;
+    std::this_thread::sleep_for (std::chrono::seconds(1));
+  }
 }

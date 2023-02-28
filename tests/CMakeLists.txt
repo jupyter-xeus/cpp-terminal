@@ -23,3 +23,10 @@ endif()
 add_executable(test_terminal test_terminal.cpp)
 target_link_libraries(test_terminal PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
 doctest_discover_tests(test_terminal)
+
+add_test(NAME colors COMMAND "${CMAKE_BINARY_DIR}/examples/colors${CMAKE_EXECUTABLE_SUFFIX_CXX}")
+
+if(WIN32)
+  add_test(NAME read_stdin_not_tty COMMAND powershell echo 'Hello world' | "${CMAKE_BINARY_DIR}/examples/read_stdin${CMAKE_EXECUTABLE_SUFFIX_CXX}")
+endif()
+set_tests_properties(read_stdin_not_tty PROPERTIES PASS_REGULAR_EXPRESSION "Input from stdin: Hello world")
