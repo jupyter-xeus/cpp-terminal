@@ -25,5 +25,8 @@ target_link_libraries(test_terminal PRIVATE doctest::doctest cpp-terminal::cpp-t
 doctest_discover_tests(test_terminal)
 
 if(WIN32)
-  add_test(NAME tests COMMAND powershell -NoProfile ${CMAKE_SOURCE_DIR}/ci/examples.ps1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+  find_program(POWERSHELL_EXECUTABLE NAMES powershell DOC "PowerShell command")
+  if(NOT ${POWERSHELL_EXECUTABLE} STREQUAL "POWERSHELL_EXECUTABLE-NOTFOUND")
+    add_test(NAME tests COMMAND ${POWERSHELL_EXECUTABLE} -NoProfile -NonInteractive ${CMAKE_SOURCE_DIR}/ci/examples.ps1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+  endif()
 endif()
