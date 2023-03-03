@@ -23,8 +23,3 @@ endif()
 add_executable(test_terminal test_terminal.cpp)
 target_link_libraries(test_terminal PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
 doctest_discover_tests(test_terminal)
-
-if(WIN32)
-  add_test(NAME colors_test COMMAND "${CMAKE_BINARY_DIR}/examples/Debug/colors.exe")
-  add_test(NAME read_stdin_not_tty COMMAND  powershell echo 'Hello world' | "${CMAKE_BINARY_DIR}/examples/Debug/read_stdin.exe")
-endif()

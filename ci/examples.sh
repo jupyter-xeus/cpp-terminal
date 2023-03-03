@@ -2,6 +2,7 @@
 
 set -ex
 
+./install/bin/examples/colors
 ./install/bin/examples/read_stdin
 
 echo "testing stdin example"
