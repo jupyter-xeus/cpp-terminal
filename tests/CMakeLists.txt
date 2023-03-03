@@ -23,3 +23,7 @@ endif()
 add_executable(test_terminal test_terminal.cpp)
 target_link_libraries(test_terminal PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
 doctest_discover_tests(test_terminal)
+
+if(WIN32)
+  add_test(NAME tests COMMAND powershell -NoProfile ${CMAKE_SOURCE_DIR}/ci/examples.ps1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+endif()
