@@ -3,7 +3,11 @@ name: CodeQL
 
 on:
   push:
+    paths-ignore:
+      - "dependabot/**"
   pull_request:
+    branches:
+      - "dependabot/**"
   schedule:
     - cron: '18 23 * * 1'
 
