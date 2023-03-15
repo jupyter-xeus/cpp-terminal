@@ -12,9 +12,9 @@ bool Term::Window::get_fg_reset(const std::size_t& x, const std::size_t& y) { re
 
 bool Term::Window::get_bg_reset(const std::size_t& x, const std::size_t& y) { return m_bg_reset[(y - 1) * w + (x - 1)]; }
 
-Term::rgb Term::Window::get_fg(const std::size_t& x, const std::size_t& y) { return m_fg[(y - 1) * w + (x - 1)]; }
+Term::Color Term::Window::get_fg(const std::size_t& x, const std::size_t& y) { return m_fg[(y - 1) * w + (x - 1)]; }
 
-Term::rgb Term::Window::get_bg(const std::size_t& x, const std::size_t& y) { return m_bg[(y - 1) * w + (x - 1)]; }
+Term::Color Term::Window::get_bg(const std::size_t& x, const std::size_t& y) { return m_bg[(y - 1) * w + (x - 1)]; }
 
 Term::Style Term::Window::get_style(const std::size_t& x, const std::size_t& y) { return m_style[(y - 1) * w + (x - 1)]; }
 
@@ -40,13 +40,13 @@ void Term::Window::set_bg_reset(const std::size_t& x, const std::size_t& y)
   m_fg[(y - 1) * w + (x - 1)]       = {255, 255, 255};
 }
 
-void Term::Window::set_fg(const std::size_t& x, const std::size_t& y, const rgb& rgb)
+void Term::Window::set_fg(const std::size_t& x, const std::size_t& y, const Color& rgb)
 {
   m_fg_reset[(y - 1) * w + (x - 1)] = false;
   m_fg[(y - 1) * w + (x - 1)]       = rgb;
 }
 
-void Term::Window::set_bg(const std::size_t& x, const std::size_t& y, const rgb& rgb)
+void Term::Window::set_bg(const std::size_t& x, const std::size_t& y, const Color& rgb)
 {
   m_bg_reset[(y - 1) * w + (x - 1)] = false;
   m_bg[(y - 1) * w + (x - 1)]       = rgb;
@@ -116,7 +116,7 @@ void Term::Window::print_str(const std::size_t& x, const std::size_t& y, const s
   }
 }
 
-void Term::Window::fill_fg(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2, const rgb& rgb)
+void Term::Window::fill_fg(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2, const Color& rgb)
 {
   for(std::size_t j = y1; j <= y2; j++)
   {
@@ -124,7 +124,7 @@ void Term::Window::fill_fg(const std::size_t& x1, const std::size_t& y1, const s
   }
 }
 
-void Term::Window::fill_bg(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2, const rgb& rgb)
+void Term::Window::fill_bg(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2, const Color& rgb)
 {
   for(std::size_t j = y1; j <= y2; j++)
   {
@@ -195,14 +195,12 @@ void Term::Window::clear()
   }
 }
 
-bool Term::Window::rgb_equal(const rgb& rgb_one, const rgb& rgb_two) { return rgb_one.r == rgb_two.r && rgb_one.b == rgb_two.b && rgb_one.g == rgb_two.g; }
-
 std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, bool term)
 {
   std::string out;
   if(term) { out.append(cursor_off()); }
-  rgb   current_fg       = {255, 255, 255};
-  rgb   current_bg       = {255, 255, 255};
+  Color current_fg       = {255, 255, 255};
+  Color current_bg       = {255, 255, 255};
   bool  current_fg_reset = true;
   bool  current_bg_reset = true;
   Style current_style    = Style::RESET;
@@ -238,7 +236,7 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
 
       if(!current_fg_reset)
       {
-        if(!rgb_equal(current_fg, get_fg(i, j)))
+        if(!(current_fg == get_fg(i, j)))
         {
           current_fg = get_fg(i, j);
           update_fg  = true;
@@ -247,7 +245,7 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
 
       if(!current_fg_reset)
       {
-        if(!rgb_equal(current_bg, get_bg(i, j)))
+        if(!(current_bg == get_bg(i, j)))
         {
           current_bg = get_bg(i, j);
           update_bg  = true;
@@ -269,24 +267,24 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
       }
       // Set style first, as style::reset will reset colors too
       if(update_style) out.append(style(get_style(i, j)));
-      if(update_fg_reset) out.append(color_fg(Color4::DEFAULT));
+      if(update_fg_reset) out.append(color_fg(Term::Color::Name::Default));
       else if(update_fg)
       {
-        Term::rgb color_tmp = get_fg(i, j);
-        out.append(color_fg(color_tmp.r, color_tmp.g, color_tmp.b));
+        Term::Color color_tmp = get_fg(i, j);
+        out.append(color_fg(color_tmp));
       }
-      if(update_bg_reset) out.append(color_bg(Color4::DEFAULT));
+      if(update_bg_reset) out.append(color_bg(Term::Color::Name::Default));
       else if(update_bg)
       {
-        Term::rgb color_tmp = get_bg(i, j);
-        out.append(color_bg(color_tmp.r, color_tmp.g, color_tmp.b));
+        Term::Color color_tmp = get_bg(i, j);
+        out.append(color_bg(color_tmp));
       }
       Private::codepoint_to_utf8(out, get_char(i, j));
     }
     if(j < h) out.append("\n");
   }
-  if(!current_fg_reset) out.append(color_fg(Color4::DEFAULT));
-  if(!current_bg_reset) out.append(color_bg(Color4::DEFAULT));
+  if(!current_fg_reset) out.append(color_fg(Term::Color::Name::Default));
+  if(!current_bg_reset) out.append(color_bg(Term::Color::Name::Default));
   if(current_style != Style::RESET) out.append(style(Style::RESET));
   if(term)
   {

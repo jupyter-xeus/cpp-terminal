@@ -89,7 +89,7 @@ void Term::Terminal::setRawMode()
     if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
   }
 
-  if(keyboard_enabled)
+  if(Term::is_stdin_a_tty())
   {
     SetConsoleCP(65001);
     DWORD flags{0};
@@ -100,10 +100,16 @@ void Term::Terminal::setRawMode()
     if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
   }
 #else
-  if(keyboard_enabled)
+  int i{-1};
+  if(Term::is_stdin_a_tty()) i = 0;
+  else if(Term::is_stdout_a_tty())
+    i = 1;
+  else if(Term::is_stderr_a_tty())
+    i = 2;
+  if(i >= 0)
   {
     termios raw{};
-    if(tcgetattr(0, &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
+    if(tcgetattr(i, &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
     // Put terminal in raw mode
     raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
     // This disables output post-processing, requiring explicit \r\n. We
@@ -115,7 +121,7 @@ void Term::Terminal::setRawMode()
     if(disable_signal_keys) { raw.c_lflag &= ~ISIG; }
     raw.c_cc[VMIN]  = 0;
     raw.c_cc[VTIME] = 0;
-    if(tcsetattr(0, TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
+    if(tcsetattr(i, TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
   }
 #endif
 }
