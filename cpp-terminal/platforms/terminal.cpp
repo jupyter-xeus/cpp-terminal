@@ -1,8 +1,8 @@
 #include "cpp-terminal/terminal.hpp"
 
 #ifdef _WIN32
-  #include <windows.h>
   #include <io.h>
+  #include <windows.h>
   #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
     #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
   #endif
@@ -137,11 +137,14 @@ void Term::Terminal::attachConsole()
     HANDLE hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
     HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
     if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) freopen_s(&m_stdout, "CONOUT$", "w", stdout);
-    else m_stdout = _fsopen("CONOUT$", "w", _SH_DENYNO);
+    else
+      m_stdout = _fsopen("CONOUT$", "w", _SH_DENYNO);
     if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) freopen_s(&m_stderr, "CONOUT$", "w", stderr);
-    else m_stderr = _fsopen("CONOUT$", "w", _SH_DENYNO);
+    else
+      m_stderr = _fsopen("CONOUT$", "w", _SH_DENYNO);
     if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&m_stdin, "CONIN$", "r", stdin);
-    else m_stdin = _fsopen("CONIN$", "r", _SH_DENYNO);
+    else
+      m_stdin = _fsopen("CONIN$", "r", _SH_DENYNO);
   }
 
 #else
@@ -162,7 +165,7 @@ void Term::Terminal::detachConsole()
   if(has_allocated_console) FreeConsole();
 #else
 #endif
-  if(m_stdin)  fclose(m_stdin);
+  if(m_stdin) fclose(m_stdin);
   if(m_stdout) fclose(m_stdout);
   if(m_stderr) fclose(m_stderr);
 }

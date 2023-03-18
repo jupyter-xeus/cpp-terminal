@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cpp-terminal/terminfo.hpp"
+
 #include <cstdio>
 
 namespace Term

@@ -26,11 +26,12 @@ int main()
     std::cout << "Dimension:" << std::get<1>(term_size) << " " << std::get<0>(term_size) << std::endl;
     std::cout << "Press any key ( 3 time 'q' to quit):" << std::endl;
     int quit{0};
-    while(quit!=3)
+    while(quit != 3)
     {
-      Term::Key   key{static_cast<Term::Key>(Term::read_key())};
+      Term::Key key{static_cast<Term::Key>(Term::read_key())};
       if(key == 'q') quit++;
-      else quit=0;
+      else
+        quit = 0;
       std::string s;
       if(key >= Term::Key::a && key <= Term::Key::z)
       {
