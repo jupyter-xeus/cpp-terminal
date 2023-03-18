@@ -1,8 +1,9 @@
 #include "cpp-terminal/terminal.hpp"
 
 #ifdef _WIN32
-  #include <io.h>
   #include <windows.h>
+  #include <share.h>
+  #include <io.h>
   #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
     #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
   #endif
