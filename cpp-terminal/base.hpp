@@ -2,7 +2,6 @@
 
 #include "cpp-terminal/color.hpp"
 #include "cpp-terminal/platforms/macros.hpp"
-#include "cpp-terminal/platforms/platform.hpp"
 
 #include <iomanip>
 #include <iostream>
