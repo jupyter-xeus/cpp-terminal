@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cpp-terminal/terminfo.hpp"
+#include <cstdio>
 
 namespace Term
 {
@@ -17,11 +18,17 @@ public:
   ~Terminal();
 
 private:
+  FILE*          m_stdin{nullptr};
+  FILE*          m_stdout{nullptr};
+  FILE*          m_stderr{nullptr};
   void           store_and_restore();
   void           setRawMode();
+  void           attachConsole();
+  void           detachConsole();
   bool           clear_screen{};
   bool           disable_signal_keys{true};
   bool           hide_cursor{};
+  bool           has_allocated_console{false};
   Term::Terminfo m_terminfo;
 };
 

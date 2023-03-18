@@ -2,6 +2,7 @@
 
 #ifdef _WIN32
   #include <windows.h>
+  #include <io.h>
   #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
     #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
   #endif
@@ -18,6 +19,8 @@
 #endif
 
 #include "cpp-terminal/exception.hpp"
+
+#include <iostream>
 
 void Term::Terminal::store_and_restore()
 {
@@ -113,4 +116,53 @@ void Term::Terminal::setRawMode()
     close(fd);
   }
 #endif
+}
+
+void Term::Terminal::attachConsole()
+{
+#ifdef _WIN32
+  if(!AttachConsole(ATTACH_PARENT_PROCESS))
+  {
+    if(AllocConsole())
+    {
+      has_allocated_console = true;
+      AttachConsole(GetCurrentProcessId());
+      freopen_s(&m_stdout, "CONOUT$", "w", stdout);
+      freopen_s(&m_stderr, "CONOUT$", "w", stderr);
+      freopen_s(&m_stdin, "CONIN$", "r", stdin);
+    }
+  }
+  else
+  {
+    HANDLE hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+    HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+    if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) freopen_s(&m_stdout, "CONOUT$", "w", stdout);
+    else m_stdout = _fsopen("CONOUT$", "w", _SH_DENYNO);
+    if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) freopen_s(&m_stderr, "CONOUT$", "w", stderr);
+    else m_stderr = _fsopen("CONOUT$", "w", _SH_DENYNO);
+    if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&m_stdin, "CONIN$", "r", stdin);
+    else m_stdin = _fsopen("CONIN$", "r", _SH_DENYNO);
+  }
+
+#else
+#endif
+  std::cout.clear();
+  std::clog.clear();
+  std::cerr.clear();
+  std::cin.clear();
+  std::wcout.clear();
+  std::wclog.clear();
+  std::wcerr.clear();
+  std::wcin.clear();
+}
+
+void Term::Terminal::detachConsole()
+{
+#ifdef _WIN32
+  if(has_allocated_console) FreeConsole();
+#else
+#endif
+  if(m_stdin)  fclose(m_stdin);
+  if(m_stdout) fclose(m_stdout);
+  if(m_stderr) fclose(m_stderr);
 }
