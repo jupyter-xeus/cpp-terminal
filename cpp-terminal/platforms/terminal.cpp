@@ -12,11 +12,12 @@
     #define ENABLE_VIRTUAL_TERMINAL_INPUT 0x0200
   #endif
 #else
+  #include <fcntl.h>
   #include <termios.h>
+  #include <unistd.h>
 #endif
 
 #include "cpp-terminal/exception.hpp"
-#include "cpp-terminal/tty.hpp"
 
 void Term::Terminal::store_and_restore()
 {
@@ -47,19 +48,21 @@ void Term::Terminal::store_and_restore()
   }
 #else
   static termios orig_termios;
+  static int     fd{open(ctermid(nullptr), O_RDWR, O_NOCTTY)};
   if(!enabled)
   {
-    if(Term::is_stdin_a_tty())
+    if(fd >= 0)
     {
-      if(tcgetattr(0, &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
+      if(tcgetattr(fd, &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
     }
     enabled = true;
   }
   else
   {
-    if(Term::is_stdin_a_tty())
+    if(fd >= 0)
     {
-      if(tcsetattr(0, TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
+      if(tcsetattr(fd, TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
+      close(fd);
     }
   }
 #endif
@@ -90,16 +93,11 @@ void Term::Terminal::setRawMode()
   CloseHandle(hConOut);
   CloseHandle(hConIn);
 #else
-  int i{-1};
-  if(Term::is_stdin_a_tty()) i = 0;
-  else if(Term::is_stdout_a_tty())
-    i = 1;
-  else if(Term::is_stderr_a_tty())
-    i = 2;
-  if(i >= 0)
+  int fd{open(ctermid(nullptr), O_RDWR, O_NOCTTY)};
+  if(fd >= 0)
   {
     termios raw{};
-    if(tcgetattr(i, &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
+    if(tcgetattr(fd, &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
     // Put terminal in raw mode
     raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
     // This disables output post-processing, requiring explicit \r\n. We
@@ -111,7 +109,8 @@ void Term::Terminal::setRawMode()
     if(disable_signal_keys) { raw.c_lflag &= ~ISIG; }
     raw.c_cc[VMIN]  = 0;
     raw.c_cc[VTIME] = 0;
-    if(tcsetattr(i, TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
+    if(tcsetattr(fd, TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
+    close(fd);
   }
 #endif
 }
