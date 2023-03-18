@@ -12,7 +12,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
   Terminal term(false, true, false);
   std::cout << message << " [" << first_option << '/' << second_option << ']' << prompt_indicator << ' ' << std::flush;
 
-  if(!Term::stdin_connected())
+  if(!Term::is_stdin_a_tty())
   {
     std::cout << '\n' << std::flush;
     return Result::ERROR;
@@ -198,7 +198,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
   std::size_t row{1}, col{1};
   std::size_t rows{25}, cols{80};
   bool        term_attached = Term::is_stdin_a_tty();
-  if(stdin_connected())
+  if(is_stdin_a_tty())
   {
     std::tie(row, col)   = cursor_position();
     std::tie(rows, cols) = get_size();

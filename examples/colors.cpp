@@ -1,6 +1,7 @@
 #include "cpp-terminal/base.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/version.hpp"
 
 #include <iostream>
@@ -12,7 +13,7 @@ int main()
   try
   {
     Term::Terminal term;
-    if(Term::stdout_connected()) { std::cout << "Standard output is attached to a terminal." << std::endl << std::endl; }
+    if(Term::is_stdout_a_tty()) { std::cout << "Standard output is attached to a terminal." << std::endl << std::endl; }
     else { std::cout << "Standard output is not attached to a terminal." << std::endl << std::endl; }
 
     std::string mode;
@@ -118,7 +119,7 @@ int main()
               << "*\n";
 
     std::cout << "Press any key to quit" << std::endl;
-    if(Term::stdout_connected()) std::cin.get();
+    if(Term::is_stdin_a_tty()) std::cin.get();
   }
   catch(const Term::Exception& re)
   {

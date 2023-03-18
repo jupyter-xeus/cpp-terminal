@@ -1,6 +1,7 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/prompt.hpp"
+#include "cpp-terminal/tty.hpp"
 
 #include <functional>
 #include <iostream>
@@ -19,7 +20,7 @@ int main()
 {
   try
   {
-    if(!Term::stdin_connected())
+    if(!Term::is_stdin_a_tty())
     {
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;

@@ -39,10 +39,6 @@ std::string style(Style style);
 
 // get the terminal size (row, column) / (Y, X)
 std::pair<std::size_t, std::size_t> get_size();
-// check if stdin is connected to a TTY
-bool                                stdin_connected();
-// check if stdout is connected to a TTY
-bool                                stdout_connected();
 // turn off the cursor
 std::string                         cursor_off();
 // turn on the cursor

@@ -8,10 +8,6 @@
 
 std::string Term::style(Term::Style style) { return "\033[" + std::to_string((std::uint8_t)style) + 'm'; }
 
-bool Term::stdin_connected() { return Term::is_stdin_a_tty(); }
-
-bool Term::stdout_connected() { return Term::is_stdout_a_tty(); }
-
 std::string Term::cursor_off() { return "\x1b[?25l"; }
 
 std::string Term::cursor_on() { return "\x1b[?25h"; }
