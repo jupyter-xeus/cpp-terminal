@@ -22,36 +22,28 @@ void Term::Terminal::store_and_restore()
 {
   static bool enabled{false};
 #ifdef _WIN32
-  static DWORD dwOriginalOutMode{};
-  static UINT  out_code_page{};
-  static DWORD dwOriginalInMode{};
-  static UINT  in_code_page{};
+  static DWORD  dwOriginalOutMode{};
+  static UINT   out_code_page{};
+  static DWORD  dwOriginalInMode{};
+  static UINT   in_code_page{};
+  static HANDLE hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+  static HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
   if(!enabled)
   {
-    if(Term::is_stdout_a_tty())
-    {
-      out_code_page = GetConsoleOutputCP();
-      if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
-    }
-    if(Term::is_stdin_a_tty())
-    {
-      in_code_page = GetConsoleCP();
-      if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
-    }
+    out_code_page = GetConsoleOutputCP();
+    if(!GetConsoleMode(hConOut, &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
+    in_code_page = GetConsoleCP();
+    if(!GetConsoleMode(hConIn, &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
     enabled = true;
   }
   else
   {
-    if(Term::is_stdout_a_tty())
-    {
-      SetConsoleOutputCP(out_code_page);
-      if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
-    }
-    if(Term::is_stdin_a_tty())
-    {
-      SetConsoleCP(in_code_page);
-      if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
-    }
+    SetConsoleOutputCP(out_code_page);
+    if(!SetConsoleMode(hConOut, dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
+    SetConsoleCP(in_code_page);
+    if(!SetConsoleMode(hConIn, dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
+    CloseHandle(hConOut);
+    CloseHandle(hConIn);
   }
 #else
   static termios orig_termios;
@@ -76,29 +68,27 @@ void Term::Terminal::store_and_restore()
 void Term::Terminal::setRawMode()
 {
 #ifdef _WIN32
-  if(Term::is_stdout_a_tty())
+  HANDLE hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+  HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+  SetConsoleOutputCP(65001);
+  DWORD flags{0};
+  if(!GetConsoleMode(hConOut, &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
+  if(m_terminfo.hasANSIEscapeCode())
   {
-    SetConsoleOutputCP(65001);
-    DWORD flags{0};
-    if(!GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
-    if(m_terminfo.hasANSIEscapeCode())
-    {
-      flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-      flags |= DISABLE_NEWLINE_AUTO_RETURN;
-    }
-    if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
+    flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    flags |= DISABLE_NEWLINE_AUTO_RETURN;
   }
+  if(!SetConsoleMode(hConOut, flags)) { throw Term::Exception("SetConsoleMode() failed"); }
 
-  if(Term::is_stdin_a_tty())
-  {
-    SetConsoleCP(65001);
-    DWORD flags{0};
-    if(!GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
-    if(m_terminfo.hasANSIEscapeCode()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
-    if(disable_signal_keys) { flags &= ~ENABLE_PROCESSED_INPUT; }
-    flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
-    if(!SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
-  }
+  SetConsoleCP(65001);
+  DWORD flags{0};
+  if(!GetConsoleMode(hConIn, &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
+  if(m_terminfo.hasANSIEscapeCode()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
+  if(disable_signal_keys) { flags &= ~ENABLE_PROCESSED_INPUT; }
+  flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
+  if(!SetConsoleMode(hConIn, flags)) { throw Term::Exception("SetConsoleMode() failed"); }
+  CloseHandle(hConOut);
+  CloseHandle(hConIn);
 #else
   int i{-1};
   if(Term::is_stdin_a_tty()) i = 0;
