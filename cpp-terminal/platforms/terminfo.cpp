@@ -37,6 +37,7 @@ std::string getenv(const std::string& env)
   std::string ret;
   ret.reserve(requiredSize * sizeof(char));
   getenv_s(&requiredSize, &ret[0], requiredSize, env.c_str());
+  return ret;
 #else
   if(std::getenv(env.c_str()) != nullptr) return static_cast<std::string>(std::getenv(env.c_str()));
   else
