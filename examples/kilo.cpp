@@ -1,4 +1,5 @@
 #include "cpp-terminal/base.hpp"
+#include "cpp-terminal/color.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/terminal.hpp"
