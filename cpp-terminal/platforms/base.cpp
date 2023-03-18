@@ -11,9 +11,9 @@
 std::pair<std::size_t, std::size_t> Term::get_size()
 {
 #ifdef _WIN32
-  if(GetStdHandle(STD_OUTPUT_HANDLE) == INVALID_HANDLE_VALUE) { throw Term::Exception("GetStdHandle(STD_OUTPUT_HANDLE) failed"); }
+  static HANDLE              hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
   CONSOLE_SCREEN_BUFFER_INFO inf;
-  if(GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &inf)) return {inf.srWindow.Bottom - inf.srWindow.Top + 1, inf.srWindow.Right - inf.srWindow.Left + 1};
+  if(GetConsoleScreenBufferInfo(hConOut, &inf)) return {inf.srWindow.Bottom - inf.srWindow.Top + 1, inf.srWindow.Right - inf.srWindow.Left + 1};
   else
     return {0, 0};
 #else
