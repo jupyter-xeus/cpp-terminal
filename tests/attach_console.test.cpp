@@ -1,15 +1,21 @@
-#include <Windows.h>
 #include "cpp-terminal/base.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/version.hpp"
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
 #include <iostream>
 
+#ifdef _WIN32
 int WinMain(HINSTANCE hinst, HINSTANCE hprev, LPSTR cmdline, int show)
+#else
+int main()
+#endif
 {
-  
   std::cout << "Running cpp-terminal version: " << Term::Version << " website : " << Term::Homepage << std::endl << std::endl;
 
   try
@@ -120,7 +126,9 @@ int WinMain(HINSTANCE hinst, HINSTANCE hprev, LPSTR cmdline, int show)
               << Term::color_bg(Term::Color(Term::Color::Name::BrightWhite).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default) << " "
               << "*\n";
 
+#ifdef _WIN32
     MessageBox(NULL, "hello, world", "caption", 0);
+#endif
 
     std::cout << "Press any key to quit" << std::endl;
     if(Term::is_stdin_a_tty()) std::cin.get();
