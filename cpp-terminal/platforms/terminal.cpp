@@ -48,7 +48,7 @@ void Term::Terminal::store_and_restore()
   }
 #else
   static termios orig_termios;
-  static int     fd{open(ctermid(nullptr), O_RDWR, O_NOCTTY)};
+  static int     fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
   if(!enabled)
   {
     if(fd >= 0)
@@ -93,7 +93,7 @@ void Term::Terminal::setRawMode()
   CloseHandle(hConOut);
   CloseHandle(hConIn);
 #else
-  int fd{open(ctermid(nullptr), O_RDWR, O_NOCTTY)};
+  int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
   if(fd >= 0)
   {
     termios raw{};

@@ -27,7 +27,7 @@ std::pair<std::size_t, std::size_t> Term::get_size()
   ws.ws_col    = 0;
   ws.ws_xpixel = 0;
   ws.ws_ypixel = 0;
-  int fd{open(ctermid(nullptr), O_RDWR, O_NOCTTY)};
+  int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
   if(ioctl(fd, TIOCGWINSZ, &ws) != -1) ret = {ws.ws_row, ws.ws_col};
   close(fd);
   return ret;
