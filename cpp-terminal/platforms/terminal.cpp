@@ -81,7 +81,7 @@ void Term::Terminal::setRawMode()
   if(!SetConsoleMode(hConOut, flags)) { throw Term::Exception("SetConsoleMode() failed"); }
 
   SetConsoleCP(65001);
-  DWORD flags{0};
+  flags = {0};
   if(!GetConsoleMode(hConIn, &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
   if(m_terminfo.hasANSIEscapeCode()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
   if(disable_signal_keys) { flags &= ~ENABLE_PROCESSED_INPUT; }
