@@ -53,9 +53,10 @@ Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{Term::Terminfo::ColorMode:
 
 Term::Terminfo::Terminfo()
 {
-  m_term            = Private::getenv("TERM").second;
-  m_terminalName    = Private::getenv("TERM_PROGRAM").second;
-  m_terminalName    = Private::getenv("TERMINAL_EMULATOR").second;
+  m_term         = Private::getenv("TERM").second;
+  m_terminalName = Private::getenv("TERM_PROGRAM").second;
+  m_terminalName = Private::getenv("TERMINAL_EMULATOR").second;
+  if(Private::getenv("ANSICON").first) m_terminalName = "ansicon";
   m_terminalVersion = Private::getenv("TERM_PROGRAM_VERSION").second;
   setANSIEscapeCode();
   setColorMode();
@@ -74,6 +75,13 @@ void Term::Terminfo::setColorMode()
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
   else if(m_terminalName == "vscode")
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
+#ifdef _WIN32
+  if(WindowsVersionGreater(10, 0, 10586)) m_colorMode = Term::Terminfo::ColorMode::Bit24;
+  else if(m_terminalName == "ansicon")
+    m_colorMode = Term::Terminfo::ColorMode::Bit4;
+  else
+    m_colorMode = Term::Terminfo::ColorMode::Bit4;
+#endif
 }
 
 void Term::Terminfo::setANSIEscapeCode()
