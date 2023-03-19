@@ -26,21 +26,25 @@ bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& 
 }
 #endif
 
+#include <iostream>
+#include <utility>
+
 namespace Private
 {
-std::string getenv(const std::string& env)
+std::pair<bool, std::string> getenv(const std::string& env)
 {
 #ifdef _WIN32
   std::size_t requiredSize{0};
   getenv_s(&requiredSize, nullptr, 0, env.c_str());
-  if(requiredSize == 0) return std::string();
+  if(requiredSize == 0) return {false, std::string()};
   std::string ret;
   ret.reserve(requiredSize * sizeof(char));
   getenv_s(&requiredSize, &ret[0], requiredSize, env.c_str());
+  return {true, ret};
 #else
-  if(std::getenv(env.c_str()) != nullptr) return static_cast<std::string>(std::getenv(env.c_str()));
+  if(std::getenv(env.c_str()) != nullptr) return {true, static_cast<std::string>(std::getenv(env.c_str()))};
   else
-    return std::string();
+    return {false, std::string()};
 #endif
 }
 }  // namespace Private
@@ -49,6 +53,10 @@ Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{Term::Terminfo::ColorMode:
 
 Term::Terminfo::Terminfo()
 {
+  m_term            = Private::getenv("TERM").second;
+  m_terminalName    = Private::getenv("TERM_PROGRAM").second;
+  m_terminalName    = Private::getenv("TERMINAL_EMULATOR").second;
+  m_terminalVersion = Private::getenv("TERM_PROGRAM_VERSION").second;
   setANSIEscapeCode();
   setColorMode();
 }
@@ -57,10 +65,15 @@ bool Term::Terminfo::hasANSIEscapeCode() { return m_ANSIEscapeCode; }
 
 void Term::Terminfo::setColorMode()
 {
-  std::string colorterm = Private::getenv("COLORTERM");
+  std::string colorterm = Private::getenv("COLORTERM").second;
   if(colorterm == "truecolor" || colorterm == "24bit") m_colorMode = Term::Terminfo::ColorMode::Bit24;
   else
     m_colorMode = Term::Terminfo::ColorMode::Bit8;
+  if(m_terminalName == "Apple_Terminal") m_colorMode = Term::Terminfo::ColorMode::Bit8;
+  else if(m_terminalName == "JetBrains-JediTerm")
+    m_colorMode = Term::Terminfo::ColorMode::Bit24;
+  else if(m_terminalName == "vscode")
+    m_colorMode = Term::Terminfo::ColorMode::Bit24;
 }
 
 void Term::Terminfo::setANSIEscapeCode()
