@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace Term
 {
 
@@ -31,6 +33,9 @@ private:
   bool             m_ANSIEscapeCode{true};
   void             setColorMode();
   static ColorMode m_colorMode;
+  std::string      m_terminalName;
+  std::string      m_terminalVersion;
+  std::string      m_term;
 };
 
 }  // namespace Term
