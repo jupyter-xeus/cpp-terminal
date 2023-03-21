@@ -1,7 +1,9 @@
 #include "cpp-terminal/base.hpp"
+#include "cpp-terminal/color.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/tty.hpp"
 
 #include <cstdarg>
 #include <cstring>
@@ -914,7 +916,7 @@ int main(int argc, char* argv[])
   try
   {
     // check if the terminal is capable of handling input
-    if(!Term::stdin_connected())
+    if(!Term::is_stdin_a_tty())
     {
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;

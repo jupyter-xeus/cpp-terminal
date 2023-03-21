@@ -1,6 +1,8 @@
 #pragma once
 
 #include "cpp-terminal/base.hpp"
+#include "cpp-terminal/color.hpp"
+#include "cpp-terminal/platforms/macros.hpp"
 
 #include <vector>
 

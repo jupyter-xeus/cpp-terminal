@@ -6,6 +6,7 @@ typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #include "cpp-terminal/terminfo.hpp"
 
 #include <string>
+#include <utility>
 
 #ifdef _WIN32
 bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& patch)

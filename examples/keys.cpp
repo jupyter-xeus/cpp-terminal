@@ -5,6 +5,7 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/tty.hpp"
 
 #include <iostream>
 #include <utility>
@@ -14,7 +15,7 @@ int main()
   try
   {
     // check if the terminal is capable of handling input
-    if(!Term::stdin_connected())
+    if(!Term::is_stdin_a_tty())
     {
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
@@ -23,16 +24,18 @@ int main()
     std::pair<std::size_t, std::size_t> term_size{Term::get_size()};
     std::cout << Term::cursor_move(1, 1);
     std::cout << "Dimension:" << std::get<1>(term_size) << " " << std::get<0>(term_size) << std::endl;
-    std::cout << "Press any key ('q' to quit):" << std::endl;
-    bool on = true;
-    while(on)
+    std::cout << "Press any key ( 3 time 'q' to quit):" << std::endl;
+    int quit{0};
+    while(quit != 3)
     {
-      Term::Key   key{static_cast<Term::Key>(Term::read_key())};
+      Term::Key key{static_cast<Term::Key>(Term::read_key())};
+      if(key == 'q') quit++;
+      else
+        quit = 0;
       std::string s;
       if(key >= Term::Key::a && key <= Term::Key::z)
       {
         s = (char)(key + Term::Key::A - Term::Key::a);  // Convert to upper case
-        if(key == 'q') on = false;
       }
       else if(key >= Term::Key::A && key <= Term::Key::Z)
       {

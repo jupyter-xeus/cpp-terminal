@@ -1,22 +1,12 @@
 #include "cpp-terminal/base.hpp"
 
 #include "cpp-terminal/input.hpp"
-#include "cpp-terminal/platforms/platform.hpp"
 #include "cpp-terminal/tty.hpp"
 
 #include <iostream>
 #include <utility>
 
 std::string Term::style(Term::Style style) { return "\033[" + std::to_string((std::uint8_t)style) + 'm'; }
-
-std::pair<std::size_t, std::size_t> Term::get_size()
-{
-  return Private::get_term_size();  // function uses platform dependent code
-}
-
-bool Term::stdin_connected() { return Term::is_stdin_a_tty(); }
-
-bool Term::stdout_connected() { return Term::is_stdout_a_tty(); }
 
 std::string Term::cursor_off() { return "\x1b[?25l"; }
 

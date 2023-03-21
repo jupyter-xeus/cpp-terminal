@@ -7,6 +7,7 @@
 
 Term::Terminal::Terminal(const bool& _clear_screen, const bool& _disable_signal_keys, const bool& _hide_cursor) : clear_screen{_clear_screen}, disable_signal_keys{_disable_signal_keys}, hide_cursor{_hide_cursor}
 {
+  attachConsole();
   store_and_restore();
   setRawMode();
   if(clear_screen)
@@ -29,5 +30,6 @@ Term::Terminal::~Terminal()
   if(hide_cursor) std::cout << cursor_on();
   // flush the output stream
   std::cout << std::flush;
+  detachConsole();
   store_and_restore();
 }
