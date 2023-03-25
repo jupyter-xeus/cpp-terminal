@@ -6,6 +6,6 @@
 
 int main()
 {
-  Term::Terminal term(false, true, false);
+  Term::Terminal term({Term::Option::NoClearScreen, Term::Option::NoSignalKeys, Term::Option::Cursor});
   std::cout << "Input from stdin: " << Term::read_stdin() << std::endl;
 }
