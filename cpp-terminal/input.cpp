@@ -5,38 +5,11 @@
 
 #include "cpp-terminal/input.hpp"
 
+#include "cpp-terminal/key.hpp"
+
 #include <chrono>
 #include <thread>
 #include <type_traits>
-
-bool Term::is_ASCII(const Term::Key& key)
-{
-  if(key >= 0 && key <= 127) return true;
-  else
-    return false;
-}
-
-bool Term::is_extended_ASCII(const Term::Key& key)
-{
-  if(key >= 0 && key <= 255) return true;
-  else
-    return false;
-}
-
-bool Term::is_CTRL(const Term::Key& key)
-{
-  // Need to suppress the TAB etc...
-  if(key > 0 && key <= 31 && key != Key::BACKSPACE && key != Key::TAB && key != ESC && /* the two mapped to ENTER */ key != Key::LF && key != CR) return true;
-  else
-    return false;
-}
-
-bool Term::is_ALT(const Term::Key& key)
-{
-  if((key & Key::ALT) == Key::ALT) return true;
-  else
-    return false;
-}
 
 std::int32_t Term::read_key()
 {
@@ -49,7 +22,8 @@ std::int32_t Term::read_key0()
 {
   char c{'\0'};
   if(!Platform::read_raw(&c)) return Key::NO_KEY;
-  if(is_CTRL(static_cast<Term::Key>(c))) { return c; }
+  Term::Key key = Key(static_cast<Term::Key::Value>(c));
+  if(key.is_CTRL()) { return c; }
   else if(c == Key::ESC)
   {
     char seq[4]{'\0', '\0', '\0', '\0'};

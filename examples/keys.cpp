@@ -4,6 +4,7 @@
 #include "cpp-terminal/base.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
+#include "cpp-terminal/key.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 
@@ -28,8 +29,8 @@ int main()
     int quit{0};
     while(quit != 3)
     {
-      Term::Key key{static_cast<Term::Key>(Term::read_key())};
-      if(key == 'q') quit++;
+      Term::Key key{static_cast<Term::Key::Value>(Term::read_key())};
+      if(key == Term::Key::Value::q) quit++;
       else
         quit = 0;
       std::string s;
@@ -41,12 +42,12 @@ int main()
       {
         s = (std::string) "Shift+" + (char)key;  // Already in upper case;
       }
-      else if(Term::is_CTRL(key)) { s = (std::string) "CTRL+" + (char)(-Term::Key::CTRL + key); }
-      else if(Term::is_ALT(key))
+      else if(key.is_CTRL()) { s = (std::string) "CTRL+" + (char)(-Term::Key::CTRL + key); }
+      else if(key.is_ALT())
       {
         s = (std::string) "Alt+" + (char)(key + Term::Key::A - (Term::Key::ALT + Term::Key::a));  // Convert to upper case
       }
-      else if(Term::is_extended_ASCII(key) && !iscntrl(key)) { s = (char)key; }
+      else if(key.is_extended_ASCII() && !iscntrl(key)) { s = (char)key; }
       else
       {
         switch(key)
