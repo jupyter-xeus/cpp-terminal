@@ -18,11 +18,15 @@ public:
   };
   Event() = default;
   Event(const char&);
+  Event(const Term::Key&);
   bool empty();
+  Type type();
   char getChar() { return m_ch; }
+  Key  getKey() { return m_Key; }
 
 private:
   char m_ch;
+  Key  m_Key{Key::Value::NO_KEY};
   Type m_Type{Type::Empty};
 };
 

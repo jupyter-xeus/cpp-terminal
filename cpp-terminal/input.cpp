@@ -23,7 +23,6 @@ std::int32_t Term::read_key0()
 {
   Term::Event event = Platform::read_raw();
   if(event.empty()) return Key::NO_KEY;
-  std::cout << "jjjjj" << event.getChar() << std::endl;
   Term::Key key = Key(static_cast<Term::Key::Value>(event.getChar()));
 
   if(key.is_CTRL()) { return key; }
@@ -58,7 +57,7 @@ std::int32_t Term::read_key0()
           {
             case '1': return Key::HOME;
             case '2': return Key::INSERT;
-            case '3': return Key::DEL;
+            case '3': return Key::Delete;
             case '4': return Key::END;
             case '5': return Key::PAGE_UP;
             case '6': return Key::PAGE_DOWN;
@@ -148,7 +147,7 @@ std::int32_t Term::read_key0()
   {
     switch(key)
     {
-      case Key::DEL: return Key::BACKSPACE;
+      case Key::Delete: return Key::BACKSPACE;
       case Key::LF:
       case Key::CR: return Key::ENTER;
     }

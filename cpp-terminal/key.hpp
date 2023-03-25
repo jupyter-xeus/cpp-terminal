@@ -143,7 +143,7 @@ public:
     VERTICAL_BAR       = 124,
     CLOSE_BRACE        = 125,
     TILDE              = 126,
-    DEL                = 127,
+    Delete             = 127,
     // End ASCII
     // Extended ANSII goes up to 255
     ALT_ENTER          = 256,

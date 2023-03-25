@@ -267,7 +267,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
             m.cursor_row--;
           }
           break;
-        case Key::DEL:
+        case Key::Delete:
           if(m.cursor_col <= m.lines[m.cursor_row - 1].size())
           {
             std::string before        = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);

@@ -749,7 +749,7 @@ char* editorPrompt(const char* prompt, void (*callback)(char*, int))
     editorRefreshScreen();
 
     int c = Term::read_key();
-    if(c == Term::Key::DEL || c == Term::Key::CTRL + 'h' || c == Term::Key::BACKSPACE)
+    if(c == Term::Key::Delete || c == Term::Key::CTRL + 'h' || c == Term::Key::BACKSPACE)
     {
       if(buflen != 0) buf[--buflen] = '\0';
     }
@@ -850,8 +850,8 @@ bool editorProcessKeypress()
     case Term::Key::CTRL_F: editorFind(); break;
 
     case Term::Key::BACKSPACE:
-    case Term::Key::DEL:
-      if(c == Term::Key::DEL) editorMoveCursor(Term::Key::ARROW_RIGHT);
+    case Term::Key::Delete:
+      if(c == Term::Key::Delete) editorMoveCursor(Term::Key::ARROW_RIGHT);
       editorDelChar();
       break;
 

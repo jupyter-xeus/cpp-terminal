@@ -65,7 +65,7 @@ int main()
           case Term::Key::CTRL_RIGHT: s = "CTRL_RIGHT"; break;
           case Term::Key::CTRL_LEFT: s = "CTRL_LEFT"; break;
           case Term::Key::NUMERIC_5: s = "NUMERIC_5"; break;
-          case Term::Key::DEL: s = "DEL"; break;
+          case Term::Key::Delete: s = "Delete"; break;
           case Term::Key::HOME: s = "HOME"; break;
           case Term::Key::INSERT: s = "INSERT"; break;
           case Term::Key::END: s = "END"; break;

@@ -43,27 +43,67 @@ Term::Event Term::Platform::read_raw()
       {
         case KEY_EVENT:
         {
+          //if(buf.Event.KeyEvent.bKeyDown)std::cout<<buf.Event.KeyEvent.wVirtualKeyCode<<"  "<<buf.Event.KeyEvent.uChar.AsciiChar<<std::endl;
           WORD skip = buf.Event.KeyEvent.wVirtualKeyCode;  //skip them for now
-          if(skip == VK_SHIFT || skip == VK_LWIN || skip == VK_RWIN || skip == VK_APPS || skip == VK_CONTROL || skip == VK_MENU || skip == VK_CAPITAL) { return false; }
+          if(skip == VK_SHIFT || skip == VK_LWIN || skip == VK_RWIN || skip == VK_APPS || skip == VK_CONTROL || skip == VK_MENU || skip == VK_CAPITAL) { return Event(); }
           if(buf.Event.KeyEvent.bKeyDown)
           {
-            *s = buf.Event.KeyEvent.uChar.AsciiChar;
-            return true;
+            if(buf.Event.KeyEvent.uChar.AsciiChar != 0) return Event(buf.Event.KeyEvent.uChar.AsciiChar);
+            else
+              switch(buf.Event.KeyEvent.wVirtualKeyCode)
+              {
+                case VK_CLEAR: return Key(Term::Key::Value::NUMERIC_5);
+                case VK_PRIOR: return Key(Term::Key::Value::PAGE_UP);
+                case VK_NEXT: return Key(Term::Key::Value::PAGE_DOWN);
+                case VK_END: return Key(Term::Key::Value::END);
+                case VK_HOME: return Key(Term::Key::Value::HOME);
+                case VK_LEFT: return Key(Term::Key::Value::ARROW_LEFT);
+                case VK_UP: return Key(Term::Key::Value::ARROW_UP);
+                case VK_RIGHT: return Key(Term::Key::Value::ARROW_RIGHT);
+                case VK_DOWN: return Key(Term::Key::Value::ARROW_DOWN);
+                case VK_SNAPSHOT: return Key(Term::Key::Value::PRINT_SCREEN);
+                case VK_INSERT: return Key(Term::Key::Value::INSERT);
+                case VK_DELETE: return Key(Term::Key::Value::Delete);
+                case VK_F1: return Key(Term::Key::Value::F1);
+                case VK_F2: return Key(Term::Key::Value::F2);
+                case VK_F3: return Key(Term::Key::Value::F3);
+                case VK_F4: return Key(Term::Key::Value::F4);
+                case VK_F5: return Key(Term::Key::Value::F5);
+                case VK_F6: return Key(Term::Key::Value::F6);
+                case VK_F7: return Key(Term::Key::Value::F7);
+                case VK_F8: return Key(Term::Key::Value::F8);
+                case VK_F9: return Key(Term::Key::Value::F9);
+                case VK_F10: return Key(Term::Key::Value::F10);
+                case VK_F11: return Key(Term::Key::Value::F11);
+                case VK_F12: return Key(Term::Key::Value::F12);
+                case VK_F13: return Key(Term::Key::Value::F13);
+                case VK_F14: return Key(Term::Key::Value::F14);
+                case VK_F15: return Key(Term::Key::Value::F15);
+                case VK_F16: return Key(Term::Key::Value::F16);
+                case VK_F17: return Key(Term::Key::Value::F17);
+                case VK_F18: return Key(Term::Key::Value::F18);
+                case VK_F19: return Key(Term::Key::Value::F19);
+                case VK_F20: return Key(Term::Key::Value::F20);
+                case VK_F21: return Key(Term::Key::Value::F21);
+                case VK_F22: return Key(Term::Key::Value::F22);
+                case VK_F23: return Key(Term::Key::Value::F23);
+                case VK_F24: return Key(Term::Key::Value::F24);
+              }
           }
           else
-            return false;
+            return Event();
         }
         case FOCUS_EVENT:
         case MENU_EVENT:
         case MOUSE_EVENT:
         case WINDOW_BUFFER_SIZE_EVENT:
-        default: return false;
+        default: return Event();
       }
     }
     else { throw Term::Exception("kbhit() and ReadFile() inconsistent"); }
   }
   else
-    return false;
+    return Event();
 #else
   char      s{'\0'};
   ::ssize_t nread = ::read(0, &s, 1);
