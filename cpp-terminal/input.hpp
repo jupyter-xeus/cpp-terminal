@@ -1,5 +1,7 @@
 #pragma once
 
+#include "cpp-terminal/event.hpp"
+
 #include <string>
 
 namespace Term
@@ -9,7 +11,7 @@ namespace Platform
 {
 // Returns true if a character is read, otherwise immediately returns false
 // This can't be made inline
-bool read_raw(char* s);
+Term::Event read_raw();
 
 char read_raw_stdin();
 }  // namespace Platform

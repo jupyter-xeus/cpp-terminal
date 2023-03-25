@@ -26,10 +26,10 @@ char Term::Platform::read_raw_stdin()
   else { throw Term::Exception("getchar() failed"); }
 }
 
-bool Term::Platform::read_raw(char* s)
+Term::Event Term::Platform::read_raw()
 {
   // do nothing when TTY is not connected
-  if(!is_stdin_a_tty()) { return false; }
+  if(!is_stdin_a_tty()) { return Event(); }
 #ifdef _WIN32
   DWORD nread{0};
   GetNumberOfConsoleInputEvents(GetStdHandle(STD_INPUT_HANDLE), &nread);
@@ -65,8 +65,11 @@ bool Term::Platform::read_raw(char* s)
   else
     return false;
 #else
-  ::ssize_t nread = ::read(0, s, 1);
+  char      s{'\0'};
+  ::ssize_t nread = ::read(0, &s, 1);
   if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-  return (nread == 1);
+  if(nread >= 1) return Event(s);
+  else
+    return Event();
 #endif
 }

@@ -5,9 +5,10 @@
 
 #include "cpp-terminal/input.hpp"
 
-#include "cpp-terminal/key.hpp"
+#include "cpp-terminal/event.hpp"
 
 #include <chrono>
+#include <iostream>
 #include <thread>
 #include <type_traits>
 
@@ -20,23 +21,25 @@ std::int32_t Term::read_key()
 
 std::int32_t Term::read_key0()
 {
-  char c{'\0'};
-  if(!Platform::read_raw(&c)) return Key::NO_KEY;
-  Term::Key key = Key(static_cast<Term::Key::Value>(c));
-  if(key.is_CTRL()) { return c; }
-  else if(c == Key::ESC)
-  {
-    char seq[4]{'\0', '\0', '\0', '\0'};
+  Term::Event event = Platform::read_raw();
+  if(event.empty()) return Key::NO_KEY;
+  std::cout << "jjjjj" << event.getChar() << std::endl;
+  Term::Key key = Key(static_cast<Term::Key::Value>(event.getChar()));
 
-    if(!Platform::read_raw(&seq[0])) return Key::ESC;
-    if(!Platform::read_raw(&seq[1]))
+  if(key.is_CTRL()) { return key; }
+  else if(key == Key::ESC)
+  {
+    Term::Event seq[4]{'\0', '\0', '\0', '\0'};
+
+    if((seq[0] = Platform::read_raw()).empty()) return Key::ESC;
+    if((seq[1] = Platform::read_raw()).empty())
     {
-      if(seq[0] >= 'a' && seq[0] <= 'z')
+      if(seq[0].getChar() >= Term::Key::Value::a && seq[0].getChar() <= Term::Key::Value::z)
       {
         // gnome-term, Windows Console
-        return Key::ALT + seq[0];
+        return Key::ALT + seq[0].getChar();
       }
-      if(seq[0] == '\x0d')
+      if(seq[0].getChar() == '\x0d')
       {
         // gnome-term
         return Key::ALT_ENTER;
@@ -44,14 +47,14 @@ std::int32_t Term::read_key0()
       return -1;
     }
 
-    if(seq[0] == '[')
+    if(seq[0].getChar() == '[')
     {
-      if(seq[1] >= '0' && seq[1] <= '9')
+      if(seq[1].getChar() >= '0' && seq[1].getChar() <= '9')
       {
-        if(!Platform::read_raw(&seq[2])) { return -2; }
-        if(seq[2] == '~')
+        if((seq[2] = Platform::read_raw()).empty()) { return -2; }
+        if(seq[2].getChar() == '~')
         {
-          switch(seq[1])
+          switch(seq[1].getChar())
           {
             case '1': return Key::HOME;
             case '2': return Key::INSERT;
@@ -63,15 +66,15 @@ std::int32_t Term::read_key0()
             case '8': return Key::END;
           }
         }
-        else if(seq[2] == ';')
+        else if(seq[2].getChar() == ';')
         {
-          if(seq[1] == '1')
+          if(seq[1].getChar() == '1')
           {
-            if(!Platform::read_raw(&seq[2])) { return -10; }
-            if(!Platform::read_raw(&seq[3])) { return -11; }
-            if(seq[2] == '5')
+            if((seq[2] = Platform::read_raw()).empty()) { return -10; }
+            if((seq[3] = Platform::read_raw()).empty()) { return -11; }
+            if(seq[2].getChar() == '5')
             {
-              switch(seq[3])
+              switch(seq[3].getChar())
               {
                 case 'A': return Key::CTRL_UP;
                 case 'B': return Key::CTRL_DOWN;
@@ -84,14 +87,14 @@ std::int32_t Term::read_key0()
         }
         else
         {
-          if(seq[2] >= '0' && seq[2] <= '9')
+          if(seq[2].getChar() >= '0' && seq[2].getChar() <= '9')
           {
-            if(!Platform::read_raw(&seq[3])) { return -3; }
-            if(seq[3] == '~')
+            if((seq[3] = Platform::read_raw()).empty()) { return -3; }
+            if(seq[3].getChar() == '~')
             {
-              if(seq[1] == '1')
+              if(seq[1].getChar() == '1')
               {
-                switch(seq[2])
+                switch(seq[2].getChar())
                 {
                   case '5': return Key::F5;
                   case '7': return Key::F6;
@@ -99,9 +102,9 @@ std::int32_t Term::read_key0()
                   case '9': return Key::F8;
                 }
               }
-              else if(seq[1] == '2')
+              else if(seq[1].getChar() == '2')
               {
-                switch(seq[2])
+                switch(seq[2].getChar())
                 {
                   case '0': return Key::F9;
                   case '1': return Key::F10;
@@ -115,7 +118,7 @@ std::int32_t Term::read_key0()
       }
       else
       {
-        switch(seq[1])
+        switch(seq[1].getChar())
         {
           case 'A': return Key::ARROW_UP;
           case 'B': return Key::ARROW_DOWN;
@@ -127,9 +130,9 @@ std::int32_t Term::read_key0()
         }
       }
     }
-    else if(seq[0] == 'O')
+    else if(seq[0].getChar() == 'O')
     {
-      switch(seq[1])
+      switch(seq[1].getChar())
       {
         case 'F': return Key::END;
         case 'H': return Key::HOME;
@@ -143,31 +146,31 @@ std::int32_t Term::read_key0()
   }
   else
   {
-    switch(c)
+    switch(key)
     {
       case Key::DEL: return Key::BACKSPACE;
       case Key::LF:
       case Key::CR: return Key::ENTER;
     }
-    if(c == '\xc3')
+    if(key == '\xc3')
     {
-      if(!Platform::read_raw(&c)) { return -8; }
+      if((event = Platform::read_raw()).empty()) { return -8; }
       else
       {
-        if(c >= '\xa1' && c <= '\xba')
+        if(event.getChar() >= '\xa1' && event.getChar() <= '\xba')
         {
           // xterm
-          return Key::ALT + (c + 'a' - '\xa1');
+          return Key::ALT + (event.getChar() + 'a' - '\xa1');
         }
         return -9;
       }
     }
-    else if(c == '\xc2')
+    else if(event.getChar() == '\xc2')
     {
-      if(!Platform::read_raw(&c)) { return -10; }
+      if((event = Platform::read_raw()).empty()) { return -10; }
       else
       {
-        if(c == '\x8d')
+        if(event.getChar() == '\x8d')
         {
           // xterm
           return Key::ALT_ENTER;
@@ -175,7 +178,7 @@ std::int32_t Term::read_key0()
         return -11;
       }
     }
-    return c;
+    return event.getChar();
   }
 }
 
