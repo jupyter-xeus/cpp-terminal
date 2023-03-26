@@ -109,7 +109,7 @@ int main()
           }
           break;
         case Term::Event::Type::Screen:
-          term_size=Term::Screen(event).size();
+          term_size = Term::Screen(event).size();
           std::cout << Term::clear_screen() << std::flush;
           render(std::get<0>(term_size), std::get<1>(term_size), h, w, pos);
           break;

@@ -27,14 +27,14 @@ public:
   Type type();
 
       operator Term::Key();
-          operator Term::Screen();
+      operator Term::Screen();
   Key getKey() { return m_Key; }
 
 private:
-  void        parse();
-  Type        m_Type{Type::Empty};
-  std::string m_str;
-  Key         m_Key{Key::Value::NO_KEY};
+  void         parse();
+  Type         m_Type{Type::Empty};
+  std::string  m_str;
+  Key          m_Key{Key::Value::NO_KEY};
   Term::Screen m_Screen;
 };
 

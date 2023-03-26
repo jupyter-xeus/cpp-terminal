@@ -34,7 +34,7 @@ int main()
       else
         quit = 0;
       std::string s;
-      if(key==Term::Key::Value::NO_KEY) continue;
+      if(key == Term::Key::Value::NO_KEY) continue;
       if(key >= Term::Key::a && key <= Term::Key::z)
       {
         s = (char)(key + Term::Key::A - Term::Key::a);  // Convert to upper case

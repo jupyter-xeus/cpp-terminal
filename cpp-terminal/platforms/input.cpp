@@ -2,10 +2,10 @@
   #include <windows.h>
 #else
   #include <cerrno>
-  #include <sys/ioctl.h>
-  #include <unistd.h>
   #include <csignal>
   #include <fcntl.h>
+  #include <sys/ioctl.h>
+  #include <unistd.h>
 #endif
 
 #include "cpp-terminal/exception.hpp"
@@ -26,7 +26,6 @@ static void sigwinchHandler(int sig)
   if(sig == SIGWINCH) gSignalStatus = 1;
 }
 #endif
-
 
 char Term::Platform::read_raw_stdin()
 {
@@ -119,7 +118,7 @@ Term::Event Term::Platform::read_raw()
         case WINDOW_BUFFER_SIZE_EVENT:
         {
           COORD coord{buf[i].Event.WindowBufferSizeEvent.dwSize};
-          return Event(Screen(coord.Y,coord.X));
+          return Event(Screen(coord.Y, coord.X));
         }
         default: continue;
       }
