@@ -36,12 +36,12 @@ Term::Event Term::Platform::read_raw()
   GetNumberOfConsoleInputEvents(GetStdHandle(STD_INPUT_HANDLE), &nread);
   if(nread >= 1)
   {
-    DWORD nre{0};
+    DWORD                     nre{0};
     std::vector<INPUT_RECORD> buf{nread};
     if(!ReadConsoleInput(GetStdHandle(STD_INPUT_HANDLE), &buf[0], buf.size(), &nre)) { Term::Exception("ReadFile() failed"); }
-    std::string ret(nre,'\0');
-    int processed{0};
-    for(std::size_t i=0; i!=nre ; ++i)
+    std::string ret(nre, '\0');
+    int         processed{0};
+    for(std::size_t i = 0; i != nre; ++i)
     {
       switch(buf[i].EventType)
       {
@@ -51,7 +51,7 @@ Term::Event Term::Platform::read_raw()
           if(skip == VK_SHIFT || skip == VK_LWIN || skip == VK_RWIN || skip == VK_APPS || skip == VK_CONTROL || skip == VK_MENU || skip == VK_CAPITAL) break;
           if(buf[i].Event.KeyEvent.bKeyDown)
           {
-            if(buf[i].Event.KeyEvent.uChar.AsciiChar != 0)  ret[processed]=buf[i].Event.KeyEvent.uChar.AsciiChar;
+            if(buf[i].Event.KeyEvent.uChar.AsciiChar != 0) ret[processed] = buf[i].Event.KeyEvent.uChar.AsciiChar;
             ++processed;
             break;
             /*else
@@ -95,7 +95,8 @@ Term::Event Term::Platform::read_raw()
                 case VK_F24: return Key(Term::Key::Value::F24);
               }*/
           }
-          else break;
+          else
+            break;
         }
         case FOCUS_EVENT:
         case MENU_EVENT:
@@ -110,10 +111,11 @@ Term::Event Term::Platform::read_raw()
     return Event();
 #else
   std::string ret(4096, '\0');  // Max for cin
-  errno=0;
-  ::ssize_t          nread{::read(0, &ret[0], ret.size())};
+  errno = 0;
+  ::ssize_t nread{::read(0, &ret[0], ret.size())};
   if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
   if(nread >= 1) return Event(ret.c_str());
-  else return Event();
+  else
+    return Event();
 #endif
 }

@@ -35,6 +35,7 @@ bool Term::Key::is_ALT()
 
 bool Term::Key::empty()
 {
-  if(m_value==NO_KEY) return true;
-  else return false;
+  if(m_value == NO_KEY) return true;
+  else
+    return false;
 }

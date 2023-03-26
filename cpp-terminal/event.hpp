@@ -23,14 +23,14 @@ public:
   bool empty();
   Type type();
 
-  operator Term::Key();
-  Key  getKey() { return m_Key; }
+      operator Term::Key();
+  Key getKey() { return m_Key; }
 
 private:
-  void parse();
+  void        parse();
   std::string m_str;
-  Key  m_Key{Key::Value::NO_KEY};
-  Type m_Type{Type::Empty};
+  Key         m_Key{Key::Value::NO_KEY};
+  Type        m_Type{Type::Empty};
 };
 
 }  // namespace Term
