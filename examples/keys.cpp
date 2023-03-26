@@ -111,7 +111,7 @@ int main()
         }
         case Term::Event::Type::CopyPaste:
         {
-          std::string key_str{event};
+          std::string key_str(event);
           if(!key_str.empty() && key_str[0] == '\033')
           {
             std::cout << "You discovered a key combination not yet managed by cpp-terminal (";
