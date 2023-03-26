@@ -35,7 +35,7 @@ int main()
       {
         case Term::Event::Type::Key:
         {
-          Term::Key key{event};
+          Term::Key key(event);
           if(key == Term::Key::Value::q) quit++;
           else
             quit = 0;
