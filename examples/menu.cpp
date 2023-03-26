@@ -10,6 +10,7 @@
 
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
 {
+  std::cout << Term::clear_screen() << std::flush;
   std::string scr;
   scr.reserve(16 * 1024);
 
@@ -82,26 +83,36 @@ int main()
     while(on)
     {
       render(std::get<0>(term_size), std::get<1>(term_size), h, w, pos);
-      int key = Term::read_key();
-      switch(key)
+      Term::Event event = Term::read_key();
+      switch(event.type())
       {
-        case Term::Key::ARROW_LEFT:
-          if(w > 10) w--;
+        case Term::Event::Type::Key:
+          switch(Term::Key(event))
+          {
+            case Term::Key::ARROW_LEFT:
+              if(w > 10) w--;
+              break;
+            case Term::Key::ARROW_RIGHT:
+              if(w < std::get<1>(term_size) - 5) w++;
+              break;
+            case Term::Key::ARROW_UP:
+              if(pos > 1) pos--;
+              break;
+            case Term::Key::ARROW_DOWN:
+              if(pos < h) pos++;
+              break;
+            case Term::Key::HOME: pos = 1; break;
+            case Term::Key::END: pos = h; break;
+            case Term::Key::q:
+            case Term::Key::ESC:
+            case Term::Key::CTRL_C: on = false; break;
+          }
           break;
-        case Term::Key::ARROW_RIGHT:
-          if(w < std::get<1>(term_size) - 5) w++;
+        case Term::Event::Type::Screen:
+          term_size=Term::Screen(event).size();
+          std::cout << Term::clear_screen() << std::flush;
+          render(std::get<0>(term_size), std::get<1>(term_size), h, w, pos);
           break;
-        case Term::Key::ARROW_UP:
-          if(pos > 1) pos--;
-          break;
-        case Term::Key::ARROW_DOWN:
-          if(pos < h) pos++;
-          break;
-        case Term::Key::HOME: pos = 1; break;
-        case Term::Key::END: pos = h; break;
-        case 'q':
-        case Term::Key::ESC:
-        case Term::Key::CTRL + 'c': on = false; break;
       }
     }
   }

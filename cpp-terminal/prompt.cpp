@@ -19,13 +19,14 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
     return Result::ERROR;
   }
 
-  int key;
+  Term::Key key;
 
   if(immediate)
   {
     while(true)
     {
       key = Term::read_key();
+      if(key==Term::Key::NO_KEY) continue ;
       if(key == 'y' || key == 'Y')
       {
         std::cout << '\n' << std::flush;
@@ -60,6 +61,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
     while(true)
     {
       key = Term::read_key();
+      if(key==Term::Key::NO_KEY) continue ;
       if(key >= 'a' && key <= 'z')
       {
         std::cout << (char)key << std::flush;
@@ -111,6 +113,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
       }
     }
   }
+  return Result::INVALID;
 }
 
 Term::Result_simple Term::prompt_simple(const std::string& message)
@@ -221,7 +224,8 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
   bool not_complete = true;
   while(not_complete)
   {
-    key = static_cast<Key::Value>(Term::read_key());
+    key = Term::read_key();
+    if(key==Term::Key::NO_KEY) continue ;
     if((key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') || (key.is_extended_ASCII() && !iscntrl(key)))
     {
       std::string before = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);

@@ -12,11 +12,11 @@
 #include <thread>
 #include <type_traits>
 
-std::int32_t Term::read_key()
+Term::Event Term::read_key()
 {
-  Term::Key key;
-  while((key = Platform::read_raw()).empty()) { std::this_thread::sleep_for(std::chrono::milliseconds(10)); }
-  return key;
+  Term::Event event;
+  while((event = Platform::read_raw()).empty()) { std::this_thread::sleep_for(std::chrono::milliseconds(10)); }
+  return event;
 }
 
 // returns the whole input from STDIN as string

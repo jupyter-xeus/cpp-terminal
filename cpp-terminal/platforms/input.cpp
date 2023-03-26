@@ -4,6 +4,8 @@
   #include <cerrno>
   #include <sys/ioctl.h>
   #include <unistd.h>
+  #include <csignal>
+  #include <fcntl.h>
 #endif
 
 #include "cpp-terminal/exception.hpp"
@@ -12,6 +14,19 @@
 
 #include <string>
 #include <vector>
+
+#if !defined(_WIN32)
+namespace
+{
+volatile std::sig_atomic_t gSignalStatus;
+}
+
+static void sigwinchHandler(int sig)
+{
+  if(sig == SIGWINCH) gSignalStatus = 1;
+}
+#endif
+
 
 char Term::Platform::read_raw_stdin()
 {
@@ -102,7 +117,11 @@ Term::Event Term::Platform::read_raw()
         case MENU_EVENT:
         case MOUSE_EVENT:
         case WINDOW_BUFFER_SIZE_EVENT:
-        default: return Event();
+        {
+          COORD coord{buf[i].Event.WindowBufferSizeEvent.dwSize};
+          return Event(Screen(coord.Y,coord.X));
+        }
+        default: continue;
       }
     }
     return Event(ret.c_str());
@@ -110,12 +129,43 @@ Term::Event Term::Platform::read_raw()
   else
     return Event();
 #else
-  std::string ret(4096, '\0');  // Max for cin
-  errno = 0;
-  ::ssize_t nread{::read(0, &ret[0], ret.size())};
-  if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-  if(nread >= 1) return Event(ret.c_str());
+  static bool activated{false};
+  if(!activated)
+  {
+    struct sigaction sa;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags   = 0;
+    sa.sa_handler = sigwinchHandler;
+    if(sigaction(SIGWINCH, &sa, NULL) == -1) throw Term::Exception("signal() failed");
+    else
+      activated = true;
+  }
+
+  if(gSignalStatus == 1)
+  {
+    struct winsize ws
+    {
+    };
+    ws.ws_row    = 0;
+    ws.ws_col    = 0;
+    ws.ws_xpixel = 0;
+    ws.ws_ypixel = 0;
+    int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
+    ioctl(fd, TIOCGWINSZ, &ws);
+    close(fd);
+    gSignalStatus = 0;
+    if(ws.ws_row != 0 && ws.ws_col != 0) return Event(Screen(ws.ws_row, ws.ws_col));
+  }
   else
-    return Event();
+  {
+    std::string ret(4096, '\0');  // Max for cin
+    errno = 0;
+    ::ssize_t nread{::read(0, &ret[0], ret.size())};
+    if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
+    if(nread >= 1) return Event(ret.c_str());
+    else
+      return Event();
+  }
+  return Event();
 #endif
 }

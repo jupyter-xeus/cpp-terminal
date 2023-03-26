@@ -18,13 +18,7 @@ char read_raw_stdin();
 
 // Waits for a key press, translates escape codes
 // if Term:Terminal is not enabling the keyboard it'll loop for infinity
-std::int32_t read_key();
-
-// If there was a key press, returns the translated key from escape codes,
-// otherwise returns 0. If the escape code is not supported it returns a
-// negative number.
-// if Term::Terminal is not enabling the keyboard it'll always return 0
-std::int32_t read_key0();
+Term::Event read_key();
 
 // returns the stdin as a string
 // waits until the EOT signal is send

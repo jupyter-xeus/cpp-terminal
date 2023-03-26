@@ -7,6 +7,15 @@ bool Term::Event::empty()
     return false;
 }
 
+Term::Event::operator Term::Screen()
+{
+  if(m_Type == Type::Screen) return m_Screen;
+  else
+    return Term::Screen();
+}
+
+Term::Event::Event(const Term::Screen& screen) : m_Type(Type::Screen), m_Screen(screen) {}
+
 Term::Event::Event(const Term::Key& key) : m_Type(Type::Key), m_Key(key) {}
 
 Term::Event::Type Term::Event::type() { return m_Type; }

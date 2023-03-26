@@ -29,11 +29,12 @@ int main()
     int quit{0};
     while(quit != 3)
     {
-      Term::Key key{static_cast<Term::Key::Value>(Term::read_key())};
+      Term::Key key{Term::read_key()};
       if(key == Term::Key::Value::q) quit++;
       else
         quit = 0;
       std::string s;
+      if(key==Term::Key::Value::NO_KEY) continue;
       if(key >= Term::Key::a && key <= Term::Key::z)
       {
         s = (char)(key + Term::Key::A - Term::Key::a);  // Convert to upper case
