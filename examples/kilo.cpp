@@ -748,7 +748,9 @@ char* editorPrompt(const char* prompt, void (*callback)(char*, int))
     editorSetStatusMessage(prompt, buf);
     editorRefreshScreen();
 
-    Term::Key c = Term::read_key();
+    Term::Key c = Term::read_event();
+
+    if(c) continue;
     if(c == Term::Key::DEL || c == Term::Key::CTRL + 'h' || c == Term::Key::BACKSPACE)
     {
       if(buflen != 0) buf[--buflen] = '\0';
@@ -823,11 +825,10 @@ bool editorProcessKeypress()
 {
   static int quit_times = KILO_QUIT_TIMES;
 
-  Term::Key c = Term::read_key();
-
+  Term::Key c;
+  while((c = Term::read_event()).empty()) continue;  //NEEDED for windows (FIXME ?)
   switch(c)
   {
-    case Term::Key::NO_KEY: break;
     case Term::Key::ENTER: editorInsertNewline(); break;
 
     case Term::Key::CTRL_Q:

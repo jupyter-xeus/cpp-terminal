@@ -25,7 +25,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
   {
     while(true)
     {
-      key = Term::read_key();
+      key = Term::read_event();
       if(key == Term::Key::NO_KEY) continue;
       if(key == 'y' || key == 'Y')
       {
@@ -60,7 +60,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
     unsigned short int length = 0;
     while(true)
     {
-      key = Term::read_key();
+      key = Term::read_event();
       if(key == Term::Key::NO_KEY) continue;
       if(key >= 'a' && key <= 'z')
       {
@@ -224,7 +224,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
   bool not_complete = true;
   while(not_complete)
   {
-    key = Term::read_key();
+    key = Term::read_event();
     if(key == Term::Key::NO_KEY) continue;
     if((key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') || (key.is_extended_ASCII() && !iscntrl(key)))
     {

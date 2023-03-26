@@ -83,7 +83,7 @@ int main()
     while(on)
     {
       render(std::get<0>(term_size), std::get<1>(term_size), h, w, pos);
-      Term::Event event = Term::read_key();
+      Term::Event event = Term::read_event();
       switch(event.type())
       {
         case Term::Event::Type::Key:

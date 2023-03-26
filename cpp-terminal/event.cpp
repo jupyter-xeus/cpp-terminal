@@ -7,6 +7,13 @@ bool Term::Event::empty()
     return false;
 }
 
+Term::Event::operator std::string()
+{
+  if(m_Type == Type::CopyPaste) return m_str;
+  else
+    return std::string();
+}
+
 Term::Event::operator Term::Screen()
 {
   if(m_Type == Type::Screen) return m_Screen;
@@ -28,9 +35,11 @@ void Term::Event::parse()
   {
     m_Type = Type::Key;
     m_Key  = static_cast<Term::Key::Value>(m_str[0]);
+    /* Backspace return 127 CTRL+backspace return 8 */
+    if(m_Key == Term::Key::Value::DEL) m_Key = Term::Key::Value::BACKSPACE;
     m_str.clear();
   }
-  else if(m_str.size() <= 5)
+  else if(m_str.size() <= 10)
   {
     //https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
     // CSI = ESC[ SS3 = ESCO
@@ -165,8 +174,11 @@ void Term::Event::parse()
       m_Key = Term::Key::Value::F19;
     else if(m_str == "\033[34~")
       m_Key = Term::Key::Value::F20;
-    if(!m_Key.empty()) m_Type = Type::Key;
-    m_str.clear();
+    if(!m_Key.empty())
+    {
+      m_Type = Type::Key;
+      m_str.clear();
+    }
   }
   else { m_Type = Type::CopyPaste; }
 }

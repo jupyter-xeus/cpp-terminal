@@ -16,9 +16,8 @@ Term::Event read_raw();
 char read_raw_stdin();
 }  // namespace Platform
 
-// Waits for a key press, translates escape codes
-// if Term:Terminal is not enabling the keyboard it'll loop for infinity
-Term::Event read_key();
+// Waits for an event (key press, screen resizing ...)
+Term::Event read_event();
 
 // returns the stdin as a string
 // waits until the EOT signal is send

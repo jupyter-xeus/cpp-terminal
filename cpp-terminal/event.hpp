@@ -26,9 +26,9 @@ public:
   bool empty();
   Type type();
 
-      operator Term::Key();
-      operator Term::Screen();
-  Key getKey() { return m_Key; }
+  operator Term::Key();
+  operator Term::Screen();
+  operator std::string();
 
 private:
   void         parse();

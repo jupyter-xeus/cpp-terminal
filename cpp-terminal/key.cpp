@@ -21,7 +21,7 @@ bool Term::Key::is_extended_ASCII()
 bool Term::Key::is_CTRL()
 {
   // Need to suppress the TAB etc...
-  if(m_value > 0 && m_value <= 31 && m_value != Key::BACKSPACE && m_value != Key::TAB && m_value != ESC && /* the two mapped to ENTER */ m_value != Key::LF && m_value != ENTER) return true;
+  if(m_value > 0 && m_value <= 31 && m_value != Key::BACKSPACE && m_value != Key::TAB && m_value != ESC && /* the two mapped to ENTER */ m_value != ENTER) return true;
   else
     return false;
 }

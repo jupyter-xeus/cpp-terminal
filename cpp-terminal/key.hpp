@@ -22,7 +22,7 @@ public:
     CTRL_G             = 7,
     BACKSPACE          = 8,
     TAB                = 9,
-    LF                 = 10,
+    CTRL_J             = 10,
     CTRL_K             = 11,
     CTRL_L             = 12,
     ENTER              = 13,  // Mapped to ENTER

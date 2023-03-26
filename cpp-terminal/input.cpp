@@ -8,11 +8,10 @@
 #include "cpp-terminal/event.hpp"
 
 #include <chrono>
-#include <iostream>
 #include <thread>
 #include <type_traits>
 
-Term::Event Term::read_key()
+Term::Event Term::read_event()
 {
   Term::Event event;
   while((event = Platform::read_raw()).empty()) { std::this_thread::sleep_for(std::chrono::milliseconds(10)); }
