@@ -11,6 +11,7 @@
 #include "cpp-terminal/tty.hpp"
 
 #include <string>
+#include <vector>
 
 char Term::Platform::read_raw_stdin()
 {
@@ -35,24 +36,28 @@ Term::Event Term::Platform::read_raw()
   GetNumberOfConsoleInputEvents(GetStdHandle(STD_INPUT_HANDLE), &nread);
   if(nread >= 1)
   {
-    INPUT_RECORD buf;
-    if(!ReadConsoleInput(GetStdHandle(STD_INPUT_HANDLE), &buf, 1, &nread)) { Term::Exception("ReadFile() failed"); }
-    if(nread == 1)
+    DWORD                     nre{0};
+    std::vector<INPUT_RECORD> buf{nread};
+    if(!ReadConsoleInput(GetStdHandle(STD_INPUT_HANDLE), &buf[0], buf.size(), &nre)) { Term::Exception("ReadFile() failed"); }
+    std::string ret(nre, '\0');
+    int         processed{0};
+    for(std::size_t i = 0; i != nre; ++i)
     {
-      switch(buf.EventType)
+      switch(buf[i].EventType)
       {
         case KEY_EVENT:
         {
-          //if(buf.Event.KeyEvent.bKeyDown)std::cout<<buf.Event.KeyEvent.wVirtualKeyCode<<"  "<<buf.Event.KeyEvent.uChar.AsciiChar<<std::endl;
-          WORD skip = buf.Event.KeyEvent.wVirtualKeyCode;  //skip them for now
-          if(skip == VK_SHIFT || skip == VK_LWIN || skip == VK_RWIN || skip == VK_APPS || skip == VK_CONTROL || skip == VK_MENU || skip == VK_CAPITAL) { return Event(); }
-          if(buf.Event.KeyEvent.bKeyDown)
+          WORD skip = buf[i].Event.KeyEvent.wVirtualKeyCode;  //skip them for now
+          if(skip == VK_SHIFT || skip == VK_LWIN || skip == VK_RWIN || skip == VK_APPS || skip == VK_CONTROL || skip == VK_MENU || skip == VK_CAPITAL) break;
+          if(buf[i].Event.KeyEvent.bKeyDown)
           {
-            if(buf.Event.KeyEvent.uChar.AsciiChar != 0) return Event(buf.Event.KeyEvent.uChar.AsciiChar);
-            else
-              switch(buf.Event.KeyEvent.wVirtualKeyCode)
+            if(buf[i].Event.KeyEvent.uChar.AsciiChar != 0) ret[processed] = buf[i].Event.KeyEvent.uChar.AsciiChar;
+            ++processed;
+            break;
+            /*else
+              switch(buf[i].Event.KeyEvent.wVirtualKeyCode)
               {
-                case VK_CLEAR: return Key(Term::Key::Value::NUMERIC_5);
+                case VK_CLEAR: return Event("");Key(Term::Key::Value::NUMERIC_5);
                 case VK_PRIOR: return Key(Term::Key::Value::PAGE_UP);
                 case VK_NEXT: return Key(Term::Key::Value::PAGE_DOWN);
                 case VK_END: return Key(Term::Key::Value::END);
@@ -63,7 +68,7 @@ Term::Event Term::Platform::read_raw()
                 case VK_DOWN: return Key(Term::Key::Value::ARROW_DOWN);
                 case VK_SNAPSHOT: return Key(Term::Key::Value::PRINT_SCREEN);
                 case VK_INSERT: return Key(Term::Key::Value::INSERT);
-                case VK_DELETE: return Key(Term::Key::Value::Delete);
+                case VK_DELETE: return Key(Term::Key::Value::DEL);
                 case VK_F1: return Key(Term::Key::Value::F1);
                 case VK_F2: return Key(Term::Key::Value::F2);
                 case VK_F3: return Key(Term::Key::Value::F3);
@@ -88,10 +93,10 @@ Term::Event Term::Platform::read_raw()
                 case VK_F22: return Key(Term::Key::Value::F22);
                 case VK_F23: return Key(Term::Key::Value::F23);
                 case VK_F24: return Key(Term::Key::Value::F24);
-              }
+              }*/
           }
           else
-            return Event();
+            break;
         }
         case FOCUS_EVENT:
         case MENU_EVENT:
@@ -100,7 +105,7 @@ Term::Event Term::Platform::read_raw()
         default: return Event();
       }
     }
-    else { throw Term::Exception("kbhit() and ReadFile() inconsistent"); }
+    return Event(ret.c_str());
   }
   else
     return Event();
