@@ -10,7 +10,7 @@
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/tty.hpp"
 
-#include <iostream>
+#include <string>
 
 char Term::Platform::read_raw_stdin()
 {
@@ -105,11 +105,11 @@ Term::Event Term::Platform::read_raw()
   else
     return Event();
 #else
-  char      s{'\0'};
-  ::ssize_t nread = ::read(0, &s, 1);
+  std::string ret(4096, '\0');  // Max for cin
+  errno=0;
+  ::ssize_t          nread{::read(0, &ret[0], ret.size())};
   if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-  if(nread >= 1) return Event(s);
-  else
-    return Event();
+  if(nread >= 1) return Event(ret.c_str());
+  else return Event();
 #endif
 }

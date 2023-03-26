@@ -1,7 +1,6 @@
 #include "cpp-terminal/base.hpp"
 
 #include "cpp-terminal/input.hpp"
-#include "cpp-terminal/tty.hpp"
 
 #include <iostream>
 #include <utility>
@@ -31,12 +30,12 @@ std::pair<std::size_t, std::size_t> Term::cursor_position()
   std::cout << cursor_position_report() << std::flush;
   // read input buffer
   std::string buf;
-  Term::Event c;
+  Term::Key c;
   do {
     while((c = Platform::read_raw()).empty())
       ;
-    buf.push_back(c.getChar());
-  } while(c.getChar() != 'R');
+    buf.push_back(static_cast<char>(c));
+  } while(static_cast<char>(c)!= 'R');
 
   bool        found{false};
   std::size_t row{0};

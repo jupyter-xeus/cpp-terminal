@@ -22,11 +22,10 @@ public:
     CTRL_G             = 7,
     BACKSPACE          = 8,
     TAB                = 9,
-    ENTER              = 10,
     LF                 = 10,
     CTRL_K             = 11,
     CTRL_L             = 12,
-    CR                 = 13,  // Mapped to ENTER
+    ENTER              = 13,  // Mapped to ENTER
     CTRL_N             = 14,
     CTRL_O             = 15,
     CTRL_P             = 16,
@@ -143,7 +142,7 @@ public:
     VERTICAL_BAR       = 124,
     CLOSE_BRACE        = 125,
     TILDE              = 126,
-    Delete             = 127,
+    DEL             = 127,
     // End ASCII
     // Extended ANSII goes up to 255
     ALT_ENTER          = 256,
@@ -205,6 +204,7 @@ public:
   bool is_CTRL();
   // Detect if Key is ALT+*
   bool is_ALT();
+  bool empty();
 
 private:
   Value m_value{NO_KEY};

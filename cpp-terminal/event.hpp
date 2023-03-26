@@ -3,6 +3,7 @@
 #include "cpp-terminal/key.hpp"
 
 #include <cstdint>
+#include <string>
 
 namespace Term
 {
@@ -14,18 +15,20 @@ public:
   {
     Empty,
     Key,
-    Char,
+    CopyPaste,
   };
   Event() = default;
-  Event(const char&);
+  Event(const std::string&);
   Event(const Term::Key&);
   bool empty();
   Type type();
-  char getChar() { return m_ch; }
+
+  operator Term::Key();
   Key  getKey() { return m_Key; }
 
 private:
-  char m_ch;
+  void parse();
+  std::string m_str;
   Key  m_Key{Key::Value::NO_KEY};
   Type m_Type{Type::Empty};
 };
