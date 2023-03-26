@@ -106,10 +106,11 @@ Term::Event Term::Platform::read_raw()
     return Event();
 #else
   std::string ret(4096, '\0');  // Max for cin
-  errno=0;
-  ::ssize_t          nread{::read(0, &ret[0], ret.size())};
+  errno = 0;
+  ::ssize_t nread{::read(0, &ret[0], ret.size())};
   if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
   if(nread >= 1) return Event(ret.c_str());
-  else return Event();
+  else
+    return Event();
 #endif
 }

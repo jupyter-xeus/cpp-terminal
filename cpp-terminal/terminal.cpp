@@ -1,7 +1,6 @@
 #include "cpp-terminal/terminal.hpp"
 
 #include "cpp-terminal/base.hpp"
-#include "cpp-terminal/tty.hpp"
 
 #include <iostream>
 
