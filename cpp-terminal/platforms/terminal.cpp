@@ -51,7 +51,7 @@ void Term::Terminal::store_and_restore()
     CloseHandle(hConIn);
   }
 #else
-  static termios orig_termios;
+  static termios orig_termios{};
   static int     fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
   if(!enabled)
   {
@@ -91,7 +91,7 @@ void Term::Terminal::setRawMode()
   flags = {0};
   if(!GetConsoleMode(hConIn, &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
   if(m_terminfo.hasANSIEscapeCode()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
-  if(disable_signal_keys) { flags &= ~ENABLE_PROCESSED_INPUT; }
+  if(m_options.has(Option::NoSignalKeys)) { flags &= ~ENABLE_PROCESSED_INPUT; }
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
   if(!SetConsoleMode(hConIn, flags)) { throw Term::Exception("SetConsoleMode() failed"); }
   CloseHandle(hConOut);
@@ -110,7 +110,7 @@ void Term::Terminal::setRawMode()
     // raw.c_oflag &= ~(OPOST);
     raw.c_cflag |= CS8;
     raw.c_lflag &= ~(ECHO | ICANON | IEXTEN);
-    if(disable_signal_keys) { raw.c_lflag &= ~ISIG; }
+    if(m_options.has(Option::NoSignalKeys)) { raw.c_lflag &= ~ISIG; }
     raw.c_cc[VMIN]  = 0;
     raw.c_cc[VTIME] = 0;
     if(tcsetattr(fd, TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }

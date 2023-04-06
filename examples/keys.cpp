@@ -20,7 +20,7 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal                      term(true, true, false);
+    Term::Terminal                      term({Term::Option::NoClearScreen, Term::Option::NoSignalKeys, Term::Option::Cursor});
     std::pair<std::size_t, std::size_t> term_size{Term::get_size()};
     std::cout << Term::cursor_move(1, 1);
     std::cout << "Dimension:" << std::get<1>(term_size) << " " << std::get<0>(term_size) << std::endl;

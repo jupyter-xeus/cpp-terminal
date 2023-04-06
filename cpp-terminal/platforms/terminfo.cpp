@@ -27,9 +27,6 @@ bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& 
 }
 #endif
 
-#include <iostream>
-#include <utility>
-
 namespace Private
 {
 std::pair<bool, std::string> getenv(const std::string& env)
