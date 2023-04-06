@@ -73,7 +73,7 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal                      term(true, true, true);
+    Term::Terminal                      term({Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor});
     std::pair<std::size_t, std::size_t> term_size = Term::get_size();
     int                                 pos       = 5;
     int                                 h         = 10;
@@ -99,7 +99,7 @@ int main()
           break;
         case Term::Key::HOME: pos = 1; break;
         case Term::Key::END: pos = h; break;
-        case 'q':
+        case Term::Key::q:
         case Term::Key::ESC:
         case Term::Key::CTRL + 'c': on = false; break;
       }

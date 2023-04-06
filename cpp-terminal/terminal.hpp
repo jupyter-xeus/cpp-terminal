@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cpp-terminal/options.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
 #include <cstdio>
@@ -12,10 +13,11 @@ namespace Term
  * terminal will not be left in a good state. Terminal uses exceptions when
  * something goes wrong.
  */
+
 class Terminal
 {
 public:
-  Terminal(const bool& _clear_screen = false, const bool& _disable_signal_keys = true, const bool& _hide_cursor = false);
+  Terminal(const std::vector<Term::Options::Option>& options = {});
   ~Terminal();
 
 private:
@@ -26,11 +28,9 @@ private:
   void           setRawMode();
   void           attachConsole();
   void           detachConsole();
-  bool           clear_screen{};
-  bool           disable_signal_keys{true};
-  bool           hide_cursor{};
   bool           has_allocated_console{false};
   Term::Terminfo m_terminfo;
+  Term::Options  m_options;
 };
 
 }  // namespace Term

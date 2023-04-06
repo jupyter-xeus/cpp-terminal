@@ -4,29 +4,28 @@
 
 #include <iostream>
 
-Term::Terminal::Terminal(const bool& _clear_screen, const bool& _disable_signal_keys, const bool& _hide_cursor) : clear_screen{_clear_screen}, disable_signal_keys{_disable_signal_keys}, hide_cursor{_hide_cursor}
+Term::Terminal::Terminal(const std::vector<Term::Options::Option>& options) : m_options(options)
 {
   attachConsole();
   store_and_restore();
   setRawMode();
-  if(clear_screen)
+  if(m_options.has(Option::ClearScreen))
   {
     // Fix consoles that ignore save_screen()
     std::cout << screen_save() << clear_buffer() << style(Style::RESET) << cursor_move(1, 1);
   }
-  if(hide_cursor) std::cout << cursor_off();
-  // flush stdout
+  if(m_options.has(Option::NoCursor)) std::cout << cursor_off();
   std::cout << std::flush;
 }
 
 Term::Terminal::~Terminal()
 {
-  if(clear_screen)
+  if(m_options.has(Option::ClearScreen))
   {
     // Fix consoles that ignore save_screen()
-    std::cout << clear_buffer() << style(Style::RESET) << cursor_move(1, 1) << screen_load();
+    std::cout << clear_buffer() << style(Style::RESET) << cursor_move(1, 1) << screen_load() << std::flush;
   }
-  if(hide_cursor) std::cout << cursor_on();
+  if(m_options.has(Option::NoCursor)) std::cout << cursor_on() << std::flush;
   // flush the output stream
   std::cout << std::flush;
   detachConsole();
