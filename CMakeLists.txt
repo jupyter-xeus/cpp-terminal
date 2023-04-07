@@ -43,11 +43,6 @@ if (CPPTERMINAL_BUILD_EXAMPLES)
   add_subdirectory(examples)
 endif()
 
-if (CPPTERMINAL_ENABLE_INSTALL)
-  include(install)
-  install_library()
-endif()
-
 if(MSVC)
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_OLD})
 endif()

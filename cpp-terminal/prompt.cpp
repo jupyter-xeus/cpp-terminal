@@ -1,6 +1,7 @@
 #include "cpp-terminal/prompt.hpp"
 
 #include "cpp-terminal/input.hpp"
+#include "cpp-terminal/key.hpp"
 #include "cpp-terminal/platforms/conversion.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
@@ -214,14 +215,14 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
   history.push_back(concat(m.lines));  // Push back empty input
 
   Term::Window scr(cols, 1);
-  Key          key{NO_KEY};
+  Term::Key    key;
   render(scr, m, cols);
   std::cout << scr.render(1, row, term_attached) << std::flush;
   bool not_complete = true;
   while(not_complete)
   {
-    key = static_cast<Key>(Term::read_key());
-    if((key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') || (Term::is_extended_ASCII(key) && !iscntrl(key)))
+    key = static_cast<Key::Value>(Term::read_key());
+    if((key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') || (key.is_extended_ASCII() && !iscntrl(key)))
     {
       std::string before = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
       std::string newchar;
