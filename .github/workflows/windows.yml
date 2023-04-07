@@ -84,7 +84,7 @@ jobs:
         with:
           path: .github/workflows
       - name: ✨ Setup MSVC
-        uses: ilammy/msvc-dev-cmd@v1.12.0
+        uses: ilammy/msvc-dev-cmd@v1.12.1
         with:
           arch: ${{ matrix.architecture }}
       - name: 🔧 Configure
@@ -121,7 +121,7 @@ jobs:
         with:
           path: .github/workflows
       - name: ✨ Setup MSVC
-        uses: ilammy/msvc-dev-cmd@v1.12.0
+        uses: ilammy/msvc-dev-cmd@v1.12.1
         with:
           arch: ${{ matrix.architecture }}
       - name: 🔧 Configure
