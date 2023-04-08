@@ -197,6 +197,7 @@ void Term::Window::clear()
 
 std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, bool term)
 {
+  std::cout << clear_screen() << std::flush;
   std::string out;
   if(term) { out.append(cursor_off()); }
   Color current_fg       = {255, 255, 255};

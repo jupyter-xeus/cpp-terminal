@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cpp-terminal/key.hpp"
+#include "cpp-terminal/screen.hpp"
 
 #include <cstdint>
 #include <string>
@@ -15,22 +16,26 @@ public:
   {
     Empty,
     Key,
+    Screen,
     CopyPaste,
   };
   Event() = default;
   Event(const std::string&);
   Event(const Term::Key&);
+  Event(const Term::Screen& screen);
   bool empty();
   Type type();
 
-      operator Term::Key();
-  Key getKey() { return m_Key; }
+  operator Term::Key();
+  operator Term::Screen();
+  operator std::string();
 
 private:
-  void        parse();
-  std::string m_str;
-  Key         m_Key{Key::Value::NO_KEY};
-  Type        m_Type{Type::Empty};
+  void         parse();
+  Type         m_Type{Type::Empty};
+  std::string  m_str;
+  Key          m_Key{Key::Value::NO_KEY};
+  Term::Screen m_Screen;
 };
 
 }  // namespace Term

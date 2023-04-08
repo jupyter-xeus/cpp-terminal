@@ -61,7 +61,7 @@ int main()
     while(on)
     {
       std::cout << render(scr, std::get<0>(term_size), std::get<1>(term_size), h, w, pos) << std::flush;
-      int key = Term::read_key();
+      Term::Key key = Term::read_event();
       switch(key)
       {
         case Term::Key::ARROW_LEFT:
