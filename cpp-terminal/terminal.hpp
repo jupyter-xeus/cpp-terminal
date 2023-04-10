@@ -4,6 +4,7 @@
 #include "cpp-terminal/terminfo.hpp"
 
 #include <cstdio>
+#include <string>
 
 namespace Term
 {
@@ -32,5 +33,10 @@ private:
   Term::Terminfo m_terminfo;
   Term::Options  m_options;
 };
+
+// change the title of the terminal, only supported by a few terminals
+std::string terminal_title(const std::string& title);
+// clear the screen and the scroll-back buffer
+std::string clear_buffer();
 
 }  // namespace Term

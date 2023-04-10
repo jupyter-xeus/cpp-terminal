@@ -145,8 +145,7 @@ public:
     DEL                = 127,
     // End ASCII
     // Extended ANSII goes up to 255
-    ALT_ENTER          = 256,
-    ARROW_LEFT,
+    ARROW_LEFT         = 256,
     ARROW_RIGHT,
     ARROW_UP,
     ARROW_DOWN,

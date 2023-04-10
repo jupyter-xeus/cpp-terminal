@@ -3,8 +3,10 @@
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/platforms/conversion.hpp"
+#include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
+#include "cursor.hpp"
 
 #include <iostream>
 
@@ -156,9 +158,9 @@ std::vector<std::string> Term::split(const std::string& s)
   return lines;
 }
 
-char32_t Term::UU(const std::string& s)
+char32_t UU(const std::string& s)
 {
-  std::u32string s2 = Private::utf8_to_utf32(s);
+  std::u32string s2 = Term::Private::utf8_to_utf32(s);
   if(s2.size() != 1) throw Term::Exception("U(s): s not a codepoint.");
   return s2[0];
 }
@@ -199,13 +201,13 @@ void Term::render(Term::Window& scr, const Model& m, const std::size_t& cols)
 
 std::string Term::prompt_multiline(const std::string& prompt_string, std::vector<std::string>& m_history, std::function<bool(std::string)>& iscomplete)
 {
-  std::size_t row{1}, col{1};
-  std::size_t rows{25}, cols{80};
-  bool        term_attached = Term::is_stdin_a_tty();
+  Term::Cursor cursor;
+  Term::Screen screen(25, 80);
+  bool         term_attached = Term::is_stdin_a_tty();
   if(is_stdin_a_tty())
   {
-    std::tie(row, col)   = cursor_position();
-    std::tie(rows, cols) = get_size();
+    cursor = cursor_position();
+    screen = screen_size();
   }
 
   Model m;
@@ -217,10 +219,10 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
   std::size_t              history_pos = history.size();
   history.push_back(concat(m.lines));  // Push back empty input
 
-  Term::Window scr(cols, 1);
+  Term::Window scr(screen.columns(), 1);
   Term::Key    key;
-  render(scr, m, cols);
-  std::cout << scr.render(1, row, term_attached) << std::flush;
+  render(scr, m, screen.columns());
+  std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
   bool not_complete = true;
   while(not_complete)
   {
@@ -251,7 +253,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
       {
         case Key::ENTER:
           not_complete = !iscomplete(concat(m.lines));
-          if(not_complete) key = Key::ALT_ENTER;
+          if(not_complete) key = static_cast<Term::Key::Value>(Key::ALT + Key::ENTER);
           else
             break;
           CPP_TERMINAL_FALLTHROUGH;
@@ -326,7 +328,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
           }
           break;
         case Key::CTRL_N:
-        case Key::ALT_ENTER:
+        case Key::ALT + Key::ENTER:
         {
           std::string before        = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
           std::string after         = m.lines[m.cursor_row - 1].substr(m.cursor_col - 1);
@@ -345,12 +347,12 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
         default: break;
       }
     }
-    render(scr, m, cols);
-    std::cout << scr.render(1, row, term_attached) << std::flush;
-    if(row + (int)scr.get_h() - 1 > rows)
+    render(scr, m, screen.columns());
+    std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
+    if(cursor.row() + (int)scr.get_h() - 1 > screen.rows())
     {
-      row = rows - ((int)scr.get_h() - 1);
-      std::cout << scr.render(1, row, term_attached) << std::flush;
+      cursor.setRow(screen.rows() - ((int)scr.get_h() - 1));
+      std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
     }
   }
   std::string line_skips;

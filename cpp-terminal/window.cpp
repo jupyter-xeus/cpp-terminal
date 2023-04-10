@@ -1,7 +1,10 @@
 #include "cpp-terminal/window.hpp"
 
+#include "cpp-terminal/cursor.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/platforms/conversion.hpp"
+
+#include <iostream>
 
 namespace Term
 {
@@ -24,6 +27,7 @@ std::size_t Term::Window::get_h() const { return h; }
 
 void Term::Window::set_char(const std::size_t& x, const std::size_t& y, const char32_t& c)
 {
+  //std::cout<<x<<"  "<<y<<" "<<w<<"  "<<y<<" "<<std::endl;
   if(x >= 1 && y >= 1 && x <= w && y <= h) { chars[(y - 1) * w + (x - 1)] = c; }
   else { throw Term::Exception("set_char(): (x,y) out of bounds"); }
 }
@@ -197,7 +201,6 @@ void Term::Window::clear()
 
 std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, bool term)
 {
-  std::cout << clear_screen() << std::flush;
   std::string out;
   if(term) { out.append(cursor_off()); }
   Color current_fg       = {255, 255, 255};

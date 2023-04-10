@@ -1,4 +1,5 @@
 #ifdef _WIN32
+  #include <vector>
   #include <windows.h>
 #else
   #include <cerrno>
@@ -13,7 +14,6 @@
 #include "cpp-terminal/tty.hpp"
 
 #include <string>
-#include <vector>
 
 #if !defined(_WIN32)
 namespace
