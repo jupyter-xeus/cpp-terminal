@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-Term::Cursor::Cursor(const std::size_t& row, const std::size_t& colum) : m_position({row, colum}) {}
+Term::Cursor::Cursor(const std::size_t& row, const std::size_t& column) : m_position({row, column}) {}
 
 std::size_t Term::Cursor::row() const { return m_position.first; }
 
