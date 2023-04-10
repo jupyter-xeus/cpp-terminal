@@ -21,15 +21,6 @@ void Term::Cursor::setRow(const std::size_t& row) { m_position.first = row; }
 
 void Term::Cursor::setColum(const std::size_t& column) { m_position.second = column; }
 
-Term::Cursor Term::cursor_position()
-{
-  // write cursor position report
-  std::cout << cursor_position_report() << std::flush;
-  Term::Event c;
-  while((c = Platform::read_raw()).empty()) continue;
-  return c;
-}
-
 std::string Term::cursor_off() { return "\x1b[?25l"; }
 
 std::string Term::cursor_on() { return "\x1b[?25h"; }
@@ -44,6 +35,6 @@ std::string Term::cursor_right(std::size_t columns) { return "\033[" + std::to_s
 
 std::string Term::cursor_left(std::size_t columns) { return "\033[" + std::to_string(columns) + 'D'; }
 
-std::string Term::cursor_position_report() { return "\x1b[6n"; }
+std::string Term::cursor_position_report() { return "\033[6n"; }
 
 std::string Term::clear_eol() { return "\033[K"; }

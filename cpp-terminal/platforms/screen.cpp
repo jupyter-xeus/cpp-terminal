@@ -14,7 +14,7 @@ Term::Screen Term::screen_size()
   Term::Screen               ret;
   HANDLE                     hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
   CONSOLE_SCREEN_BUFFER_INFO inf;
-  if(GetConsoleScreenBufferInfo(hConOut, &inf)) { ret = {inf.srWindow.Bottom - inf.srWindow.Top + 1, inf.srWindow.Right - inf.srWindow.Left + 1}; }
+  if(GetConsoleScreenBufferInfo(hConOut, &inf)) { ret = {static_cast<std::size_t>(inf.srWindow.Bottom - inf.srWindow.Top + 1), static_cast<std::size_t>(inf.srWindow.Right - inf.srWindow.Left + 1)}; }
   CloseHandle(hConOut);
   return ret;
 #else

@@ -2,6 +2,8 @@
 
 #include "cpp-terminal/cursor.hpp"
 
+#include <iostream>
+
 bool Term::Event::empty()
 {
   if(m_Type == Type::Empty) return true;
@@ -33,6 +35,7 @@ Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste), m_str(str)
 
 void Term::Event::parse()
 {
+  std::cout<<"LL "<<m_str<<std::endl;
   if(m_str.size() == 1)
   {
     m_Type = Type::Key;
@@ -53,6 +56,7 @@ void Term::Event::parse()
     if(found != std::string::npos)
     {
       m_Type   = Type::Cursor;
+
       m_Cursor = Cursor(std::stoi(m_str.substr(2, found - 2)), std::stoi(m_str.substr(found + 1, m_str.size() - (found + 2))));
     }
   }
