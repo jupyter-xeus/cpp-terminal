@@ -35,7 +35,6 @@ Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste), m_str(str)
 
 void Term::Event::parse()
 {
-  std::cout<<"LL "<<m_str<<std::endl;
   if(m_str.size() == 1)
   {
     m_Type = Type::Key;
