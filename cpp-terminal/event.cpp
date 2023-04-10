@@ -54,7 +54,7 @@ void Term::Event::parse()
     std::size_t found = m_str.find(';', 2);
     if(found != std::string::npos)
     {
-      m_Type   = Type::Cursor;
+      m_Type = Type::Cursor;
 
       m_Cursor = Cursor(std::stoi(m_str.substr(2, found - 2)), std::stoi(m_str.substr(found + 1, m_str.size() - (found + 2))));
     }
