@@ -27,27 +27,50 @@ void Term::Terminal::store_and_restore()
 {
   static bool enabled{false};
 #ifdef _WIN32
-  static DWORD  dwOriginalOutMode{};
-  static UINT   out_code_page{};
-  static DWORD  dwOriginalInMode{};
-  static UINT   in_code_page{};
-  static HANDLE hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
-  static HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+  static UINT  out_code_page{0};
+  static UINT  in_code_page{0};
+  static DWORD dwOriginalOutMode{0};
+  static DWORD dwOriginalInMode{0};
   if(!enabled)
   {
     out_code_page = GetConsoleOutputCP();
-    if(!GetConsoleMode(hConOut, &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(out_code_page == 0) throw Term::Exception("GetConsoleOutputCP() failed");
     in_code_page = GetConsoleCP();
+    if(out_code_page == 0) throw Term::Exception("GetConsoleCP() failed");
+    if(!SetConsoleOutputCP(CP_UTF8)) throw Term::Exception("SetConsoleOutputCP(CP_UTF8) failed");
+    if(!SetConsoleCP(CP_UTF8)) throw Term::Exception("SetConsoleCP(CP_UTF8) failed");
+
+    HANDLE hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+    if(hConOut == INVALID_HANDLE_VALUE) throw Term::Exception("CreateFile failed");
+    if(!GetConsoleMode(hConOut, &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(m_terminfo.hasANSIEscapeCode())
+    {
+      if(!SetConsoleMode(hConOut, dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
+    }
+    CloseHandle(hConOut);
+
+    HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+    if(hConIn == INVALID_HANDLE_VALUE) throw Term::Exception("CreateFile failed");
     if(!GetConsoleMode(hConIn, &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(m_terminfo.hasANSIEscapeCode())
+    {
+      if(!SetConsoleMode(hConIn, dwOriginalInMode | ENABLE_VIRTUAL_TERMINAL_INPUT)) { throw Term::Exception("SetConsoleMode() failed"); }
+    }
+    CloseHandle(hConIn);
+
     enabled = true;
   }
   else
   {
-    SetConsoleOutputCP(out_code_page);
+    if(SetConsoleOutputCP(out_code_page)) throw Term::Exception("SetConsoleOutputCP(out_code_page) failed");
+    if(SetConsoleCP(in_code_page)) throw Term::Exception("SetConsoleCP(in_code_page) failed");
+    HANDLE hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+    if(hConOut == INVALID_HANDLE_VALUE) throw Term::Exception("CreateFile failed");
     if(!SetConsoleMode(hConOut, dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
-    SetConsoleCP(in_code_page);
-    if(!SetConsoleMode(hConIn, dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     CloseHandle(hConOut);
+    HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
+    if(hConIn == INVALID_HANDLE_VALUE) throw Term::Exception("CreateFile failed");
+    if(!SetConsoleMode(hConIn, dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     CloseHandle(hConIn);
   }
 #else
@@ -59,6 +82,7 @@ void Term::Terminal::store_and_restore()
     {
       if(tcgetattr(fd, &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
     }
+
     enabled = true;
   }
   else
@@ -75,26 +99,12 @@ void Term::Terminal::store_and_restore()
 void Term::Terminal::setRawMode()
 {
 #ifdef _WIN32
-  HANDLE hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
   HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
-  SetConsoleOutputCP(65001);
-  DWORD flags{0};
-  if(!GetConsoleMode(hConOut, &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
-  if(m_terminfo.hasANSIEscapeCode())
-  {
-    flags |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    flags |= DISABLE_NEWLINE_AUTO_RETURN;
-  }
-  if(!SetConsoleMode(hConOut, flags)) { throw Term::Exception("SetConsoleMode() failed"); }
-
-  SetConsoleCP(65001);
   flags = {0};
   if(!GetConsoleMode(hConIn, &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
-  if(m_terminfo.hasANSIEscapeCode()) { flags |= ENABLE_VIRTUAL_TERMINAL_INPUT; }
   if(m_options.has(Option::NoSignalKeys)) { flags &= ~ENABLE_PROCESSED_INPUT; }
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
   if(!SetConsoleMode(hConIn, flags)) { throw Term::Exception("SetConsoleMode() failed"); }
-  CloseHandle(hConOut);
   CloseHandle(hConIn);
 #else
   int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};

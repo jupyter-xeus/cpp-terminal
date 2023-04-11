@@ -1,4 +1,5 @@
 #include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/io.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/prompt.hpp"
 #include "cpp-terminal/tty.hpp"
@@ -25,7 +26,7 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal term({Term::Option::NoClearScreen, Term::Option::SignalKeys, Term::Option::Cursor});
+    Term::terminal.setOptions({Term::Option::NoClearScreen, Term::Option::SignalKeys, Term::Option::Cursor, Term::Option::Raw});
     std::cout << "Interactive prompt.\n"
               << "  * Use Ctrl-D to exit.\n"
               << "  * Use Enter to submit.\n"

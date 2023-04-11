@@ -1,3 +1,6 @@
+add_executable(minimal minimal.cpp)
+target_link_libraries(minimal PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
+
 add_executable(prompt_multiline prompt_multiline.cpp)
 target_link_libraries(prompt_multiline PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
 

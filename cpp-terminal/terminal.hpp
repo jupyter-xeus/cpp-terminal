@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cpp-terminal/io.hpp"
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
@@ -18,8 +19,9 @@ namespace Term
 class Terminal
 {
 public:
-  Terminal(const std::vector<Term::Options::Option>& options = {});
+  Terminal();
   ~Terminal();
+  void setOptions(const std::vector<Term::Options::Option>& options = {});
 
 private:
   FILE*          m_stdin{nullptr};

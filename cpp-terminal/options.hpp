@@ -12,13 +12,17 @@ public:
   enum class Option : int
   {
     // Don't use 0!
-    ClearScreen   = 1,
-    NoClearScreen = -1,
-    SignalKeys    = 2,
-    NoSignalKeys  = -2,
-    Cursor        = 3,
-    NoCursor      = -3,
+    Default       = 0,
+    Raw           = 1,
+    Cooked        = -1,
+    ClearScreen   = 2,
+    NoClearScreen = -2,
+    SignalKeys    = 3,
+    NoSignalKeys  = -3,
+    Cursor        = 4,
+    NoCursor      = -4,
   };
+  Options() = default;
   Options(const std::vector<Option>& options);
   bool has(const Option& option);
   ~Options() {}

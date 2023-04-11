@@ -1,6 +1,7 @@
 #include "cpp-terminal/cursor.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
+#include "cpp-terminal/io.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/terminal.hpp"
@@ -20,7 +21,7 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal term({Term::Option::NoClearScreen, Term::Option::NoSignalKeys, Term::Option::Cursor});
+    Term::terminal.setOptions({Term::Option::NoClearScreen, Term::Option::NoSignalKeys, Term::Option::Cursor});
 
     Term::Cursor cursor{Term::cursor_position()};
     std::cout << "Cursor position : " << cursor.row() << " " << cursor.column() << std::endl;
