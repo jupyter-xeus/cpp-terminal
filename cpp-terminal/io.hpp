@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iosfwd>
+
 namespace Term
 {
 
@@ -18,6 +20,9 @@ private:
 
 static TerminalInitializer m_terminalInitializer;
 
-
+extern std::ofstream& cout;
+extern std::ofstream& cerr;
+extern std::ofstream& clog;
+extern std::ifstream& cin;
 
 }  // namespace Term

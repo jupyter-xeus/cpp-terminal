@@ -4,7 +4,6 @@
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
-#include <fstream>
 #include <string>
 
 namespace Term
@@ -24,10 +23,6 @@ public:
   void setOptions(const std::vector<Term::Options::Option>& options = {});
 
 private:
-  std::ofstream  m_stdout;
-  std::ofstream  m_stderr;
-  std::ofstream  m_stdlog;
-  std::ifstream  m_stdin;
   void           store_and_restore();
   void           setRawMode();
   void           attachConsole();

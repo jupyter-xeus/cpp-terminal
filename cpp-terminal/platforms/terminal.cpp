@@ -1,5 +1,4 @@
 #include "cpp-terminal/terminal.hpp"
-#include "cpp-terminal/io.hpp"
 
 #ifdef _WIN32
   #include <io.h>
@@ -21,8 +20,6 @@
 #endif
 
 #include "cpp-terminal/exception.hpp"
-
-#include <iostream>
 
 void Term::Terminal::store_and_restore()
 {
@@ -152,52 +149,11 @@ void Term::Terminal::attachConsole()
     if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) freopen_s(&dump, "CONOUT$", "w", stderr);
     if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&dump, "CONIN$", "r", stdin);
   }
-  m_stdout.open("CONOUT$", std::ofstream::out | std::ofstream::trunc);
-  m_stderr.open("CONOUT$", std::ofstream::out | std::ofstream::trunc);
-  m_stdlog.rdbuf()->pubsetbuf(nullptr,0);
-  m_stdlog.open("CONOUT$", std::ofstream::out | std::ofstream::trunc);
-  m_stdlog.rdbuf()->pubsetbuf(nullptr,0);
-  m_stdin.open("CONIN$", std::ofstream::in | std::ofstream::trunc);
-#else
-  m_stdout.open("/dev/tty", std::ofstream::out | std::ofstream::trunc);
-  m_stderr.open("/dev/tty", std::ofstream::out | std::ofstream::trunc);
-  m_stdlog.rdbuf()->pubsetbuf(nullptr,0);
-  m_stdlog.open("/dev/tty", std::ofstream::out | std::ofstream::trunc);
-  m_stdlog.rdbuf()->pubsetbuf(nullptr,0);
-  m_stdin.open("/dev/tty", std::ofstream::in | std::ofstream::trunc);
 #endif
-  std::ios_base::Init();
-  std::cout.clear();
-  std::clog.clear();
-  std::cerr.clear();
-  std::cin.clear();
-  std::wcout.clear();
-  std::wclog.clear();
-  std::wcerr.clear();
-  std::wcin.clear();
 }
 
 void Term::Terminal::detachConsole()
 {
-  if(m_stdout.is_open())
-  {
-    m_stdout.flush();
-    m_stdout.close();
-  }
-  if(m_stderr.is_open())
-  {
-    m_stderr.flush();
-    m_stderr.close();
-  }
-  if(m_stdlog.is_open())
-  {
-    m_stdlog.flush();
-    m_stderr.close();
-  }
-  if(m_stdin.is_open())
-  {
-    m_stdin.close();
-  }
 #ifdef _WIN32
   if(has_allocated_console) FreeConsole();
 #else

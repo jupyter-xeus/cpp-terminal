@@ -1,7 +1,11 @@
 #include "cpp-terminal/terminal.hpp"
+
 #include "cpp-terminal/cursor.hpp"
+#include "cpp-terminal/io.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
+
+#include <fstream>
 
 Term::Terminal::Terminal()
 {
@@ -11,8 +15,8 @@ Term::Terminal::Terminal()
 
 Term::Terminal::~Terminal()
 {
-  if(m_options.has(Option::ClearScreen)) m_stdlog << clear_buffer() << style(Style::RESET) << cursor_move(1, 1) << screen_load();
-  if(m_options.has(Option::NoCursor)) m_stdlog << cursor_on();
+  // if(m_options.has(Option::ClearScreen)) Term::clog << clear_buffer() << style(Style::RESET) << cursor_move(1, 1) << screen_load();
+  // if(m_options.has(Option::NoCursor)) Term::clog << cursor_on();
   store_and_restore();
   detachConsole();
 }
@@ -20,8 +24,8 @@ Term::Terminal::~Terminal()
 void Term::Terminal::setOptions(const std::vector<Term::Options::Option>& options)
 {
   m_options = options;
-  if(m_options.has(Option::ClearScreen)) m_stdlog << screen_save() << clear_buffer() << style(Style::RESET) << cursor_move(1, 1);
-  if(m_options.has(Option::NoCursor)) m_stdlog << cursor_off();
+  // if(m_options.has(Option::ClearScreen)) Term::clog << screen_save() << clear_buffer() << style(Style::RESET) << cursor_move(1, 1);
+  // if(m_options.has(Option::NoCursor)) Term::clog << cursor_off();
   if(m_options.has(Option::Raw)) setRawMode();
 }
 
