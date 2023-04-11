@@ -9,7 +9,7 @@ namespace Term
 template<typename T> class Container
 {
 private:
-  alignas(T) char t_buff[sizeof(T)];
+  alignas(alignof(T)) char buf[sizeof(T)];
 };
 static Container<Term::Terminal> termbuf;
 Terminal&                        terminal = reinterpret_cast<Term::Terminal&>(termbuf);
