@@ -294,6 +294,6 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
     out.append(cursor_on());
   }
   return out;
-};
+}
 
 }  // namespace Term
