@@ -26,6 +26,7 @@ public:
   Options(const std::vector<Option>& options);
   bool has(const Option& option);
   ~Options() {}
+  std::vector<Option> getOptions();
 
 private:
   std::vector<Option> m_Options;

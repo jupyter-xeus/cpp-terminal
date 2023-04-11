@@ -77,11 +77,11 @@ int main()
       return 1;
     }
     Term::terminal.setOptions({Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw});
-    Term::Screen   term_size = Term::screen_size();
-    int            pos       = 5;
-    int            h         = 10;
-    std::size_t    w{10};
-    bool           on = true;
+    Term::Screen term_size = Term::screen_size();
+    int          pos       = 5;
+    int          h         = 10;
+    std::size_t  w{10};
+    bool         on = true;
     while(on)
     {
       render(term_size.rows(), term_size.columns(), h, w, pos);

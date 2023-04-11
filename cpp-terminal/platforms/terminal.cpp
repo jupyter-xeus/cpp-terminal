@@ -21,6 +21,8 @@
 
 #include "cpp-terminal/exception.hpp"
 
+#include <fstream>
+
 void Term::Terminal::store_and_restore()
 {
   static bool enabled{false};
@@ -70,26 +72,29 @@ void Term::Terminal::store_and_restore()
     if(hConIn == INVALID_HANDLE_VALUE) throw Term::Exception("CreateFile failed");
     if(!SetConsoleMode(hConIn, dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     CloseHandle(hConIn);
+    enabled = false;
   }
 #else
   static termios orig_termios{};
-  static int     fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
   if(!enabled)
   {
+    int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
     if(fd >= 0)
     {
       if(tcgetattr(fd, &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
     }
-
+    close(fd);
     enabled = true;
   }
   else
   {
+    int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
     if(fd >= 0)
     {
       if(tcsetattr(fd, TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
       close(fd);
     }
+    enabled = false;
   }
 #endif
 }
@@ -98,7 +103,7 @@ void Term::Terminal::setRawMode()
 {
 #ifdef _WIN32
   HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
-  DWORD flags = {0};
+  DWORD  flags = {0};
   if(!GetConsoleMode(hConIn, &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
   if(m_options.has(Option::NoSignalKeys)) { flags &= ~ENABLE_PROCESSED_INPUT; }
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
@@ -130,13 +135,13 @@ void Term::Terminal::setRawMode()
 void Term::Terminal::attachConsole()
 {
 #ifdef _WIN32
+  FILE* dump{nullptr};
   if(!AttachConsole(ATTACH_PARENT_PROCESS))
   {
     if(AllocConsole())
     {
       AttachConsole(GetCurrentProcessId());
-      FILE* dump{nullptr};
-      freopen_s(&dump,"CONOUT$", "w", stdout);
+      freopen_s(&dump, "CONOUT$", "w", stdout);
       freopen_s(&dump, "CONOUT$", "w", stderr);
       freopen_s(&dump, "CONIN$", "r", stdin);
       has_allocated_console = true;
@@ -144,12 +149,50 @@ void Term::Terminal::attachConsole()
   }
   else
   {
-    FILE* dump{nullptr};
     if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) freopen_s(&dump, "CONOUT$", "w", stdout);
     if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) freopen_s(&dump, "CONOUT$", "w", stderr);
     if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&dump, "CONIN$", "r", stdin);
   }
 #endif
+}
+
+void Term::Terminal::attachStreams()
+{
+#if defined(_WIN32)
+  std::string in{"CONIN$"};
+  std::string out{"CONOUT$"};
+  std::string blackHole{"NUL"};
+#else
+  std::string in{"/dev/tty"};
+  std::string out{"/dev/tty"};
+  std::string blackHole{"/dev/null"};
+#endif
+  this->cout.open(out.c_str(), std::ofstream::out | std::ofstream::trunc);
+  if(!this->cout.is_open()) this->cout.open(blackHole.c_str(), std::ofstream::out | std::ofstream::trunc);
+  this->cout.clear();
+  this->cerr.open(out.c_str(), std::ofstream::out | std::ofstream::trunc);
+  if(!this->cerr.is_open()) this->cerr.open(blackHole.c_str(), std::ofstream::out | std::ofstream::trunc);
+  this->cerr.clear();
+  this->clog.rdbuf()->pubsetbuf(nullptr, 0);
+  this->clog.open(out.c_str(), std::ofstream::out | std::ofstream::trunc);
+  if(!this->clog.is_open()) this->clog.open(blackHole.c_str(), std::ofstream::out | std::ofstream::trunc);
+  this->clog.rdbuf()->pubsetbuf(nullptr, 0);
+  this->clog.clear();
+  this->cin.open(in.c_str(), std::ofstream::in);
+  if(!this->cin.is_open()) this->cin.open(blackHole.c_str(), std::ofstream::in);
+  this->cin.clear();
+  cout.clear();
+  cerr.clear();
+  clog.clear();
+  cin.clear();
+}
+
+void Term::Terminal::detachStreams()
+{
+  if(cout.is_open()) cout.close();
+  if(cerr.is_open()) cerr.close();
+  if(clog.is_open()) clog.close();
+  if(cin.is_open()) cin.close();
 }
 
 void Term::Terminal::detachConsole()
