@@ -4,7 +4,6 @@
 #include "cpp-terminal/prompt.hpp"
 #include "cpp-terminal/tty.hpp"
 
-#include <functional>
 #include <iostream>
 #include <string>
 #include <vector>

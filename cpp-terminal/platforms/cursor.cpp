@@ -3,10 +3,8 @@
 #if defined(_WIN32)
   #include "windows.h"
 #else
-  #include "cpp-terminal/event.hpp"
   #include "cpp-terminal/input.hpp"
-
-  #include <iostream>
+  #include "cpp-terminal/terminal.hpp"
 #endif
 
 Term::Cursor Term::cursor_position()
@@ -19,10 +17,9 @@ Term::Cursor Term::cursor_position()
   CloseHandle(hConOut);
   return ret;
 #else
-  std::cout << Term::cursor_position_report() << std::flush;
-  Term::Event c;
-  while((c = Platform::read_raw()).empty())
-    ;
+  Term::terminal << Term::cursor_position_report();
+  Term::Cursor c;
+  while((c = Platform::read_raw()).empty()) continue;
   return c;
 #endif
 }

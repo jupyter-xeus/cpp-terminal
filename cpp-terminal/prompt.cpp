@@ -115,7 +115,6 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
       }
     }
   }
-  return Result::INVALID;
 }
 
 Term::Result_simple Term::prompt_simple(const std::string& message)

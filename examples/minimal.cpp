@@ -1,7 +1,4 @@
-#include "cpp-terminal/event.hpp"
 #include "cpp-terminal/input.hpp"
-#include "cpp-terminal/io.hpp"
-#include "cpp-terminal/options.hpp"
 #include "cpp-terminal/terminal.hpp"
 
 #include <iostream>

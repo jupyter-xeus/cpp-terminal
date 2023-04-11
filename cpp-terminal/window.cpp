@@ -4,8 +4,6 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/platforms/conversion.hpp"
 
-#include <iostream>
-
 namespace Term
 {
 

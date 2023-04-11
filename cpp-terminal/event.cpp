@@ -1,9 +1,5 @@
 #include "cpp-terminal/event.hpp"
 
-#include "cpp-terminal/cursor.hpp"
-
-#include <iostream>
-
 bool Term::Event::empty()
 {
   if(m_Type == Type::Empty) return true;

@@ -3,7 +3,6 @@
 #include "cpp-terminal/io.hpp"
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/terminfo.hpp"
-#include "cpp-terminal/tty.hpp"
 
 #include <fstream>
 
