@@ -1,3 +1,4 @@
+#include "cpp-terminal/io.hpp"
 #include "cpp-terminal/terminal.hpp"
 
 #include <new>
@@ -10,17 +11,18 @@ private:
   alignas(T) std::byte t_buff[sizeof(T)];
 };
 static Container<Term::Terminal> termbuf;
-Term::Terminal&                  terminal = reinterpret_cast<Term::Terminal&>(termbuf);
-}  // namespace Term
+Terminal&                  terminal = reinterpret_cast<Term::Terminal&>(termbuf);
 
-int Term::TerminalInitializer::m_counter{0};
+int TerminalInitializer::m_counter{0};
 
-Term::TerminalInitializer::TerminalInitializer()
+TerminalInitializer::TerminalInitializer()
 {
   if(m_counter++ == 0) new(&Term::terminal) Terminal();
 }
 
-Term::TerminalInitializer::~TerminalInitializer()
+TerminalInitializer::~TerminalInitializer()
 {
   if(--m_counter == 0) (&Term::terminal)->~Terminal();
 }
+
+}  // namespace Term

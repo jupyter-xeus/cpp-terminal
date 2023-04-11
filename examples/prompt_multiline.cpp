@@ -33,7 +33,7 @@ int main()
               << "  * Features:\n"
               << "    - Editing (Keys: Left, Right, Home, End, Backspace)\n"
               << "    - History (Keys: Up, Down)\n"
-              << "    - Multi-line editing (use Alt-Enter to add a new line)" << std::endl;
+              << "    - Multi-line editing (use CTRL+N to add a new line)" << std::endl;
     // TODO:
     // std::cout << "    - Syntax highlighting" << std::endl;
     std::vector<std::string>         history;

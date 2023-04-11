@@ -1,4 +1,5 @@
 #include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/io.hpp"
 
 #ifdef _WIN32
   #include <io.h>
@@ -62,8 +63,8 @@ void Term::Terminal::store_and_restore()
   }
   else
   {
-    if(SetConsoleOutputCP(out_code_page)) throw Term::Exception("SetConsoleOutputCP(out_code_page) failed");
-    if(SetConsoleCP(in_code_page)) throw Term::Exception("SetConsoleCP(in_code_page) failed");
+    if(!SetConsoleOutputCP(out_code_page)) throw Term::Exception("SetConsoleOutputCP(out_code_page) failed");
+    if(!SetConsoleCP(in_code_page)) throw Term::Exception("SetConsoleCP(in_code_page) failed");
     HANDLE hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
     if(hConOut == INVALID_HANDLE_VALUE) throw Term::Exception("CreateFile failed");
     if(!SetConsoleMode(hConOut, dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
@@ -100,7 +101,7 @@ void Term::Terminal::setRawMode()
 {
 #ifdef _WIN32
   HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
-  flags = {0};
+  DWORD flags = {0};
   if(!GetConsoleMode(hConIn, &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
   if(m_options.has(Option::NoSignalKeys)) { flags &= ~ENABLE_PROCESSED_INPUT; }
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
@@ -136,28 +137,36 @@ void Term::Terminal::attachConsole()
   {
     if(AllocConsole())
     {
-      has_allocated_console = true;
       AttachConsole(GetCurrentProcessId());
-      freopen_s(&m_stdout, "CONOUT$", "w", stdout);
-      freopen_s(&m_stderr, "CONOUT$", "w", stderr);
-      freopen_s(&m_stdin, "CONIN$", "r", stdin);
+      FILE* dump{nullptr};
+      freopen_s(&dump,"CONOUT$", "w", stdout);
+      freopen_s(&dump, "CONOUT$", "w", stderr);
+      freopen_s(&dump, "CONIN$", "r", stdin);
+      has_allocated_console = true;
     }
   }
   else
   {
-    if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) freopen_s(&m_stdout, "CONOUT$", "w", stdout);
-    else
-      m_stdout = _fsopen("CONOUT$", "w", _SH_DENYNO);
-    if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) freopen_s(&m_stderr, "CONOUT$", "w", stderr);
-    else
-      m_stderr = _fsopen("CONOUT$", "w", _SH_DENYNO);
-    if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&m_stdin, "CONIN$", "r", stdin);
-    else
-      m_stdin = _fsopen("CONIN$", "r", _SH_DENYNO);
+    FILE* dump{nullptr};
+    if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) freopen_s(&dump, "CONOUT$", "w", stdout);
+    if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) freopen_s(&dump, "CONOUT$", "w", stderr);
+    if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&dump, "CONIN$", "r", stdin);
   }
-
+  m_stdout.open("CONOUT$", std::ofstream::out | std::ofstream::trunc);
+  m_stderr.open("CONOUT$", std::ofstream::out | std::ofstream::trunc);
+  m_stdlog.rdbuf()->pubsetbuf(nullptr,0);
+  m_stdlog.open("CONOUT$", std::ofstream::out | std::ofstream::trunc);
+  m_stdlog.rdbuf()->pubsetbuf(nullptr,0);
+  m_stdin.open("CONIN$", std::ofstream::in | std::ofstream::trunc);
 #else
+  m_stdout.open("/dev/tty", std::ofstream::out | std::ofstream::trunc);
+  m_stderr.open("/dev/tty", std::ofstream::out | std::ofstream::trunc);
+  m_stdlog.rdbuf()->pubsetbuf(nullptr,0);
+  m_stdlog.open("/dev/tty", std::ofstream::out | std::ofstream::trunc);
+  m_stdlog.rdbuf()->pubsetbuf(nullptr,0);
+  m_stdin.open("/dev/tty", std::ofstream::in | std::ofstream::trunc);
 #endif
+  std::ios_base::Init();
   std::cout.clear();
   std::clog.clear();
   std::cerr.clear();
@@ -170,11 +179,27 @@ void Term::Terminal::attachConsole()
 
 void Term::Terminal::detachConsole()
 {
+  if(m_stdout.is_open())
+  {
+    m_stdout.flush();
+    m_stdout.close();
+  }
+  if(m_stderr.is_open())
+  {
+    m_stderr.flush();
+    m_stderr.close();
+  }
+  if(m_stdlog.is_open())
+  {
+    m_stdlog.flush();
+    m_stderr.close();
+  }
+  if(m_stdin.is_open())
+  {
+    m_stdin.close();
+  }
 #ifdef _WIN32
   if(has_allocated_console) FreeConsole();
 #else
 #endif
-  if(m_stdin) fclose(m_stdin);
-  if(m_stdout) fclose(m_stdout);
-  if(m_stderr) fclose(m_stderr);
 }

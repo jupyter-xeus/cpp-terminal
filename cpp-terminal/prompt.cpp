@@ -328,7 +328,6 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
           }
           break;
         case Key::CTRL_N:
-        case Key::ALT + Key::ENTER:
         {
           std::string before        = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
           std::string after         = m.lines[m.cursor_row - 1].substr(m.cursor_col - 1);
