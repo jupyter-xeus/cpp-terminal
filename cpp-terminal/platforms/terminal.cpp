@@ -75,7 +75,7 @@ void Term::Terminal::store_and_restore()
     enabled = false;
   }
 #else
-  static termios orig_termios{};
+  static termios orig_termios{0, 0, 0, 0, 0, {0}, 0, 0};
   if(!enabled)
   {
     int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
@@ -113,7 +113,7 @@ void Term::Terminal::setRawMode()
   int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
   if(fd >= 0)
   {
-    termios raw{};
+    termios raw{0, 0, 0, 0, 0, {0}, 0, 0};
     if(tcgetattr(fd, &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
     // Put terminal in raw mode
     raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
