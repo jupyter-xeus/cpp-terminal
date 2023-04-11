@@ -6,6 +6,6 @@ int main()
 {
   std::cout << "Just including io.hpp activate \033[31mcolor\033[0m !" << std::endl;
   int i{0};
-  std::cin>>i;
+  std::cin >> i;
   return 0;
 }
