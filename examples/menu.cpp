@@ -108,6 +108,7 @@ int main()
             case Term::Key::q:
             case Term::Key::ESC:
             case Term::Key::CTRL_C: on = false; break;
+            default: break;
           }
           break;
         case Term::Event::Type::Screen:
@@ -115,6 +116,7 @@ int main()
           std::cout << Term::clear_screen() << std::flush;
           render(term_size.rows(), term_size.columns(), h, w, pos);
           break;
+        default: break;
       }
     }
   }

@@ -1,0 +1,9 @@
+#include "cpp-terminal/version.hpp"
+
+// clang-format off
+const int Term::VersionMajor{@cpp-terminal_VERSION_MAJOR@};
+const int Term::VersionMinor{@cpp-terminal_VERSION_MINOR@};
+const int Term::VersionPatch{@cpp-terminal_VERSION_PATCH@};
+const char* Term::Version{"@cpp-terminal_VERSION_MAJOR@.@cpp-terminal_VERSION_MINOR@.@cpp-terminal_VERSION_PATCH@"};
+const char* Term::Homepage{"@cpp-terminal_HOMEPAGE_URL@"};
+// clang-format on

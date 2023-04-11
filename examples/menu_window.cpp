@@ -81,6 +81,7 @@ int main()
         case Term::Key::q:
         case Term::Key::ESC:
         case Term::Key::CTRL_C: on = false; break;
+        default: break;
       }
     }
   }

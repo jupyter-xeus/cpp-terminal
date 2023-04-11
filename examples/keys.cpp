@@ -121,6 +121,7 @@ int main()
             std::cout << ").\nPlease report key combination pressed to " << Term::Homepage << std::endl;
           }
         }
+        default: break;
       }
     }
   }
