@@ -21,16 +21,16 @@ std::string Term::cursor_off() { return "\x1b[?25l"; }
 
 std::string Term::cursor_on() { return "\x1b[?25h"; }
 
-std::string Term::cursor_move(std::size_t row, std::size_t column) { return "\033[" + std::to_string(row) + ';' + std::to_string(column) + 'H'; }
+std::string Term::cursor_move(std::size_t row, std::size_t column) { return "\x1b[" + std::to_string(row) + ';' + std::to_string(column) + 'H'; }
 
-std::string Term::cursor_up(std::size_t rows) { return "\033[" + std::to_string(rows) + 'A'; }
+std::string Term::cursor_up(std::size_t rows) { return "\x1b[" + std::to_string(rows) + 'A'; }
 
-std::string Term::cursor_down(std::size_t rows) { return "\033[" + std::to_string(rows) + 'B'; }
+std::string Term::cursor_down(std::size_t rows) { return "\x1b[" + std::to_string(rows) + 'B'; }
 
-std::string Term::cursor_right(std::size_t columns) { return "\033[" + std::to_string(columns) + 'C'; }
+std::string Term::cursor_right(std::size_t columns) { return "\x1b[" + std::to_string(columns) + 'C'; }
 
-std::string Term::cursor_left(std::size_t columns) { return "\033[" + std::to_string(columns) + 'D'; }
+std::string Term::cursor_left(std::size_t columns) { return "\x1b[" + std::to_string(columns) + 'D'; }
 
-std::string Term::cursor_position_report() { return "\033[6n"; }
+std::string Term::cursor_position_report() { return "\x1b[6n"; }
 
-std::string Term::clear_eol() { return "\033[K"; }
+std::string Term::clear_eol() { return "\x1b[K"; }
