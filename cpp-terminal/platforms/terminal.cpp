@@ -75,7 +75,7 @@ void Term::Terminal::store_and_restore()
     enabled = false;
   }
 #else
-  static termios orig_termios{0, 0, 0, 0, 0, {0}, 0, 0};
+  static termios orig_termios{0, 0, 0, 0, 0, {}, 0, 0};
   if(!enabled)
   {
     int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
