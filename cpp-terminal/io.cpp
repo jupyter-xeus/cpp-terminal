@@ -6,13 +6,8 @@
 
 namespace Term
 {
-template<typename T> class Container
-{
-private:
-  alignas(alignof(T)) char buf[sizeof(T)];
-};
-static Container<Term::Terminal> termbuf;
-Terminal&                        terminal = reinterpret_cast<Term::Terminal&>(termbuf);
+static char termbuf[sizeof(Term::Terminal)];
+Terminal&   terminal = reinterpret_cast<Term::Terminal&>(termbuf);
 }  // namespace Term
 
 int Term::TerminalInitializer::m_counter{0};
