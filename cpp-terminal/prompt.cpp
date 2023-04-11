@@ -126,10 +126,9 @@ Term::Result_simple Term::prompt_simple(const std::string& message)
     case Result::NO:     // falls through
     case Result::ERROR:  // falls through
     case Result::NONE:   // falls through
-    case Result::INVALID: return Result_simple::NO;
+    case Result::INVALID:
+    default: return Result_simple::NO;
   }
-  // shouldn't be reached
-  return Result_simple::NO;
 }
 
 std::string Term::concat(const std::vector<std::string>& lines)
@@ -164,14 +163,14 @@ char32_t UU(const std::string& s)
   return s2[0];
 }
 
-void Term::print_left_curly_bracket(Term::Window& scr, int x, int y1, int y2)
+void Term::print_left_curly_bracket(Term::Window& scr, const std::size_t& x, const std::size_t& y1, const std::size_t& y2)
 {
-  int h = y2 - y1 + 1;
+  std::size_t h{y2 - y1 + 1};
   if(h == 1) { scr.set_char(x, y1, UU("]")); }
   else
   {
     scr.set_char(x, y1, UU("┐"));
-    for(int j = y1 + 1; j <= y2 - 1; j++) { scr.set_char(x, j, UU("│")); }
+    for(std::size_t j = y1 + 1; j <= y2 - 1; j++) { scr.set_char(x, j, UU("│")); }
     scr.set_char(x, y2, UU("┘"));
   }
 }

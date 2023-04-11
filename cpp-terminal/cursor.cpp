@@ -6,7 +6,7 @@ std::size_t Term::Cursor::row() const { return m_position.first; }
 
 std::size_t Term::Cursor::column() const { return m_position.second; }
 
-bool Term::Cursor::empty()
+bool Term::Cursor::empty() const
 {
   if(m_position.first == 0 && m_position.second == 0) return true;
   else

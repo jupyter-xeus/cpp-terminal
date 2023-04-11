@@ -23,7 +23,7 @@ public:
     NoCursor      = -4,
   };
   Options() = default;
-  Options(const std::vector<Option>& options);
+  explicit Options(const std::vector<Option>& options);
   bool has(const Option& option);
   ~Options() {}
   std::vector<Option> getOptions();

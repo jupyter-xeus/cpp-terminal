@@ -33,7 +33,6 @@ public:
       std::vector<Term::Options::Option> option = m_options.getOptions();
       store_and_restore();
       this->cin >> dt;
-      m_options = option;
       store_and_restore();
       setOptions(option);
       return this->cin;

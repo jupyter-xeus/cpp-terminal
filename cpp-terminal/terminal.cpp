@@ -3,6 +3,7 @@
 #include "cpp-terminal/cursor.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
+#include "options.hpp"
 
 Term::Terminal::Terminal()
 {
@@ -22,7 +23,7 @@ Term::Terminal::~Terminal()
 
 void Term::Terminal::setOptions(const std::vector<Term::Options::Option>& options)
 {
-  m_options = options;
+  m_options = Options(options);
   if(m_options.has(Option::ClearScreen)) clog << screen_save() << clear_buffer() << style(Style::RESET) << cursor_move(1, 1);
   if(m_options.has(Option::NoCursor)) clog << cursor_off();
   if(m_options.has(Option::Raw)) setRawMode();
