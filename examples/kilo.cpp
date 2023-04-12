@@ -1,8 +1,9 @@
-#include "cpp-terminal/base.hpp"
 #include "cpp-terminal/color.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/key.hpp"
+#include "cpp-terminal/screen.hpp"
+#include "cpp-terminal/style.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 
@@ -893,21 +894,21 @@ bool editorProcessKeypress()
 
 void initEditor()
 {
-  E.cx                                     = 0;
-  E.cy                                     = 0;
-  E.rx                                     = 0;
-  E.rowoff                                 = 0;
-  E.coloff                                 = 0;
-  E.numrows                                = 0;
-  E.row                                    = nullptr;
-  E.dirty                                  = 0;
-  E.filename                               = nullptr;
-  E.statusmsg[0]                           = '\0';
-  E.statusmsg_time                         = 0;
-  E.syntax                                 = nullptr;
-  std::pair<std::size_t, std::size_t> size = Term::get_size();
-  E.screenrows                             = size.first;
-  E.screencols                             = size.second;
+  E.cx                = 0;
+  E.cy                = 0;
+  E.rx                = 0;
+  E.rowoff            = 0;
+  E.coloff            = 0;
+  E.numrows           = 0;
+  E.row               = nullptr;
+  E.dirty             = 0;
+  E.filename          = nullptr;
+  E.statusmsg[0]      = '\0';
+  E.statusmsg_time    = 0;
+  E.syntax            = nullptr;
+  Term::Screen screen = Term::screen_size();
+  E.screenrows        = screen.rows();
+  E.screencols        = screen.columns();
   E.screenrows -= 2;
 }
 

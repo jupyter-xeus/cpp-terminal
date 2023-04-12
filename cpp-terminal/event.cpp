@@ -1,5 +1,9 @@
 #include "cpp-terminal/event.hpp"
 
+#include "cpp-terminal/cursor.hpp"
+
+#include <iostream>
+
 bool Term::Event::empty()
 {
   if(m_Type == Type::Empty) return true;
@@ -38,6 +42,22 @@ void Term::Event::parse()
     /* Backspace return 127 CTRL+backspace return 8 */
     if(m_Key == Term::Key::Value::DEL) m_Key = Term::Key::Value::BACKSPACE;
     m_str.clear();
+  }
+  else if(m_str.size() == 2 && m_str[0] == '\033')
+  {
+    m_Key  = static_cast<Term::Key::Value>(Term::Key::Value::ALT + static_cast<Term::Key::Value>(m_str[1]));
+    m_Type = Type::Key;
+    m_str.clear();
+  }
+  else if(m_str[0] == '\033' && m_str[1] == '[' && m_str[m_str.size() - 1] == 'R')
+  {
+    std::size_t found = m_str.find(';', 2);
+    if(found != std::string::npos)
+    {
+      m_Type = Type::Cursor;
+
+      m_Cursor = Cursor(std::stoi(m_str.substr(2, found - 2)), std::stoi(m_str.substr(found + 1, m_str.size() - (found + 2))));
+    }
   }
   else if(m_str.size() <= 10)
   {
@@ -188,4 +208,11 @@ Term::Event::operator Term::Key()
   if(m_Type == Type::Key) return m_Key;
   else
     return Key();
+}
+
+Term::Event::operator Term::Cursor()
+{
+  if(m_Type == Type::Cursor) return m_Cursor;
+  else
+    return Cursor();
 }

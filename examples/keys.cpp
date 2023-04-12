@@ -1,10 +1,8 @@
-/*
- * This example shows how to interpret keys presses from Terminal.
- */
-#include "cpp-terminal/base.hpp"
+#include "cpp-terminal/cursor.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/key.hpp"
+#include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/version.hpp"
@@ -22,10 +20,13 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal                      term({Term::Option::NoClearScreen, Term::Option::NoSignalKeys, Term::Option::Cursor});
-    std::pair<std::size_t, std::size_t> term_size{Term::get_size()};
-    std::cout << Term::cursor_move(1, 1);
-    std::cout << "Dimension:" << std::get<1>(term_size) << " " << std::get<0>(term_size) << std::endl;
+    Term::Terminal term({Term::Option::NoClearScreen, Term::Option::NoSignalKeys, Term::Option::Cursor});
+
+    Term::Cursor cursor{Term::cursor_position()};
+    std::cout << "Cursor position : " << cursor.row() << " " << cursor.column() << std::endl;
+
+    Term::Screen term_size{Term::screen_size()};
+    std::cout << "Dimension:" << term_size.columns() << " " << term_size.rows() << std::endl;
     std::cout << "Press any key ( 3 time 'q' to quit):" << std::endl;
     int quit{0};
     while(quit != 3)
@@ -61,7 +62,7 @@ int main()
             {
               case Term::Key::BACKSPACE: s = "BACKSPACE"; break;
               case Term::Key::ENTER: s = "ENTER"; break;
-              case Term::Key::ALT_ENTER: s = "Alt+ENTER"; break;
+              case Term::Key::ALT + Term::Key::ENTER: s = "Alt+ENTER"; break;
               case Term::Key::TAB: s = "TAB"; break;
               case Term::Key::ARROW_LEFT: s = "ARROW_LEFT"; break;
               case Term::Key::ARROW_RIGHT: s = "ARROW_RIGHT"; break;

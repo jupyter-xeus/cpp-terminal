@@ -67,8 +67,6 @@ std::string concat(const std::vector<std::string>&);
 
 std::vector<std::string> split(const std::string&);
 
-char32_t UU(const std::string&);
-
 void print_left_curly_bracket(Term::Window&, int, int, int);
 
 void render(Term::Window&, const Model&, const std::size_t&);

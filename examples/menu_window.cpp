@@ -1,7 +1,7 @@
-#include "cpp-terminal/base.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/key.hpp"
+#include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/window.hpp"
@@ -51,16 +51,16 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal                      term({Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor});
-    std::pair<std::size_t, std::size_t> term_size = Term::get_size();
-    int                                 pos       = 5;
-    int                                 h         = 10;
-    std::size_t                         w{10};
-    bool                                on = true;
-    Term::Window                        scr(std::get<1>(term_size), std::get<0>(term_size));
+    Term::Terminal term({Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor});
+    Term::Screen   term_size = Term::screen_size();
+    int            pos       = 5;
+    int            h         = 10;
+    std::size_t    w{10};
+    bool           on = true;
+    Term::Window   scr(term_size.columns(), term_size.rows());
     while(on)
     {
-      std::cout << render(scr, std::get<0>(term_size), std::get<1>(term_size), h, w, pos) << std::flush;
+      std::cout << render(scr, term_size.rows(), term_size.columns(), h, w, pos) << std::flush;
       Term::Key key = Term::read_event();
       switch(key)
       {
@@ -68,7 +68,7 @@ int main()
           if(w > 10) w--;
           break;
         case Term::Key::ARROW_RIGHT:
-          if(w < std::get<1>(term_size) - 5) w++;
+          if(w < term_size.columns() - 5) w++;
           break;
         case Term::Key::ARROW_UP:
           if(pos > 1) pos--;

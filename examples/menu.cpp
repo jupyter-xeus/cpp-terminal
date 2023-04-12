@@ -1,8 +1,9 @@
-#include "cpp-terminal/base.hpp"
 #include "cpp-terminal/color.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/key.hpp"
+#include "cpp-terminal/screen.hpp"
+#include "cpp-terminal/style.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 
@@ -74,15 +75,15 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal                      term({Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor});
-    std::pair<std::size_t, std::size_t> term_size = Term::get_size();
-    int                                 pos       = 5;
-    int                                 h         = 10;
-    std::size_t                         w{10};
-    bool                                on = true;
+    Term::Terminal term({Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor});
+    Term::Screen   term_size = Term::screen_size();
+    int            pos       = 5;
+    int            h         = 10;
+    std::size_t    w{10};
+    bool           on = true;
     while(on)
     {
-      render(std::get<0>(term_size), std::get<1>(term_size), h, w, pos);
+      render(term_size.rows(), term_size.columns(), h, w, pos);
       Term::Event event = Term::read_event();
       switch(event.type())
       {
@@ -93,7 +94,7 @@ int main()
               if(w > 10) w--;
               break;
             case Term::Key::ARROW_RIGHT:
-              if(w < std::get<1>(term_size) - 5) w++;
+              if(w < (term_size.columns() - 5)) w++;
               break;
             case Term::Key::ARROW_UP:
               if(pos > 1) pos--;
@@ -109,9 +110,9 @@ int main()
           }
           break;
         case Term::Event::Type::Screen:
-          term_size = Term::Screen(event).size();
+          term_size = Term::Screen(event);
           std::cout << Term::clear_screen() << std::flush;
-          render(std::get<0>(term_size), std::get<1>(term_size), h, w, pos);
+          render(term_size.rows(), term_size.columns(), h, w, pos);
           break;
       }
     }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cpp-terminal/cursor.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/screen.hpp"
 
@@ -17,6 +18,7 @@ public:
     Empty,
     Key,
     Screen,
+    Cursor,
     CopyPaste,
   };
   Event() = default;
@@ -28,6 +30,7 @@ public:
 
   operator Term::Key();
   operator Term::Screen();
+  operator Term::Cursor();
   operator std::string();
 
 private:
@@ -35,6 +38,7 @@ private:
   Type         m_Type{Type::Empty};
   std::string  m_str;
   Key          m_Key{Key::Value::NO_KEY};
+  Cursor       m_Cursor;
   Term::Screen m_Screen;
 };
 

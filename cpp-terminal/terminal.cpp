@@ -1,6 +1,8 @@
 #include "cpp-terminal/terminal.hpp"
 
-#include "cpp-terminal/base.hpp"
+#include "cpp-terminal/cursor.hpp"
+#include "cpp-terminal/screen.hpp"
+#include "cpp-terminal/style.hpp"
 
 #include <iostream>
 
@@ -31,3 +33,7 @@ Term::Terminal::~Terminal()
   detachConsole();
   store_and_restore();
 }
+
+std::string Term::terminal_title(const std::string& title) { return "\033]0;" + title + '\a'; }
+
+std::string Term::clear_buffer() { return "\033[3J"; }

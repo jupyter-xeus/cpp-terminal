@@ -28,7 +28,7 @@ bool Term::Key::is_CTRL()
 
 bool Term::Key::is_ALT()
 {
-  if((m_value & Key::ALT) == Key::ALT) return true;
+  if(m_value >= Key::ALT && Key::ALT < (Key::ALT << 1)) return true;
   else
     return false;
 }

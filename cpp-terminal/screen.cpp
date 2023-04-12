@@ -12,3 +12,15 @@ bool Term::Screen::empty()
 }
 
 std::pair<std::size_t, std::size_t> Term::Screen::size() { return m_size; }
+
+std::string Term::clear_screen() { return "\033[2J"; }
+
+std::string Term::screen_save()
+{
+  return "\0337\033[?1049h";  // save current cursor position, save screen
+}
+
+std::string Term::screen_load()
+{
+  return "\033[?1049l\0338";  // restores screen, restore current cursor position
+}
