@@ -1,7 +1,10 @@
 #include "cpp-terminal/options.hpp"
 
 #include <algorithm>
+
 Term::Options::Options(const std::vector<Option>& options) : m_Options(options) {}
+
+std::vector<Term::Options::Option> Term::Options::getOptions() { return m_Options; }
 
 // Return true is the option is set and not its opposite (* + No* = false)
 bool Term::Options::has(const Option& option)

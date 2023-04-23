@@ -1,9 +1,9 @@
 #include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/io.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/prompt.hpp"
 #include "cpp-terminal/tty.hpp"
 
-#include <functional>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -25,14 +25,14 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal term({Term::Option::NoClearScreen, Term::Option::SignalKeys, Term::Option::Cursor});
+    Term::terminal.setOptions({Term::Option::NoClearScreen, Term::Option::SignalKeys, Term::Option::Cursor, Term::Option::Raw});
     std::cout << "Interactive prompt.\n"
               << "  * Use Ctrl-D to exit.\n"
               << "  * Use Enter to submit.\n"
               << "  * Features:\n"
               << "    - Editing (Keys: Left, Right, Home, End, Backspace)\n"
               << "    - History (Keys: Up, Down)\n"
-              << "    - Multi-line editing (use Alt-Enter to add a new line)" << std::endl;
+              << "    - Multi-line editing (use CTRL+N to add a new line)" << std::endl;
     // TODO:
     // std::cout << "    - Syntax highlighting" << std::endl;
     std::vector<std::string>         history;

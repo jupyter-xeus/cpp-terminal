@@ -1,6 +1,7 @@
 #include "cpp-terminal/color.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
+#include "cpp-terminal/io.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
@@ -75,12 +76,12 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::Terminal term({Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor});
-    Term::Screen   term_size = Term::screen_size();
-    int            pos       = 5;
-    int            h         = 10;
-    std::size_t    w{10};
-    bool           on = true;
+    Term::terminal.setOptions({Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw});
+    Term::Screen term_size = Term::screen_size();
+    int          pos       = 5;
+    int          h         = 10;
+    std::size_t  w{10};
+    bool         on = true;
     while(on)
     {
       render(term_size.rows(), term_size.columns(), h, w, pos);
@@ -107,6 +108,7 @@ int main()
             case Term::Key::q:
             case Term::Key::ESC:
             case Term::Key::CTRL_C: on = false; break;
+            default: break;
           }
           break;
         case Term::Event::Type::Screen:
@@ -114,6 +116,7 @@ int main()
           std::cout << Term::clear_screen() << std::flush;
           render(term_size.rows(), term_size.columns(), h, w, pos);
           break;
+        default: break;
       }
     }
   }

@@ -13,7 +13,7 @@ bool Term::Screen::empty()
 
 std::pair<std::size_t, std::size_t> Term::Screen::size() { return m_size; }
 
-std::string Term::clear_screen() { return "\033[2J"; }
+std::string Term::clear_screen() { return "\x1b[2J"; }
 
 std::string Term::screen_save()
 {

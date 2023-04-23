@@ -16,7 +16,7 @@ public:
   std::size_t column() const;
   void        setRow(const std::size_t&);
   void        setColum(const std::size_t&);
-  bool        empty();
+  bool        empty() const;
 
 private:
   std::pair<std::size_t, std::size_t> m_position{0, 0};

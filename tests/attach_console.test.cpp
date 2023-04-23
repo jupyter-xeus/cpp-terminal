@@ -12,7 +12,7 @@
 #include <iostream>
 
 #ifdef _WIN32
-int WinMain(HINSTANCE hinst, HINSTANCE hprev, LPSTR cmdline, int show)
+int __stdcall WinMain(HINSTANCE hinst, HINSTANCE hprev, LPSTR cmdline, int show)
 #else
 int main()
 #endif
@@ -21,7 +21,6 @@ int main()
 
   try
   {
-    Term::Terminal term;
     if(Term::is_stdout_a_tty()) { std::cout << "Standard output is attached to a terminal." << std::endl << std::endl; }
     else { std::cout << "Standard output is not attached to a terminal." << std::endl << std::endl; }
 

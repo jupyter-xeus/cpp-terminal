@@ -21,11 +21,8 @@ Term::Screen Term::screen_size()
   Term::Screen   ret;
   struct winsize window
   {
+    0, 0, 0, 0
   };
-  window.ws_row    = 0;
-  window.ws_col    = 0;
-  window.ws_xpixel = 0;
-  window.ws_ypixel = 0;
   int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
   if(ioctl(fd, TIOCGWINSZ, &window) != -1) ret = {window.ws_row, window.ws_col};
   close(fd);

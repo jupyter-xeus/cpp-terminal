@@ -4,14 +4,11 @@
 #else
   #include <cerrno>
   #include <csignal>
-  #include <fcntl.h>
-  #include <sys/ioctl.h>
   #include <unistd.h>
 #endif
 
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
-#include "cpp-terminal/tty.hpp"
 
 #include <string>
 
@@ -43,8 +40,6 @@ char Term::Platform::read_raw_stdin()
 
 Term::Event Term::Platform::read_raw()
 {
-  // do nothing when TTY is not connected
-  if(!is_stdin_a_tty()) { return Event(); }
 #ifdef _WIN32
   DWORD nread{0};
   GetNumberOfConsoleInputEvents(GetStdHandle(STD_INPUT_HANDLE), &nread);
@@ -142,18 +137,8 @@ Term::Event Term::Platform::read_raw()
 
   if(gSignalStatus == 1)
   {
-    struct winsize ws
-    {
-    };
-    ws.ws_row    = 0;
-    ws.ws_col    = 0;
-    ws.ws_xpixel = 0;
-    ws.ws_ypixel = 0;
-    int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
-    ioctl(fd, TIOCGWINSZ, &ws);
-    close(fd);
     gSignalStatus = 0;
-    if(ws.ws_row != 0 && ws.ws_col != 0) return Event(Screen(ws.ws_row, ws.ws_col));
+    return Event(screen_size());
   }
   else
   {
@@ -165,6 +150,5 @@ Term::Event Term::Platform::read_raw()
     else
       return Event();
   }
-  return Event();
 #endif
 }
