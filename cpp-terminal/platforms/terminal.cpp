@@ -62,13 +62,13 @@ void Term::Terminal::store_and_restore()
   static termios orig_termios;
   if(!enabled)
   {
-    if(Private::std_cout.getHandler() >= 0)
+    if(!Private::std_cout.isNull())
       if(tcgetattr(Private::std_cout.getHandler(), &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
     enabled = true;
   }
   else
   {
-    if(Private::std_cout.getHandler() >= 0)
+    if(!Private::std_cout.isNull())
       if(tcsetattr(Private::std_cout.getHandler(), TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
     enabled = false;
   }

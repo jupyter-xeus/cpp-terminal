@@ -131,7 +131,7 @@ Term::Event Term::Platform::read_raw()
     sigemptyset(&sa.sa_mask);
     sa.sa_flags   = 0;
     sa.sa_handler = sigwinchHandler;
-    if(sigaction(SIGWINCH, &sa, NULL) == -1) throw Term::Exception("signal() failed");
+    if(sigaction(SIGWINCH, &sa, nullptr) == -1) throw Term::Exception("signal() failed");
     else
       activated = true;
   }
