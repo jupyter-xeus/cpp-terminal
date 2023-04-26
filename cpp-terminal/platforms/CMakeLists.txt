@@ -1,4 +1,4 @@
-add_library(cpp-terminal-platforms terminal.cpp tty.cpp terminfo.cpp input.cpp screen.cpp cursor.cpp)
+add_library(cpp-terminal-platforms STATIC terminal.cpp tty.cpp terminfo.cpp input.cpp screen.cpp cursor.cpp file.cpp)
 target_link_libraries(cpp-terminal-platforms PRIVATE Warnings::Warnings)
 target_compile_options(cpp-terminal-platforms PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/utf-8 /wd4668 /wd4514>)
 target_include_directories(cpp-terminal-platforms PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> $<INSTALL_INTERFACE:include>)

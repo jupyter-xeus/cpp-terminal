@@ -1,5 +1,7 @@
 #include "cpp-terminal/terminal.hpp"
 
+#include "cpp-terminal/platforms/file.hpp"
+
 #ifdef _WIN32
   #include <io.h>
   #include <share.h>
@@ -154,6 +156,7 @@ void Term::Terminal::attachConsole()
     if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&dump, "CONIN$", "r", stdin);
   }
 #endif
+  Term::Private::m_fileInitializer.initialize();
 }
 
 void Term::Terminal::attachStreams()
