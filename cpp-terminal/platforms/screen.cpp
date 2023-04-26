@@ -3,9 +3,7 @@
 #ifdef _WIN32
   #include <windows.h>
 #else
-  #include <fcntl.h>
   #include <sys/ioctl.h>
-  #include <unistd.h>
 #endif
 
 #include "cpp-terminal/platforms/file.hpp"
@@ -22,9 +20,7 @@ Term::Screen Term::screen_size()
   {
     0, 0, 0, 0
   };
-  int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
-  if(ioctl(fd, TIOCGWINSZ, &window) != -1) ret = {window.ws_row, window.ws_col};
-  close(fd);
+  if(ioctl(Private::std_cout.getHandler(), TIOCGWINSZ, &window) != -1) ret = {window.ws_row, window.ws_col};
   return ret;
 #endif
 }

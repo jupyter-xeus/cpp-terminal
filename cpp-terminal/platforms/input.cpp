@@ -10,6 +10,7 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/platforms/file.hpp"
+
 #include <string>
 
 #if !defined(_WIN32)

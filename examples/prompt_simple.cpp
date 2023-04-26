@@ -1,7 +1,7 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/prompt.hpp"
-#include "cpp-terminal/version.hpp"
 #include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/version.hpp"
 
 int main()
 {

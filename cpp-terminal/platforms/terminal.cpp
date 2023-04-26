@@ -1,5 +1,6 @@
 #include "cpp-terminal/terminal.hpp"
 
+#include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 
 #ifdef _WIN32
@@ -15,13 +16,9 @@
     #define ENABLE_VIRTUAL_TERMINAL_INPUT 0x0200
   #endif
 #else
-  #include <fcntl.h>
   #include <termios.h>
-  #include <unistd.h>
 #endif
 
-#include "cpp-terminal/exception.hpp"
-#include "cpp-terminal/platforms/file.hpp"
 #include <fstream>
 
 void Term::Terminal::store_and_restore()
@@ -65,22 +62,14 @@ void Term::Terminal::store_and_restore()
   static termios orig_termios;
   if(!enabled)
   {
-    int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
-    if(fd >= 0)
-    {
-      if(tcgetattr(fd, &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
-    }
-    close(fd);
+    if(Private::std_cout.getHandler() >= 0)
+      if(tcgetattr(Private::std_cout.getHandler(), &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
     enabled = true;
   }
   else
   {
-    int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
-    if(fd >= 0)
-    {
-      if(tcsetattr(fd, TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
-      close(fd);
-    }
+    if(Private::std_cout.getHandler() >= 0)
+      if(tcsetattr(Private::std_cout.getHandler(), TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
     enabled = false;
   }
 #endif
@@ -89,17 +78,16 @@ void Term::Terminal::store_and_restore()
 void Term::Terminal::setRawMode()
 {
 #ifdef _WIN32
-  DWORD  flags = {0};
+  DWORD flags = {0};
   if(!GetConsoleMode(Private::std_cin.getHandler(), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
   if(m_options.has(Option::NoSignalKeys)) { flags &= ~ENABLE_PROCESSED_INPUT; }
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
   if(!SetConsoleMode(Private::std_cin.getHandler(), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
 #else
-  int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
-  if(fd >= 0)
+  if(Private::std_cout.getHandler() >= 0)
   {
-    termios raw;
-    if(tcgetattr(fd, &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
+    ::termios raw;
+    if(tcgetattr(Private::std_cout.getHandler(), &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
     // Put terminal in raw mode
     raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
     // This disables output post-processing, requiring explicit \r\n. We
@@ -111,8 +99,7 @@ void Term::Terminal::setRawMode()
     if(m_options.has(Option::NoSignalKeys)) { raw.c_lflag &= ~ISIG; }
     raw.c_cc[VMIN]  = 0;
     raw.c_cc[VTIME] = 0;
-    if(tcsetattr(fd, TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
-    close(fd);
+    if(tcsetattr(Private::std_cout.getHandler(), TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
   }
 #endif
 }
@@ -167,10 +154,6 @@ void Term::Terminal::attachStreams()
   this->cin.open(in.c_str(), std::ofstream::in);
   if(!this->cin.is_open()) this->cin.open(blackHole.c_str(), std::ofstream::in);
   this->cin.clear();
-  //cout.clear();
-  //cerr.clear();
-  //clog.clear();
-  //cin.clear();
 }
 
 void Term::Terminal::detachStreams()
