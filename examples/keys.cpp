@@ -9,26 +9,20 @@
 #include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/version.hpp"
 
-#include <iostream>
-
 int main()
 {
   try
   {
     // check if the terminal is capable of handling input
-    if(!Term::is_stdin_a_tty())
-    {
-      std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
-      return 1;
-    }
+    if(!Term::is_stdin_a_tty()) throw Term::Exception("The terminal is not attached to a TTY and therefore can't catch user input. Exiting...");
     Term::terminal.setOptions({Term::Option::NoClearScreen, Term::Option::NoSignalKeys, Term::Option::Cursor, Term::Option::Raw});
 
     Term::Cursor cursor{Term::cursor_position()};
-    std::cout << "Cursor position : " << cursor.row() << " " << cursor.column() << std::endl;
+    Term::terminal << "Cursor position : " << cursor.row() << " " << cursor.column() << std::endl;
 
     Term::Screen term_size{Term::screen_size()};
-    std::cout << "Dimension:" << term_size.columns() << " " << term_size.rows() << std::endl;
-    std::cout << "Press any key ( 3 time 'q' to quit):" << std::endl;
+    Term::terminal << "Dimension:" << term_size.columns() << " " << term_size.rows() << std::endl;
+    Term::terminal << "Press any key ( 3 time 'q' to quit):" << std::endl;
     int quit{0};
     while(quit != 3)
     {
@@ -108,7 +102,7 @@ int main()
               default: s = "Unknown:" + std::to_string(key);
             }
           }
-          std::cout << "Key: " << s << " (" << key << ") " << std::endl;
+          Term::terminal << "Key: " << s << " (" << std::to_string(key) << ") " << std::endl;
           break;
         }
         case Term::Event::Type::CopyPaste:
@@ -116,9 +110,9 @@ int main()
           std::string key_str(event);
           if(!key_str.empty() && key_str[0] == '\033')
           {
-            std::cout << "You discovered a key combination not yet managed by cpp-terminal (";
-            for(std::size_t i = 0; i != key_str.size(); ++i) std::cout << static_cast<std::int32_t>(key_str[i]) << " ";
-            std::cout << ").\nPlease report key combination pressed to " << Term::Homepage << std::endl;
+            Term::terminal << "You discovered a key combination not yet managed by cpp-terminal (";
+            for(std::size_t i = 0; i != key_str.size(); ++i) Term::terminal << static_cast<std::int32_t>(key_str[i]) << " ";
+            Term::terminal << ").\nPlease report key combination pressed to " << Term::Homepage << std::endl;
           }
         }
         default: break;
@@ -127,12 +121,12 @@ int main()
   }
   catch(const Term::Exception& re)
   {
-    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
+    Term::terminal << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)
   {
-    std::cerr << "Unknown error." << std::endl;
+    Term::terminal << "Unknown error." << std::endl;
     return 1;
   }
   return 0;

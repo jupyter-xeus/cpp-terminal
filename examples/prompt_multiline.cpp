@@ -20,11 +20,7 @@ int main()
 {
   try
   {
-    if(!Term::is_stdin_a_tty())
-    {
-      std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
-      return 1;
-    }
+    if(!Term::is_stdin_a_tty()) throw Term::Exception("The terminal is not attached to a TTY and therefore can't catch user input. Exiting...");
     Term::terminal.setOptions({Term::Option::NoClearScreen, Term::Option::SignalKeys, Term::Option::Cursor, Term::Option::Raw});
     std::cout << "Interactive prompt.\n"
               << "  * Use Ctrl-D to exit.\n"

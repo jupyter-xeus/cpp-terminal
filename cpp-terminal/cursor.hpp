@@ -2,7 +2,6 @@
 
 #include <cstddef>
 #include <string>
-#include <utility>
 
 namespace Term
 {
@@ -19,7 +18,8 @@ public:
   bool        empty() const;
 
 private:
-  std::pair<std::size_t, std::size_t> m_position{0, 0};
+  std::size_t m_rows{0};
+  std::size_t m_columns{0};
 };
 
 // returns the current cursor position (row, column) (Y, X)

@@ -4,12 +4,13 @@
 #include "cpp-terminal/style.hpp"
 #include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/version.hpp"
+#include "cpp-terminal/terminal.hpp"
 
 #include <iostream>
 
 int main()
 {
-  std::cout << "Running cpp-terminal version: " << Term::Version << " website : " << Term::Homepage << std::endl << std::endl;
+  Term::terminal << "Running cpp-terminal version: " << Term::Version << " website : " << Term::Homepage << std::endl << std::endl;
 
   try
   {

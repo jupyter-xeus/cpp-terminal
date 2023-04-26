@@ -4,7 +4,6 @@
 
 #ifdef _WIN32
   #include <io.h>
-  #include <share.h>
   #include <windows.h>
   #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
     #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
@@ -22,7 +21,7 @@
 #endif
 
 #include "cpp-terminal/exception.hpp"
-
+#include "cpp-terminal/platforms/file.hpp"
 #include <fstream>
 
 void Term::Terminal::store_and_restore()
@@ -42,38 +41,24 @@ void Term::Terminal::store_and_restore()
     if(!SetConsoleOutputCP(CP_UTF8)) throw Term::Exception("SetConsoleOutputCP(CP_UTF8) failed");
     if(!SetConsoleCP(CP_UTF8)) throw Term::Exception("SetConsoleCP(CP_UTF8) failed");
 
-    HANDLE hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
-    if(hConOut == INVALID_HANDLE_VALUE) throw Term::Exception("CreateFile failed");
-    if(!GetConsoleMode(hConOut, &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(!GetConsoleMode(Private::std_cout.getHandler(), &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
     if(m_terminfo.hasANSIEscapeCode())
     {
-      if(!SetConsoleMode(hConOut, dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
+      if(!SetConsoleMode(Private::std_cout.getHandler(), dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     }
-    CloseHandle(hConOut);
-
-    HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
-    if(hConIn == INVALID_HANDLE_VALUE) throw Term::Exception("CreateFile failed");
-    if(!GetConsoleMode(hConIn, &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(!GetConsoleMode(Private::std_cin.getHandler(), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
     if(m_terminfo.hasANSIEscapeCode())
     {
-      if(!SetConsoleMode(hConIn, dwOriginalInMode | ENABLE_VIRTUAL_TERMINAL_INPUT)) { throw Term::Exception("SetConsoleMode() failed"); }
+      if(!SetConsoleMode(Private::std_cin.getHandler(), dwOriginalInMode | ENABLE_VIRTUAL_TERMINAL_INPUT)) { throw Term::Exception("SetConsoleMode() failed"); }
     }
-    CloseHandle(hConIn);
-
     enabled = true;
   }
   else
   {
     if(!SetConsoleOutputCP(out_code_page)) throw Term::Exception("SetConsoleOutputCP(out_code_page) failed");
     if(!SetConsoleCP(in_code_page)) throw Term::Exception("SetConsoleCP(in_code_page) failed");
-    HANDLE hConOut{CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
-    if(hConOut == INVALID_HANDLE_VALUE) throw Term::Exception("CreateFile failed");
-    if(!SetConsoleMode(hConOut, dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
-    CloseHandle(hConOut);
-    HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
-    if(hConIn == INVALID_HANDLE_VALUE) throw Term::Exception("CreateFile failed");
-    if(!SetConsoleMode(hConIn, dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
-    CloseHandle(hConIn);
+    if(!SetConsoleMode(Private::std_cout.getHandler(), dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
+    if(!SetConsoleMode(Private::std_cin.getHandler(), dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     enabled = false;
   }
 #else
@@ -104,13 +89,11 @@ void Term::Terminal::store_and_restore()
 void Term::Terminal::setRawMode()
 {
 #ifdef _WIN32
-  HANDLE hConIn{CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)};
   DWORD  flags = {0};
-  if(!GetConsoleMode(hConIn, &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
+  if(!GetConsoleMode(Private::std_cin.getHandler(), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
   if(m_options.has(Option::NoSignalKeys)) { flags &= ~ENABLE_PROCESSED_INPUT; }
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
-  if(!SetConsoleMode(hConIn, flags)) { throw Term::Exception("SetConsoleMode() failed"); }
-  CloseHandle(hConIn);
+  if(!SetConsoleMode(Private::std_cin.getHandler(), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
 #else
   int fd{open("/dev/tty", O_RDWR, O_NOCTTY)};
   if(fd >= 0)
@@ -184,10 +167,10 @@ void Term::Terminal::attachStreams()
   this->cin.open(in.c_str(), std::ofstream::in);
   if(!this->cin.is_open()) this->cin.open(blackHole.c_str(), std::ofstream::in);
   this->cin.clear();
-  cout.clear();
-  cerr.clear();
-  clog.clear();
-  cin.clear();
+  //cout.clear();
+  //cerr.clear();
+  //clog.clear();
+  //cin.clear();
 }
 
 void Term::Terminal::detachStreams()
