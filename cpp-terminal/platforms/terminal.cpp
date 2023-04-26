@@ -84,7 +84,7 @@ void Term::Terminal::setRawMode()
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
   if(!SetConsoleMode(Private::std_cin.getHandler(), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
 #else
-  if(Private::std_cout.getHandler() >= 0)
+  if(!Private::std_cout.isNull())
   {
     ::termios raw;
     if(tcgetattr(Private::std_cout.getHandler(), &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
