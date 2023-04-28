@@ -50,7 +50,7 @@ jobs:
         run: cmake -S . -B ${{ env.CMAKE_BUILD_PREFIX }} -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -DBUILD_DOCS=ON -DBUILD_ROOT_INTERFACE=OFF -DCMAKE_PREFIX_PATH="~/micromamba" -DCMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
 
       - name: ⚙️ Build
-        run: cmake --build ${{ env.CMAKE_BUILD_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel 2 --target all docs
+        run: cmake --build ${{ env.CMAKE_BUILD_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel 2 --target all doc-html
 
       - name: 📥 Install
         run: cmake --install ${{ env.CMAKE_BUILD_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --strip && mv ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/streamout/pdf/streamout_Manual.pdf ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/streamout/html/streamout_Manual.pdf
