@@ -9,9 +9,8 @@
 [![pre-commit](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/pre-commit-check.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/pre-commit-check.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/jupyter-xeus/cpp-terminal/master.svg)](https://results.pre-commit.ci/latest/github/jupyter-xeus/cpp-terminal/maset)
 
-`CPP-Terminal` is a small and simple library for writing platform independent terminal applications. It tries to follow the C++ 'Zero-overhead principle' and its headers only include C++ ones. It works on Windows, MacOS and Linux and offers a simple
-programming interface. It
-supports colors, keyboard input and has all the basic features to write any terminal application. On windows the library automatically allocate a console on GUI application and set up cin, cout, cerr etc...
+`CPP-Terminal` is a small, simple and dependency-free library for writing platform independent terminal applications. It tries to follow the C++ 'Zero-overhead principle' and its header files only include std ones. It works on Windows, MacOS and
+Linux and offers a simple programming interface. It supports colors, keyboard input, terminal resizing and has all the basic features to write any terminal application. On windows the library automatically allocate a console on GUI application.
 
 ## Minimal examples
 
