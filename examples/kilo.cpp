@@ -926,7 +926,7 @@ int main(int argc, char* argv[])
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::terminal.setOptions({Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw});
+    Term::terminal.setOptions(Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw);
     initEditor();
     if(argc >= 2) { editorOpen(argv[1]); }
 

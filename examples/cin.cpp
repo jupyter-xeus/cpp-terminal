@@ -5,7 +5,7 @@
 
 int main()
 {
-  Term::terminal.setOptions({Term::Option::Raw});
+  Term::terminal.setOptions(Term::Option::Raw);
   Term::terminal << "This should be printed" << std::flush << " only in terminal" << std::endl;
   std::cout << "This should be printed in terminal if stdout is not redirected" << std::endl;
   Term::terminal << "Now type a number and then a string !" << std::endl;

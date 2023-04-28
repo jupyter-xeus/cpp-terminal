@@ -21,7 +21,7 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::terminal.setOptions({Term::Option::NoClearScreen, Term::Option::NoSignalKeys, Term::Option::Cursor, Term::Option::Raw});
+    Term::terminal.setOptions(Term::Option::NoClearScreen, Term::Option::NoSignalKeys, Term::Option::Cursor, Term::Option::Raw);
 
     Term::Cursor cursor{Term::cursor_position()};
     std::cout << "Cursor position : " << cursor.row() << " " << cursor.column() << std::endl;

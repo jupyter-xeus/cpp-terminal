@@ -8,7 +8,7 @@ namespace Term
 {
 static char termbuf[sizeof(Term::Terminal)];
 Terminal&   terminal = reinterpret_cast<Term::Terminal&>(termbuf);
-}  // namespace Term
+}  // namespace Term */
 
 int Term::TerminalInitializer::m_counter{0};
 
