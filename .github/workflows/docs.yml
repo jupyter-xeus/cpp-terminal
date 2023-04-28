@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  group: pages
   cancel-in-progress: true
 
 defaults:
@@ -55,11 +55,21 @@ jobs:
       - name: 📥 Install
         run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --strip # && mv ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/pdf/cpp-terminal_Manual.pdf ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/html/cpp-terminal_Manual.pdf
 
-      #- name: 🎉 Deploy
-      #  uses: JamesIves/github-pages-deploy-action@v4.4.1
-      #  with:
-      #    token: ${{ secrets.ACCESS_PUBLIC_REPOS }}
-      #    repository-name:
-      #    branch: main
-      #    folder: ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/html/
-      #    target-folder: assets/projects/cpp-terminal
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/html/
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
