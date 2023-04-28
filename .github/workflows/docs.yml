@@ -53,7 +53,7 @@ jobs:
         run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel 2 --target all doc-html
 
       - name: 📥 Install
-        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --strip && mv ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/pdf/cpp-terminal_Manual.pdf ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/html/cpp-terminal_Manual.pdf
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --strip # && mv ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/pdf/cpp-terminal_Manual.pdf ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/html/cpp-terminal_Manual.pdf
 
       #- name: 🎉 Deploy
       #  uses: JamesIves/github-pages-deploy-action@v4.4.1
