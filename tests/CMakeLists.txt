@@ -29,6 +29,9 @@ doctest_discover_tests(test_terminal)
 add_executable(AttachConsole WIN32 attach_console.test.cpp)
 target_link_libraries(AttachConsole PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
 
+add_executable(AttachConsoleMinimal WIN32 attach_console_minimal.test.cpp)
+target_link_libraries(AttachConsoleMinimal PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
+
 if(WIN32)
   find_program(POWERSHELL_EXECUTABLE NAMES powershell DOC "PowerShell command")
   if(NOT ${POWERSHELL_EXECUTABLE} STREQUAL "POWERSHELL_EXECUTABLE-NOTFOUND")

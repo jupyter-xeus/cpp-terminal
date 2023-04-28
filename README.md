@@ -9,11 +9,58 @@
 [![pre-commit](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/pre-commit-check.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/pre-commit-check.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/jupyter-xeus/cpp-terminal/master.svg)](https://results.pre-commit.ci/latest/github/jupyter-xeus/cpp-terminal/maset)
 
-`CPP-Terminal` is a small and simple library for writing platform independent terminal applications. It works on Windows, MacOS and Linux and offers a simple programming interface. It
-supports colors, keyboard input and has all the basic features to write any
-terminal application.
+`CPP-Terminal` is a small and simple library for writing platform independent terminal applications. It tries to follow the C++ 'Zero-overhead principle' and its headers only include C++ ones. It works on Windows, MacOS and Linux and offers a simple
+programming interface. It
+supports colors, keyboard input and has all the basic features to write any terminal application. On windows the library automatically allocate a console on GUI application and set up cin, cout, cerr etc...
+
+## Minimal example
+
+The minimal Hello World is as simple as :
+
+```cpp
+#include "cpp-terminal/io.hpp"
+
+#include <iostream>
+
+int main()
+{
+  std::cout << "\033[31mHello world !\033[0m" << std::endl;
+  return 0;
+}
+```
+
+or
+
+```cpp
+#include "cpp-terminal/io.hpp"
+#include "cpp-terminal/color.hpp"
+
+#include <iostream>
+
+int main()
+{
+  std::cout << Term::color_fg(Term::Color::Name::Red)<<"Hello world !"<<color_fg(Term::Color::Name::Default)<< std::endl;
+  return 0;
+}
+```
+
+On windows, creating a console or attaching console to a GUI application can be done easily :
+
+```cpp
+#include "cpp-terminal/io.hpp"
+#include "cpp-terminal/color.hpp"
+
+#include <iostream>
+
+int __stdcall WinMain(HINSTANCE hinst, HINSTANCE hprev, LPSTR cmdline, int show)
+{
+  std::cout << Term::color_fg(Term::Color::Name::Red)<<"Hello world !"<<color_fg(Term::Color::Name::Default)<< std::endl;
+  return 0;
+}
+```
 
 Until 2021, CPP-Terminal used to be a single header library. Now, CPP-Terminal consists out of multiple small and usage oriented headers:
+
 - `cpp-terminal/base.hpp`: everything for basic Terminal control
 - `cpp-terminal/input.hpp`: functions for gathering input
 - `cpp-terminal/prompt.hpp`: some variations of different prompts
@@ -21,6 +68,7 @@ Until 2021, CPP-Terminal used to be a single header library. Now, CPP-Terminal c
 - `cpp-terminal/version.hpp`: macros with cpp-terminal's version number
 
 The library uses private header for platform dependent code:
+
 - `cpp-terminal/private/conversion.hpp`: Various conversions
 - `cpp-terminal/private/platform.hpp`: platform dependent code
 
@@ -38,14 +86,14 @@ We have created serval examples to show possible use cases of CPP-Terminal and t
 
 ## Supported platforms
 
-| Platform          | Supported versions | Coverage by unit test |
-|-------------------|--------------------|-----------------------|
-| Windows           | 10 and higher*     | MSVC                  |
-| (Windows) MSYS2   | All supported      | /                     |
-| (Windows) Cygwin  | All supported      | /                     |
-| (Windows) MinGW   | All supoorted      | /                     |
-| MacOS             | All supported      | Apple-clang           |
-| Linux             | All supported      | GCC>= 5 Clang >= 3.6  |
+|     Platform      | Supported versions |                                                                Arch                                                                |                                  Compiler                                   | C++ standard |
+|:-----------------:|:------------------:|:----------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------:|:------------:|
+|      Windows      |   10 and higher*   |                                                            x86, x86_64                                                             | MSVC 2019, MSVC 2022, clang11, clang12, clang13, clang14, clang15, clang-cl | 11,14,17,20  |
+|  (Windows) MSYS2  |   All supported    |                                                            x86, x86_64                                                             |                            ucrt , clang,  mingw                             | 11,14,17,20  |
+|       MacOS       |         11         |                                                                                                                                    |          xcode11.7 xcode12.4 xcode12.5.1 xcode13 gcc10 gcc11 gcc12          | 11,14,17,20  |
+|       MacOS       |         12         |                                                                                                                                    |                   xcode13.1 xcode13.2 xcode13.3 xcode13.4                   | 11,14,17,20  |
+|       Linux       |   All supported    |                                                               x86_64                                                               |                 4.7<=GCC<= 12  3.5<=Clang<=15  intel-oneapi                 | 11,14,17,20  |
+| Linux (dockcross) |   All supported    | arm64 armv5 armv5-musl armv5-uclibc armv6 armv7a, mips, mipsel-lts, s390x, ppc64le, xtensa-uclibc, x86, x64, x64-clang, x64-tinycc |                        4.7<=GCC<= 12  3.5<=Clang<=15                        | 11,14,17,20  |
 
 > Windows versions prior Windows 10 are missing the Win32 API functionality for entering the "raw mode" and therefore won't work. They are also lacking ANSI support. See #173 for adding support to prior windows versions for MSVC / Win32.
 
