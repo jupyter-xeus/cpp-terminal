@@ -4,6 +4,7 @@
 #include <iostream>
 
 #ifdef _WIN32
+  #include <windows.h>
 int __stdcall WinMain(HINSTANCE hinst, HINSTANCE hprev, LPSTR cmdline, int show)
 #else
 int main()

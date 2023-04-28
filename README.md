@@ -50,6 +50,7 @@ On windows, creating/attaching a console to a GUI application can be done easily
 #include "cpp-terminal/color.hpp"
 
 #include <iostream>
+#include <windows.h>
 
 int __stdcall WinMain(HINSTANCE hinst, HINSTANCE hprev, LPSTR cmdline, int show)
 {
