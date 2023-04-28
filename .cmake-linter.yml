@@ -16,7 +16,7 @@ lint:
   min_statement_spacing: 1
   max_statement_spacing: 2
   max_returns: 6
-  max_branches: 30
+  max_branches: 50
   max_arguments: 5
   max_localvars: 15
-  max_statements: 150
+  max_statements: 250

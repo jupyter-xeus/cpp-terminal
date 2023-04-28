@@ -1,0 +1,65 @@
+---
+name: docs
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    name: 📚 Docs
+
+    steps:
+
+      - name: 🧰 Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
+
+      - name: 🟨 Install packages
+        run: sudo apt-get install dia mscgen inkscape texlive-latex-recommended texlive-latex-extra
+
+      - name: 🐍 Install Conda environment
+        uses: mamba-org/provision-with-micromamba@v15
+        with:
+          environment-file: .github/workflows/micromamba/docs.yml
+
+      - name: ⬇️ Setup CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: ^3
+          ninjaVersion: ^1.11.1
+
+      - name: 🔧 Configure
+        run: cmake -S . -B ${{ env.CMAKE_BUILD_PREFIX }} -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -DBUILD_DOCS=ON -DBUILD_ROOT_INTERFACE=OFF -DCMAKE_PREFIX_PATH="~/micromamba" -DCMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+
+      - name: ⚙️ Build
+        run: cmake --build ${{ env.CMAKE_BUILD_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel 2 --target all docs
+
+      - name: 📥 Install
+        run: cmake --install ${{ env.CMAKE_BUILD_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --strip && mv ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/streamout/pdf/streamout_Manual.pdf ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/streamout/html/streamout_Manual.pdf
+
+      #- name: 🎉 Deploy
+      #  uses: JamesIves/github-pages-deploy-action@v4.4.1
+      #  with:
+      #    token: ${{ secrets.ACCESS_PUBLIC_REPOS }}
+      #    repository-name: SDHCAL/SDHCAL.github.io
+      #    branch: main
+      #    folder: ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/html/
+      #    target-folder: assets/projects/cpp-terminal
