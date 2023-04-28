@@ -13,7 +13,7 @@
 programming interface. It
 supports colors, keyboard input and has all the basic features to write any terminal application. On windows the library automatically allocate a console on GUI application and set up cin, cout, cerr etc...
 
-## Minimal example
+## Minimal examples
 
 The minimal Hello World is as simple as :
 
@@ -44,7 +44,7 @@ int main()
 }
 ```
 
-On windows, creating a console or attaching console to a GUI application can be done easily :
+On windows, creating/attaching a console to a GUI application can be done easily :
 
 ```cpp
 #include "cpp-terminal/io.hpp"
