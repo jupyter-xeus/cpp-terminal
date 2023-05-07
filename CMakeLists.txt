@@ -14,7 +14,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}"
 
 project(cpp-terminal
         VERSION 1.0.0
-        DESCRIPTION "Small header only C++ library for writing multiplatform terminal applications"
+        DESCRIPTION "Small C++ library for writing multiplatform terminal applications"
         HOMEPAGE_URL "https://github.com/jupyter-xeus/cpp-terminal"
         LANGUAGES CXX)
 
