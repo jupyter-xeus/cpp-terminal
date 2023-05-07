@@ -51,7 +51,7 @@ jobs:
             gcc:p
             cmake:p
       - name: 🔧 Configure
-        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }} -D CPPTERMINAL_ENABLE_DOCS=OFF
       - name: ⚙️ Build
         run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
@@ -88,7 +88,7 @@ jobs:
         with:
           arch: ${{ matrix.architecture }}
       - name: 🔧 Configure
-        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G "Visual Studio 16 2019" -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G "Visual Studio 16 2019" -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }} -D CPPTERMINAL_ENABLE_DOCS=OFF
       - name: ⚙️ Build
         run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
@@ -125,7 +125,7 @@ jobs:
         with:
           arch: ${{ matrix.architecture }}
       - name: 🔧 Configure
-        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G "Visual Studio 17 2022" -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G "Visual Studio 17 2022" -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }} -D CPPTERMINAL_ENABLE_DOCS=OFF
       - name: ⚙️ Build
         run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
@@ -160,7 +160,7 @@ jobs:
       - name: ⬇️ Install Clang
         run: curl -fsSL -o LLVM${{ matrix.version }}.exe https://github.com/llvm/llvm-project/releases/download/llvmorg-${{ matrix.version }}/LLVM-${{ matrix.version }}-win64.exe ; 7z x LLVM${{ matrix.version }}.exe -y -o"C:/Program Files/LLVM"
       - name: 🔧 Configure
-        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang++.exe" -D CMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -G "MinGW Makefiles" -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang++.exe" -D CMAKE_C_COMPILER="C:/Program Files/LLVM/bin/clang.exe" -G "MinGW Makefiles" -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }} -D CPPTERMINAL_ENABLE_DOCS=OFF
       - name: ⚙️ Build
         run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
@@ -193,7 +193,7 @@ jobs:
         with:
           path: .github/workflows
       - name: 🔧 Configure
-        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G "Visual Studio 16 2019" -A ${{ matrix.architecture }} -T ClangCL -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G "Visual Studio 16 2019" -A ${{ matrix.architecture }} -T ClangCL -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }} -D CPPTERMINAL_ENABLE_DOCS=OFF
       - name: ⚙️ Build
         run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
