@@ -5,6 +5,7 @@
 #include "cpp-terminal/terminfo.hpp"
 
 #include <fstream>
+#include <ostream>  // For std::endl;
 
 namespace Term
 {
