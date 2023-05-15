@@ -8,11 +8,9 @@
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 
-#include <iostream>
-
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
 {
-  std::cout << Term::clear_screen() << std::flush;
+  Term::terminal << Term::clear_screen() << std::flush;
   std::string scr;
   scr.reserve(16 * 1024);
 
@@ -63,7 +61,7 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
   scr.append("Menu width: " + std::to_string(menuwidth) + "       \n");
   scr.append("Menu height: " + std::to_string(menuheight) + "    \n");
 
-  std::cout << scr << std::flush;
+  Term::terminal << scr << std::flush;
 }
 
 int main()
@@ -71,12 +69,8 @@ int main()
   try
   {
     // check if the terminal is capable of handling input
-    if(!Term::is_stdin_a_tty())
-    {
-      std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
-      return 1;
-    }
     Term::terminal.setOptions(Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw);
+    if(!Term::is_stdin_a_tty()) throw Term::Exception("The terminal is not attached to a TTY and therefore can't catch user input. Exiting...");
     Term::Screen term_size = Term::screen_size();
     int          pos       = 5;
     int          h         = 10;
@@ -113,7 +107,7 @@ int main()
           break;
         case Term::Event::Type::Screen:
           term_size = Term::Screen(event);
-          std::cout << Term::clear_screen() << std::flush;
+          Term::terminal << Term::clear_screen() << std::flush;
           render(term_size.rows(), term_size.columns(), h, w, pos);
           break;
         default: break;
@@ -122,12 +116,12 @@ int main()
   }
   catch(const Term::Exception& re)
   {
-    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
+    Term::terminal << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)
   {
-    std::cerr << "Unknown error." << std::endl;
+    Term::terminal << "Unknown error." << std::endl;
     return 1;
   }
   return 0;
