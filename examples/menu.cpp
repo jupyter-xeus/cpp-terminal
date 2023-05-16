@@ -69,8 +69,8 @@ int main()
   try
   {
     // check if the terminal is capable of handling input
+    Term::terminal.setOptions(Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw);
     if(!Term::is_stdin_a_tty()) throw Term::Exception("The terminal is not attached to a TTY and therefore can't catch user input. Exiting...");
-    Term::terminal.setOptions({Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw});
     Term::Screen term_size = Term::screen_size();
     int          pos       = 5;
     int          h         = 10;

@@ -21,7 +21,13 @@ class Terminal
 public:
   Terminal();
   ~Terminal();
-  void                           setOptions(const std::vector<Term::Options::Option>& options = {});
+
+  template<typename Arg1 = Term::Option, typename... Args> void setOptions(Arg1 arg1, Args... args)
+  {
+    m_options.set(arg1);
+    setOptions(args...);
+  }
+
   template<typename T> Terminal& operator<<(const T& dt)
   {
     clog << dt;
@@ -29,13 +35,14 @@ public:
   }
   template<typename T> std::istream& operator>>(T& dt)
   {
-    if(m_options.has(Options::Option::Raw))
+    if(m_options.has(Option::Raw))
     {
-      std::vector<Term::Options::Option> option = m_options.getOptions();
+      Options options = m_options;
       store_and_restore();
       this->cin >> dt;
       store_and_restore();
-      setOptions(option);
+      m_options = options;
+      applyOptions();
       return this->cin;
     }
     else
@@ -51,6 +58,8 @@ public:
   }
 
 private:
+  void           setOptions();
+  void           applyOptions();
   std::ofstream  cout;
   std::ofstream  cerr;
   std::ofstream  clog;
