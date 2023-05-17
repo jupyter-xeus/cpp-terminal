@@ -8,7 +8,6 @@
 #include "cpp-terminal/style.hpp"
 
 #include <exception>
-#include <iostream>
 
 Term::Terminal::Terminal()
 {

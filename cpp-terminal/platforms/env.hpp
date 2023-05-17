@@ -1,4 +1,4 @@
-// This header should be used only in files contains inside platforms folder !!!
+// This header should be used only in files contained inside platforms folder !!!
 #pragma once
 
 #include <string>
