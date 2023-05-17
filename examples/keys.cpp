@@ -16,7 +16,6 @@ int main()
     // check if the terminal is capable of handling input
     Term::terminal.setOptions(Term::Option::NoClearScreen, Term::Option::NoSignalKeys, Term::Option::Cursor, Term::Option::Raw);
     if(!Term::is_stdin_a_tty()) throw Term::Exception("The terminal is not attached to a TTY and therefore can't catch user input. Exiting...");
-
     Term::Cursor cursor{Term::cursor_position()};
     Term::terminal << "Cursor position : " << cursor.row() << " " << cursor.column() << std::endl;
 
