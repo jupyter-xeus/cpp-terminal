@@ -1,11 +1,11 @@
 #include "cpp-terminal/terminal.hpp"
 
 #include "cpp-terminal/cursor.hpp"
+#include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/io.hpp"
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
-#include "exception.hpp"
-#include "io.hpp"
 
 #include <exception>
 #include <iostream>
