@@ -11,7 +11,7 @@ class Cursor
 {
 public:
   Cursor() = default;
-  Cursor(const std::size_t&, const std::size_t&);
+  Cursor(const std::size_t& row, const std::size_t& column);
   std::size_t row() const;
   std::size_t column() const;
   void        setRow(const std::size_t&);
