@@ -9,12 +9,11 @@
 [![pre-commit](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/pre-commit-check.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/pre-commit-check.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/jupyter-xeus/cpp-terminal/master.svg)](https://results.pre-commit.ci/latest/github/jupyter-xeus/cpp-terminal/maset)
 
-`CPP-Terminal` is a small, simple and dependency-free library for writing platform independent terminal applications. It tries to follow the C++ 'Zero-overhead principle' and its header files only include std ones. It works on Windows, MacOS and
-Linux and offers a simple programming interface. It supports colors, keyboard input, terminal resizing and has all the basic features to write any terminal application. On windows the library automatically allocate a console on GUI application.
+`CPP-Terminal` is a small and dependency-free C++ library for writing platform independent terminal-based applications. It follows the "Zero-overhead principle" and limits externally included files to the C++ STL. Being crossplatform we are currently supporting Windows, Linux and MacOS and are providing an unified API across all plattforms. Our main features are consisting of Colors, Keyboard input, terminal resize handling, as well as other common terminal functionality. It's also possible to open a managed terminal from a windows GUI application.
 
-## Minimal examples
+## Hello World example
 
-The minimal Hello World is as simple as :
+To write a simple Hello World program, all you need to do is:
 
 ```cpp
 #include "cpp-terminal/io.hpp"
@@ -43,7 +42,7 @@ int main()
 }
 ```
 
-On windows, creating/attaching a console to a GUI application can be done easily :
+On wndows you can simply create or attach a console through a GUI application by doing:
 
 ```cpp
 #include "cpp-terminal/io.hpp"
