@@ -1,30 +1,29 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/prompt.hpp"
+#include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/version.hpp"
-
-#include <iostream>
 
 int main()
 {
-  std::cout << "Running cpp-terminal version: " << Term::Version << std::endl;
+  Term::terminal << "Running cpp-terminal version: " << Term::Version << std::endl;
   try
   {
-    std::cout << "CPP-Terminal basic prompt example: \n\n";
+    Term::terminal << "CPP-Terminal basic prompt example: \n\n";
     switch(Term::prompt_simple("Proceed?"))
     {
-      case Term::Result_simple::YES: std::cout << "Proceeding...\n"; break;
-      case Term::Result_simple::NO: std::cout << "Stopping...\n"; break;
-      case Term::Result_simple::ABORT: std::cout << "Exit signal received, exiting now...\n"; break;
+      case Term::Result_simple::YES: Term::terminal << "Proceeding...\n"; break;
+      case Term::Result_simple::NO: Term::terminal << "Stopping...\n"; break;
+      case Term::Result_simple::ABORT: Term::terminal << "Exit signal received, exiting now...\n"; break;
     }
   }
   catch(const Term::Exception& re)
   {
-    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
+    Term::terminal << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)
   {
-    std::cerr << "Unknown error." << std::endl;
+    Term::terminal << "Unknown error." << std::endl;
     return 1;
   }
   return 0;

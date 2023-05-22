@@ -2,6 +2,7 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/io.hpp"
 #include "cpp-terminal/style.hpp"
+#include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/version.hpp"
 
@@ -9,7 +10,7 @@
 
 int main()
 {
-  std::cout << "Running cpp-terminal version: " << Term::Version << " website : " << Term::Homepage << std::endl << std::endl;
+  Term::terminal << "Running cpp-terminal version: " << Term::Version << " website : " << Term::Homepage << std::endl << std::endl;
 
   try
   {

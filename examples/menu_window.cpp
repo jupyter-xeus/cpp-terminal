@@ -51,7 +51,7 @@ int main()
       std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
-    Term::terminal.setOptions({Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw});
+    Term::terminal.setOptions(Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw);
     Term::Screen term_size = Term::screen_size();
     int          pos       = 5;
     int          h         = 10;
@@ -60,7 +60,7 @@ int main()
     Term::Window scr(term_size.columns(), term_size.rows());
     while(on)
     {
-      std::cout << render(scr, term_size.rows(), term_size.columns(), h, w, pos) << std::flush;
+      Term::terminal << render(scr, term_size.rows(), term_size.columns(), h, w, pos) << std::flush;
       Term::Key key = Term::read_event();
       switch(key)
       {
