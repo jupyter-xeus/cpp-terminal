@@ -29,6 +29,9 @@ doctest_discover_tests(test_terminal)
 add_executable(AttachConsole WIN32 attach_console.test.cpp)
 target_link_libraries(AttachConsole PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
 
+add_executable(AttachConsoleMinimal WIN32 attach_console_minimal.test.cpp)
+target_link_libraries(AttachConsoleMinimal PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
+
 add_executable(file.test file.test.cpp)
 target_link_libraries(file.test PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
 doctest_discover_tests(file.test)
