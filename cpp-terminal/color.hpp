@@ -95,7 +95,6 @@ std::string color_fg(const std::uint8_t&);
 std::string color_fg(const std::uint8_t&, const std::uint8_t&, const std::uint8_t&);
 std::string color_fg(const Color&);
 
-
 void color_bg(std::string& stringOut, const Term::Color::Name&);
 void color_bg(std::string& stringOut, const std::uint8_t&);
 void color_bg(std::string& stringOut, const std::uint8_t&, const std::uint8_t&, const std::uint8_t&);
