@@ -9,6 +9,7 @@
 
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
+#include "cpp-terminal/platforms/file.hpp"
 
 #include <string>
 
@@ -42,12 +43,12 @@ Term::Event Term::Platform::read_raw()
 {
 #ifdef _WIN32
   DWORD nread{0};
-  GetNumberOfConsoleInputEvents(GetStdHandle(STD_INPUT_HANDLE), &nread);
+  GetNumberOfConsoleInputEvents(Private::std_cin.getHandler(), &nread);
   if(nread >= 1)
   {
     DWORD                     nre{0};
     std::vector<INPUT_RECORD> buf{nread};
-    if(!ReadConsoleInput(GetStdHandle(STD_INPUT_HANDLE), &buf[0], buf.size(), &nre)) { Term::Exception("ReadFile() failed"); }
+    if(!ReadConsoleInput(Private::std_cin.getHandler(), &buf[0], buf.size(), &nre)) { Term::Exception("ReadFile() failed"); }
     std::string ret(nre, '\0');
     int         processed{0};
     for(std::size_t i = 0; i != nre; ++i)
@@ -130,7 +131,7 @@ Term::Event Term::Platform::read_raw()
     sigemptyset(&sa.sa_mask);
     sa.sa_flags   = 0;
     sa.sa_handler = sigwinchHandler;
-    if(sigaction(SIGWINCH, &sa, NULL) == -1) throw Term::Exception("signal() failed");
+    if(sigaction(SIGWINCH, &sa, nullptr) == -1) throw Term::Exception("signal() failed");
     else
       activated = true;
   }

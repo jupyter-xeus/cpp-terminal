@@ -12,7 +12,7 @@
 
 Term::Result Term::prompt(const std::string& message, const std::string& first_option, const std::string& second_option, const std::string& prompt_indicator, bool immediate)
 {
-  Term::terminal.setOptions({Option::NoClearScreen, Option::NoSignalKeys, Option::Cursor, Term::Option::Raw});
+  Term::terminal.setOptions(Option::NoClearScreen, Option::NoSignalKeys, Option::Cursor, Term::Option::Raw);
   std::cout << message << " [" << first_option << '/' << second_option << ']' << prompt_indicator << ' ' << std::flush;
 
   if(!Term::is_stdin_a_tty())
