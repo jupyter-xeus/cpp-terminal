@@ -78,8 +78,8 @@ inline std::u32string utf8_to_utf32(const std::string& s)
 
 inline void append_utf8_to_utf32(std::u32string& stringOut, const std::string& s)
 {
-  std::uint32_t  codepoint{};
-  std::uint8_t   state = UTF8_ACCEPT;
+  std::uint32_t codepoint{};
+  std::uint8_t  state = UTF8_ACCEPT;
   for(char i: s)
   {
     state = utf8_decode_step(state, i, &codepoint);
@@ -91,8 +91,8 @@ inline void append_utf8_to_utf32(std::u32string& stringOut, const std::string& s
 
 inline void append_utf8_to_utf32(std::u32string& stringOut, const std::string_view& s)
 {
-  std::uint32_t  codepoint{};
-  std::uint8_t   state = UTF8_ACCEPT;
+  std::uint32_t codepoint{};
+  std::uint8_t  state = UTF8_ACCEPT;
   for(char i: s)
   {
     state = utf8_decode_step(state, i, &codepoint);
@@ -104,19 +104,18 @@ inline void append_utf8_to_utf32(std::u32string& stringOut, const std::string_vi
 
 inline void append_utf8_to_utf32(std::u32string& stringOut, const char* s, size_t size)
 {
-  std::uint32_t  codepoint{};
-  std::uint8_t   state = UTF8_ACCEPT;
-  for(const char* itr = s; itr != s+size; ++itr )
+  std::uint32_t codepoint{};
+  std::uint8_t  state = UTF8_ACCEPT;
+  for(const char* itr = s; itr != s + size; ++itr)
   {
-	if(*itr == '\0') break;
-	char c = *itr;
-    state = utf8_decode_step(state, c, &codepoint);
+    if(*itr == '\0') break;
+    char c = *itr;
+    state  = utf8_decode_step(state, c, &codepoint);
     if(state == UTF8_ACCEPT) { stringOut.push_back(codepoint); }
     else if(state == UTF8_REJECT) { throw Term::Exception("Invalid byte in UTF8 encoded string"); }
   }
   if(state != UTF8_ACCEPT) { throw Term::Exception("Expected more bytes in UTF8 encoded string"); }
 }
-
 
 inline std::string utf32_to_utf8(const std::u32string& s)
 {
