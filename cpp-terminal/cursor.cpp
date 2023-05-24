@@ -21,9 +21,9 @@ void Term::cursor_off(std::string& stringOut) { stringOut.append("\x1b[?25l", si
 
 std::string Term::cursor_off() { return std::string("\x1b[?25l", sizeof("\x1b[?25l")-1); }
 
-void Term::cursor_on(std::string& stringOut) { stringOut.append("\x1b[?25h", sizeof()-1); }
+void Term::cursor_on(std::string& stringOut) { stringOut.append("\x1b[?25h", sizeof("\x1b[?25h")-1); }
 
-std::string Term::cursor_on() { return std::string("\x1b[?25h", sizeof()-1); }
+std::string Term::cursor_on() { return std::string("\x1b[?25h", sizeof("\x1b[?25h")-1); }
 
 void Term::cursor_move(std::string& stringOut, std::size_t row, std::size_t column)
 {
