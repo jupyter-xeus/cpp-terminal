@@ -40,7 +40,7 @@ jobs:
           path: .github/workflows
 
       - name: 🟨 Install packages
-        run: sudo apt-get install dia mscgen inkscape texlive-latex-recommended texlive-latex-extra
+        run: sudo apt-get install dia mscgen inkscape texlive-latex-recommended texlive-latex-extra texlive-font-utils
 
       - name: 🐍 Install Conda environment
         uses: mamba-org/provision-with-micromamba@v15
