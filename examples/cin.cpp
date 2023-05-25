@@ -17,7 +17,7 @@ int main()
   Term::Key event;
   while((event = Term::read_event()) != Term::Key(Term::Key::CTRL_C))
   {
-    if(event.is_extended_ASCII()) Term::terminal << "You typed :" << static_cast<char>(event) << std::endl;
+    if(event.isprint()) Term::terminal << "You typed :" << static_cast<char>(event) << std::endl;
   }
   return 0;
 }
