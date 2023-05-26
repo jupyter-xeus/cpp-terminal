@@ -19,6 +19,6 @@ namespace Private
 */
 std::pair<bool, std::string> getenv(const std::string& env);
 
-} // namespace Private
+}  // namespace Private
 
 }  // namespace Term
