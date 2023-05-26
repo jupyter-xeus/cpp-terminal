@@ -10,6 +10,13 @@ namespace Term
 namespace Private
 {
 
+ /**
+ * @brief Value of an environment variables.
+ *
+ * @param env environment variable.
+ * @return std::pair<bool, std::string> with bool:true if the environment variable is set and std::string to the value of environment variable.
+ * @warning Internal use only.
+ */
 std::pair<bool, std::string> getenv(const std::string& env);
 
 }
