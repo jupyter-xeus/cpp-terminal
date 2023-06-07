@@ -38,7 +38,7 @@ enum class Style : std::uint8_t
 
   // Double-underline per ECMA-48,[5]: 8.3.117  but instead disables bold intensity on several terminals,
   // including in the Linux kernel's console before version 4.17
-  DOUBLY_UNDERLINED_OR_NOT_BOLD = 21
+  DOUBLY_UNDERLINED_OR_NOT_BOLD = 21,
 
   // resets corresponding styles
   RESET_BOLD_DIM   = 22,
