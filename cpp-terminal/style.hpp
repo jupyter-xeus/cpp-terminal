@@ -19,7 +19,7 @@ enum class Style : std::uint8_t
   UNDERLINE   = 4,  // draws a line below the text
   BLINK       = 5,  // Sets blinking to less than 150 times per minute
   BLINK_RAPID = 6,  // MS-DOS ANSI.SYS, 150+ per minute; not widely supported
-  REVERSED    = 7,  // swap forground and background colors
+  REVERSED    = 7,  // swap foreground and background colors
   CONCEAL     = 8,  // Note: not widely supported
   CROSSED     = 9,  // strikes through the text, mostly supported
 
