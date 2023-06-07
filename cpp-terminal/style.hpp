@@ -28,49 +28,49 @@ enum class Style : std::uint8_t
   FONT_1  = 11,
   FONT_2  = 12,
   FONT_3  = 13,
-  FONT_4  = 14;
-  FONT_5  = 15;
-  FONT_6  = 16;
-  FONT_7  = 17;
-  FONT_8  = 18;
-  FONT_9  = 19;
-  FONT_10 = 20;  // Fraktur / Gothic font
+  FONT_4  = 14,
+  FONT_5  = 15,
+  FONT_6  = 16,
+  FONT_7  = 17,
+  FONT_8  = 18,
+  FONT_9  = 19,
+  FONT_10 = 20,  // Fraktur / Gothic font
 
   // Double-underline per ECMA-48,[5]: 8.3.117  but instead disables bold intensity on several terminals,
   // including in the Linux kernel's console before version 4.17
   DOUBLY_UNDERLINED_OR_NOT_BOLD = 21
 
   // resets corresponding styles
-  RESET_BOLD_DIM   = 22;
-  RESET_ITALIC     = 23;
-  RESET_UNDERLINED = 24;
-  RESET_BLINKING   = 25;
-  RESET_REVERSED   = 26;
-  RESET_CONCEAL    = 28;
-  RESET_CROSSED    = 29;
+  RESET_BOLD_DIM   = 22,
+  RESET_ITALIC     = 23,
+  RESET_UNDERLINED = 24,
+  RESET_BLINKING   = 25,
+  RESET_REVERSED   = 26,
+  RESET_CONCEAL    = 28,
+  RESET_CROSSED    = 29,
 
   // sets the foreground and background color to the implementation defined colors
-  DEFAULT_FOREGROUND_COLOR = 39;
-  DEFAULT_BACKGROUND_COLOR = 49;
+  DEFAULT_FOREGROUND_COLOR = 39,
+  DEFAULT_BACKGROUND_COLOR = 49,
 
-  FRAME                  = 51;
-  ENCIRCLE               = 52;
-  OVERLINE               = 53;  // draws a line over the text, barely supported
-  RESET_FRAMED_ENCIRCLED = 54;
-  RESET_OVERLINE         = 55;
+  FRAME                  = 51,
+  ENCIRCLE               = 52,
+  OVERLINE               = 53,  // draws a line over the text, barely supported
+  RESET_FRAMED_ENCIRCLED = 54,
+  RESET_OVERLINE         = 55,
 
   // sets the underline color to the implementation defined colors
-  DEFAULT_UNDERLINE_COLOR = 59;  // non standard, implemented in Kitty, VTE, mintty, and iTerm2
+  DEFAULT_UNDERLINE_COLOR = 59,  // non standard, implemented in Kitty, VTE, mintty, and iTerm2
 
-  BAR_RIGHT        = 60;  // draws a vertical bar on the right side of the character
-  DOUBLE_BAR_RIGHT = 61;  // drawa a double vertical bar to the right
-  BAR_LEFT         = 62;  // draws a vertical bar on the left side of the character
-  DOUBLE_BAR_LEFT  = 63;  // drawa a double vertical bar to the left
-  RESET_BAR        = 64;  // resets all bars left and right double and simple
+  BAR_RIGHT        = 60,  // draws a vertical bar on the right side of the character
+  DOUBLE_BAR_RIGHT = 61,  // drawa a double vertical bar to the right
+  BAR_LEFT         = 62,  // draws a vertical bar on the left side of the character
+  DOUBLE_BAR_LEFT  = 63,  // drawa a double vertical bar to the left
+  RESET_BAR        = 64,  // resets all bars left and right double and simple
 
-  SUPERSCRIPT                 = 73;  // only implemented in mintty
-  SUBSCRIPT                   = 74;  // only implemented in mintty
-  RESET_SUPERSCRIPT_SUBSCRIPT = 75;  // only implemented in mintty
+  SUPERSCRIPT                 = 73,  // only implemented in mintty
+  SUBSCRIPT                   = 74,  // only implemented in mintty
+  RESET_SUPERSCRIPT_SUBSCRIPT = 75,  // only implemented in mintty
 
 };
 
