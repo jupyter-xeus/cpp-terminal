@@ -43,7 +43,7 @@ jobs:
         run: sudo apt-get install dia mscgen inkscape texlive-latex-recommended texlive-latex-extra
 
       - name: 🐍 Install Conda environment
-        uses: mamba-org/provision-with-micromamba@v15
+        uses: mamba-org/setup-micromamba@v1
         with:
           environment-file: .github/workflows/micromamba/docs.yml
 
@@ -75,6 +75,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     needs: docs
     steps:
       - name: Deploy to GitHub Pages
