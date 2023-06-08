@@ -40,7 +40,7 @@ jobs:
           path: .github/workflows
 
       - name: 🟨 Install packages
-        run: sudo apt-get install dia mscgen inkscape texlive-latex-recommended texlive-latex-extra
+        run: sudo apt-get install dia mscgen inkscape texlive-latex-recommended texlive-latex-extra texlive-font-utils
 
       - name: 🐍 Install Conda environment
         uses: mamba-org/setup-micromamba@v1
@@ -57,10 +57,10 @@ jobs:
         run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -DCMAKE_PREFIX_PATH="~/micromamba" -DCMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}  -D CPPTERMINAL_ENABLE_DOCS=ON
 
       - name: ⚙️ Build
-        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }} --target all doc-html
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }} --target all docs
 
       - name: 📥 Install
-        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --strip # && mv ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/pdf/cpp-terminal_Manual.pdf ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/html/cpp-terminal_Manual.pdf
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --strip  && mv ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/pdf/cpp-terminal_Manual.pdf ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/html/cpp-terminal_Manual.pdf
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -77,6 +77,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
     needs: docs
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
