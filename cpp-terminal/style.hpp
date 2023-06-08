@@ -43,9 +43,9 @@ enum class Style : std::uint8_t
   // resets corresponding styles
   RESET_BOLD_DIM   = 22,
   RESET_ITALIC     = 23,
-  RESET_UNDERLINED = 24,
+  RESET_UNDERLINE  = 24,
   RESET_BLINKING   = 25,
-  RESET_REVERSED   = 26,
+  RESET_REVERSED   = 27,
   RESET_CONCEAL    = 28,
   RESET_CROSSED    = 29,
 
@@ -56,7 +56,7 @@ enum class Style : std::uint8_t
   FRAME                  = 51,
   ENCIRCLE               = 52,
   OVERLINE               = 53,  // draws a line over the text, barely supported
-  RESET_FRAMED_ENCIRCLED = 54,
+  RESET_FRAME_ENCIRCLE   = 54,
   RESET_OVERLINE         = 55,
 
   // sets the underline color to the implementation defined colors
