@@ -1,8 +1,8 @@
 #pragma once
 
+#include <cpp-terminal/terminal.hpp>
 #include <cstdint>
 #include <string>
-#include <cpp-terminal/terminal.hpp>
 
 namespace Term
 {
@@ -82,6 +82,6 @@ std::string style(const Term::Style& style);
 template<class Stream> Stream& operator<<(Stream& stream, const Term::Style& s) { return stream << style(s); }
 
 // unabigify operator overload
-inline Term::Terminal& operator<<(Term::Terminal& terminal, const Term::Style& s){return terminal << style(s);}
+inline Term::Terminal& operator<<(Term::Terminal& terminal, const Term::Style& s) { return terminal << style(s); }
 
 }  // namespace Term
