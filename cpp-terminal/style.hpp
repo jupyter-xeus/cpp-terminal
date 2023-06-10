@@ -66,7 +66,9 @@ enum class Style : std::uint8_t
   DOUBLE_BAR_RIGHT = 61,  // drawa a double vertical bar to the right
   BAR_LEFT         = 62,  // draws a vertical bar on the left side of the character
   DOUBLE_BAR_LEFT  = 63,  // drawa a double vertical bar to the left
-  RESET_BAR        = 64,  // resets all bars left and right double and simple
+  STRESS_MARKING   = 64,  // resets all bars left and right double and simple
+
+  RESET_BAR = 65, // resets 60 - 64 inclusive
 
   SUPERSCRIPT                 = 73,  // only implemented in mintty
   SUBSCRIPT                   = 74,  // only implemented in mintty
@@ -75,5 +77,10 @@ enum class Style : std::uint8_t
 };
 
 std::string style(const Term::Style& style);
+
+template<class Stream>
+Stream& operator<<(Stream& stream, const Term::Style& s){
+	return stream << style(s);
+}
 
 }  // namespace Term
