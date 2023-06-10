@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <cpp-terminal/terminal.hpp>
 
 namespace Term
 {
@@ -79,8 +80,13 @@ enum class Style : std::uint8_t
 std::string style(const Term::Style& style);
 
 template<class Stream>
-Stream& operator<<(Stream& stream, const Term::Style& s){
+inline Stream& operator<<(Stream& stream, const Term::Style& s){
 	return stream << style(s);
+}
+
+inline Term::Terminal& operator<<(Term::Terminal& terminal, const Term::Style& s){
+	// unabigify operator overload
+	return terminal << style(s);
 }
 
 }  // namespace Term
