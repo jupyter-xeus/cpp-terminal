@@ -226,7 +226,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
   {
     key = Term::read_event();
     if(key == Term::Key::NO_KEY) continue;
-    if((key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') || (key.is_extended_ASCII() && !iscntrl(key)))
+    if(key.isprint())
     {
       std::string before = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
       std::string newchar;
@@ -251,7 +251,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
       {
         case Key::ENTER:
           not_complete = !iscomplete(concat(m.lines));
-          if(not_complete) key = static_cast<Term::Key::Value>(Key::ALT + Key::ENTER);
+          if(not_complete) key = Key(static_cast<Term::Key::Value>(Key::ALT + Key::ENTER));
           else
             break;
           CPP_TERMINAL_FALLTHROUGH;

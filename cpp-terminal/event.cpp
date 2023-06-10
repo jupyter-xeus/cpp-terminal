@@ -34,14 +34,14 @@ void Term::Event::parse()
   if(m_str.size() == 1)
   {
     m_Type = Type::Key;
-    m_Key  = static_cast<Term::Key::Value>(m_str[0]);
+    m_Key  = Key(static_cast<Term::Key::Value>(m_str[0]));
     /* Backspace return 127 CTRL+backspace return 8 */
-    if(m_Key == Term::Key::Value::DEL) m_Key = Term::Key::Value::BACKSPACE;
+    if(m_Key == Term::Key::Value::DEL) m_Key = Key(Term::Key::Value::BACKSPACE);
     m_str.clear();
   }
   else if(m_str.size() == 2 && m_str[0] == '\033')
   {
-    m_Key  = static_cast<Term::Key::Value>(Term::Key::Value::ALT + static_cast<Term::Key::Value>(m_str[1]));
+    m_Key  = Key(static_cast<Term::Key::Value>(Term::Key::Value::ALT + static_cast<Term::Key::Value>(m_str[1])));
     m_Type = Type::Key;
     m_str.clear();
   }
@@ -50,8 +50,7 @@ void Term::Event::parse()
     std::size_t found = m_str.find(';', 2);
     if(found != std::string::npos)
     {
-      m_Type = Type::Cursor;
-
+      m_Type   = Type::Cursor;
       m_Cursor = Cursor(std::stoi(m_str.substr(2, found - 2)), std::stoi(m_str.substr(found + 1, m_str.size() - (found + 2))));
     }
   }
@@ -75,13 +74,13 @@ void Term::Event::parse()
      * Cursor Left  | ESC D
      * -------------+--------------------
     */
-    if(m_str == "\033OA" || m_str == "\033[A" || m_str == "\033A") m_Key = Term::Key::Value::ARROW_UP;
+    if(m_str == "\033OA" || m_str == "\033[A" || m_str == "\033A") m_Key = Key(Term::Key::Value::ARROW_UP);
     else if(m_str == "\033OB" || m_str == "\033[B" || m_str == "\033B")
-      m_Key = Term::Key::Value::ARROW_DOWN;
+      m_Key = Key(Term::Key::Value::ARROW_DOWN);
     else if(m_str == "\033OC" || m_str == "\033[C" || m_str == "\033C")
-      m_Key = Term::Key::Value::ARROW_RIGHT;
+      m_Key = Key(Term::Key::Value::ARROW_RIGHT);
     else if(m_str == "\033OD" || m_str == "\033[D" || m_str == "\033D")
-      m_Key = Term::Key::Value::ARROW_LEFT;
+      m_Key = Key(Term::Key::Value::ARROW_LEFT);
     /*
      * Key        Normal     Application
      * ---------+----------+-------------
@@ -90,9 +89,9 @@ void Term::Event::parse()
      * ---------+----------+-------------
     */
     else if(m_str == "\033OH" || m_str == "\033[H")
-      m_Key = Term::Key::Value::HOME;
+      m_Key = Key(Term::Key::Value::HOME);
     else if(m_str == "\033OF" || m_str == "\033[F")
-      m_Key = Term::Key::Value::END;
+      m_Key = Key(Term::Key::Value::END);
     /*
      * Key        Escape Sequence
      * ---------+-----------------
@@ -115,29 +114,29 @@ void Term::Event::parse()
      * ---------+-----------------
     */
     else if(m_str == "\033OP" || m_str == "\033[11~")
-      m_Key = Term::Key::Value::F1;
+      m_Key = Key(Term::Key::Value::F1);
     else if(m_str == "\033OQ" || m_str == "\033[12~")
-      m_Key = Term::Key::Value::F2;
+      m_Key = Key(Term::Key::Value::F2);
     else if(m_str == "\033OR" || m_str == "\033[13~")
-      m_Key = Term::Key::Value::F3;
+      m_Key = Key(Term::Key::Value::F3);
     else if(m_str == "\033OS" || m_str == "\033[14~")
-      m_Key = Term::Key::Value::F4;
+      m_Key = Key(Term::Key::Value::F4);
     else if(m_str == "\033[15~")
-      m_Key = Term::Key::Value::F5;
+      m_Key = Key(Term::Key::Value::F5);
     else if(m_str == "\033[17~")
-      m_Key = Term::Key::Value::F6;
+      m_Key = Key(Term::Key::Value::F6);
     else if(m_str == "\033[18~")
-      m_Key = Term::Key::Value::F7;
+      m_Key = Key(Term::Key::Value::F7);
     else if(m_str == "\033[19~")
-      m_Key = Term::Key::Value::F8;
+      m_Key = Key(Term::Key::Value::F8);
     else if(m_str == "\033[20~")
-      m_Key = Term::Key::Value::F9;
+      m_Key = Key(Term::Key::Value::F9);
     else if(m_str == "\033[21~")
-      m_Key = Term::Key::Value::F10;
+      m_Key = Key(Term::Key::Value::F10);
     else if(m_str == "\033[23~")
-      m_Key = Term::Key::Value::F11;
+      m_Key = Key(Term::Key::Value::F11);
     else if(m_str == "\033[24~")
-      m_Key = Term::Key::Value::F12;
+      m_Key = Key(Term::Key::Value::F12);
     /*
      * Key        Normal     Application
      * ---------+----------+-------------
@@ -150,17 +149,17 @@ void Term::Event::parse()
      * ---------+----------+-------------
     */
     else if(m_str == "\033[2~")
-      m_Key = Term::Key::Value::INSERT;
+      m_Key = Key(Term::Key::Value::INSERT);
     else if(m_str == "\033[3~")
-      m_Key = Term::Key::Value::DEL;
+      m_Key = Key(Term::Key::Value::DEL);
     else if(m_str == "\033[1~")
-      m_Key = Term::Key::Value::HOME;
+      m_Key = Key(Term::Key::Value::HOME);
     else if(m_str == "\033[4~")
-      m_Key = Term::Key::Value::END;
+      m_Key = Key(Term::Key::Value::END);
     else if(m_str == "\033[5~")
-      m_Key = Term::Key::Value::PAGE_UP;
+      m_Key = Key(Term::Key::Value::PAGE_UP);
     else if(m_str == "\033[6~")
-      m_Key = Term::Key::Value::PAGE_DOWN;
+      m_Key = Key(Term::Key::Value::PAGE_DOWN);
     /*
      * Key        Escape Sequence
      * ---------+-----------------
@@ -175,21 +174,23 @@ void Term::Event::parse()
      * ---------+-----------------
     */
     else if(m_str == "\033[25~")
-      m_Key = Term::Key::Value::F13;
+      m_Key = Key(Term::Key::Value::F13);
     else if(m_str == "\033[26~")
-      m_Key = Term::Key::Value::F14;
+      m_Key = Key(Term::Key::Value::F14);
     else if(m_str == "\033[28~")
-      m_Key = Term::Key::Value::F15;
+      m_Key = Key(Term::Key::Value::F15);
     else if(m_str == "\033[29~")
-      m_Key = Term::Key::Value::F16;
+      m_Key = Key(Term::Key::Value::F16);
     else if(m_str == "\033[31~")
-      m_Key = Term::Key::Value::F17;
+      m_Key = Key(Term::Key::Value::F17);
     else if(m_str == "\033[32~")
-      m_Key = Term::Key::Value::F18;
+      m_Key = Key(Term::Key::Value::F18);
     else if(m_str == "\033[33~")
-      m_Key = Term::Key::Value::F19;
+      m_Key = Key(Term::Key::Value::F19);
     else if(m_str == "\033[34~")
-      m_Key = Term::Key::Value::F20;
+      m_Key = Key(Term::Key::Value::F20);
+    else if(m_str == "\033[G")
+      m_Key = Key(Term::Key::Value::NUMERIC_5);
     if(!m_Key.empty())
     {
       m_Type = Type::Key;

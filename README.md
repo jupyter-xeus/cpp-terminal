@@ -94,20 +94,39 @@ We have created serval examples to show possible use cases of CPP-Terminal and t
 |       Linux       |   All supported    |                                                               x86_64                                                               |                 4.7<=GCC<= 12  3.5<=Clang<=15  intel-oneapi                 | 11,14,17,20  |
 | Linux (dockcross) |   All supported    | arm64 armv5 armv5-musl armv5-uclibc armv6 armv7a, mips, mipsel-lts, s390x, ppc64le, xtensa-uclibc, x86, x64, x64-clang, x64-tinycc |                        4.7<=GCC<= 12  3.5<=Clang<=15                        | 11,14,17,20  |
 
-> Windows versions prior Windows 10 are missing the Win32 API functionality for entering the "raw mode" and therefore won't work. They are also lacking ANSI support. See #173 for adding support to prior windows versions for MSVC / Win32.
+> Windows versions prior Windows 10 are missing the Win32 API functionality for entering the "raw mode" and therefore
+> won't work. They are also lacking ANSI support. See #173 for adding support to prior windows versions for MSVC / Win32.
 
 ## How to use
 
-Adding CPP-Terminal to your own project is really easy. We have collected various ways with easy how-to's [in our documentation](https://github.com/jupyter-xeus/cpp-terminal/wiki/Adding-CPP-Terminal-to-your-ptoject).
+Adding CPP-Terminal to your own project is really easy. We have collected various ways with easy
+how-to's [in our documentation](https://github.com/jupyter-xeus/cpp-terminal/wiki/Adding-CPP-Terminal-to-your-ptoject).
 
-## Documentation
+## Documentation [![docs](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/docs.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/docs.yml) ##
 
-CPP-Terminal's documentation can be found [here](https://github.com/jupyter-xeus/cpp-terminal/wiki).
+<h1 align="center">
+  <a href="https://jupyter-xeus.github.io/cpp-terminal/">
+
+  ```markdown
+  🌍 Online
+  ```
+
+  </a>
+  <a href="https://jupyter-xeus.github.io/cpp-terminal/cpp-terminal_Manual.pdf">
+
+  ```markdown
+  📖 PDF
+  ```
+
+  </a>
+</h1>
 
 ## Contributing
 
-Contributing to CPP-Terminal is highly appreciated and can be done in more ways than code. Extending it's functionality, reporting or fixing bugs and extending the documentations are just a few of them.
+Contributing to CPP-Terminal is highly appreciated and can be done in more ways than code. Extending it's functionality,
+reporting or fixing bugs and extending the documentations are just a few of them.
 
 ## License
 
-CPP-Terminal is licensed under the terms of [the MIT License](https://github.com/jupyter-xeus/cpp-terminal/blob/master/LICENSE) by Ondřej Čertík.
+CPP-Terminal is licensed under the terms
+of [the MIT License](https://github.com/jupyter-xeus/cpp-terminal/blob/master/LICENSE) by Ondřej Čertík.

@@ -753,7 +753,7 @@ char* editorPrompt(const char* prompt, void (*callback)(char*, int))
     Term::Key c = Term::read_event();
 
     if(c) continue;
-    if(c == Term::Key::DEL || c == Term::Key::CTRL + 'h' || c == Term::Key::BACKSPACE)
+    if(c == Term::Key::DEL || c == Term::Key::CTRL_H || c == Term::Key::BACKSPACE)
     {
       if(buflen != 0) buf[--buflen] = '\0';
     }

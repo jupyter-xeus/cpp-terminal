@@ -35,74 +35,66 @@ int main()
           if(key == Term::Key::Value::q) quit++;
           else
             quit = 0;
-          std::string s;
-          if(key == Term::Key::Value::NO_KEY) continue;
-          if(key >= Term::Key::a && key <= Term::Key::z)
+          std::string ret;
+          if(key.isCTRL())
           {
-            s = (char)(key + Term::Key::A - Term::Key::a);  // Convert to upper case
+            key = Term::Key(static_cast<Term::Key::Value>(key + 64));
+            ret += static_cast<std::string>("CTRL+");
           }
-          else if(key >= Term::Key::A && key <= Term::Key::Z)
+          if(key.isALT())
           {
-            s = (std::string) "Shift+" + (char)key;  // Already in upper case;
+            key = Term::Key(static_cast<Term::Key::Value>(key - Term::Key::Value::ALT));
+            ret += static_cast<std::string>("ALT+");
           }
-          else if(key.is_CTRL()) { s = (std::string) "CTRL+" + (char)(-Term::Key::CTRL + key); }
-          else if(key.is_ALT())
+          switch(key)
           {
-            s = (std::string) "Alt+" + (char)(key + Term::Key::A - (Term::Key::ALT + Term::Key::a));  // Convert to upper case
+            case Term::Key::SPACE: ret += "Space"; break;
+            case Term::Key::BACKSPACE: ret += "Backspace"; break;
+            case Term::Key::ENTER: ret += "Enter"; break;
+            case Term::Key::TAB: ret += "Tab"; break;
+            case Term::Key::ARROW_LEFT: ret += "Left Arrow"; break;
+            case Term::Key::ARROW_RIGHT: ret += "Right Arrow"; break;
+            case Term::Key::ARROW_UP: ret += "Up arrow"; break;
+            case Term::Key::ARROW_DOWN: ret += "Down arrow"; break;
+            case Term::Key::NUMERIC_5: ret += "5 Numeric pad"; break;
+            case Term::Key::DEL: ret += "Delete"; break;
+            case Term::Key::HOME: ret += "Home"; break;
+            case Term::Key::INSERT: ret += "Insert"; break;
+            case Term::Key::END: ret += "End"; break;
+            case Term::Key::PAGE_UP: ret += "Page up"; break;
+            case Term::Key::PAGE_DOWN: ret += "Page down"; break;
+            case Term::Key::ESC: ret += "Esc"; break;
+            case Term::Key::F1: ret += "F1"; break;
+            case Term::Key::F2: ret += "F2"; break;
+            case Term::Key::F3: ret += "F3"; break;
+            case Term::Key::F4: ret += "F4"; break;
+            case Term::Key::F5: ret += "F5"; break;
+            case Term::Key::F6: ret += "F6"; break;
+            case Term::Key::F7: ret += "F7"; break;
+            case Term::Key::F8: ret += "F8"; break;
+            case Term::Key::F9: ret += "F9"; break;
+            case Term::Key::F10: ret += "F10"; break;
+            case Term::Key::F11: ret += "F11"; break;
+            case Term::Key::F12: ret += "F12"; break;
+            case Term::Key::F13: ret += "F13"; break;
+            case Term::Key::F14: ret += "F14"; break;
+            case Term::Key::F15: ret += "F15"; break;
+            case Term::Key::F16: ret += "F16"; break;
+            case Term::Key::F17: ret += "F17"; break;
+            case Term::Key::F18: ret += "F18"; break;
+            case Term::Key::F19: ret += "F19"; break;
+            case Term::Key::F20: ret += "F20"; break;
+            case Term::Key::F21: ret += "F21"; break;
+            case Term::Key::F22: ret += "F22"; break;
+            case Term::Key::F23: ret += "F23"; break;
+            case Term::Key::F24: ret += "F24"; break;
+            default:
+              if(key.isprint()) ret += static_cast<char>(key);
+              else
+                ret += "Unknown";
+              break;
           }
-          else if(key.is_extended_ASCII() && !iscntrl(key)) { s = (char)key; }
-          else
-          {
-            switch(key)
-            {
-              case Term::Key::BACKSPACE: s = "BACKSPACE"; break;
-              case Term::Key::ENTER: s = "ENTER"; break;
-              case Term::Key::ALT + Term::Key::ENTER: s = "Alt+ENTER"; break;
-              case Term::Key::TAB: s = "TAB"; break;
-              case Term::Key::ARROW_LEFT: s = "ARROW_LEFT"; break;
-              case Term::Key::ARROW_RIGHT: s = "ARROW_RIGHT"; break;
-              case Term::Key::ARROW_UP: s = "ARROW_UP"; break;
-              case Term::Key::ARROW_DOWN: s = "ARROW_DOWN"; break;
-              case Term::Key::CTRL_UP: s = "CTRL_UP"; break;
-              case Term::Key::CTRL_DOWN: s = "CTRL_DOWN"; break;
-              case Term::Key::CTRL_RIGHT: s = "CTRL_RIGHT"; break;
-              case Term::Key::CTRL_LEFT: s = "CTRL_LEFT"; break;
-              case Term::Key::NUMERIC_5: s = "NUMERIC_5"; break;
-              case Term::Key::DEL: s = "DELETE"; break;
-              case Term::Key::HOME: s = "HOME"; break;
-              case Term::Key::INSERT: s = "INSERT"; break;
-              case Term::Key::END: s = "END"; break;
-              case Term::Key::PAGE_UP: s = "PAGE_UP"; break;
-              case Term::Key::PAGE_DOWN: s = "PAGE_DOWN"; break;
-              case Term::Key::ESC: s = "ESC"; break;
-              case Term::Key::F1: s = "F1"; break;
-              case Term::Key::F2: s = "F2"; break;
-              case Term::Key::F3: s = "F3"; break;
-              case Term::Key::F4: s = "F4"; break;
-              case Term::Key::F5: s = "F5"; break;
-              case Term::Key::F6: s = "F6"; break;
-              case Term::Key::F7: s = "F7"; break;
-              case Term::Key::F8: s = "F8"; break;
-              case Term::Key::F9: s = "F9"; break;
-              case Term::Key::F10: s = "F10"; break;
-              case Term::Key::F11: s = "F11"; break;
-              case Term::Key::F12: s = "F12"; break;
-              case Term::Key::F13: s = "F13"; break;
-              case Term::Key::F14: s = "F14"; break;
-              case Term::Key::F15: s = "F15"; break;
-              case Term::Key::F16: s = "F16"; break;
-              case Term::Key::F17: s = "F17"; break;
-              case Term::Key::F18: s = "F18"; break;
-              case Term::Key::F19: s = "F19"; break;
-              case Term::Key::F20: s = "F20"; break;
-              case Term::Key::F21: s = "F21"; break;
-              case Term::Key::F22: s = "F22"; break;
-              case Term::Key::F23: s = "F23"; break;
-              case Term::Key::F24: s = "F24"; break;
-              default: s = "Unknown:" + std::to_string(key);
-            }
-          }
-          Term::terminal << "Key: " << s << " (" << std::to_string(key) << ") " << std::endl;
+          Term::terminal << "Key: " << ret << " (" << std::to_string(key) << ") " << std::endl;
           break;
         }
         case Term::Event::Type::CopyPaste:
