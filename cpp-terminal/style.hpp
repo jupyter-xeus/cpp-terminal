@@ -42,23 +42,23 @@ enum class Style : std::uint8_t
   DOUBLY_UNDERLINED_OR_NOT_BOLD = 21,
 
   // resets corresponding styles
-  RESET_BOLD_DIM   = 22,
-  RESET_ITALIC     = 23,
-  RESET_UNDERLINE  = 24,
-  RESET_BLINKING   = 25,
-  RESET_REVERSED   = 27,
-  RESET_CONCEAL    = 28,
-  RESET_CROSSED    = 29,
+  RESET_BOLD_DIM  = 22,
+  RESET_ITALIC    = 23,
+  RESET_UNDERLINE = 24,
+  RESET_BLINKING  = 25,
+  RESET_REVERSED  = 27,
+  RESET_CONCEAL   = 28,
+  RESET_CROSSED   = 29,
 
   // sets the foreground and background color to the implementation defined colors
   DEFAULT_FOREGROUND_COLOR = 39,
   DEFAULT_BACKGROUND_COLOR = 49,
 
-  FRAME                  = 51,
-  ENCIRCLE               = 52,
-  OVERLINE               = 53,  // draws a line over the text, barely supported
-  RESET_FRAME_ENCIRCLE   = 54,
-  RESET_OVERLINE         = 55,
+  FRAME                = 51,
+  ENCIRCLE             = 52,
+  OVERLINE             = 53,  // draws a line over the text, barely supported
+  RESET_FRAME_ENCIRCLE = 54,
+  RESET_OVERLINE       = 55,
 
   // sets the underline color to the implementation defined colors
   DEFAULT_UNDERLINE_COLOR = 59,  // non standard, implemented in Kitty, VTE, mintty, and iTerm2
@@ -69,7 +69,7 @@ enum class Style : std::uint8_t
   DOUBLE_BAR_LEFT  = 63,  // drawa a double vertical bar to the left
   STRESS_MARKING   = 64,  // resets all bars left and right double and simple
 
-  RESET_BAR = 65, // resets 60 - 64 inclusive
+  RESET_BAR = 65,  // resets 60 - 64 inclusive
 
   SUPERSCRIPT                 = 73,  // only implemented in mintty
   SUBSCRIPT                   = 74,  // only implemented in mintty
@@ -79,14 +79,9 @@ enum class Style : std::uint8_t
 
 std::string style(const Term::Style& style);
 
-template<class Stream>
-inline Stream& operator<<(Stream& stream, const Term::Style& s){
-	return stream << style(s);
-}
+template<class Stream> Stream& operator<<(Stream& stream, const Term::Style& s) { return stream << style(s); }
 
-inline Term::Terminal& operator<<(Term::Terminal& terminal, const Term::Style& s){
-	// unabigify operator overload
-	return terminal << style(s);
-}
+// unabigify operator overload
+inline Term::Terminal& operator<<(Term::Terminal& terminal, const Term::Style& s){return terminal << style(s);}
 
 }  // namespace Term
