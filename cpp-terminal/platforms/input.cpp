@@ -51,8 +51,7 @@ Term::Event Term::Platform::read_raw()
       {
         case KEY_EVENT:
         {
-
-          if(buf[i].Event.KeyEvent.wVirtualKeyCode!=0) break;  //skip them for now
+          if(buf[i].Event.KeyEvent.wVirtualKeyCode != 0) break;  //skip them for now
           if(buf[i].Event.KeyEvent.bKeyDown)
           {
             std::size_t size_needed = WideCharToMultiByte(CP_UTF8, 0, &buf[i].Event.KeyEvent.uChar.UnicodeChar, -1, NULL, 0, NULL, NULL);
