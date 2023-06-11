@@ -1,7 +1,9 @@
 #ifdef _WIN32
-  #include <stringapiset.h>
-  #include <vector>
+  // clang-format off
   #include <windows.h>
+  #include <stringapiset.h>
+  // clang-format on
+  #include <vector>
 #else
   #include <cerrno>
   #include <csignal>
