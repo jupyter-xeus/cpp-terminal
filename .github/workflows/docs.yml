@@ -43,7 +43,7 @@ jobs:
         run: sudo apt-get install dia mscgen inkscape texlive-latex-recommended texlive-latex-extra texlive-font-utils
 
       - name: 🐍 Install Conda environment
-        uses: mamba-org/setup-micromamba@v1
+        uses: mamba-org/setup-micromamba@v1.4.2
         with:
           environment-file: .github/workflows/micromamba/docs.yml
 
