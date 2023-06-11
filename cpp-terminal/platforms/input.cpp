@@ -1,8 +1,7 @@
 #ifdef _WIN32
-  #include <fileapi.h>
+  #include <windows.h>
   #include <stringapiset.h>
   #include <vector>
-  #include <windows.h>
 #else
   #include <cerrno>
   #include <csignal>
