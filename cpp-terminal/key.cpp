@@ -8,8 +8,8 @@ std::string Term::Key::str()
   if(m_value>=0x10FFFF) return std::string();
   else
   {
-      Term::Private::codepoint_to_utf8(ret, static_cast<char32_t>(m_value));
-      return ret;
+    Term::Private::codepoint_to_utf8(ret, static_cast<char32_t>(m_value));
+    return ret;
   }
 }
 
