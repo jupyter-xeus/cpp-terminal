@@ -8,7 +8,7 @@ int main()
   try
   {
     // set options for the console
-    Term::terminal.setOptions(Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw);
+    Term::terminal.setOptions(Term::Option::NoClearScreen, Term::Option::NoSignalKeys, Term::Option::Cursor, Term::Option::Raw);
     // initial render of the whole screen
     Term::terminal << "CTRL + Q to end" << std::endl;
     bool main_loop_continue = true;

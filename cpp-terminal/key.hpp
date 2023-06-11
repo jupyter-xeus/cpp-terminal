@@ -226,7 +226,6 @@ public:
   bool empty();
 
   std::string str();
-  char32_t    codepoint();
 
 private:
   Value m_value{NO_KEY};

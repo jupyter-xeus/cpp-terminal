@@ -1,5 +1,12 @@
 #ifdef _WIN32
-  #include <windows.h>
+  #if defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64)
+    #define _AMD64_
+  #elif defined(i386) || defined(__i386) || defined(__i386__) || defined(__i386__) || defined(_M_IX86)
+    #define _X86_
+  #elif defined(__arm__) || defined(_M_ARM) || defined(_M_ARMT)
+    #define _ARM_
+  #endif
+  #include <ConsoleApi.h>
   #include <stringapiset.h>
   #include <vector>
 #else
@@ -44,8 +51,8 @@ Term::Event Term::Platform::read_raw()
       {
         case KEY_EVENT:
         {
-          WORD skip = buf[i].Event.KeyEvent.wVirtualKeyCode;  //skip them for now
-          if(skip == VK_SHIFT || skip == VK_LWIN || skip == VK_RWIN || skip == VK_APPS || skip == VK_CONTROL || skip == VK_MENU || skip == VK_CAPITAL) break;
+
+          if(buf[i].Event.KeyEvent.wVirtualKeyCode!=0) break;  //skip them for now
           if(buf[i].Event.KeyEvent.bKeyDown)
           {
             std::size_t size_needed = WideCharToMultiByte(CP_UTF8, 0, &buf[i].Event.KeyEvent.uChar.UnicodeChar, -1, NULL, 0, NULL, NULL);

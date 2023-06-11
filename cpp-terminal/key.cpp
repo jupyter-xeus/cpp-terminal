@@ -2,13 +2,15 @@
 
 #include "cpp-terminal/platforms/conversion.hpp"
 
-char32_t Term::Key::codepoint() { return static_cast<char32_t>(m_value); }
-
 std::string Term::Key::str()
 {
   std::string ret;
-  Term::Private::codepoint_to_utf8(ret, codepoint());
-  return ret;
+  if(m_value>=0x10FFFF) return std::string();
+  else
+  {
+      Term::Private::codepoint_to_utf8(ret, static_cast<char32_t>(m_value));
+      return ret;
+  }
 }
 
 Term::Key::Key(const Term::Key::Value& value) : m_value(value) {}
