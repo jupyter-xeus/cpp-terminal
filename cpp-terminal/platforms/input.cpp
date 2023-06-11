@@ -1,8 +1,8 @@
 #ifdef _WIN32
-  #include <vector>
-  #include <windows.h>
   #include <fileapi.h>
   #include <stringapiset.h>
+  #include <vector>
+  #include <windows.h>
 #else
   #include <cerrno>
   #include <csignal>
@@ -27,7 +27,6 @@ static void sigwinchHandler(int sig)
 }
 #endif
 
-
 Term::Event Term::Platform::read_raw()
 {
 #ifdef _WIN32
@@ -35,8 +34,8 @@ Term::Event Term::Platform::read_raw()
   GetNumberOfConsoleInputEvents(Private::std_cin.getHandler(), &nread);
   if(nread >= 1)
   {
-    std::string ret;
-    int         processed{0};
+    std::string               ret;
+    int                       processed{0};
     DWORD                     nre{0};
     std::vector<INPUT_RECORD> buf{nread};
     if(!ReadConsoleInputW(Private::std_cin.getHandler(), &buf[0], buf.size(), &nre)) { Term::Exception("ReadFile() failed"); }
@@ -51,9 +50,9 @@ Term::Event Term::Platform::read_raw()
           if(buf[i].Event.KeyEvent.bKeyDown)
           {
             std::size_t size_needed = WideCharToMultiByte(CP_UTF8, 0, &buf[i].Event.KeyEvent.uChar.UnicodeChar, -1, NULL, 0, NULL, NULL);
-            std::string strTo( size_needed, '\0' );
-            WideCharToMultiByte                  (CP_UTF8, 0, &buf[i].Event.KeyEvent.uChar.UnicodeChar, 1, &strTo[0], size_needed, NULL, NULL);
-            ret+=strTo.c_str();
+            std::string strTo(size_needed, '\0');
+            WideCharToMultiByte(CP_UTF8, 0, &buf[i].Event.KeyEvent.uChar.UnicodeChar, 1, &strTo[0], size_needed, NULL, NULL);
+            ret += strTo.c_str();
             ++processed;
             break;
             /*else
@@ -118,10 +117,12 @@ Term::Event Term::Platform::read_raw()
         }
       }
     }
-    if(processed>=1) return Event(ret);
-    else return Event();
+    if(processed >= 1) return Event(ret);
+    else
+      return Event();
   }
-  else return Event();
+  else
+    return Event();
 #else
   static bool activated{false};
   if(!activated)

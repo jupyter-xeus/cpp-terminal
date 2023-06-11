@@ -1,5 +1,5 @@
 #include "cpp-terminal/event.hpp"
-#include <iostream>
+
 #include "cpp-terminal/platforms/conversion.hpp"
 
 bool Term::Event::empty()
@@ -29,7 +29,7 @@ Term::Event::Event(const Term::Key& key) : m_Type(Type::Key), m_Key(key) {}
 
 Term::Event::Type Term::Event::type() { return m_Type; }
 
-Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste), m_str(str){ parse();}
+Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste), m_str(str) { parse(); }
 
 void Term::Event::parse()
 {
@@ -193,15 +193,9 @@ void Term::Event::parse()
       m_Key = Key(Term::Key::Value::F20);
     else if(m_str == "\033[G")
       m_Key = Key(Term::Key::Value::NUMERIC_5);
-    else if(m_str.size()==2 && ((m_str[0]&0b11100000)==0b11000000) && ((m_str[1]&0b11000000)==0b10000000))
-    {
-      m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0]));
-    }
-    else if(m_str.size()==3 && ((m_str[0]&0b11110000)==0b11100000) && ((m_str[1]&0b11000000)==0b10000000) && ((m_str[2]&0b11000000)==0b10000000))
-    {
-      m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0]));
-    }
-    else if(m_str.size()==4 && ((m_str[0]&0b11111000)==0b11110000) && ((m_str[1]&0b11000000)==0b10000000) && ((m_str[2]&0b11000000)==0b10000000) && ((m_str[2]&0b11000000)==0b10000000))
+    else if(m_str.size() == 2 && ((m_str[0] & 0b11100000) == 0b11000000) && ((m_str[1] & 0b11000000) == 0b10000000)) { m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0])); }
+    else if(m_str.size() == 3 && ((m_str[0] & 0b11110000) == 0b11100000) && ((m_str[1] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000)) { m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0])); }
+    else if(m_str.size() == 4 && ((m_str[0] & 0b11111000) == 0b11110000) && ((m_str[1] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000))
     {
       m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0]));
     }
