@@ -1,6 +1,8 @@
 #ifdef _WIN32
   #include <vector>
   #include <windows.h>
+  #include <fileapi.h>
+  #include <stringapiset.h>
 #else
   #include <cerrno>
   #include <csignal>
@@ -25,19 +27,6 @@ static void sigwinchHandler(int sig)
 }
 #endif
 
-char Term::Platform::read_raw_stdin()
-{
-  char c = getchar();
-  if(c >= 0) { return c; }
-  else if(c == EOF)
-  {
-    // In non-raw (blocking) mode this happens when the input file
-    // ends. In such a case, return the End of Transmission (EOT)
-    // character (Ctrl-D)
-    return 0x04;
-  }
-  else { throw Term::Exception("getchar() failed"); }
-}
 
 Term::Event Term::Platform::read_raw()
 {
@@ -46,11 +35,11 @@ Term::Event Term::Platform::read_raw()
   GetNumberOfConsoleInputEvents(Private::std_cin.getHandler(), &nread);
   if(nread >= 1)
   {
+    std::string ret;
+    int         processed{0};
     DWORD                     nre{0};
     std::vector<INPUT_RECORD> buf{nread};
-    if(!ReadConsoleInput(Private::std_cin.getHandler(), &buf[0], buf.size(), &nre)) { Term::Exception("ReadFile() failed"); }
-    std::string ret(nre, '\0');
-    int         processed{0};
+    if(!ReadConsoleInputW(Private::std_cin.getHandler(), &buf[0], buf.size(), &nre)) { Term::Exception("ReadFile() failed"); }
     for(std::size_t i = 0; i != nre; ++i)
     {
       switch(buf[i].EventType)
@@ -61,7 +50,10 @@ Term::Event Term::Platform::read_raw()
           if(skip == VK_SHIFT || skip == VK_LWIN || skip == VK_RWIN || skip == VK_APPS || skip == VK_CONTROL || skip == VK_MENU || skip == VK_CAPITAL) break;
           if(buf[i].Event.KeyEvent.bKeyDown)
           {
-            if(buf[i].Event.KeyEvent.uChar.AsciiChar != 0) ret[processed] = buf[i].Event.KeyEvent.uChar.AsciiChar;
+            std::size_t size_needed = WideCharToMultiByte(CP_UTF8, 0, &buf[i].Event.KeyEvent.uChar.UnicodeChar, -1, NULL, 0, NULL, NULL);
+            std::string strTo( size_needed, '\0' );
+            WideCharToMultiByte                  (CP_UTF8, 0, &buf[i].Event.KeyEvent.uChar.UnicodeChar, 1, &strTo[0], size_needed, NULL, NULL);
+            ret+=strTo.c_str();
             ++processed;
             break;
             /*else
@@ -109,20 +101,27 @@ Term::Event Term::Platform::read_raw()
             break;
         }
         case FOCUS_EVENT:
+        {
+          break;
+        }
         case MENU_EVENT:
+        {
+          break;
+        }
         case MOUSE_EVENT:
+        {
+          break;
+        }
         case WINDOW_BUFFER_SIZE_EVENT:
         {
-          COORD coord{buf[i].Event.WindowBufferSizeEvent.dwSize};
-          return Event(Screen(coord.Y, coord.X));
+          return Event(Screen(buf[i].Event.WindowBufferSizeEvent.dwSize.Y, buf[i].Event.WindowBufferSizeEvent.dwSize.X));
         }
-        default: continue;
       }
     }
-    return Event(ret.c_str());
+    if(processed>=1) return Event(ret);
+    else return Event();
   }
-  else
-    return Event();
+  else return Event();
 #else
   static bool activated{false};
   if(!activated)

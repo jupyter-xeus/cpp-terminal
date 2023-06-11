@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 namespace Term
 {
@@ -223,7 +224,9 @@ public:
   // Detect if Key is ALT+*
   bool isALT();
   bool empty();
-  char getChar();
+
+  std::string str();
+  char32_t    codepoint();
 
 private:
   Value m_value{NO_KEY};

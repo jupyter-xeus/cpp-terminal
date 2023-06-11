@@ -1,4 +1,17 @@
 #include "cpp-terminal/key.hpp"
+#include "cpp-terminal/platforms/conversion.hpp"
+
+char32_t    Term::Key::codepoint()
+{
+  return static_cast<char32_t>(m_value);
+}
+
+std::string Term::Key::str()
+{
+  std::string ret;
+  Term::Private::codepoint_to_utf8(ret,codepoint());
+  return ret;
+}
 
 Term::Key::Key(const Term::Key::Value& value) : m_value(value) {}
 

@@ -17,16 +17,3 @@ Term::Event Term::read_event()
   while((event = Platform::read_raw()).empty()) { std::this_thread::sleep_for(std::chrono::milliseconds(10)); }
   return event;
 }
-
-// returns the whole input from STDIN as string
-std::string Term::read_stdin()
-{
-  std::string file;
-  char        c{'\0'};
-  while(true)
-  {
-    c = Platform::read_raw_stdin();
-    if(c == 0x04) return file;
-    else { file.push_back(c); }
-  }
-}
