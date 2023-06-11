@@ -6,7 +6,7 @@
   #elif defined(__arm__) || defined(_M_ARM) || defined(_M_ARMT)
     #define _ARM_
   #endif
-  #include <ConsoleApi.h>
+  #include <consoleapi.h>
   #include <stringapiset.h>
   #include <vector>
 #else
