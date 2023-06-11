@@ -46,6 +46,7 @@ jobs:
         uses: mamba-org/setup-micromamba@v1.4.2
         with:
           environment-file: .github/workflows/micromamba/docs.yml
+          environment-name: docs
 
       - name: ⬇️ Setup CMake
         uses: lukka/get-cmake@latest
