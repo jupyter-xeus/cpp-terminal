@@ -12,7 +12,7 @@ public:
   {
     Out    = 0,
     In     = 1,
-    Unknow = 2,
+    Unknown = 2,
   };
   Focus() = default;
   explicit Focus(const Term::Focus::Type& type);
@@ -21,7 +21,7 @@ public:
   bool              isOut();
 
 private:
-  Term::Focus::Type m_focus{Term::Focus::Type::Unknow};
+  Term::Focus::Type m_focus{Term::Focus::Type::Unknown};
 };
 
 }  // namespace Term
