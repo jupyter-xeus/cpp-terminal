@@ -10,8 +10,8 @@ class Focus
 public:
   enum class Type : std::int32_t
   {
-    Out    = 0,
-    In     = 1,
+    Out     = 0,
+    In      = 1,
     Unknown = 2,
   };
   Focus() = default;
