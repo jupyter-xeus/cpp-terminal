@@ -10,7 +10,7 @@ target_compile_options(cpp-terminal PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
 target_include_directories(cpp-terminal PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> $<INSTALL_INTERFACE:include>)
 
 set_target_properties(cpp-terminal PROPERTIES
-                      PUBLIC_HEADER 
+                      PUBLIC_HEADER
                       "${CMAKE_CURRENT_SOURCE_DIR}/focus.hpp;
                        ${CMAKE_CURRENT_SOURCE_DIR}/mouse.hpp;
                        ${CMAKE_CURRENT_SOURCE_DIR}/options.hpp;
