@@ -43,8 +43,8 @@ void Term::Terminal::store_and_restore()
       if(!SetConsoleMode(Private::std_cout.getHandler(), dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     }
     if(!GetConsoleMode(Private::std_cin.getHandler(), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
-    dwOriginalInMode|=(ENABLE_EXTENDED_FLAGS|ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT);
-    dwOriginalInMode&=~ENABLE_QUICK_EDIT_MODE;
+    dwOriginalInMode |= (ENABLE_EXTENDED_FLAGS | ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT);
+    dwOriginalInMode &= ~ENABLE_QUICK_EDIT_MODE;
     if(m_terminfo.hasANSIEscapeCode())
     {
       if(!SetConsoleMode(Private::std_cin.getHandler(), dwOriginalInMode | ENABLE_VIRTUAL_TERMINAL_INPUT)) { throw Term::Exception("SetConsoleMode() failed"); }

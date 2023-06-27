@@ -25,7 +25,7 @@ Term::Event::operator Term::Screen()
 
 Term::Event::Event(const Term::Screen& screen) : m_Type(Type::Screen), m_Screen(screen) {}
 
-Term::Event::Event(const Term::Mouse& mouse): m_Type(Type::Mouse), m_Mouse(mouse) {}
+Term::Event::Event(const Term::Mouse& mouse) : m_Type(Type::Mouse), m_Mouse(mouse) {}
 
 Term::Event::Event(const Term::Focus& focus) : m_Type(Type::Focus), m_Focus(focus) {}
 
