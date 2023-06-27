@@ -25,6 +25,10 @@ Term::Event::operator Term::Screen()
 
 Term::Event::Event(const Term::Screen& screen) : m_Type(Type::Screen), m_Screen(screen) {}
 
+Term::Event::Event(const Term::Mouse& mouse): m_Type(Type::Mouse), m_Mouse(mouse) {}
+
+Term::Event::Event(const Term::Focus& focus) : m_Type(Type::Focus), m_Focus(focus) {}
+
 Term::Event::Event(const Term::Key& key) : m_Type(Type::Key), m_Key(key) {}
 
 Term::Event::Type Term::Event::type() { return m_Type; }
@@ -220,4 +224,18 @@ Term::Event::operator Term::Cursor()
   if(m_Type == Type::Cursor) return m_Cursor;
   else
     return Cursor();
+}
+
+Term::Event::operator Term::Focus()
+{
+  if(m_Type == Type::Focus) return m_Focus;
+  else
+    return Focus();
+}
+
+Term::Event::operator Term::Mouse()
+{
+  if(m_Type == Type::Mouse) return m_Mouse;
+  else
+    return Mouse();
 }

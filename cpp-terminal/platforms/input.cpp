@@ -16,6 +16,8 @@
 
 #include <string>
 
+#include <iostream>
+
 #if !defined(_WIN32)
 namespace
 {
@@ -101,7 +103,7 @@ Term::Event Term::Platform::read_raw()
         }
         case FOCUS_EVENT:
         {
-          break;
+          return Event(Focus(static_cast<Term::Focus::Type>(buf[i].Event.FocusEvent.bSetFocus)));
         }
         case MENU_EVENT:
         {
@@ -109,7 +111,31 @@ Term::Event Term::Platform::read_raw()
         }
         case MOUSE_EVENT:
         {
-          break;
+          std::int32_t button{static_cast<std::int32_t>(buf[i].Event.MouseEvent.dwButtonState)};
+          Term::Buttons::Type type{Term::Buttons::Type::None};
+
+          Term::Buttons::Action action;
+          if(buf[i].Event.MouseEvent.dwEventFlags == DOUBLE_CLICK) action = Term::Buttons::Action::DoubleClicked;
+          else if(buf[i].Event.MouseEvent.dwEventFlags == MOUSE_HWHEELED)
+          {
+            if(button >0) action = Term::Buttons::Action::ToRight;
+            else action = Term::Buttons::Action::ToLeft;
+            type= static_cast<Term::Buttons::Type>(static_cast<std::uint32_t>(type)+static_cast<std::uint32_t>(Term::Buttons::Type::Wheel));
+          }
+          else if(buf[i].Event.MouseEvent.dwEventFlags == MOUSE_WHEELED)
+          {
+            if(button > 0) action = Term::Buttons::Action::RolledUp;
+            else action = Term::Buttons::Action::RolledDown;
+            type= static_cast<Term::Buttons::Type>(static_cast<std::uint32_t>(type)+static_cast<std::uint32_t>(Term::Buttons::Type::Wheel));
+          }
+          else if(button>0) action = Term::Buttons::Action::Clicked;
+          else if(buf[i].Event.MouseEvent.dwEventFlags == MOUSE_MOVED) action = Term::Buttons::Action::None;
+          else action = Term::Buttons::Action::Released;
+
+          if(button & FROM_LEFT_1ST_BUTTON_PRESSED) type= static_cast<Term::Buttons::Type>(static_cast<std::uint32_t>(type)+static_cast<std::uint32_t>(Term::Buttons::Type::Left));
+          if(button & RIGHTMOST_BUTTON_PRESSED) type= static_cast<Term::Buttons::Type>(static_cast<std::uint32_t>(type)+static_cast<std::uint32_t>(Term::Buttons::Type::Right));
+
+          return Event(Mouse(Buttons(type,action,0),buf[i].Event.MouseEvent.dwMousePosition.Y,buf[i].Event.MouseEvent.dwMousePosition.X));
         }
         case WINDOW_BUFFER_SIZE_EVENT:
         {
