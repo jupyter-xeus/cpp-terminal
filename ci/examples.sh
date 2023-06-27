@@ -3,13 +3,6 @@
 set -ex
 
 ./install/bin/examples/colors
-./install/bin/examples/read_stdin
-
-echo "testing stdin example"
-if [[ $(echo test | ./install/bin/examples/read_stdin) != "Input from stdin: test" ]]; then
-  echo "stdin example returned wrong input"
-  exit 1
-fi
 
 echo "Expected to succeed:"
 ./install/bin/examples/colors < ./install/bin/examples/colors
