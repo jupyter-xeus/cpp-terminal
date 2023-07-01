@@ -3,10 +3,10 @@
 typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 #endif
 
+#include "cpp-terminal/platforms/env.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
 #include <string>
-#include <utility>
 
 #ifdef _WIN32
 bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& patch)
@@ -27,33 +27,13 @@ bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& 
 }
 #endif
 
-namespace Private
-{
-std::pair<bool, std::string> getenv(const std::string& env)
-{
-#ifdef _WIN32
-  std::size_t requiredSize{0};
-  getenv_s(&requiredSize, nullptr, 0, env.c_str());
-  if(requiredSize == 0) return {false, std::string()};
-  std::string ret;
-  ret.reserve(requiredSize * sizeof(char));
-  getenv_s(&requiredSize, &ret[0], requiredSize, env.c_str());
-  return {true, ret};
-#else
-  if(std::getenv(env.c_str()) != nullptr) return {true, static_cast<std::string>(std::getenv(env.c_str()))};
-  else
-    return {false, std::string()};
-#endif
-}
-}  // namespace Private
-
 Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{Term::Terminfo::ColorMode::Unset};
 
 Term::Terminfo::Terminfo()
 {
   m_term         = Private::getenv("TERM").second;
   m_terminalName = Private::getenv("TERM_PROGRAM").second;
-  m_terminalName = Private::getenv("TERMINAL_EMULATOR").second;
+  if(m_terminalName.empty()) m_terminalName = Private::getenv("TERMINAL_EMULATOR").second;
   if(Private::getenv("ANSICON").first) m_terminalName = "ansicon";
   m_terminalVersion = Private::getenv("TERM_PROGRAM_VERSION").second;
   setANSIEscapeCode();
@@ -74,7 +54,8 @@ void Term::Terminfo::setColorMode()
   else if(m_terminalName == "vscode")
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
 #ifdef _WIN32
-  if(WindowsVersionGreater(10, 0, 10586)) m_colorMode = Term::Terminfo::ColorMode::Bit24;
+  else if(WindowsVersionGreater(10, 0, 10586))
+    m_colorMode = Term::Terminfo::ColorMode::Bit24;
   else if(m_terminalName == "ansicon")
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
   else

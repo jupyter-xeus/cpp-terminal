@@ -58,6 +58,7 @@ public:
   }
 
 private:
+  void           setBadStateReturnCode();
   void           setOptions();
   void           applyOptions();
   std::ofstream  cout;
@@ -73,6 +74,7 @@ private:
   bool           has_allocated_console{false};
   Term::Terminfo m_terminfo;
   Term::Options  m_options;
+  std::uint8_t   m_badReturnCode{EXIT_FAILURE};
 };
 
 // change the title of the terminal, only supported by a few terminals
