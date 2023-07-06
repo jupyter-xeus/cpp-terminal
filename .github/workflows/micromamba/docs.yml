@@ -5,3 +5,4 @@ channels:
   - defaults
 dependencies:
   - doxygen
+  - ghostscript
