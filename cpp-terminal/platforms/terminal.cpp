@@ -1,6 +1,7 @@
 #include "cpp-terminal/terminal.hpp"
 
 #include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/platforms/env.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 
 #ifdef _WIN32
@@ -74,6 +75,19 @@ void Term::Terminal::store_and_restore()
     enabled = false;
   }
 #endif
+}
+
+void Term::Terminal::setBadStateReturnCode()
+{
+  std::pair<bool, std::string> returnCode{Private::getenv("CPP_TERMINAL_BADSTATE")};
+  try
+  {
+    if(returnCode.first && stoi(returnCode.second) != EXIT_SUCCESS) m_badReturnCode = stoi(returnCode.second);
+  }
+  catch(...)
+  {
+    m_badReturnCode = EXIT_FAILURE;
+  }
 }
 
 void Term::Terminal::setRawMode()
