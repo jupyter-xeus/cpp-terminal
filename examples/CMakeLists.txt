@@ -34,6 +34,9 @@ target_link_libraries(colors PRIVATE cpp-terminal::cpp-terminal Warnings::Warnin
 add_executable(events events.cpp)
 target_link_libraries(events PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
 
+add_executable(styles styles.cpp)
+target_link_libraries(styles PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
+
 if(CPPTERMINAL_ENABLE_INSTALL)
   install(TARGETS cin minimal prompt_multiline prompt_immediate prompt_not_immediate prompt_simple kilo menu menu_window keys colors RUNTIME DESTINATION bin/examples)
 endif()
