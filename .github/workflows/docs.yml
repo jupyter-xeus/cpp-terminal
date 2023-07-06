@@ -46,7 +46,7 @@ jobs:
 
       - name: 🟨 Install LaTeX packages
         run: |
-          tlmgr install latex-bin latex-tools-dev tocloft natbib fancyhdr changepage geometry psnfss ec wasysym ulem intcalc alphalph enumitem etoolbox stackengine amsfonts adjustbox iftex hanging pmboxdraw ltxcmds kvsetkeys kvdefinekeys infwarerr kvoptions float xcolor colortbl varwidth fancyvrb multirow epstopdf
+          tlmgr install latex-bin newunicodechar latex-tools-dev tocloft natbib fancyhdr changepage geometry psnfss ec wasysym ulem intcalc alphalph enumitem etoolbox stackengine amsfonts adjustbox iftex hanging pmboxdraw ltxcmds kvsetkeys kvdefinekeys infwarerr kvoptions float xcolor colortbl varwidth fancyvrb multirow epstopdf
           tlmgr list --only-installed          
           
       - name: 🐍 Install Conda environment
