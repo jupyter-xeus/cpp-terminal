@@ -33,7 +33,6 @@ $latex_batchmode
 \RequirePackage{infwarerr}
 \let\protected@wlog\@@protected@wlog
 \makeatother
-\IfFormatAtLeastTF{2016/01/01}{}{\usepackage{fixltx2e}} % for \textsubscript
 \IfFormatAtLeastTF{2015/01/01}{\pdfsuppresswarningpagegroup=1}{}
 
 \usepackage{doxygen}
@@ -43,10 +42,7 @@ $extralatexstylesheet
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
 \usepackage{makeidx}
-\PassOptionsToPackage{warn}{textcomp}
-\usepackage{textcomp}
-\usepackage[nointegrals]{wasysym}
-\usepackage{ifxetex}
+\usepackage{iftex}
 
 % NLS support packages
 $languagesupport
@@ -168,15 +164,7 @@ $latexspecialformulachars
 % Hyperlinks
 %%BEGIN PDF_HYPERLINKS
 % Hyperlinks (required, but should be loaded last)
-\ifpdf
-\usepackage[pdftex,pagebackref=true]{hyperref}
-\else
-\ifxetex
 \usepackage[pagebackref=true]{hyperref}
-\else
-\usepackage[ps2pdf,pagebackref=true]{hyperref}
-\fi
-\fi
 
 \hypersetup{%
 colorlinks=true,%
