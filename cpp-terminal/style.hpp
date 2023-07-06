@@ -37,7 +37,7 @@ enum class Style : std::uint8_t
   FONT_9  = 19,
   FONT_10 = 20,  // Fraktur / Gothic font
 
-  // Double-underline per ECMA-48,[5]: 8.3.117  but instead disables bold intensity on several terminals,
+  // Double-underline per ECMA-48,[5] 8.3.117 but instead disables bold intensity on several terminals,
   // including in the Linux kernel's console before version 4.17
   DOUBLY_UNDERLINED_OR_NOT_BOLD = 21,
 
