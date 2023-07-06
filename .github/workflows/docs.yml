@@ -46,7 +46,7 @@ jobs:
 
       - name: 🟨 Install LaTeX packages
         run: |
-          tlmgr install latex-bin latex-tools-dev pmboxdraw ltxcmds kvsetkeys kvdefinekeys infwarerr kvoptions float
+          tlmgr install latex-bin latex-tools-dev pmboxdraw ltxcmds kvsetkeys kvdefinekeys infwarerr kvoptions float xcolor
           tlmgr list --only-installed          
           
       - name: 🐍 Install Conda environment
