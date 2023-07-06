@@ -39,8 +39,15 @@ jobs:
         with:
           path: .github/workflows
 
-      - name: 🟨 Install packages
-        run: sudo apt-get install dia mscgen inkscape texlive-latex-recommended texlive-latex-extra texlive-font-utils
+      - name: 🟨 Install TinyTeX
+        uses: r-lib/actions/setup-tinytex@v2
+        env:
+          TINYTEX_INSTALLER: TinyTeX-0
+
+      - name: 🟨 Install LaTeX packages
+        run: |
+          tlmgr install array pmboxdraw makeidx textcomp wasysym geometry changepage fancyhdr natbib tocloft hyperref
+          tlmgr list --only-installed
 
       - name: 🐍 Install Conda environment
         uses: mamba-org/setup-micromamba@v1.4.3
