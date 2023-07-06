@@ -46,9 +46,9 @@ jobs:
 
       - name: 🟨 Install LaTeX packages
         run: |
-          tlmgr install latex-bin latex-tools-dev pmboxdraw ltxcmds kvsetkeys kvdefinekeys infwarerr
-          tlmgr list --only-installed
-
+          tlmgr install latex-bin latex-tools-dev pmboxdraw ltxcmds kvsetkeys kvdefinekeys infwarerr kvoptions
+          tlmgr list --only-installed          
+          
       - name: 🐍 Install Conda environment
         uses: mamba-org/setup-micromamba@v1.4.3
         with:
