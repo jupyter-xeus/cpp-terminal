@@ -46,7 +46,7 @@ jobs:
 
       - name: 🟨 Install LaTeX packages
         run: |
-          tlmgr install latex-bin
+          tlmgr install latex-bin latex-tools
           tlmgr list --only-installed
 
       - name: 🐍 Install Conda environment
