@@ -65,7 +65,7 @@ jobs:
         run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -DCMAKE_PREFIX_PATH="~/micromamba" -DCMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}  -D CPPTERMINAL_ENABLE_DOCS=ON
 
       - name: ⚙️ Build
-        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }} --target docs
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }} --target all docs
 
       - name: 📥 Install
         run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --strip  && mv ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/pdf/cpp-terminal_Manual.pdf ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/html/cpp-terminal_Manual.pdf
