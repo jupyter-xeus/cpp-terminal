@@ -46,7 +46,7 @@ jobs:
 
       - name: 🟨 Install LaTeX packages
         run: |
-          tlmgr install array pmboxdraw makeidx textcomp wasysym geometry changepage fancyhdr natbib tocloft hyperref
+          tlmgr install latex-bin pmboxdraw wasysym geometry changepage fancyhdr natbib tocloft hyperref
           tlmgr list --only-installed
 
       - name: 🐍 Install Conda environment
