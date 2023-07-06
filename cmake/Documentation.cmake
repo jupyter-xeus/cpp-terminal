@@ -26,7 +26,7 @@ function(doxyfile_docs)
   endif()
 
   if(DEFINED DOXYGEN_INPUT)
-    missive(WARN "DOXYGEN_INPUT is set but it will be ignored. Pass the files and directories directly to the doxygen_add_docs() command instead.")
+    message(WARNING "DOXYGEN_INPUT is set but it will be ignored. Pass the files and directories directly to the doxygen_add_docs() command instead.")
   endif()
   set(DOXYGEN_INPUT "${ARGS_UNPARSED_ARGUMENTS}")
 
@@ -132,7 +132,7 @@ function(doxyfile_docs)
       set(DOXYGEN_GENERATE_LATEX YES)
     else()
       set(DOXYGEN_GENERATE_LATEX NO)
-      missive(WARN "DOXYGEN_GENERATE_LATEX is set to ON but latex compilers are not found ! Disabling the pdf generation !")
+      message(WARNING "DOXYGEN_GENERATE_LATEX is set to ON but latex compilers are not found ! Disabling the pdf generation !")
     endif()
   endif()
 
@@ -207,7 +207,7 @@ function(doxyfile_docs)
     if(_isGenerated OR (EXISTS "${_abs_item}" AND NOT IS_DIRECTORY "${_abs_item}" AND NOT IS_SYMLINK "${_abs_item}"))
       list(APPEND _sources "${_abs_item}")
     elseif(_args_USE_STAMP_FILE)
-      missive(FATAL_ERROR "Source does not exist or is not a file:\n"
+      message(FATAL_ERROR "Source does not exist or is not a file:\n"
               "    ${_abs_item}\n"
               "Only existing files may be specified when the "
               "USE_STAMP_FILE option is given.")

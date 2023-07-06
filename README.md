@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.svg" alt="CPP-Terminal logo"/>
+  <img src="docs/imgs/logo.svg" alt="CPP-Terminal logo"/>
 </p>
 
 [![Linux CI](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/linux.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/linux.yml)
