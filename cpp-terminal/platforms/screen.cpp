@@ -12,7 +12,7 @@ Term::Screen Term::screen_size()
 {
 #ifdef _WIN32
   CONSOLE_SCREEN_BUFFER_INFO inf;
-  if(GetConsoleScreenBufferInfo(Private::std_cout.getHandler(), &inf)) return Term::Screen(static_cast<std::size_t>(inf.srWindow.Bottom - inf.srWindow.Top + 1), static_cast<std::size_t>(inf.srWindow.Right - inf.srWindow.Left + 1));
+  if(GetConsoleScreenBufferInfo(Private::out.handle(), &inf)) return Term::Screen(static_cast<std::size_t>(inf.srWindow.Bottom - inf.srWindow.Top + 1), static_cast<std::size_t>(inf.srWindow.Right - inf.srWindow.Left + 1));
   return Term::Screen();
 #else
   Term::Screen   ret;

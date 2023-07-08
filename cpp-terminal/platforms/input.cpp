@@ -32,14 +32,14 @@ Term::Event Term::Platform::read_raw()
 {
 #ifdef _WIN32
   DWORD nread{0};
-  GetNumberOfConsoleInputEvents(Private::std_cin.getHandler(), &nread);
+  GetNumberOfConsoleInputEvents(Private::in.handle(), &nread);
   if(nread >= 1)
   {
     std::string               ret;
     int                       processed{0};
     DWORD                     nre{0};
     std::vector<INPUT_RECORD> buf{nread};
-    if(!ReadConsoleInputW(Private::std_cin.getHandler(), &buf[0], buf.size(), &nre)) { Term::Exception("ReadFile() failed"); }
+    if(!ReadConsoleInputW(Private::in.handle(), &buf[0], buf.size(), &nre)) { Term::Exception("ReadFile() failed"); }
     for(std::size_t i = 0; i != nre; ++i)
     {
       switch(buf[i].EventType)

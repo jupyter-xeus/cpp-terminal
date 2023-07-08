@@ -59,8 +59,8 @@ public:
 };
 
 // Even in namespace it can't be called stdin because stdin can be a Macro :(
-extern InputFileHandler&  std_cin;
-extern OutputFileHandler& std_cout;
+extern InputFileHandler&  in;
+extern OutputFileHandler& out;
 
 }  // namespace Private
 

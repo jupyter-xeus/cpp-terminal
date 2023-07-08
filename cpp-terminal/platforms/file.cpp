@@ -17,9 +17,9 @@ namespace Term
 namespace Private
 {
 static char                       stdin_buf[sizeof(Term::Private::InputFileHandler)];
-Term::Private::InputFileHandler&  std_cin = reinterpret_cast<Term::Private::InputFileHandler&>(stdin_buf);
+Term::Private::InputFileHandler&  in = reinterpret_cast<Term::Private::InputFileHandler&>(stdin_buf);
 static char                       stdout_buf[sizeof(Term::Private::OutputFileHandler)];
-Term::Private::OutputFileHandler& std_cout = reinterpret_cast<Term::Private::OutputFileHandler&>(stdout_buf);
+Term::Private::OutputFileHandler& out = reinterpret_cast<Term::Private::OutputFileHandler&>(stdout_buf);
 }  // namespace Private
 
 }  // namespace Term
@@ -73,11 +73,11 @@ void Term::Private::FileInitializer::initialize()
   if(m_counter++ == 0)
   {
 #if defined(_WIN32)
-    new(&Term::Private::std_cin) InputFileHandler("CONIN$");
-    new(&Term::Private::std_cout) OutputFileHandler("CONOUT$");
+    new(&Term::Private::in) InputFileHandler("CONIN$");
+    new(&Term::Private::out) OutputFileHandler("CONOUT$");
 #else
-    new(&Term::Private::std_cin) InputFileHandler("/dev/tty");
-    new(&Term::Private::std_cout) OutputFileHandler("/dev/tty");
+    new(&Term::Private::in) InputFileHandler("/dev/tty");
+    new(&Term::Private::out) OutputFileHandler("/dev/tty");
 #endif
   }
 }
@@ -88,8 +88,8 @@ Term::Private::FileInitializer::~FileInitializer()
 {
   if(--m_counter == 0)
   {
-    (&Term::Private::std_cin)->~InputFileHandler();
-    (&Term::Private::std_cout)->~OutputFileHandler();
+    (&Term::Private::in)->~InputFileHandler();
+    (&Term::Private::out)->~OutputFileHandler();
   }
 }
 
@@ -97,7 +97,7 @@ void Term::Private::OutputFileHandler::write(const std::string& str)
 {
 #if defined(_WIN32)
   DWORD dwCount;
-  WriteConsole(getHandler(), &str[0], str.size(), &dwCount, nullptr);
+  WriteConsole(handle(), &str[0], str.size(), &dwCount, nullptr);
 #else
   ::write(fd(), &str[0], str.size());
 #endif

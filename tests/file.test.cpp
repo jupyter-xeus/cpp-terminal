@@ -7,6 +7,6 @@
 
 TEST_CASE("Test platform/file.hpp")
 {
-  Term::Private::std_cout.write("Good !\n");
-  std::fprintf(Term::Private::std_cout.file(), "Good !\n");
+  Term::Private::out.write("Good !\n");
+  std::fprintf(Term::Private::out.file(), "Good !\n");
 }

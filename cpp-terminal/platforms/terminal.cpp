@@ -39,15 +39,15 @@ void Term::Terminal::store_and_restore()
     if(!SetConsoleOutputCP(CP_UTF8)) throw Term::Exception("SetConsoleOutputCP(CP_UTF8) failed");
     if(!SetConsoleCP(CP_UTF8)) throw Term::Exception("SetConsoleCP(CP_UTF8) failed");
 
-    if(!GetConsoleMode(Private::std_cout.getHandler(), &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(!GetConsoleMode(Private::out.handle(), &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
     if(m_terminfo.hasANSIEscapeCode())
     {
-      if(!SetConsoleMode(Private::std_cout.getHandler(), dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
+      if(!SetConsoleMode(Private::out.handle(), dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     }
-    if(!GetConsoleMode(Private::std_cin.getHandler(), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(!GetConsoleMode(Private::in.handle(), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
     if(m_terminfo.hasANSIEscapeCode())
     {
-      if(!SetConsoleMode(Private::std_cin.getHandler(), dwOriginalInMode | ENABLE_VIRTUAL_TERMINAL_INPUT)) { throw Term::Exception("SetConsoleMode() failed"); }
+      if(!SetConsoleMode(Private::in.handle(), dwOriginalInMode | ENABLE_VIRTUAL_TERMINAL_INPUT)) { throw Term::Exception("SetConsoleMode() failed"); }
     }
     enabled = true;
   }
@@ -55,8 +55,8 @@ void Term::Terminal::store_and_restore()
   {
     if(!SetConsoleOutputCP(out_code_page)) throw Term::Exception("SetConsoleOutputCP(out_code_page) failed");
     if(!SetConsoleCP(in_code_page)) throw Term::Exception("SetConsoleCP(in_code_page) failed");
-    if(!SetConsoleMode(Private::std_cout.getHandler(), dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
-    if(!SetConsoleMode(Private::std_cin.getHandler(), dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
+    if(!SetConsoleMode(Private::out.handle(), dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
+    if(!SetConsoleMode(Private::in.handle(), dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     enabled = false;
   }
 #else
@@ -93,10 +93,10 @@ void Term::Terminal::setRawMode()
 {
 #ifdef _WIN32
   DWORD flags = {0};
-  if(!GetConsoleMode(Private::std_cin.getHandler(), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
+  if(!GetConsoleMode(Private::in.handle(), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
   if(m_options.has(Option::NoSignalKeys)) { flags &= ~ENABLE_PROCESSED_INPUT; }
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
-  if(!SetConsoleMode(Private::std_cin.getHandler(), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
+  if(!SetConsoleMode(Private::in.handle(), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
 #else
   if(!Private::std_cout.null())
   {
