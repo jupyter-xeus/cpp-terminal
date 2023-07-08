@@ -15,10 +15,10 @@ namespace Term
 
 namespace Private
 {
-static char                 stdin_buf[sizeof(Term::Private::FileHandler)];
-Term::Private::FileHandler& std_cin = reinterpret_cast<Term::Private::FileHandler&>(stdin_buf);
-static char                 stdout_buf[sizeof(Term::Private::FileHandler)];
-Term::Private::FileHandler& std_cout = reinterpret_cast<Term::Private::FileHandler&>(stdout_buf);
+static char                 stdin_buf[sizeof(Term::Private::InputFileHandler)];
+Term::Private::InputFileHandler& std_cin = reinterpret_cast<Term::Private::InputFileHandler&>(stdin_buf);
+static char                 stdout_buf[sizeof(Term::Private::OutputFileHandler)];
+Term::Private::OutputFileHandler& std_cout = reinterpret_cast<Term::Private::OutputFileHandler&>(stdout_buf);
 }  // namespace Private
 
 }  // namespace Term
@@ -72,11 +72,11 @@ void Term::Private::FileInitializer::initialize()
   if(m_counter++ == 0)
   {
 #if defined(_WIN32)
-    new(&Term::Private::std_cin) FileHandler("CONIN$", "r");
-    new(&Term::Private::std_cout) FileHandler("CONOUT$", "w");
+    new(&Term::Private::std_cin) InputFileHandler("CONIN$");
+    new(&Term::Private::std_cout) OutputFileHandler("CONOUT$");
 #else
-    new(&Term::Private::std_cin) FileHandler("/dev/tty", "r");
-    new(&Term::Private::std_cout) FileHandler("/dev/tty", "w");
+    new(&Term::Private::std_cin) InputFileHandler("/dev/tty");
+    new(&Term::Private::std_cout) OutputFileHandler("/dev/tty");
 #endif
   }
 }
@@ -87,7 +87,18 @@ Term::Private::FileInitializer::~FileInitializer()
 {
   if(--m_counter == 0)
   {
-    (&Term::Private::std_cin)->~FileHandler();
-    (&Term::Private::std_cout)->~FileHandler();
+    (&Term::Private::std_cin)->~InputFileHandler();
+    (&Term::Private::std_cout)->~OutputFileHandler();
   }
 }
+
+void Term::Private::OutputFileHandler::write(const std::string& str)
+{
+#if defined(_WIN32)
+  DWORD dwCount;
+  WriteConsole(getHandler(), &str[0], str.size(), &dwCount,nullptr);
+#else
+  ::write(m_file,&str[0],str.c_str());
+#endif
+}
+

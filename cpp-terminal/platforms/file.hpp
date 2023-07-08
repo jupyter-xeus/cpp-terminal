@@ -45,9 +45,22 @@ private:
   int    m_fd{-1};
 };
 
+class OutputFileHandler : public FileHandler
+{
+public:
+  OutputFileHandler(const std::string& file, const std::string& mode ="w") : FileHandler(file,mode){}
+  void write(const std::string& str);
+};
+
+class InputFileHandler : public FileHandler
+{
+public:
+  InputFileHandler(const std::string& file, const std::string& mode ="r") : FileHandler(file,mode){}
+};
+
 // Even in namespace it can't be called stdin because stdin can be a Macro :(
-extern FileHandler& std_cin;
-extern FileHandler& std_cout;
+extern InputFileHandler& std_cin;
+extern OutputFileHandler& std_cout;
 
 }  // namespace Private
 
