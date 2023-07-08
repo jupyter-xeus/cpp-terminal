@@ -2,6 +2,8 @@
 // PRIVATE !!!
 #pragma once
 
+#include <string>
+
 namespace Term
 {
 
@@ -30,14 +32,18 @@ static FileInitializer m_fileInitializer;
 class FileHandler
 {
 public:
-  FileHandler(const char*, const char*);
+  FileHandler(const std::string&, const std::string&);
   ~FileHandler();
   consoleFileHandler getHandler();
   bool               isNull();
+  FILE* file();
+  int   fd();
 
 private:
   bool  m_isNull{false};
-  void* m_file{nullptr};
+  void* m_handle{nullptr};
+  FILE* m_file{nullptr};
+  int   m_fd{-1};
 };
 
 // Even in namespace it can't be called stdin because stdin can be a Macro :(

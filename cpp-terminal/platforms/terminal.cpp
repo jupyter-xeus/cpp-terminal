@@ -140,6 +140,9 @@ void Term::Terminal::attachConsole()
     if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&dump, "CONIN$", "r", stdin);
   }
 #endif
+  setvbuf(stdin,nullptr,_IOLBF,4096);
+  setvbuf(stdout,nullptr,_IOLBF,4096);
+  setvbuf(stderr,nullptr,_IOLBF,4096);
   Term::Private::m_fileInitializer.initialize();
 }
 
