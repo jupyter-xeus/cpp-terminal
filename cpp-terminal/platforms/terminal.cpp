@@ -64,13 +64,13 @@ void Term::Terminal::store_and_restore()
   if(!enabled)
   {
     if(!Private::std_cout.isNull())
-      if(tcgetattr(Private::std_cout.getHandler(), &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
+      if(tcgetattr(Private::std_cout.fd(), &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
     enabled = true;
   }
   else
   {
     if(!Private::std_cout.isNull())
-      if(tcsetattr(Private::std_cout.getHandler(), TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
+      if(tcsetattr(Private::std_cout.fd(), TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
     enabled = false;
   }
 #endif
@@ -101,7 +101,7 @@ void Term::Terminal::setRawMode()
   if(!Private::std_cout.isNull())
   {
     ::termios raw;
-    if(tcgetattr(Private::std_cout.getHandler(), &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
+    if(tcgetattr(Private::std_cout.fd(), &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
     // Put terminal in raw mode
     raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
     // This disables output post-processing, requiring explicit \r\n. We
@@ -113,7 +113,7 @@ void Term::Terminal::setRawMode()
     if(m_options.has(Option::NoSignalKeys)) { raw.c_lflag &= ~ISIG; }
     raw.c_cc[VMIN]  = 0;
     raw.c_cc[VTIME] = 0;
-    if(tcsetattr(Private::std_cout.getHandler(), TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
+    if(tcsetattr(Private::std_cout.fd(), TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
   }
 #endif
 }
@@ -140,9 +140,9 @@ void Term::Terminal::attachConsole()
     if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&dump, "CONIN$", "r", stdin);
   }
 #endif
-  setvbuf(stdin,nullptr,_IOLBF,4096);
-  setvbuf(stdout,nullptr,_IOLBF,4096);
-  setvbuf(stderr,nullptr,_IOLBF,4096);
+  setvbuf(stdin, nullptr, _IOLBF, 4096);
+  setvbuf(stdout, nullptr, _IOLBF, 4096);
+  setvbuf(stderr, nullptr, _IOLBF, 4096);
   Term::Private::m_fileInitializer.initialize();
 }
 

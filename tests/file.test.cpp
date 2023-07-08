@@ -1,6 +1,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "cpp-terminal/platforms/file.hpp"
+
 #include "doctest/doctest.h"
+
 #include <cstdio>
 
 #if defined(_WIN32)
@@ -9,7 +11,9 @@
 
 TEST_CASE("Test platform/file.hpp")
 {
+#if defined(_WIN32)
   DWORD dwCount;
   WriteConsole(reinterpret_cast<HANDLE>(Term::Private::std_cout.getHandler()), "Good !\n", strlen("Good !\n"), &dwCount, NULL);
+#endif
   std::fprintf(Term::Private::std_cout.file(), "Good !\n");
 }

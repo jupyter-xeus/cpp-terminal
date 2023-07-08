@@ -3,13 +3,12 @@
 #include <new>
 
 #if defined(_WIN32)
-  #include <windows.h>
   #include <fcntl.h>
   #include <io.h>
+  #include <windows.h>
 #else
   #include <cstdio>
 #endif
-
 
 namespace Term
 {
@@ -30,23 +29,25 @@ Term::Private::FileHandler::FileHandler(const std::string& filename, const std::
   m_handle = {CreateFile(filename.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
   if(m_handle == INVALID_HANDLE_VALUE)
   {
-    m_handle   = {CreateFile("NUL", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
+    m_handle = {CreateFile("NUL", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
     if(m_handle != INVALID_HANDLE_VALUE) m_isNull = true;
   }
   if(m_handle != INVALID_HANDLE_VALUE)
   {
-    m_fd = _open_osfhandle(reinterpret_cast<intptr_t>(m_handle),_O_RDWR);
-    m_file = _fdopen(m_fd,mode.c_str());
+    m_fd   = _open_osfhandle(reinterpret_cast<intptr_t>(m_handle), _O_RDWR);
+    m_file = _fdopen(m_fd, mode.c_str());
   }
 #else
-  m_handle = {std::fopen(filename, mode)};
+  m_handle = {std::fopen(filename.c_str(), mode.c_str())};
   if(m_handle == nullptr)
   {
-    m_handle   = {std::fopen("/dev/null", mode)};
+    m_handle = {std::fopen("/dev/null", mode.c_str())};
     m_isNull = true;
   }
+  m_file = m_handle;
+  m_fd   = fileno(m_handle);
 #endif
-  setvbuf(m_file,nullptr,_IONBF,0);
+  setvbuf(m_file, nullptr, _IONBF, 0);
 }
 
 Term::Private::FileHandler::~FileHandler()
@@ -58,18 +59,11 @@ Term::Private::FileHandler::~FileHandler()
 
 bool Term::Private::FileHandler::isNull() { return m_isNull; }
 
-FILE* Term::Private::FileHandler::file() {return m_file;}
+FILE* Term::Private::FileHandler::file() { return m_file; }
 
-int   Term::Private::FileHandler::fd() {return m_fd;}
+int Term::Private::FileHandler::fd() { return m_fd; }
 
-Term::Private::consoleFileHandler Term::Private::FileHandler::getHandler()
-{
-#if defined(_WIN32)
-  return m_handle;
-#else
-  return fileno(reinterpret_cast<FILE*>(m_handle));
-#endif
-}
+Term::Private::FileHandler::Handle Term::Private::FileHandler::getHandler() { return m_handle; }
 
 int Term::Private::FileInitializer::m_counter = {0};
 

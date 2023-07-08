@@ -10,12 +10,6 @@ namespace Term
 namespace Private
 {
 
-#if defined(_WIN32)
-typedef void* consoleFileHandler;
-#else
-typedef int consoleFileHandler;
-#endif
-
 class FileInitializer
 {
 public:
@@ -32,18 +26,23 @@ static FileInitializer m_fileInitializer;
 class FileHandler
 {
 public:
+#if defined(_WIN32)
+  using Handle = void*;
+#else
+  using Handle = FILE*;
+#endif
   FileHandler(const std::string&, const std::string&);
   ~FileHandler();
-  consoleFileHandler getHandler();
-  bool               isNull();
-  FILE* file();
-  int   fd();
+  Handle getHandler();
+  bool   isNull();
+  FILE*  file();
+  int    fd();
 
 private:
-  bool  m_isNull{false};
-  void* m_handle{nullptr};
-  FILE* m_file{nullptr};
-  int   m_fd{-1};
+  bool   m_isNull{false};
+  Handle m_handle{nullptr};
+  FILE*  m_file{nullptr};
+  int    m_fd{-1};
 };
 
 // Even in namespace it can't be called stdin because stdin can be a Macro :(
