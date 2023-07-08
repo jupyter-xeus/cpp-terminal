@@ -8,6 +8,7 @@
   #include <windows.h>
 #else
   #include <cstdio>
+  #include <unistd.h>
 #endif
 
 namespace Term
@@ -15,9 +16,9 @@ namespace Term
 
 namespace Private
 {
-static char                 stdin_buf[sizeof(Term::Private::InputFileHandler)];
-Term::Private::InputFileHandler& std_cin = reinterpret_cast<Term::Private::InputFileHandler&>(stdin_buf);
-static char                 stdout_buf[sizeof(Term::Private::OutputFileHandler)];
+static char                       stdin_buf[sizeof(Term::Private::InputFileHandler)];
+Term::Private::InputFileHandler&  std_cin = reinterpret_cast<Term::Private::InputFileHandler&>(stdin_buf);
+static char                       stdout_buf[sizeof(Term::Private::OutputFileHandler)];
 Term::Private::OutputFileHandler& std_cout = reinterpret_cast<Term::Private::OutputFileHandler&>(stdout_buf);
 }  // namespace Private
 
@@ -96,9 +97,8 @@ void Term::Private::OutputFileHandler::write(const std::string& str)
 {
 #if defined(_WIN32)
   DWORD dwCount;
-  WriteConsole(getHandler(), &str[0], str.size(), &dwCount,nullptr);
+  WriteConsole(getHandler(), &str[0], str.size(), &dwCount, nullptr);
 #else
-  ::write(m_file,&str[0],str.c_str());
+  ::write(fd(), &str[0], str.size());
 #endif
 }
-

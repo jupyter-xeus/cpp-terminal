@@ -2,8 +2,8 @@
 
 #include "cpp-terminal/cursor.hpp"
 #include "cpp-terminal/exception.hpp"
-#include "cpp-terminal/io.hpp"
 #include "cpp-terminal/options.hpp"
+#include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 
@@ -21,8 +21,8 @@ Term::Terminal::~Terminal()
 {
   try
   {
-    if(m_options.has(Option::ClearScreen)) clog << clear_buffer() << style(Style::RESET) << cursor_move(1, 1) << screen_load();
-    if(m_options.has(Option::NoCursor)) clog << cursor_on();
+    if(m_options.has(Option::ClearScreen)) Term::Private::std_cout.write(clear_buffer() + style(Style::RESET) + cursor_move(1, 1) + screen_load());
+    if(m_options.has(Option::NoCursor)) Term::Private::std_cout.write(cursor_on());
     store_and_restore();
     // Starting from here the exceptions are not printed ! (Don't want to use cout here)
     detachStreams();
@@ -30,19 +30,17 @@ Term::Terminal::~Terminal()
   }
   catch(const Term::Exception& e)
   {
-    Term::terminal.operator<<("cpp-terminal has not been able to restore the terminal in a good state !") << std::endl;
-    Term::terminal.operator<<("reason : ") << e.what() << std::endl;
+    Term::Private::std_cout.write("cpp-terminal has not been able to restore the terminal in a good state !\nreason : " + std::string(e.what()) + '\n');
     std::exit(m_badReturnCode);
   }
   catch(const std::exception& e)
   {
-    Term::terminal.operator<<("cpp-terminal has not been able to restore the terminal in a good state !") << std::endl;
-    Term::terminal.operator<<("reason : ") << e.what() << std::endl;
+    Term::Private::std_cout.write("cpp-terminal has not been able to restore the terminal in a good state !\nreason : " + std::string(e.what()) + '\n');
     std::exit(m_badReturnCode);
   }
   catch(...)
   {
-    Term::terminal.operator<<("cpp-terminal has not been able to restore the terminal in a good state !") << std::endl;
+    Term::Private::std_cout.write("cpp-terminal has not been able to restore the terminal in a good state !\n");
     std::exit(m_badReturnCode);
   }
 }
@@ -51,8 +49,8 @@ void Term::Terminal::setOptions() { applyOptions(); }
 
 void Term::Terminal::applyOptions()
 {
-  if(m_options.has(Option::ClearScreen)) clog << screen_save() << clear_buffer() << style(Style::RESET) << cursor_move(1, 1);
-  if(m_options.has(Option::NoCursor)) clog << cursor_off();
+  if(m_options.has(Option::ClearScreen)) Term::Private::std_cout.write(screen_save() + clear_buffer() + style(Style::RESET) + cursor_move(1, 1));
+  if(m_options.has(Option::NoCursor)) Term::Private::std_cout.write(cursor_off());
   if(m_options.has(Option::Raw)) setRawMode();
 }
 
