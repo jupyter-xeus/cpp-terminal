@@ -20,7 +20,7 @@ Term::Screen Term::screen_size()
   {
     0, 0, 0, 0
   };
-  if(ioctl(Private::std_cout.fd(), TIOCGWINSZ, &window) != -1) ret = {window.ws_row, window.ws_col};
+  if(ioctl(Private::out.fd(), TIOCGWINSZ, &window) != -1) ret = {window.ws_row, window.ws_col};
   return ret;
 #endif
 }

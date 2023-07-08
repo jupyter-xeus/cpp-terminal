@@ -63,14 +63,14 @@ void Term::Terminal::store_and_restore()
   static termios orig_termios;
   if(!enabled)
   {
-    if(!Private::std_cout.null())
-      if(tcgetattr(Private::std_cout.fd(), &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
+    if(!Private::out.null())
+      if(tcgetattr(Private::out.fd(), &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
     enabled = true;
   }
   else
   {
-    if(!Private::std_cout.null())
-      if(tcsetattr(Private::std_cout.fd(), TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
+    if(!Private::out.null())
+      if(tcsetattr(Private::out.fd(), TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
     enabled = false;
   }
 #endif
@@ -98,10 +98,10 @@ void Term::Terminal::setRawMode()
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
   if(!SetConsoleMode(Private::in.handle(), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
 #else
-  if(!Private::std_cout.null())
+  if(!Private::out.null())
   {
     ::termios raw;
-    if(tcgetattr(Private::std_cout.fd(), &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
+    if(tcgetattr(Private::out.fd(), &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
     // Put terminal in raw mode
     raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
     // This disables output post-processing, requiring explicit \r\n. We
@@ -113,7 +113,7 @@ void Term::Terminal::setRawMode()
     if(m_options.has(Option::NoSignalKeys)) { raw.c_lflag &= ~ISIG; }
     raw.c_cc[VMIN]  = 0;
     raw.c_cc[VTIME] = 0;
-    if(tcsetattr(Private::std_cout.fd(), TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
+    if(tcsetattr(Private::out.fd(), TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
   }
 #endif
 }
