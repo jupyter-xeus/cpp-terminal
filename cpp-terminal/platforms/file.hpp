@@ -33,13 +33,13 @@ public:
 #endif
   FileHandler(const std::string&, const std::string&);
   ~FileHandler();
-  Handle getHandler();
-  bool   isNull();
+  Handle handle();
+  bool   null();
   FILE*  file();
   int    fd();
 
 private:
-  bool   m_isNull{false};
+  bool   m_null{false};
   Handle m_handle{nullptr};
   FILE*  m_file{nullptr};
   int    m_fd{-1};

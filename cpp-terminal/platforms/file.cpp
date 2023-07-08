@@ -31,7 +31,7 @@ Term::Private::FileHandler::FileHandler(const std::string& filename, const std::
   if(m_handle == INVALID_HANDLE_VALUE)
   {
     m_handle = {CreateFile("NUL", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
-    if(m_handle != INVALID_HANDLE_VALUE) m_isNull = true;
+    if(m_handle != INVALID_HANDLE_VALUE) m_null = true;
   }
   if(m_handle != INVALID_HANDLE_VALUE)
   {
@@ -43,7 +43,7 @@ Term::Private::FileHandler::FileHandler(const std::string& filename, const std::
   if(m_handle == nullptr)
   {
     m_handle = {std::fopen("/dev/null", mode.c_str())};
-    m_isNull = true;
+    m_null   = true;
   }
   m_file = m_handle;
   m_fd   = fileno(m_handle);
@@ -58,13 +58,13 @@ Term::Private::FileHandler::~FileHandler()
 #endif
 }
 
-bool Term::Private::FileHandler::isNull() { return m_isNull; }
+bool Term::Private::FileHandler::null() { return m_null; }
 
 FILE* Term::Private::FileHandler::file() { return m_file; }
 
 int Term::Private::FileHandler::fd() { return m_fd; }
 
-Term::Private::FileHandler::Handle Term::Private::FileHandler::getHandler() { return m_handle; }
+Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() { return m_handle; }
 
 int Term::Private::FileInitializer::m_counter = {0};
 

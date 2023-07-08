@@ -63,13 +63,13 @@ void Term::Terminal::store_and_restore()
   static termios orig_termios;
   if(!enabled)
   {
-    if(!Private::std_cout.isNull())
+    if(!Private::std_cout.null())
       if(tcgetattr(Private::std_cout.fd(), &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
     enabled = true;
   }
   else
   {
-    if(!Private::std_cout.isNull())
+    if(!Private::std_cout.null())
       if(tcsetattr(Private::std_cout.fd(), TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
     enabled = false;
   }
@@ -98,7 +98,7 @@ void Term::Terminal::setRawMode()
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
   if(!SetConsoleMode(Private::std_cin.getHandler(), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
 #else
-  if(!Private::std_cout.isNull())
+  if(!Private::std_cout.null())
   {
     ::termios raw;
     if(tcgetattr(Private::std_cout.fd(), &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
