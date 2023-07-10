@@ -7,8 +7,8 @@
 #else
   #include <cerrno>
   #include <csignal>
-  #include <unistd.h>
   #include <sys/ioctl.h>
+  #include <unistd.h>
 #endif
 
 #include "cpp-terminal/exception.hpp"
@@ -145,8 +145,8 @@ Term::Event Term::Platform::read_raw()
   else
   {
     std::size_t nread{0};
-    ::ioctl(Private::in.fd(),FIONREAD,&nread);
-    if(nread!=0)
+    ::ioctl(Private::in.fd(), FIONREAD, &nread);
+    if(nread != 0)
     {
       std::string ret(nread, '\0');
       errno = 0;
@@ -154,7 +154,8 @@ Term::Event Term::Platform::read_raw()
       if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
       return Event(ret.c_str());
     }
-    else return Event();
+    else
+      return Event();
   }
 #endif
 }
