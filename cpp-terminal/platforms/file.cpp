@@ -82,7 +82,7 @@ void Term::Private::FileInitializer::initialize()
   }
 }
 
-Term::Private::FileInitializer::FileInitializer() { initialize(); }
+Term::Private::FileInitializer::FileInitializer() {}
 
 Term::Private::FileInitializer::~FileInitializer()
 {
