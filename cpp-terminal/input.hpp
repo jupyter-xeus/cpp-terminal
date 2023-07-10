@@ -17,10 +17,4 @@ Term::Event read_raw();
 // Waits for an event (key press, screen resizing ...)
 Term::Event read_event();
 
-// returns the stdin as a string
-// waits until the EOT signal is send
-// if Term::Terminal is not enabling the keyboard this function will wait until
-// the user presses CTRL+D (which sends the EOT signal)
-std::string read_stdin();
-
 }  // namespace Term
