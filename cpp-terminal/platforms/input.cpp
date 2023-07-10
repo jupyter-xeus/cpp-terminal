@@ -8,6 +8,7 @@
   #include <cerrno>
   #include <csignal>
   #include <unistd.h>
+  #include <sys/ioctl.h>
 #endif
 
 #include "cpp-terminal/exception.hpp"
@@ -143,13 +144,17 @@ Term::Event Term::Platform::read_raw()
   }
   else
   {
-    std::string ret(4096, '\0');  // Max for cin
-    errno = 0;
-    ::ssize_t nread{::read(0, &ret[0], ret.size())};
-    if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-    if(nread >= 1) return Event(ret.c_str());
-    else
-      return Event();
+    std::size_t nread{0};
+    ::ioctl(Private::in.fd(),FIONREAD,&nread);
+    if(nread!=0)
+    {
+      std::string ret(nread, '\0');
+      errno = 0;
+      ::ssize_t nread{::read(0, &ret[0], ret.size())};
+      if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
+      return Event(ret.c_str());
+    }
+    else return Event();
   }
 #endif
 }
