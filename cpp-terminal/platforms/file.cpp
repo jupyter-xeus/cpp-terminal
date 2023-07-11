@@ -78,7 +78,7 @@ Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() { return
 
 int Term::Private::FileInitializer::m_counter = {0};
 
-void Term::Private::FileInitializer::initialize()
+void Term::Private::FileInitializer::init()
 {
   if(m_counter++ == 0)
   {

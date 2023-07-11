@@ -141,7 +141,7 @@ void Term::Terminal::attachConsole()
   setvbuf(stdin, nullptr, _IOLBF, 4096);
   setvbuf(stdout, nullptr, _IOLBF, 4096);
   setvbuf(stderr, nullptr, _IOLBF, 4096);
-  Term::Private::m_fileInitializer.initialize();
+  Term::Private::m_fileInitializer.init();
 }
 
 void Term::Terminal::detachConsole()

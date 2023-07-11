@@ -7,7 +7,7 @@
 
 TEST_CASE("Test platform/file.hpp")
 {
-  Term::Private::m_fileInitializer.initialize();
+  Term::Private::m_fileInitializer.init();
   Term::Private::out.write("Good !\n");
   std::fprintf(Term::Private::out.file(), "Good !\n");
 }
