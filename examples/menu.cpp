@@ -9,7 +9,6 @@
 
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
 {
-  Term::cout << Term::clear_screen() << std::flush;
   std::string scr;
   scr.reserve(16 * 1024);
 

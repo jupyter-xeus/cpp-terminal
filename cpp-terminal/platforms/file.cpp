@@ -104,7 +104,8 @@ Term::Private::FileInitializer::~FileInitializer()
 int Term::Private::OutputFileHandler::write(const std::string& str)
 {
 #if defined(_WIN32)
-  DWORD dwCount;
+  //return ::_write(fd(), &str[0], str.size());
+  DWORD dwCount{0};
   if(WriteConsole(handle(), &str[0], str.size(), &dwCount, nullptr) == 0) return -1;
 #else
   return ::write(fd(), &str[0], str.size());

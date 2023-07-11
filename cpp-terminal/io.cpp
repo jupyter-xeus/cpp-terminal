@@ -17,7 +17,10 @@ void Term::TerminalInitializer::init()
   if(m_counter++ == 0) new(&Term::terminal) Terminal();
 }
 
-Term::TerminalInitializer::TerminalInitializer() {}
+Term::TerminalInitializer::TerminalInitializer()
+{
+  init();
+}
 
 Term::TerminalInitializer::~TerminalInitializer()
 {

@@ -42,4 +42,6 @@ int main()
 
   Term::cout << "Normal Text " << Term::Style::SUPERSCRIPT << "SUPERSCRIPT" << Term::Style::RESET_SUPERSCRIPT_SUBSCRIPT << std::endl;
   Term::cout << "Normal Text " << Term::Style::SUBSCRIPT << "SUBSCRIPT" << Term::Style::RESET_SUPERSCRIPT_SUBSCRIPT << std::endl;
+  int i{0};
+  Term::cin>>i;
 }

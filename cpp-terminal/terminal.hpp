@@ -3,14 +3,9 @@
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
+
 namespace Term
 {
-
-/* Note: the code that uses Terminal must be inside try/catch block, otherwise
- * the destructors will not be called when an exception happens and the
- * terminal will not be left in a good state. Terminal uses exceptions when
- * something goes wrong.
- */
 
 class Terminal
 {

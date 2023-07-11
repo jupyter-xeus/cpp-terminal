@@ -6,6 +6,7 @@
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 #include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/iostream.hpp"
 #include "cpp-terminal/tty.hpp"
 
 #include <cstdarg>

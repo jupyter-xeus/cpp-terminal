@@ -13,7 +13,7 @@ std::string Term::TIstream::file()
 #endif
 }
 
-Term::TIstream::TIstream(const Term::Buffer::Type& type, const std::size_t& size) : m_stream(std::ifstream(file()))
+Term::TIstream::TIstream(const Term::Buffer::Type& type, const std::size_t& size) : m_stream(std::move(std::ifstream(file())))
 {
   switch(type)
   {
