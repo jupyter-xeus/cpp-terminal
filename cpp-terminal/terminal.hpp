@@ -3,7 +3,6 @@
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
-
 namespace Term
 {
 

@@ -26,9 +26,9 @@ void Term::StreamInitializer::init()
   if(m_counter++ == 0)
   {
     Term::m_terminalInitializer.init();
-    new(&Term::cout) TOstream(Term::Buffer::Type::FullBuffered,BUFSIZ*5);
-    new(&Term::cerr) TOstream(Term::Buffer::Type::LineBuffered,BUFSIZ*5);
-    new(&Term::clog) TOstream(Term::Buffer::Type::Unbuffered,BUFSIZ*5);
+    new(&Term::cout) TOstream(Term::Buffer::Type::FullBuffered, BUFSIZ);
+    new(&Term::cerr) TOstream(Term::Buffer::Type::LineBuffered, BUFSIZ);
+    new(&Term::clog) TOstream(Term::Buffer::Type::Unbuffered, BUFSIZ);
     new(&Term::cin) TIstream(Term::Buffer::Type::FullBuffered);
   }
 }

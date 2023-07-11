@@ -2,16 +2,18 @@
 
 #include "cpp-terminal/platforms/file.hpp"
 
-
-std::string        Term::Buffer::remplace(const int_type& c)
+std::string Term::Buffer::remplace(const int_type& c)
 {
 #if defined(_WIN32)
   std::string ret;
-  if(static_cast<char>(c)=='\n')  ret="\r\n";
-  else ret.push_back(static_cast<char>(c));
+  if(static_cast<char>(c) == '\n') ret = "\r\n";
+  else
+    ret.push_back(static_cast<char>(c));
   return ret;
 #else
-  return m_s;
+  std::string ret;
+  ret.push_back(static_cast<char>(c));
+  return ret;
 #endif
 }
 
@@ -19,22 +21,19 @@ void Term::Buffer::setType(const Term::Buffer::Type& type) { m_type = type; }
 
 std::streamsize Term::Buffer::xsputn(const char* s, std::streamsize n)
 {
-
   if(n == 0 || s[0] == EOF) return 0;
   std::string ret;
   ret.reserve(n);
   int i{0};
-  do
-  {
-    ret+= remplace(s[i]);
-    if(m_type==Type::LineBuffered && (s[i]=='\n'||(m_s.size()+ret.size()>=m_s.capacity())))
+  do {
+    ret += remplace(s[i]);
+    if(m_type == Type::LineBuffered && (s[i] == '\n' || (m_s.size() + ret.size() >= m_s.capacity())))
     {
-      Term::Private::out.write(m_s+ret);
+      Term::Private::out.write(m_s + ret);
       m_s.clear();
     }
     ++i;
-  }
-  while(i < n);
+  } while(i < n);
   switch(m_type)
   {
     case Type::Unbuffered:
@@ -44,14 +43,16 @@ std::streamsize Term::Buffer::xsputn(const char* s, std::streamsize n)
     }
     case Type::FullBuffered:
     {
-      if(m_s.size()+ret.size()>=m_s.capacity())
+      if(m_s.size() + ret.size() >= m_s.capacity())
       {
-        Term::Private::out.write(m_s+ret);
+        Term::Private::out.write(m_s + ret);
         m_s.clear();
       }
-      else m_s+=ret;
+      else
+        m_s += ret;
       break;
     }
+    default: break;
   }
   return n;
 }
@@ -76,7 +77,7 @@ Term::Buffer::int_type Term::Buffer::overflow(int_type c)
       }
       case Type::LineBuffered:
       {
-        m_s+=remplace(c);
+        m_s += remplace(c);
         if(static_cast<char>(c) == '\n')
         {
           Term::Private::out.write(m_s);
@@ -86,13 +87,12 @@ Term::Buffer::int_type Term::Buffer::overflow(int_type c)
       }
       case Type::FullBuffered:
       {
-
         if(m_s.size() >= m_s.capacity())
         {
           Term::Private::out.write(m_s);
           m_s.clear();
         }
-        m_s+=remplace(c);
+        m_s += remplace(c);
         break;
       }
     }

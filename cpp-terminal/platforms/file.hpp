@@ -14,7 +14,7 @@ class FileInitializer
 {
 public:
   FileInitializer() = default;
-  void init();
+  static void init();
   ~FileInitializer();
 
 private:

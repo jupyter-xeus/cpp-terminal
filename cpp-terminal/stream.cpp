@@ -1,7 +1,5 @@
 #include "cpp-terminal/stream.hpp"
 
-#include "cpp-terminal/io.hpp"
-
 #include <string>
 
 std::string Term::TIstream::file()
@@ -13,8 +11,9 @@ std::string Term::TIstream::file()
 #endif
 }
 
-Term::TIstream::TIstream(const Term::Buffer::Type& type, const std::size_t& size) : m_stream(std::move(std::ifstream(file())))
+Term::TIstream::TIstream(const Term::Buffer::Type& type, const std::size_t& size)
 {
+  m_stream.open(file());
   switch(type)
   {
     case Term::Buffer::Type::Unbuffered:

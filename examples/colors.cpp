@@ -118,7 +118,7 @@ int main()
     Term::cout << "*\n";
     Term::cout << "Press any key to quit" << std::endl;
     int i{0};
-    Term::cin>>i;
+    Term::cin >> i;
   }
   catch(const Term::Exception& re)
   {

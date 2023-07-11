@@ -3,6 +3,7 @@
 #include "cpp-terminal/iostream.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/screen.hpp"
+#include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/window.hpp"
 
@@ -56,58 +57,29 @@ int main()
     std::size_t  w{10};
     bool         on = true;
     Term::Window scr(term_size.columns(), term_size.rows());
-    Term::cout << render(scr, term_size.rows(), term_size.columns(), h, w, pos);
     while(on)
     {
-      Term::Event event = Term::read_event();
-      switch(event.type())
+      Term::cout << render(scr, term_size.rows(), term_size.columns(), h, w, pos) << std::flush;
+      Term::Key key = Term::read_event();
+      switch(key)
       {
-        case Term::Event::Type::Key:
-          Term::cout << render(scr, term_size.rows(), term_size.columns(), h, w, pos);
-          switch(Term::Key(event))
-          {
-            case Term::Key::ARROW_LEFT:
-              if(w > 10) w--;
-              Term::cout << render(scr, term_size.rows(), term_size.columns(), h, w, pos);
-
-              break;
-            case Term::Key::ARROW_RIGHT:
-              if(w < term_size.columns() - 5) w++;
-              Term::cout << render(scr, term_size.rows(), term_size.columns(), h, w, pos);
-
-              break;
-            case Term::Key::ARROW_UP:
-              if(pos > 1) pos--;
-              Term::cout << render(scr, term_size.rows(), term_size.columns(), h, w, pos);
-
-              break;
-            case Term::Key::ARROW_DOWN:
-              if(pos < h) pos++;
-              Term::cout << render(scr, term_size.rows(), term_size.columns(), h, w, pos);
-
-              break;
-            case Term::Key::HOME:
-              pos = 1;
-              Term::cout << render(scr, term_size.rows(), term_size.columns(), h, w, pos);
-              break;
-            case Term::Key::END:
-              Term::cout << render(scr, term_size.rows(), term_size.columns(), h, w, pos);
-
-              pos = h;
-              break;
-            case Term::Key::q:
-            case Term::Key::ESC:
-            case Term::Key::CTRL_C:
-              on = false;
-              break;
-            default: break;
-          }
+        case Term::Key::ARROW_LEFT:
+          if(w > 10) w--;
           break;
-        case Term::Event::Type::Screen:
-          term_size = Term::Screen(event);
-          Term::cout << Term::clear_screen() << std::flush;
-          Term::cout << render(scr, term_size.rows(), term_size.columns(), h, w, pos);
+        case Term::Key::ARROW_RIGHT:
+          if(w < term_size.columns() - 5) w++;
           break;
+        case Term::Key::ARROW_UP:
+          if(pos > 1) pos--;
+          break;
+        case Term::Key::ARROW_DOWN:
+          if(pos < h) pos++;
+          break;
+        case Term::Key::HOME: pos = 1; break;
+        case Term::Key::END: pos = h; break;
+        case Term::Key::q:
+        case Term::Key::ESC:
+        case Term::Key::CTRL_C: on = false; break;
         default: break;
       }
     }

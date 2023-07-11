@@ -1,12 +1,12 @@
 #include "cpp-terminal/color.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
+#include "cpp-terminal/iostream.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 #include "cpp-terminal/terminal.hpp"
-#include "cpp-terminal/iostream.hpp"
 #include "cpp-terminal/tty.hpp"
 
 #include <cstdarg>

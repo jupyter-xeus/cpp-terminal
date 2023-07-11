@@ -20,7 +20,8 @@ public:
   std::streambuf*  setbuf(char* s, std::streamsize n) final;
   virtual int_type overflow(int_type c) final;
   virtual int      sync() final;
-  std::streamsize xsputn (const char* s, std::streamsize n);
+  std::streamsize  xsputn(const char* s, std::streamsize n);
+
 protected:
 private:
   std::string        remplace(const int_type&);
