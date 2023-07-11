@@ -1,8 +1,8 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/prompt.hpp"
-#include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/tty.hpp"
 
 #include <iostream>
 #include <string>

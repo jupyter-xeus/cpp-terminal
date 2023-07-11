@@ -1,4 +1,5 @@
 #include "cpp-terminal/iostream.hpp"
+
 #include "cpp-terminal/stream.hpp"
 
 #include <new>

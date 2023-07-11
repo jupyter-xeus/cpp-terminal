@@ -48,7 +48,7 @@ private:
 };
 
 static TerminalInitializer m_terminalInitializer;
-extern Term::Terminal& terminal;
+extern Term::Terminal&     terminal;
 
 // change the title of the terminal, only supported by a few terminals
 std::string terminal_title(const std::string& title);
