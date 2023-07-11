@@ -7,7 +7,7 @@
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 
-
+#include <iostream>
 #include <new>
 
 namespace Term
@@ -25,14 +25,15 @@ void Term::TerminalInitializer::init()
 
 Term::TerminalInitializer::TerminalInitializer()
 {
+#if defined(_WIN32)
   init();
+#endif
 }
 
 Term::TerminalInitializer::~TerminalInitializer()
 {
   if(--m_counter == 0) (&Term::terminal)->~Terminal();
 }
-
 
 void Term::Terminal::setOptions(const Term::Options& options)
 {
@@ -57,6 +58,7 @@ Term::Terminal::~Terminal()
     if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_on());
     store_and_restore();
     detachConsole();
+    std::cout << "Cleaninggg  " << std::endl;
   }
   catch(const Term::Exception& e)
   {
