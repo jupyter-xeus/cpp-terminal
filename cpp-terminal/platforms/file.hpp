@@ -37,10 +37,10 @@ public:
   bool   null() const;
   FILE*  file();
   int    fd() const;
-  FileHandler(const FileHandler& other)          = delete;
-  FileHandler& operator=(const FileHandler& rhs) = delete;
-  FileHandler(FileHandler&& other)               = delete;
-  FileHandler& operator=(FileHandler&& rhs)      = delete;
+  FileHandler(const FileHandler&)            = delete;
+  FileHandler& operator=(const FileHandler&) = delete;
+  FileHandler(FileHandler&&)                 = delete;
+  FileHandler& operator=(FileHandler&&)      = delete;
 
 private:
   bool   m_null{false};

@@ -44,7 +44,7 @@ class TerminalInitializer
 {
 public:
   TerminalInitializer();
-  void init();
+  static void init();
   ~TerminalInitializer();
   TerminalInitializer(const TerminalInitializer&)            = delete;
   TerminalInitializer& operator=(const TerminalInitializer&) = delete;
