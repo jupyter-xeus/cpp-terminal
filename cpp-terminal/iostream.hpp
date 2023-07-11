@@ -14,7 +14,7 @@ class StreamInitializer
 {
 public:
   StreamInitializer();
-  void init();
+  static void init();
   ~StreamInitializer();
 
 private:

@@ -37,6 +37,10 @@ public:
   bool   null() const;
   FILE*  file();
   int    fd() const;
+  FileHandler(const FileHandler& other)          = delete;
+  FileHandler& operator=(const FileHandler& rhs) = delete;
+  FileHandler(FileHandler&& other)               = delete;
+  FileHandler& operator=(FileHandler&& rhs)      = delete;
 
 private:
   bool   m_null{false};
@@ -50,12 +54,20 @@ class OutputFileHandler : public FileHandler
 public:
   explicit OutputFileHandler(const std::string& file, const std::string& mode = "w") : FileHandler(file, mode) {}
   int write(const std::string& str);
+  OutputFileHandler(const OutputFileHandler& other)          = delete;
+  OutputFileHandler& operator=(const OutputFileHandler& rhs) = delete;
+  OutputFileHandler(OutputFileHandler&& other)               = delete;
+  OutputFileHandler& operator=(OutputFileHandler&& rhs)      = delete;
 };
 
 class InputFileHandler : public FileHandler
 {
 public:
   explicit InputFileHandler(const std::string& file, const std::string& mode = "r") : FileHandler(file, mode) {}
+  InputFileHandler(const InputFileHandler& other)          = delete;
+  InputFileHandler& operator=(const InputFileHandler& rhs) = delete;
+  InputFileHandler(InputFileHandler&& other)               = delete;
+  InputFileHandler& operator=(InputFileHandler&& rhs)      = delete;
 };
 
 extern InputFileHandler&  in;

@@ -22,6 +22,10 @@ public:
   Term::Options getOptions();
 
   void store_and_restore();
+  Terminal(const Terminal& other)          = delete;
+  Terminal& operator=(const Terminal& rhs) = delete;
+  Terminal(Terminal&& other)               = delete;
+  Terminal& operator=(Terminal&& rhs)      = delete;
 
 private:
   void           setBadStateReturnCode();
@@ -42,6 +46,10 @@ public:
   TerminalInitializer();
   void init();
   ~TerminalInitializer();
+  TerminalInitializer(const TerminalInitializer& other)          = delete;
+  TerminalInitializer& operator=(const TerminalInitializer& rhs) = delete;
+  TerminalInitializer(TerminalInitializer&& other)               = delete;
+  TerminalInitializer& operator=(TerminalInitializer&& rhs)      = delete;
 
 private:
   static int m_counter;
