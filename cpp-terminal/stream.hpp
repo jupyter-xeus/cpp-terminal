@@ -28,15 +28,15 @@ public:
     else { m_stream >> t; }
     return *this;
   }
-
-private:
-  static std::string file();
   TIstream(const TIstream& other)          = delete;
   TIstream& operator=(const TIstream& rhs) = delete;
   TIstream(TIstream&& other)               = delete;
-  TIstream&     operator=(TIstream&& rhs)  = delete;
-  std::ifstream m_stream;
-  std::string   m_string;
+  TIstream& operator=(TIstream&& rhs)      = delete;
+
+private:
+  static std::string file();
+  std::ifstream      m_stream;
+  std::string        m_string;
 };
 
 class TOstream
@@ -53,12 +53,12 @@ public:
     return *this;
   }
   TOstream(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::size_t& size = BUFSIZ);
-
-private:
   TOstream(const TOstream& other)          = delete;
   TOstream& operator=(const TOstream& rhs) = delete;
   TOstream(TOstream&& other)               = delete;
-  TOstream&    operator=(TOstream&& rhs)   = delete;
+  TOstream& operator=(TOstream&& rhs)      = delete;
+
+private:
   Term::Buffer m_buffer;
   std::ostream m_stream;
 };
