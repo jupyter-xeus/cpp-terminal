@@ -64,10 +64,10 @@ class InputFileHandler : public FileHandler
 {
 public:
   explicit InputFileHandler(const std::string& file, const std::string& mode = "r") : FileHandler(file, mode) {}
-  InputFileHandler(const InputFileHandler& other)          = delete;
-  InputFileHandler& operator=(const InputFileHandler& rhs) = delete;
-  InputFileHandler(InputFileHandler&& other)               = delete;
-  InputFileHandler& operator=(InputFileHandler&& rhs)      = delete;
+  InputFileHandler(const InputFileHandler&)            = delete;
+  InputFileHandler& operator=(const InputFileHandler&) = delete;
+  InputFileHandler(InputFileHandler&&)                 = delete;
+  InputFileHandler& operator=(InputFileHandler&&)      = delete;
 };
 
 extern InputFileHandler&  in;

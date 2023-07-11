@@ -16,6 +16,10 @@ public:
   StreamInitializer();
   static void init();
   ~StreamInitializer();
+  StreamInitializer(const StreamInitializer&)            = delete;
+  StreamInitializer& operator=(const StreamInitializer&) = delete;
+  StreamInitializer(StreamInitializer&&)                 = delete;
+  StreamInitializer& operator=(StreamInitializer&&)      = delete;
 
 private:
   static int m_counter;
