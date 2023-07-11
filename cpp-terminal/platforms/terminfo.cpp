@@ -48,19 +48,20 @@ void Term::Terminfo::setColorMode()
   if(colorterm == "truecolor" || colorterm == "24bit") m_colorMode = Term::Terminfo::ColorMode::Bit24;
   else
     m_colorMode = Term::Terminfo::ColorMode::Bit8;
+#ifdef _WIN32
+  if(WindowsVersionGreater(10, 0, 10586)) m_colorMode = Term::Terminfo::ColorMode::Bit24;
+  else if(m_terminalName == "ansicon")
+    m_colorMode = Term::Terminfo::ColorMode::Bit4;
+#endif
   if(m_terminalName == "Apple_Terminal") m_colorMode = Term::Terminfo::ColorMode::Bit8;
   else if(m_terminalName == "JetBrains-JediTerm")
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
   else if(m_terminalName == "vscode")
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
-#ifdef _WIN32
-  else if(WindowsVersionGreater(10, 0, 10586))
-    m_colorMode = Term::Terminfo::ColorMode::Bit24;
-  else if(m_terminalName == "ansicon")
+  else if(m_terminalName == "linux")
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
   else
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
-#endif
 }
 
 void Term::Terminfo::setANSIEscapeCode()

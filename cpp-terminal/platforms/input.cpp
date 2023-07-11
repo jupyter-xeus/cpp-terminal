@@ -150,7 +150,7 @@ Term::Event Term::Platform::read_raw()
     {
       std::string ret(nread, '\0');
       errno = 0;
-      ::ssize_t nread{::read(0, &ret[0], ret.size())};
+      ::ssize_t nread{::read(Private::in.fd(), &ret[0], ret.size())};
       if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
       return Event(ret.c_str());
     }

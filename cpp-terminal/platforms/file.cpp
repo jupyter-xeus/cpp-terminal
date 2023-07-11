@@ -3,13 +3,14 @@
 #include <new>
 
 #if defined(_WIN32)
-  #include <fcntl.h>
   #include <io.h>
   #include <windows.h>
 #else
   #include <cstdio>
   #include <unistd.h>
 #endif
+
+#include <fcntl.h>
 
 namespace Term
 {
@@ -39,14 +40,23 @@ Term::Private::FileHandler::FileHandler(const std::string& filename, const std::
     m_file = _fdopen(m_fd, mode.c_str());
   }
 #else
-  m_handle = {std::fopen(filename.c_str(), mode.c_str())};
-  if(m_handle == nullptr)
+  std::size_t flag{O_ASYNC | O_DSYNC | O_NOCTTY | O_SYNC};
+  if(mode.find("r") != std::string::npos) flag |= O_RDONLY;
+  else if(mode.find("w") != std::string::npos)
+    flag |= O_WRONLY;
+  else
+    flag |= O_RDWR;
+  m_fd = {::open(filename.c_str(), flag)};
+  if(m_fd == -1)
   {
-    m_handle = {std::fopen("/dev/null", mode.c_str())};
-    m_null   = true;
+    m_fd = {::open("/dev/null", flag)};
+    if(m_fd != -1) m_null = true;
   }
-  m_file = m_handle;
-  m_fd   = fileno(m_handle);
+  if(m_fd != -1)
+  {
+    m_file   = fdopen(m_fd, mode.c_str());
+    m_handle = m_file;
+  }
 #endif
   setvbuf(m_file, nullptr, _IONBF, 0);
 }
