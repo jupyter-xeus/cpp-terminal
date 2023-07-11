@@ -10,6 +10,7 @@ class TerminalInitializer
 {
 public:
   TerminalInitializer();
+  void init();
   ~TerminalInitializer();
 
 private:

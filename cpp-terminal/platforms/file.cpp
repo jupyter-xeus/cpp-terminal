@@ -103,12 +103,12 @@ Term::Private::FileInitializer::~FileInitializer()
   }
 }
 
-void Term::Private::OutputFileHandler::write(const std::string& str)
+int Term::Private::OutputFileHandler::write(const std::string& str)
 {
 #if defined(_WIN32)
   DWORD dwCount;
-  WriteConsole(handle(), &str[0], str.size(), &dwCount, nullptr);
+  if(WriteConsole(handle(), &str[0], str.size(), &dwCount, nullptr) == 0) return -1;
 #else
-  ::write(fd(), &str[0], str.size());
+  return ::write(fd(), &str[0], str.size());
 #endif
 }

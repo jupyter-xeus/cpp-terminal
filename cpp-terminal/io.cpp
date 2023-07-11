@@ -12,12 +12,14 @@ Terminal&   terminal = reinterpret_cast<Term::Terminal&>(termbuf);
 
 int Term::TerminalInitializer::m_counter{0};
 
-Term::TerminalInitializer::TerminalInitializer()
+void Term::TerminalInitializer::init()
 {
   if(m_counter++ == 0) new(&Term::terminal) Terminal();
 }
 
+Term::TerminalInitializer::TerminalInitializer() {}
+
 Term::TerminalInitializer::~TerminalInitializer()
 {
-  if(--m_counter == 0) { (&Term::terminal)->~Terminal(); }
+  if(--m_counter == 0) (&Term::terminal)->~Terminal();
 }

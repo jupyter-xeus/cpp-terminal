@@ -1,12 +1,10 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
+#include "cpp-terminal/iostream.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/screen.hpp"
-#include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/window.hpp"
-
-#include <iostream>
 
 std::string render(Term::Window& scr, const std::size_t& rows, const std::size_t& cols, const std::size_t& menuheight, const std::size_t& menuwidth, const std::size_t& menupos)
 {
@@ -48,7 +46,7 @@ int main()
     // check if the terminal is capable of handling input
     if(!Term::is_stdin_a_tty())
     {
-      std::cout << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
+      Term::cerr << "The terminal is not attached to a TTY and therefore can't catch user input. Exiting...\n";
       return 1;
     }
     Term::terminal.setOptions(Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw);
@@ -60,7 +58,7 @@ int main()
     Term::Window scr(term_size.columns(), term_size.rows());
     while(on)
     {
-      Term::terminal << render(scr, term_size.rows(), term_size.columns(), h, w, pos) << std::flush;
+      Term::cerr << render(scr, term_size.rows(), term_size.columns(), h, w, pos);
       Term::Key key = Term::read_event();
       switch(key)
       {
@@ -87,12 +85,12 @@ int main()
   }
   catch(const Term::Exception& re)
   {
-    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
+    Term::cerr << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)
   {
-    std::cerr << "Unknown error." << std::endl;
+    Term::cerr << "Unknown error." << std::endl;
     return 1;
   }
   return 0;

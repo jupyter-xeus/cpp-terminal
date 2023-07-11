@@ -1,39 +1,37 @@
 #include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/iostream.hpp"
 #include "cpp-terminal/prompt.hpp"
-#include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/version.hpp"
-
-#include <iostream>
 
 int main()
 {
-  Term::terminal << "Running cpp-terminal version: " << Term::Version << std::endl;
+  Term::cout << "Running cpp-terminal version: " << Term::Version << std::endl;
   try
   {
-    Term::terminal << "CPP-Terminal basic prompt example: \n\n";
+    Term::cout << "CPP-Terminal basic prompt example: \n\n";
     switch(Term::prompt("Proceed?", "Y", "n", ":", true))
     {
       case Term::Result::NONE:  // no input was given
-        Term::terminal << "No input given, proceeding anyway...\n";
+        Term::cout << "No input given, proceeding anyway...\n";
         break;
-      case Term::Result::INVALID: Term::terminal << "Invalid input given, proceeding anyway\n"; break;
-      case Term::Result::YES: Term::terminal << "Proceeding...\n"; break;
-      case Term::Result::NO: Term::terminal << "Stopping...\n"; break;
-      case Term::Result::ABORT: Term::terminal << "Exit signal received, exiting now...\n"; break;
+      case Term::Result::INVALID: Term::cout << "Invalid input given, proceeding anyway\n"; break;
+      case Term::Result::YES: Term::cout << "Proceeding...\n"; break;
+      case Term::Result::NO: Term::cout << "Stopping...\n"; break;
+      case Term::Result::ABORT: Term::cout << "Exit signal received, exiting now...\n"; break;
       case Term::Result::ERROR:
-        Term::terminal << "Error while capturing input, is your terminal attached to a TTY?\n";
-        Term::terminal << "Aborting...\n";
+        Term::cout << "Error while capturing input, is your terminal attached to a TTY?\n";
+        Term::cout << "Aborting...\n";
         break;
     }
   }
   catch(const Term::Exception& re)
   {
-    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
+    Term::cerr << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)
   {
-    std::cerr << "Unknown error." << std::endl;
+    Term::cerr << "Unknown error." << std::endl;
     return 1;
   }
   return 0;

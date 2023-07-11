@@ -61,7 +61,7 @@ void Term::Terminfo::setColorMode()
   else if(m_terminalName == "linux")
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
   else
-    m_colorMode = Term::Terminfo::ColorMode::Bit4;
+    m_colorMode = Term::Terminfo::ColorMode::Bit24;
 }
 
 void Term::Terminfo::setANSIEscapeCode()

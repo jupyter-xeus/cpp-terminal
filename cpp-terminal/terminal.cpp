@@ -7,13 +7,18 @@
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 
-#include <exception>
+void Term::Terminal::setOptions(const Term::Options& options)
+{
+  m_options = options;
+  applyOptions();
+}
+
+Term::Options Term::Terminal::getOptions() { return m_options; }
 
 Term::Terminal::Terminal()
 {
   setBadStateReturnCode();
   attachConsole();
-  attachStreams();
   store_and_restore();
 }
 
@@ -24,8 +29,6 @@ Term::Terminal::~Terminal()
     if(m_options.has(Option::ClearScreen)) Term::Private::out.write(clear_buffer() + style(Style::RESET) + cursor_move(1, 1) + screen_load());
     if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_on());
     store_and_restore();
-    // Starting from here the exceptions are not printed ! (Don't want to use cout here)
-    detachStreams();
     detachConsole();
   }
   catch(const Term::Exception& e)

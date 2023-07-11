@@ -1,5 +1,7 @@
 #pragma once
 
+#include "stream.hpp"
+
 #include <cpp-terminal/terminal.hpp>
 #include <cstdint>
 #include <string>
@@ -80,8 +82,7 @@ enum class Style : std::uint8_t
 std::string style(const Term::Style& style);
 
 template<class Stream> Stream& operator<<(Stream& stream, const Term::Style& s) { return stream << style(s); }
-
 // unabigify operator overload
-inline Term::Terminal& operator<<(Term::Terminal& terminal, const Term::Style& s) { return terminal << style(s); }
+inline Term::TOstream&         operator<<(Term::TOstream& terminal, const Term::Style& s) { return terminal << style(s); }
 
 }  // namespace Term

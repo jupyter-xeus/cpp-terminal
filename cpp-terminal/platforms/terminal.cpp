@@ -20,8 +20,6 @@
   #include <termios.h>
 #endif
 
-#include <fstream>
-
 void Term::Terminal::store_and_restore()
 {
   static bool enabled{false};
@@ -144,41 +142,6 @@ void Term::Terminal::attachConsole()
   setvbuf(stdout, nullptr, _IOLBF, 4096);
   setvbuf(stderr, nullptr, _IOLBF, 4096);
   Term::Private::m_fileInitializer.initialize();
-}
-
-void Term::Terminal::attachStreams()
-{
-#if defined(_WIN32)
-  std::string in{"CONIN$"};
-  std::string out{"CONOUT$"};
-  std::string blackHole{"NUL"};
-#else
-  std::string in{"/dev/tty"};
-  std::string out{"/dev/tty"};
-  std::string blackHole{"/dev/null"};
-#endif
-  this->cout.open(out.c_str(), std::ofstream::out | std::ofstream::trunc);
-  if(!this->cout.is_open()) this->cout.open(blackHole.c_str(), std::ofstream::out | std::ofstream::trunc);
-  this->cout.clear();
-  this->cerr.open(out.c_str(), std::ofstream::out | std::ofstream::trunc);
-  if(!this->cerr.is_open()) this->cerr.open(blackHole.c_str(), std::ofstream::out | std::ofstream::trunc);
-  this->cerr.clear();
-  this->clog.rdbuf()->pubsetbuf(nullptr, 0);
-  this->clog.open(out.c_str(), std::ofstream::out | std::ofstream::trunc);
-  if(!this->clog.is_open()) this->clog.open(blackHole.c_str(), std::ofstream::out | std::ofstream::trunc);
-  this->clog.rdbuf()->pubsetbuf(nullptr, 0);
-  this->clog.clear();
-  this->cin.open(in.c_str(), std::ofstream::in);
-  if(!this->cin.is_open()) this->cin.open(blackHole.c_str(), std::ofstream::in);
-  this->cin.clear();
-}
-
-void Term::Terminal::detachStreams()
-{
-  if(cout.is_open()) cout.close();
-  if(cerr.is_open()) cerr.close();
-  if(clog.is_open()) clog.close();
-  if(cin.is_open()) cin.close();
 }
 
 void Term::Terminal::detachConsole()
