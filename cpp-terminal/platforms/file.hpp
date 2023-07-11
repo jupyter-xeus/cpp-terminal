@@ -13,7 +13,7 @@ namespace Private
 class FileInitializer
 {
 public:
-  FileInitializer();
+  FileInitializer() = default;
   void initialize();
   ~FileInitializer();
 
@@ -34,9 +34,9 @@ public:
   FileHandler(const std::string&, const std::string&);
   ~FileHandler();
   Handle handle();
-  bool   null();
+  bool   null() const;
   FILE*  file();
-  int    fd();
+  int    fd() const;
 
 private:
   bool   m_null{false};
@@ -48,14 +48,14 @@ private:
 class OutputFileHandler : public FileHandler
 {
 public:
-  OutputFileHandler(const std::string& file, const std::string& mode = "w") : FileHandler(file, mode) {}
+  explicit OutputFileHandler(const std::string& file, const std::string& mode = "w") : FileHandler(file, mode) {}
   int write(const std::string& str);
 };
 
 class InputFileHandler : public FileHandler
 {
 public:
-  InputFileHandler(const std::string& file, const std::string& mode = "r") : FileHandler(file, mode) {}
+  explicit InputFileHandler(const std::string& file, const std::string& mode = "r") : FileHandler(file, mode) {}
 };
 
 extern InputFileHandler&  in;

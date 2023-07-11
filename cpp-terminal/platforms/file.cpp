@@ -41,8 +41,8 @@ Term::Private::FileHandler::FileHandler(const std::string& filename, const std::
   }
 #else
   std::size_t flag{O_ASYNC | O_DSYNC | O_NOCTTY | O_SYNC};
-  if(mode.find("r") != std::string::npos) flag |= O_RDONLY;
-  else if(mode.find("w") != std::string::npos)
+  if(mode.find('r') != std::string::npos) flag |= O_RDONLY;
+  else if(mode.find('w') != std::string::npos)
     flag |= O_WRONLY;
   else
     flag |= O_RDWR;
@@ -68,11 +68,11 @@ Term::Private::FileHandler::~FileHandler()
 #endif
 }
 
-bool Term::Private::FileHandler::null() { return m_null; }
+bool Term::Private::FileHandler::null() const { return m_null; }
 
 FILE* Term::Private::FileHandler::file() { return m_file; }
 
-int Term::Private::FileHandler::fd() { return m_fd; }
+int Term::Private::FileHandler::fd() const { return m_fd; }
 
 Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() { return m_handle; }
 
@@ -91,8 +91,6 @@ void Term::Private::FileInitializer::initialize()
 #endif
   }
 }
-
-Term::Private::FileInitializer::FileInitializer() {}
 
 Term::Private::FileInitializer::~FileInitializer()
 {

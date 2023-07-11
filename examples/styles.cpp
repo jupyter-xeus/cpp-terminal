@@ -2,7 +2,6 @@
 
 #include <cpp-terminal/color.hpp>
 #include <cpp-terminal/style.hpp>
-#include <cpp-terminal/terminal.hpp>
 
 int main()
 {
