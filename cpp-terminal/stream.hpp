@@ -1,7 +1,6 @@
 #pragma once
 
 #include "cpp-terminal/buffer.hpp"
-#include "cpp-terminal/io.hpp"
 #include "cpp-terminal/terminal.hpp"
 
 #include <fstream>

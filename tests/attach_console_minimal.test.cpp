@@ -1,5 +1,5 @@
 #include "cpp-terminal/color.hpp"
-#include "cpp-terminal/io.hpp"
+#include "cpp-terminal/terminal.hpp"
 
 #include <iostream>
 

@@ -1,5 +1,4 @@
 #pragma once
-#include "cpp-terminal/io.hpp"
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
@@ -36,6 +35,20 @@ private:
   Term::Options  m_options;
   std::uint8_t   m_badReturnCode{EXIT_FAILURE};
 };
+
+class TerminalInitializer
+{
+public:
+  TerminalInitializer();
+  void init();
+  ~TerminalInitializer();
+
+private:
+  static int m_counter;
+};
+
+static TerminalInitializer m_terminalInitializer;
+extern Term::Terminal& terminal;
 
 // change the title of the terminal, only supported by a few terminals
 std::string terminal_title(const std::string& title);
