@@ -15,23 +15,15 @@ public:
   explicit TIstream(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::size_t& size = BUFSIZ);
   template<typename T> TIstream& operator>>(T& t)
   {
-    /*Term::Options options = Term::terminal.getOptions();
-    if(options.has(Option::Raw))
-    {
-      Term::terminal.store_and_restore();
-      m_stream >> t;
-      Term::terminal.store_and_restore();
-      Term::terminal.setOptions(options);
-    }
-    else {*/
-    m_stream >> t; /* }    */
+    m_stream >> t;
     return *this;
   }
-  TIstream(const TIstream&)            = delete;
-  TIstream& operator=(const TIstream&) = delete;
-  TIstream(TIstream&& other)           = delete;
-  TIstream& operator=(TIstream&&)      = delete;
+  TIstream(const TIstream&)             = delete;
+  TIstream& operator=(const TIstream&)  = delete;
+  TIstream(TIstream&& other)            = delete;
+  TIstream&       operator=(TIstream&&) = delete;
   std::streambuf* rdbuf() const;
+
 private:
   Term::Buffer m_buffer;
   std::istream m_stream;

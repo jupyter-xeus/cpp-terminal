@@ -2,8 +2,8 @@
 
 #include "cpp-terminal/stream.hpp"
 
-#include <new>
 #include <iostream>
+#include <new>
 
 namespace Term
 {

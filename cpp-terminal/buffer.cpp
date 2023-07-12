@@ -1,8 +1,8 @@
 #include "cpp-terminal/buffer.hpp"
 
+#include "cpp-terminal/options.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/terminal.hpp"
-#include "options.hpp"
 
 std::string Term::Buffer::remplace(const int_type& c)
 {

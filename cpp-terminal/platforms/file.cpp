@@ -15,8 +15,6 @@
 
 #include <fcntl.h>
 
-#include <iostream>
-
 namespace Term
 {
 
@@ -130,10 +128,10 @@ int Term::Private::OutputFileHandler::write(const char& ch)
 std::string Term::Private::InputFileHandler::read()
 {
 #if defined(_WIN32)
-  DWORD nread{0};
-  std::string ret(4096,'\0');
+  DWORD       nread{0};
+  std::string ret(4096, '\0');
   errno = 0;
-  ReadConsole(Private::in.handle(),&ret[0],ret.size(),&nread,nullptr);
+  ReadConsole(Private::in.handle(), &ret[0], ret.size(), &nread, nullptr);
   return ret.c_str();
 #else
   std::size_t nread{0};
