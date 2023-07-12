@@ -66,7 +66,7 @@ Term::Buffer::int_type Term::Buffer::underflow()
         m_buffer += ret;
       } while(m_buffer.empty());
     }
-    setg(m_buffer.data(), m_buffer.data(), m_buffer.data() + m_buffer.size());
+    setg(&m_buffer[0], &m_buffer[0], &m_buffer[0] + m_buffer.size());
     return traits_type::to_int_type(m_buffer.at(0));
   }
   catch(...)
