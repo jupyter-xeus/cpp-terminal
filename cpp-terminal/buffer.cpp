@@ -33,7 +33,7 @@ Term::Buffer::Buffer(const Term::Buffer::Type& type, const std::streamsize& size
   {
     case Type::Unbuffered: setbuf(nullptr, 0); break;
     case Type::LineBuffered:
-    case Type::FullBuffered: setbuf(m_buffer.data(), size); break;
+    case Type::FullBuffered: setbuf(&m_buffer[0], size); break;
   }
 }
 
