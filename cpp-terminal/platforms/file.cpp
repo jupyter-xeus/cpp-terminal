@@ -12,7 +12,7 @@
 #endif
 
 #include "cpp-terminal/exception.hpp"
-
+#include <cerrno>
 #include <fcntl.h>
 
 namespace Term
