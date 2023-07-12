@@ -44,7 +44,6 @@ void Term::Buffer::setType(const Term::Buffer::Type& type) { m_type = type; }
 std::streambuf* Term::Buffer::setbuf(char* s, std::streamsize n)
 {
   if(s != nullptr) m_buffer.reserve(n);
-  setp(m_buffer.data(), m_buffer.data() + m_buffer.size());
   return this;
 }
 
