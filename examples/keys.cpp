@@ -5,6 +5,7 @@
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/screen.hpp"
+#include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/version.hpp"
 

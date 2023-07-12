@@ -21,6 +21,13 @@ std::string Term::Buffer::remplace(const int_type& c)
 #endif
 }
 
+int Term::Buffer::sync()
+{
+  int ret = Term::Private::out.write(m_buffer);
+  m_buffer.clear();
+  return ret;
+}
+
 Term::Buffer::Buffer(const Term::Buffer::Type& type, const std::streamsize& size)
 {
   setType(type);
@@ -45,25 +52,25 @@ Term::Buffer::int_type Term::Buffer::underflow()
 {
   try
   {
-    getBuffer().clear();
+    m_buffer.clear();
     if(terminal.getOptions().has(Option::Raw))
     {
       do {
         std::string ret{Term::Private::in.read()};
-        getBuffer() += ret;
+        m_buffer += ret;
         Term::Private::out.write(ret);
-      } while(getBuffer().empty() || getBuffer().back() != '\r' || getBuffer().back() == '\n' || getBuffer().back() == std::char_traits<Term::Buffer::char_type>::eof());
+      } while(m_buffer.empty() || m_buffer.back() != '\r' || m_buffer.back() == '\n' || m_buffer.back() == std::char_traits<Term::Buffer::char_type>::eof());
       Term::Private::out.write('\n');
     }
     else
     {
       do {
         std::string ret{Term::Private::in.read()};
-        getBuffer() += ret;
-      } while(getBuffer().empty());
+        m_buffer += ret;
+      } while(m_buffer.empty());
     }
-    setg(getBuffer().data(), getBuffer().data(), getBuffer().data() + getBuffer().size());
-    return traits_type::to_int_type(getBuffer().at(0));
+    setg(m_buffer.data(), m_buffer.data(), m_buffer.data() + m_buffer.size());
+    return traits_type::to_int_type(m_buffer.at(0));
   }
   catch(...)
   {
