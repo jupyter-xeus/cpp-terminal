@@ -17,7 +17,7 @@ public:
     FullBuffered,
   };
   explicit Buffer(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::streamsize& size = BUFSIZ);
-  virtual ~Buffer(){};
+  virtual ~Buffer() = default;
 
 protected:
   virtual Term::Buffer::int_type underflow() final;
