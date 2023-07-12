@@ -3,9 +3,8 @@
 #include "cpp-terminal/buffer.hpp"
 #include "cpp-terminal/terminal.hpp"
 
-#include <fstream>
+#include <istream>
 #include <ostream>
-#include <string>
 
 namespace Term
 {
@@ -16,7 +15,7 @@ public:
   TIstream(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::size_t& size = BUFSIZ);
   template<typename T> TIstream& operator>>(T& t)
   {
-    Term::Options options = Term::terminal.getOptions();
+    /*Term::Options options = Term::terminal.getOptions();
     if(options.has(Option::Raw))
     {
       Term::terminal.store_and_restore();
@@ -24,7 +23,8 @@ public:
       Term::terminal.store_and_restore();
       Term::terminal.setOptions(options);
     }
-    else { m_stream >> t; }
+    else {*/
+    m_stream >> t; /* }    */
     return *this;
   }
   TIstream(const TIstream&)            = delete;
@@ -33,14 +33,14 @@ public:
   TIstream& operator=(TIstream&&)      = delete;
 
 private:
-  static std::string file();
-  std::ifstream      m_stream;
-  std::string        m_string;
+  Term::Buffer m_buffer;
+  std::istream m_stream;
 };
 
 class TOstream
 {
 public:
+  TOstream(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::size_t& size = BUFSIZ);
   template<typename T> TOstream& operator<<(const T& t)
   {
     m_stream << t;
@@ -51,7 +51,6 @@ public:
     m_stream << t;
     return *this;
   }
-  TOstream(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::size_t& size = BUFSIZ);
   TOstream(const TOstream&)            = delete;
   TOstream& operator=(const TOstream&) = delete;
   TOstream(TOstream&&)                 = delete;

@@ -1,5 +1,11 @@
-add_executable(cin cin.cpp)
-target_link_libraries(cin PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
+add_executable(cin_raw cin_raw.cpp)
+target_link_libraries(cin_raw PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
+
+add_executable(cin_cooked cin_cooked.cpp)
+target_link_libraries(cin_cooked PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
+
+add_executable(cout cout.cpp)
+target_link_libraries(cout PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
 
 add_executable(minimal minimal.cpp)
 target_link_libraries(minimal PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
@@ -38,5 +44,5 @@ add_executable(styles styles.cpp)
 target_link_libraries(styles PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
 
 if(CPPTERMINAL_ENABLE_INSTALL)
-  install(TARGETS cin minimal prompt_multiline prompt_immediate prompt_not_immediate prompt_simple kilo menu menu_window keys colors RUNTIME DESTINATION bin/examples)
+  install(TARGETS cin_raw cin_cooked cout minimal prompt_multiline prompt_immediate prompt_not_immediate prompt_simple kilo menu menu_window keys colors RUNTIME DESTINATION bin/examples)
 endif()

@@ -1,6 +1,10 @@
 #include "cpp-terminal/buffer.hpp"
 
 #include "cpp-terminal/platforms/file.hpp"
+#include "cpp-terminal/terminal.hpp"
+#include "options.hpp"
+
+#include <iostream>
 
 std::string Term::Buffer::remplace(const int_type& c)
 {
@@ -17,56 +21,59 @@ std::string Term::Buffer::remplace(const int_type& c)
 #endif
 }
 
-void Term::Buffer::setType(const Term::Buffer::Type& type) { m_type = type; }
-
-std::streamsize Term::Buffer::xsputn(const char* s, std::streamsize n)
+Term::Buffer::Buffer(const Term::Buffer::Type& type, const std::streamsize& size)
 {
-  if(n == 0 || s[0] == EOF) return 0;
-  std::string ret;
-  ret.reserve(n);
-  int i{0};
-  do {
-    ret += remplace(s[i]);
-    if(m_type == Type::LineBuffered && (s[i] == '\n' || (m_s.size() + ret.size() >= m_s.capacity())))
-    {
-      Term::Private::out.write(m_s + ret);
-      m_s.clear();
-    }
-    ++i;
-  } while(i < n);
+  setType(type);
   switch(m_type)
   {
-    case Type::Unbuffered:
-    {
-      Term::Private::out.write(ret);
-      break;
-    }
-    case Type::FullBuffered:
-    {
-      if(m_s.size() + ret.size() >= m_s.capacity())
-      {
-        Term::Private::out.write(m_s + ret);
-        m_s.clear();
-      }
-      else
-        m_s += ret;
-      break;
-    }
-    default: break;
+    case Type::Unbuffered: setbuf(nullptr, 0); break;
+    case Type::LineBuffered:
+    case Type::FullBuffered: setbuf(m_buffer.data(), size); break;
   }
-  return n;
 }
+
+void Term::Buffer::setType(const Term::Buffer::Type& type) { m_type = type; }
 
 std::streambuf* Term::Buffer::setbuf(char* s, std::streamsize n)
 {
-  s = s;
-  m_s.reserve(n);
+  if(s != nullptr) m_buffer.reserve(n);
+  setp(m_buffer.data(), m_buffer.data() + m_buffer.size());
   return this;
 }
 
-Term::Buffer::int_type Term::Buffer::overflow(int_type c)
+Term::Buffer::int_type Term::Buffer::underflow()
 {
-  if(c != EOF)
+  try
+  {
+    getBuffer().clear();
+    if(terminal.getOptions().has(Option::Raw))
+    {
+      do {
+        std::string ret{Term::Private::in.read()};
+        getBuffer() += ret;
+        Term::Private::out.write(ret);
+      } while(getBuffer().empty() || getBuffer().back() != '\r' || getBuffer().back() == '\n' || getBuffer().back() == std::char_traits<Term::Buffer::char_type>::eof());
+      Term::Private::out.write('\n');
+    }
+    else
+    {
+      do {
+        std::string ret{Term::Private::in.read()};
+        getBuffer() += ret;
+      } while(getBuffer().empty());
+    }
+    setg(getBuffer().data(), getBuffer().data(), getBuffer().data() + getBuffer().size());
+    return traits_type::to_int_type(getBuffer().at(0));
+  }
+  catch(...)
+  {
+    return traits_type::eof();
+  }
+}
+
+Term::Buffer::int_type Term::Buffer::overflow(int c)
+{
+  if(c != std::char_traits<Term::Buffer::char_type>::eof())
   {
     switch(m_type)
     {
@@ -77,32 +84,25 @@ Term::Buffer::int_type Term::Buffer::overflow(int_type c)
       }
       case Type::LineBuffered:
       {
-        m_s += remplace(c);
+        m_buffer += remplace(c);
         if(static_cast<char>(c) == '\n')
         {
-          Term::Private::out.write(m_s);
-          m_s.clear();
+          Term::Private::out.write(m_buffer);
+          m_buffer.clear();
         }
         break;
       }
       case Type::FullBuffered:
       {
-        if(m_s.size() >= m_s.capacity())
+        if(m_buffer.size() >= m_buffer.capacity())
         {
-          Term::Private::out.write(m_s);
-          m_s.clear();
+          Term::Private::out.write(m_buffer);
+          m_buffer.clear();
         }
-        m_s += remplace(c);
+        m_buffer += remplace(c);
         break;
       }
     }
   }
   return c;
-}
-
-int Term::Buffer::sync()
-{
-  int ret = Term::Private::out.write(m_s);
-  m_s.clear();
-  return ret;
 }

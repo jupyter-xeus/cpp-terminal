@@ -7,8 +7,11 @@
   #include <windows.h>
 #else
   #include <cstdio>
+  #include <sys/ioctl.h>
   #include <unistd.h>
 #endif
+
+#include "cpp-terminal/exception.hpp"
 
 #include <fcntl.h>
 
@@ -103,11 +106,40 @@ Term::Private::FileInitializer::~FileInitializer()
 
 int Term::Private::OutputFileHandler::write(const std::string& str)
 {
+  if(str.empty()) return 0;
 #if defined(_WIN32)
-  //return ::_write(fd(), &str[0], str.size());
   DWORD dwCount{0};
   if(WriteConsole(handle(), &str[0], str.size(), &dwCount, nullptr) == 0) return -1;
 #else
   return ::write(fd(), &str[0], str.size());
+#endif
+}
+
+int Term::Private::OutputFileHandler::write(const char& ch)
+{
+#if defined(_WIN32)
+  DWORD dwCount{0};
+  if(WriteConsole(handle(), &ch, 1, &dwCount, nullptr) == 0) return -1;
+#else
+  return ::write(fd(), &ch, 1);
+#endif
+}
+
+std::string Term::Private::InputFileHandler::read()
+{
+#if defined(_WIN32)
+#else
+  std::size_t nread{0};
+  ::ioctl(Private::in.fd(), FIONREAD, &nread);
+  if(nread != 0)
+  {
+    std::string ret(nread, '\0');
+    errno = 0;
+    ::ssize_t nread{::read(Private::in.fd(), &ret[0], ret.size())};
+    if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
+    return ret.c_str();
+  }
+  else
+    return std::string();
 #endif
 }

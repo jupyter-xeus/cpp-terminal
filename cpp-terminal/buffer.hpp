@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <streambuf>
 
@@ -15,17 +16,19 @@ public:
     LineBuffered,
     FullBuffered,
   };
-  Buffer() = default;
-  void             setType(const Term::Buffer::Type& type);
-  std::streambuf*  setbuf(char* s, std::streamsize n) final;
-  virtual int_type overflow(int_type c) final;
-  virtual int      sync() final;
-  std::streamsize  xsputn(const char* s, std::streamsize n);
+  explicit Buffer(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::streamsize& size = BUFSIZ);
+  virtual ~Buffer(){};
 
 protected:
+  virtual Term::Buffer::int_type underflow() final;
+  virtual Term::Buffer::int_type overflow(int c = std::char_traits<Term::Buffer::char_type>::eof());
+  std::string&                   getBuffer() { return m_buffer; }
+
 private:
-  std::string        remplace(const int_type&);
-  std::string        m_s;
+  std::string        remplace(const int_type& c);
+  void               setType(const Term::Buffer::Type& type);
+  std::streambuf*    setbuf(char* s, std::streamsize n) final;
+  std::string        m_buffer;
   Term::Buffer::Type m_type{Term::Buffer::Type::LineBuffered};
 };
 

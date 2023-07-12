@@ -54,6 +54,7 @@ class OutputFileHandler : public FileHandler
 public:
   explicit OutputFileHandler(const std::string& file, const std::string& mode = "w") : FileHandler(file, mode) {}
   int write(const std::string& str);
+  int write(const char& ch);
   OutputFileHandler(const OutputFileHandler& other)          = delete;
   OutputFileHandler& operator=(const OutputFileHandler& rhs) = delete;
   OutputFileHandler(OutputFileHandler&& other)               = delete;
@@ -64,6 +65,7 @@ class InputFileHandler : public FileHandler
 {
 public:
   explicit InputFileHandler(const std::string& file, const std::string& mode = "r") : FileHandler(file, mode) {}
+  std::string read();
   InputFileHandler(const InputFileHandler&)            = delete;
   InputFileHandler& operator=(const InputFileHandler&) = delete;
   InputFileHandler(InputFileHandler&&)                 = delete;
