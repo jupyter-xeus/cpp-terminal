@@ -15,6 +15,8 @@
 
 #include <fcntl.h>
 
+#include <iostream>
+
 namespace Term
 {
 
@@ -129,16 +131,10 @@ std::string Term::Private::InputFileHandler::read()
 {
 #if defined(_WIN32)
   DWORD nread{0};
-  GetNumberOfConsoleInputEvents(Private::in.handle(), &nread);
-  if(nread != 0)
-  {
-    std::string ret(nread, '\0');
-    errno = 0;
-    ReadConsole(Private::in.handle(),&ret[0],ret.size(),&nread,nullptr);
-    return ret.data();
-  }
-  else
-    return std::string();
+  std::string ret(4096,'\0');
+  errno = 0;
+  ReadConsole(Private::in.handle(),&ret[0],ret.size(),&nread,nullptr);
+  return ret.c_str();
 #else
   std::size_t nread{0};
   ::ioctl(Private::in.fd(), FIONREAD, &nread);
