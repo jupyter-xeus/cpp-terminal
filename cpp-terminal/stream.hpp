@@ -31,7 +31,7 @@ public:
   TIstream& operator=(const TIstream&) = delete;
   TIstream(TIstream&& other)           = delete;
   TIstream& operator=(TIstream&&)      = delete;
-
+  std::streambuf* rdbuf() const;
 private:
   Term::Buffer m_buffer;
   std::istream m_stream;

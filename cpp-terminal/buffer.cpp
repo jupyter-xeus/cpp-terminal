@@ -4,8 +4,6 @@
 #include "cpp-terminal/terminal.hpp"
 #include "options.hpp"
 
-#include <iostream>
-
 std::string Term::Buffer::remplace(const int_type& c)
 {
 #if defined(_WIN32)
