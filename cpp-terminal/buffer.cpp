@@ -4,7 +4,9 @@
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/terminal.hpp"
 
-std::string Term::Buffer::remplace(const int_type& c)
+#include <iostream>
+
+static std::string remplace(const Term::Buffer::int_type& c)
 {
 #if defined(_WIN32)
   std::string ret;
@@ -17,6 +19,13 @@ std::string Term::Buffer::remplace(const int_type& c)
   ret.push_back(static_cast<char>(c));
   return ret;
 #endif
+}
+
+static bool newline_sequence(const std::string& str)  //https://en.wikipedia.org/wiki/Newline
+{
+  if(str.back() == '\n' || str.back() == '\r' || str.back() == '\036' || str.back() == '\036' || str.back() == '\025') return true;
+  else
+    return false;
 }
 
 int Term::Buffer::sync()
@@ -49,14 +58,31 @@ Term::Buffer::int_type Term::Buffer::underflow()
 {
   try
   {
+    //TODO Maybe use input function ?
     m_buffer.clear();
     if(terminal.getOptions().has(Option::Raw))
     {
       do {
         std::string ret{Term::Private::in.read()};
-        m_buffer += ret;
-        Term::Private::out.write(ret);
-      } while(m_buffer.empty() || m_buffer.back() != '\r' || m_buffer.back() == '\n' || m_buffer.back() == std::char_traits<Term::Buffer::char_type>::eof());
+        if(!ret.empty())
+        {
+          if(ret[0] == '\x7f' || ret[0] == '\b')
+          {
+            Term::Private::out.write("\b \b");  //Backspace is DEL, CTRL+Backspace is Backspace '\b'
+            if(!m_buffer.empty()) m_buffer.erase(m_buffer.size() - 1);
+          }
+          else if(ret[0] == '\033')
+          {
+            continue;  // For now if it's escape sequence do nothing
+          }
+          else if(ret[0] <= 31 && ret[0] != '\t' && ret[0] != '\b' && ret[0] != 127 && ret[0] != ' ' && ret[0] != '\n' && ret[0] != '\r') { continue; }
+          else
+          {
+            Term::Private::out.write(ret);
+            m_buffer += ret;
+          }
+        }
+      } while(m_buffer.empty() || !newline_sequence(m_buffer));
       Term::Private::out.write('\n');
     }
     else

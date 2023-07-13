@@ -12,6 +12,7 @@
 #endif
 
 #include "cpp-terminal/exception.hpp"
+
 #include <cerrno>
 #include <fcntl.h>
 
@@ -110,6 +111,8 @@ int Term::Private::OutputFileHandler::write(const std::string& str)
 #if defined(_WIN32)
   DWORD dwCount{0};
   if(WriteConsole(handle(), &str[0], str.size(), &dwCount, nullptr) == 0) return -1;
+  else
+    return dwCount;
 #else
   return ::write(fd(), &str[0], str.size());
 #endif

@@ -25,7 +25,6 @@ protected:
   virtual int                    sync() final;
 
 private:
-  std::string        remplace(const int_type& c);
   void               setType(const Term::Buffer::Type& type);
   std::streambuf*    setbuf(char* s, std::streamsize n) final;
   std::string        m_buffer;

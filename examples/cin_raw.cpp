@@ -12,6 +12,7 @@ int main()
   Term::cin >> number;
   Term::cin >> string;
   std::cout << "Your number is " << number << " and string is " << string << std::endl;
+  std::cout << "Now type a number and then a string !" << std::endl;
   number = 0;
   string.clear();
   std::cin >> number;
