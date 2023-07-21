@@ -25,13 +25,13 @@ public:
   Event(const std::string&);
   Event(const Term::Key&);
   Event(const Term::Screen& screen);
-  bool empty();
-  Type type();
+  bool empty() const;
+  Type type() const;
 
-  operator Term::Key();
-  operator Term::Screen();
-  operator Term::Cursor();
-  operator std::string();
+  operator Term::Key() const;
+  operator Term::Screen() const;
+  operator Term::Cursor() const;
+  operator std::string() const;
 
 private:
   void         parse();

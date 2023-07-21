@@ -2,21 +2,21 @@
 
 #include "cpp-terminal/platforms/conversion.hpp"
 
-bool Term::Event::empty()
+bool Term::Event::empty() const
 {
   if(m_Type == Type::Empty) return true;
   else
     return false;
 }
 
-Term::Event::operator std::string()
+Term::Event::operator std::string() const
 {
   if(m_Type == Type::CopyPaste) return m_str;
   else
     return std::string();
 }
 
-Term::Event::operator Term::Screen()
+Term::Event::operator Term::Screen() const
 {
   if(m_Type == Type::Screen) return m_Screen;
   else
@@ -27,7 +27,7 @@ Term::Event::Event(const Term::Screen& screen) : m_Type(Type::Screen), m_Screen(
 
 Term::Event::Event(const Term::Key& key) : m_Type(Type::Key), m_Key(key) {}
 
-Term::Event::Type Term::Event::type() { return m_Type; }
+Term::Event::Type Term::Event::type() const { return m_Type; }
 
 Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste), m_str(str) { parse(); }
 
@@ -208,14 +208,14 @@ void Term::Event::parse()
   }
 }
 
-Term::Event::operator Term::Key()
+Term::Event::operator Term::Key() const
 {
   if(m_Type == Type::Key) return m_Key;
   else
     return Key();
 }
 
-Term::Event::operator Term::Cursor()
+Term::Event::operator Term::Cursor() const
 {
   if(m_Type == Type::Cursor) return m_Cursor;
   else
