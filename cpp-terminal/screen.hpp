@@ -11,10 +11,10 @@ class Screen
 public:
   Screen() = default;
   Screen(const std::size_t& rows, const std::size_t& columns) { m_size = {rows, columns}; }
-  std::size_t                         rows();
-  std::size_t                         columns();
-  std::pair<std::size_t, std::size_t> size();
-  bool                                empty();
+  std::size_t                         rows() const;
+  std::size_t                         columns() const;
+  std::pair<std::size_t, std::size_t> size() const;
+  bool                                empty() const;
 
 private:
   std::pair<std::size_t, std::size_t> m_size{0, 0};

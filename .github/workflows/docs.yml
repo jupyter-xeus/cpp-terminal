@@ -74,7 +74,7 @@ jobs:
         uses: actions/configure-pages@v3
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           path: ${{ env.CMAKE_INSTALL_PREFIX }}/share/doc/cpp-terminal/html/
 
