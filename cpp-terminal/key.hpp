@@ -220,12 +220,12 @@ public:
   // Detect if Key is convertible to Extended ANSII
   bool isExtendedASCII() const;
   // Detect if Key is CTRL+*
-  bool isCTRL()  const;
+  bool isCTRL() const;
   // Detect if Key is ALT+*
-  bool isALT()  const;
-  bool empty()  const;
+  bool isALT() const;
+  bool empty() const;
 
-  std::string str()  const;
+  std::string str() const;
 
 private:
   Value m_value{NO_KEY};

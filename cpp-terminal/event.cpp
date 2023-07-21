@@ -16,7 +16,7 @@ Term::Event::operator std::string() const
     return std::string();
 }
 
-Term::Event::operator Term::Screen() const 
+Term::Event::operator Term::Screen() const
 {
   if(m_Type == Type::Screen) return m_Screen;
   else

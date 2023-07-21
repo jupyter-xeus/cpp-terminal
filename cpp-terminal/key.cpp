@@ -15,7 +15,7 @@ std::string Term::Key::str() const
 
 Term::Key::Key(const Term::Key::Value& value) : m_value(value) {}
 
-Term::Key::operator Term::Key::Value()  const { return m_value; }
+Term::Key::operator Term::Key::Value() const { return m_value; }
 
 bool Term::Key::isASCII() const
 {
