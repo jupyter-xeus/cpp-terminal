@@ -123,6 +123,8 @@ int Term::Private::OutputFileHandler::write(const char& ch)
 #if defined(_WIN32)
   DWORD dwCount{0};
   if(WriteConsole(handle(), &ch, 1, &dwCount, nullptr) == 0) return -1;
+  else
+    return dwCount;
 #else
   return ::write(fd(), &ch, 1);
 #endif
