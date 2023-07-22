@@ -67,9 +67,8 @@ Term::Private::FileHandler::FileHandler(const std::string& filename, const std::
 
 Term::Private::FileHandler::~FileHandler()
 {
-#if defined(_WIN32)
+  std::fflush(m_file);
   std::fclose(m_file);
-#endif
 }
 
 bool Term::Private::FileHandler::null() const { return m_null; }
