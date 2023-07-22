@@ -11,6 +11,8 @@
   #include <unistd.h>
 #endif
 
+#include "cpp-terminal/exception.hpp"
+
 #include <cerrno>
 #include <fcntl.h>
 
@@ -94,10 +96,7 @@ void Term::Private::FileInitializer::init()
   }
 }
 
-Term::Private::FileInitializer::FileInitializer()
-{
-  init();
-}
+Term::Private::FileInitializer::FileInitializer() { init(); }
 
 Term::Private::FileInitializer::~FileInitializer()
 {
