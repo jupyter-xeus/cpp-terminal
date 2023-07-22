@@ -26,7 +26,6 @@ void Term::StreamInitializer::init()
   if(m_counter++ == 0)
   {
     std::ios_base::Init();
-    Term::m_terminalInitializer.init();
     new(&Term::cout) TOstream(Term::Buffer::Type::FullBuffered, BUFSIZ);
     new(&Term::clog) TOstream(Term::Buffer::Type::LineBuffered, BUFSIZ);
     new(&Term::cerr) TOstream(Term::Buffer::Type::Unbuffered, 0);

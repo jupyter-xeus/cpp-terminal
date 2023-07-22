@@ -13,7 +13,7 @@ namespace Private
 class FileInitializer
 {
 public:
-  FileInitializer() = default;
+  FileInitializer();
   static void init();
   ~FileInitializer();
 

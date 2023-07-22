@@ -19,7 +19,10 @@ int Term::TerminalInitializer::m_counter{0};
 
 void Term::TerminalInitializer::init()
 {
-  if(m_counter++ == 0) new(&Term::terminal) Terminal();
+  if(m_counter++ == 0)
+  {
+    new(&Term::terminal) Terminal();
+  }
 }
 
 Term::TerminalInitializer::TerminalInitializer()
@@ -32,7 +35,10 @@ Term::TerminalInitializer::TerminalInitializer()
 
 Term::TerminalInitializer::~TerminalInitializer()
 {
-  if(--m_counter == 0) (&Term::terminal)->~Terminal();
+  if(--m_counter==0)
+  {
+    (&Term::terminal)->~Terminal();
+  }
 }
 
 void Term::Terminal::setOptions(const Term::Options& options)
