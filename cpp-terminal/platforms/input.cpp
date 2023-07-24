@@ -10,10 +10,10 @@
   #include <unistd.h>
 #endif
 
+#include "cpp-terminal/event.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/platforms/file.hpp"
-#include "cpp-terminal/event.hpp"
 
 #include <string>
 
