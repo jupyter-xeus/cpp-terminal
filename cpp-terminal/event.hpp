@@ -64,7 +64,7 @@ public:
   inline Event(std::string&& str) : 			m_Type(Type::CopyPaste)	{new(reinterpret_cast<void*>(this->m_variant)) std::string(std::move(str));}
   
   // construcst an event by parsing a string in ANSI format
-  Event parse(const std::string& str);
+  static Event parse(const std::string& str);
   
   // savely deconstrucst an event by calling the destructor of the stored type
   inline ~Event(){ this->clear(); }
