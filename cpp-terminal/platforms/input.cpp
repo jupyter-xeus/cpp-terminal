@@ -117,7 +117,8 @@ Term::Event Term::Platform::read_raw()
         }
       }
     }
-    if(processed >= 1) return Event(ret);
+    if(processed >= 1) 
+		return Event::parse(ret);
     else
       return Event();
   }
