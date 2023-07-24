@@ -175,5 +175,5 @@ Term::Event Term::Event::parse(const std::string& str)
     else if(str.size() == 4 && ((str[0] & 0b11111000) == 0b11110000) && ((str[1] & 0b11000000) == 0b10000000) && ((str[2] & 0b11000000) == 0b10000000) && ((str[2] & 0b11000000) == 0b10000000))
       return Term::Event(Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0])));
   }
-  return Term::Event();
+  return Term::Event();  
 }
