@@ -67,9 +67,6 @@ public:
   // constructs a copy paste event by moveing the string
   inline Event(std::string&& str) : m_Type(Type::CopyPaste) { new(reinterpret_cast<void*>(this->m_variant)) std::string(std::move(str)); }
 
-  // construcst an event by parsing a string in ANSI format
-  static Event parse(const std::string& str);
-
   // safely deconstrucst an event by calling the destructor of the stored type
   inline ~Event() { this->clear(); }
 
@@ -288,5 +285,9 @@ private:
 
   Type m_Type{Type::Empty};
 };
+
+// construcst an event by parsing a string in ANSI format
+// returns an event from the string
+Event parse_event(std::string&& str);
 
 }  // namespace Term

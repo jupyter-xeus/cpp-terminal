@@ -2,7 +2,7 @@
 
 #include "cpp-terminal/platforms/conversion.hpp"
 
-Term::Event Term::Event::parse(const std::string& str)
+Term::Event Term::parse_event(std::string&& str)
 {
   if(str.size() == 1)
   {
@@ -170,5 +170,5 @@ Term::Event Term::Event::parse(const std::string& str)
     else if(str.size() == 4 && ((str[0] & 0xF8) == 0xF0) && ((str[1] & 0xC0) == 0x80) && ((str[2] & 0xC0) == 0x80) && ((str[2] & 0xC0) == 0x80))
       return Term::Event(Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0])));
   }
-  return Term::Event();
+  return Term::Event(std::move(str));
 }
