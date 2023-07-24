@@ -118,15 +118,15 @@ Term::Event Term::Platform::read_raw()
       }
     }
     if(processed >= 1){ 
-		Event result = Event::parse(ret);
-		if(!result.is_empty()){
-			return result;
-		}else{
-			return Event(std::move(ret));
-		}
-	}else{
-      return Event();
-	}
+		  Event result = Event::parse(ret);
+		  if(!result.is_empty()){
+			  return result;
+		  }else{
+			  return Event(std::move(ret));
+		  }
+	  }else{
+        return Event();
+	  }
   }
   else
     return Event();
