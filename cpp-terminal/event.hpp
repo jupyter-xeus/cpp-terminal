@@ -276,8 +276,8 @@ private:
 #define temp_max_2(a, b)       (((a) > (b)) ? (a) : (b))
 #define temp_max_4(a, b, c, d) temp_max_2(temp_max_2(a, b), temp_max_2(c, d))
 
-  static const unsigned int max_align = temp_max_4(alignof(std::string), alignof(Key), alignof(Cursor), alignof(Term::Screen));
-  static const unsigned int max_size  = temp_max_4(sizeof(std::string), sizeof(Key), sizeof(Cursor), sizeof(Term::Screen));
+  inline static const unsigned int max_align = temp_max_4(alignof(std::string), alignof(Key), alignof(Cursor), alignof(Term::Screen));
+  inline static const unsigned int max_size  = temp_max_4(sizeof(std::string), sizeof(Key), sizeof(Cursor), sizeof(Term::Screen));
 
 #undef temp_max_2
 #undef temp_max_4
