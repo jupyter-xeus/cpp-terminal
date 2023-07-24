@@ -8,27 +8,23 @@ Term::Event Term::Event::parse(const std::string& str)
   {
     Term::Key key = Key(static_cast<Term::Key::Value>(str[0]));
     /* Backspace return 127 CTRL+backspace return 8 */
-    if(key == Term::Key::Value::DEL) 
-		return Term::Event(Key(Term::Key::Value::BACKSPACE));
-	else
-		return Term::Event(key);
+    if(key == Term::Key::Value::DEL) return Term::Event(Key(Term::Key::Value::BACKSPACE));
+    else
+      return Term::Event(key);
   }
-  else if(str.size() == 2 && str[0] == '\033')
-  {
-    return Term::Event(Key(static_cast<Term::Key::Value>(Term::Key::Value::ALT + static_cast<Term::Key::Value>(str[1]))));
-  }
+  else if(str.size() == 2 && str[0] == '\033') { return Term::Event(Key(static_cast<Term::Key::Value>(Term::Key::Value::ALT + static_cast<Term::Key::Value>(str[1])))); }
   else if(str[0] == '\033' && str[1] == '[' && str[str.size() - 1] == 'R')
   {
     std::size_t found = str.find(';', 2);
-    if(found != std::string::npos){
-	  const auto substr1 = str.substr(std::size_t(2), found - std::size_t(2));
-	  const auto num1 = std::stoul(substr1);
-	  const auto substr2 = str.substr(found + std::size_t(1), str.size() - (found + std::size_t(2)));
-	  const auto num2 = std::stoul(substr2);
-	  return Event(Cursor(num1, num2));
-	}else{
-	  return Event();
-	}
+    if(found != std::string::npos)
+    {
+      const auto substr1 = str.substr(std::size_t(2), found - std::size_t(2));
+      const auto num1    = std::stoul(substr1);
+      const auto substr2 = str.substr(found + std::size_t(1), str.size() - (found + std::size_t(2)));
+      const auto num2    = std::stoul(substr2);
+      return Event(Cursor(num1, num2));
+    }
+    else { return Event(); }
   }
   else if(str.size() <= 10)
   {
@@ -50,8 +46,7 @@ Term::Event Term::Event::parse(const std::string& str)
      * Cursor Left  | ESC D
      * -------------+--------------------
     */
-    if(str == "\033OA" || str == "\033[A" || str == "\033A") 
-		return Term::Event(Term::Key(Term::Key::Value::ARROW_UP));
+    if(str == "\033OA" || str == "\033[A" || str == "\033A") return Term::Event(Term::Key(Term::Key::Value::ARROW_UP));
     else if(str == "\033OB" || str == "\033[B" || str == "\033B")
       return Term::Event(Key(Term::Key::Value::ARROW_DOWN));
     else if(str == "\033OC" || str == "\033[C" || str == "\033C")
@@ -175,5 +170,5 @@ Term::Event Term::Event::parse(const std::string& str)
     else if(str.size() == 4 && ((str[0] & 0b11111000) == 0b11110000) && ((str[1] & 0b11000000) == 0b10000000) && ((str[2] & 0b11000000) == 0b10000000) && ((str[2] & 0b11000000) == 0b10000000))
       return Term::Event(Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0])));
   }
-  return Term::Event();  
+  return Term::Event();
 }
