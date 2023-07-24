@@ -57,7 +57,7 @@ public:
   // constructs a cursor event
   inline Event(const Term::Cursor& cursor) :	m_Type(Type::Cursor) 	{new(reinterpret_cast<void*>(this->m_variant)) Term::Cursor(cursor);}
   
-  // constructs a copy paste event by copiing the string
+  // constructs a copy paste event by copying the string
   inline Event(const std::string& str) : 		m_Type(Type::CopyPaste)	{new(reinterpret_cast<void*>(this->m_variant)) std::string(str);}
   
   // constructs a copy paste event by moveing the string
@@ -66,7 +66,7 @@ public:
   // construcst an event by parsing a string in ANSI format
   static Event parse(const std::string& str);
   
-  // savely deconstrucst an event by calling the destructor of the stored type
+  // safely deconstrucst an event by calling the destructor of the stored type
   inline ~Event(){ this->clear(); }
   
   // assigning an event will call the destructor if the types differ and assign directly if the types are equal
