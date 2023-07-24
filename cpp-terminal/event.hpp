@@ -59,20 +59,20 @@ public:
   inline Event(const Term::Screen& screen) : m_Type(Type::Screen) { new(reinterpret_cast<void*>(this->m_variant)) Term::Screen(screen); }
 
   // constructs a cursor event
-  inline Event(const Term::Cursor& cursor) :	m_Type(Type::Cursor) 	{new(reinterpret_cast<void*>(this->m_variant)) Term::Cursor(cursor);}
-  
+  inline Event(const Term::Cursor& cursor) : m_Type(Type::Cursor) { new(reinterpret_cast<void*>(this->m_variant)) Term::Cursor(cursor); }
+
   // constructs a copy paste event by copying the string
-  inline Event(const std::string& str) : 		m_Type(Type::CopyPaste)	{new(reinterpret_cast<void*>(this->m_variant)) std::string(str);}
-  
+  inline Event(const std::string& str) : m_Type(Type::CopyPaste) { new(reinterpret_cast<void*>(this->m_variant)) std::string(str); }
+
   // constructs a copy paste event by moveing the string
   inline Event(std::string&& str) : m_Type(Type::CopyPaste) { new(reinterpret_cast<void*>(this->m_variant)) std::string(std::move(str)); }
 
   // construcst an event by parsing a string in ANSI format
   static Event parse(const std::string& str);
-  
+
   // safely deconstrucst an event by calling the destructor of the stored type
-  inline ~Event(){ this->clear(); }
-  
+  inline ~Event() { this->clear(); }
+
   // assigning an event will call the destructor if the types differ and assign directly if the types are equal
   inline Event& operator=(const Event& event) { return this->assign(event); }
 
