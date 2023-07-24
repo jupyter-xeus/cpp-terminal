@@ -273,23 +273,20 @@ public:
   inline operator std::string() const { return (this->is_copy_paste()) ? *reinterpret_cast<const std::string*>(this->m_variant) : std::string(); }
 
 private:
-
 #define temp_max_2(a, b)       (((a) > (b)) ? (a) : (b))
 #define temp_max_4(a, b, c, d) temp_max_2(temp_max_2(a, b), temp_max_2(c, d))
 
 #define MAX_ALIGN temp_max_4(alignof(std::string), alignof(Key), alignof(Cursor), alignof(Term::Screen))
-#define MAX_SIZE temp_max_4(sizeof(std::string), sizeof(Key), sizeof(Cursor), sizeof(Term::Screen))
+#define MAX_SIZE  temp_max_4(sizeof(std::string), sizeof(Key), sizeof(Cursor), sizeof(Term::Screen))
 
-alignas(MAX_ALIGN) uint8_t m_variant[MAX_SIZE];
+  alignas(MAX_ALIGN) uint8_t m_variant[MAX_SIZE];
 
 #undef temp_max_2
 #undef temp_max_4
 #undef MAX_ALIGN
 #undef MAX_SIZE
 
-Type m_Type{Type::Empty};
-
-  
+  Type m_Type{Type::Empty};
 };
 
 }  // namespace Term
