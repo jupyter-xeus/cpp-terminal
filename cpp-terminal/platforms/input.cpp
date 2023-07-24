@@ -118,10 +118,7 @@ Term::Event Term::Platform::read_raw()
         }
       }
     }
-    if(processed >= 1)
-    {
-      return parse_event(std::move(ret));
-    }
+    if(processed >= 1) { return parse_event(std::move(ret)); }
     else { return Event(); }
   }
   else
@@ -150,10 +147,7 @@ Term::Event Term::Platform::read_raw()
     errno = 0;
     ::ssize_t nread{::read(0, &ret[0], ret.size())};
     if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-    if(nread >= 1)
-    {
-      return parse_event(std::move(ret));
-    }
+    if(nread >= 1) { return parse_event(std::move(ret)); }
     else { return Event(); }
   }
 #endif
