@@ -21,13 +21,13 @@ public:
 
   Term::Options getOptions();
 
-  void store_and_restore();
   Terminal(const Terminal&)            = delete;
   Terminal& operator=(const Terminal&) = delete;
   Terminal(Terminal&&)                 = delete;
   Terminal& operator=(Terminal&&)      = delete;
 
 private:
+  void           store_and_restore();
   void           setBadStateReturnCode();
   void           setOptions();
   void           applyOptions();

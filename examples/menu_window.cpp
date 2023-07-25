@@ -6,6 +6,7 @@
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/window.hpp"
+
 #include <iostream>
 
 std::string render(Term::Window& scr, const std::size_t& rows, const std::size_t& cols, const std::size_t& menuheight, const std::size_t& menuwidth, const std::size_t& menupos)
@@ -78,12 +79,8 @@ int main()
         case Term::Key::ARROW_DOWN:
           if(pos < h) pos++;
           break;
-        case Term::Key::HOME:
-          pos = 1;
-          break;
-        case Term::Key::END:
-          pos = h;
-          break;
+        case Term::Key::HOME: pos = 1; break;
+        case Term::Key::END: pos = h; break;
         case Term::Key::q:
         case Term::Key::ESC:
         case Term::Key::CTRL_C: on = false; break;
