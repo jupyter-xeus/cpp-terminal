@@ -67,7 +67,6 @@ public:
   // returns a const pointer to the contained copy paste type (aka string) if it is one and otherwise a nullptr
   inline const std::string* get_if_copy_paste() const { return (this->is_copy_paste()) ? &this->m_str : nullptr; }
 
-
   operator Term::Key() const;
   operator Term::Screen() const;
   operator Term::Cursor() const;
