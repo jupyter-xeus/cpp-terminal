@@ -10,7 +10,6 @@
   #include <unistd.h>
 #endif
 
-#include "cpp-terminal/event.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/platforms/file.hpp"
@@ -118,8 +117,9 @@ Term::Event Term::Platform::read_raw()
         }
       }
     }
-    if(processed >= 1) { return parse_event(std::move(ret)); }
-    else { return Event(); }
+    if(processed >= 1) return Event(ret);
+    else
+      return Event();
   }
   else
     return Event();
@@ -147,8 +147,9 @@ Term::Event Term::Platform::read_raw()
     errno = 0;
     ::ssize_t nread{::read(0, &ret[0], ret.size())};
     if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-    if(nread >= 1) { return parse_event(std::move(ret)); }
-    else { return Event(); }
+    if(nread >= 1) return Event(ret.c_str());
+    else
+      return Event();
   }
 #endif
 }
