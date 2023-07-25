@@ -28,6 +28,46 @@ public:
   bool empty() const;
   Type type() const;
 
+  // returns true if the contained type is an empty type
+  inline bool is_empty() const { return this->m_Type == Type::Empty; }
+
+  // returns true if the contained type is a key type
+  inline bool is_key() const { return this->m_Type == Type::Key; }
+
+  // returns true if the contained type is a screen type
+  inline bool is_screen() const { return this->m_Type == Type::Screen; }
+
+  // returns true if the contained type is a cursor type
+  inline bool is_cursor() const { return this->m_Type == Type::Cursor; }
+
+  // returns true if the contained type is a copy paset type
+  inline bool is_copy_paste() const { return this->m_Type == Type::CopyPaste; }
+
+  // returns a pointer to the contained key type if it is one and otherwise a nullptr
+  inline Key* get_if_key() { return (this->is_key()) ? &this->m_Key : nullptr; }
+
+  // returns a const pointer to the contained key type if it is one and otherwise a nullptr
+  inline const Key* get_if_key() const { return (this->is_key()) ? &this->m_Key : nullptr; }
+
+  // returns a pointer to the contained screen type if it is one and otherwise a nullptr
+  inline Screen* get_if_screen() { return (this->is_screen()) ? &this->m_Screen : nullptr; }
+
+  // returns a const pointer to the contained screen type if it is one and otherwise a nullptr
+  inline const Screen* get_if_screen() const { return (this->is_screen()) ? &this->m_Screen : nullptr; }
+
+  // returns a pointer to the contained cursor type if it is one and otherwise a nullptr
+  inline Cursor* get_if_cursor() { return (this->is_cursor()) ? &this->m_Cursor : nullptr; }
+
+  // returns a const pointer to the contained cursor type if it is one and otherwise a nullptr
+  inline const Cursor* get_if_cursor() const { return (this->is_cursor()) ? &this->m_Cursor : nullptr; }
+
+  // returns a pointer to the contained copy paste type (aka string) if it is one and otherwise a nullptr
+  inline std::string* get_if_copy_paste() { return (this->is_copy_paste()) ? &this->m_str : nullptr; }
+
+  // returns a const pointer to the contained copy paste type (aka string) if it is one and otherwise a nullptr
+  inline const std::string* get_if_copy_paste() const { return (this->is_copy_paste()) ? &this->m_str : nullptr; }
+
+
   operator Term::Key() const;
   operator Term::Screen() const;
   operator Term::Cursor() const;
