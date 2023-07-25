@@ -1,5 +1,5 @@
-#include "cpp-terminal/input.hpp"
 #include "cpp-terminal/iostream.hpp"
+#include "cpp-terminal/terminal.hpp"
 
 #include <iostream>
 

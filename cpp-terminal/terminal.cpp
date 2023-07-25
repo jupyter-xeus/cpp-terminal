@@ -19,15 +19,13 @@ int Term::TerminalInitializer::m_counter{0};
 
 void Term::TerminalInitializer::init()
 {
-  if(m_counter++ == 0) { new(&Term::terminal) Terminal(); }
+  if(m_counter++ == 0) new(&Term::terminal) Terminal();
+
 }
 
 Term::TerminalInitializer::TerminalInitializer()
 {
-//FIXME Understand why it is initialize already in Linux
-#if defined(_WIN32)
   init();
-#endif
 }
 
 Term::TerminalInitializer::~TerminalInitializer()
@@ -61,17 +59,17 @@ Term::Terminal::~Terminal()
   }
   catch(const Term::Exception& e)
   {
-    Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\nreason : " + std::string(e.what()) + '\n');
+    Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\r\nreason : " + std::string(e.what()) + "\r\n");
     std::exit(m_badReturnCode);
   }
   catch(const std::exception& e)
   {
-    Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\nreason : " + std::string(e.what()) + '\n');
+    Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\r\nreason : " + std::string(e.what()) + "\r\n");
     std::exit(m_badReturnCode);
   }
   catch(...)
   {
-    Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\n");
+    Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\r\n");
     std::exit(m_badReturnCode);
   }
 }

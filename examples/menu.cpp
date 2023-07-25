@@ -6,6 +6,7 @@
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 #include "cpp-terminal/tty.hpp"
+#include "cpp-terminal/terminal.hpp"
 
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
 {

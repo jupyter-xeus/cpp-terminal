@@ -51,10 +51,10 @@ void Term::Terminal::store_and_restore()
   }
   else
   {
-    if(!SetConsoleOutputCP(out_code_page)) throw Term::Exception("SetConsoleOutputCP(out_code_page) failed");
-    if(!SetConsoleCP(in_code_page)) throw Term::Exception("SetConsoleCP(in_code_page) failed");
     if(!SetConsoleMode(Private::out.handle(), dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     if(!SetConsoleMode(Private::in.handle(), dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
+    if(!SetConsoleOutputCP(out_code_page)) throw Term::Exception("SetConsoleOutputCP(out_code_page) failed");
+    if(!SetConsoleCP(in_code_page)) throw Term::Exception("SetConsoleCP(in_code_page) failed");
     enabled = false;
   }
 #else
