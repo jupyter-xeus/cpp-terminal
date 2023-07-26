@@ -63,7 +63,7 @@ Term::Terminfo::ColorMode Term::Terminfo::getColorMode() { return m_colorMode; }
 
 bool Term::Terminfo::isLegacy() const { return m_legacy; }
 
-Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{Term::Terminfo::ColorMode::Unset};
+Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{ColorMode::Unset};
 
 Term::Terminfo::Terminfo()
 {
@@ -81,10 +81,7 @@ bool Term::Terminfo::hasANSIEscapeCode() const { return m_ANSIEscapeCode; }
 
 void Term::Terminfo::setColorMode()
 {
-  std::string colorterm = Private::getenv("COLORTERM").second;
-  if(colorterm == "truecolor" || colorterm == "24bit") m_colorMode = Term::Terminfo::ColorMode::Bit24;
-  else if(m_terminalName == "Apple_Terminal")
-    m_colorMode = Term::Terminfo::ColorMode::Bit8;
+  if(m_terminalName == "Apple_Terminal") m_colorMode = Term::Terminfo::ColorMode::Bit8;
   else if(m_terminalName == "JetBrains-JediTerm")
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
   else if(m_terminalName == "vscode")
@@ -99,6 +96,8 @@ void Term::Terminfo::setColorMode()
   else if(isLegacy())
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
 #endif
+  std::string colorterm = Private::getenv("COLORTERM").second;
+  if((colorterm == "truecolor" || colorterm == "24bit") && m_colorMode != ColorMode::Unset) m_colorMode = Term::Terminfo::ColorMode::Bit24;
   else
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
 }
