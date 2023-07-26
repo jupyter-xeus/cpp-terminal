@@ -25,7 +25,7 @@ public:
     Bit24,
   };
   Terminfo();
-  static ColorMode        getColorMode();
+  static ColorMode getColorMode();
   bool             hasANSIEscapeCode() const;
   bool             isLegacy() const;
 

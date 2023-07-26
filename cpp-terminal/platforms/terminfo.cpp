@@ -1,6 +1,7 @@
 #ifdef _WIN32
-  #include <windows.h>
   #include "cpp-terminal/platforms/file.hpp"
+
+  #include <windows.h>
 #endif
 
 #include "cpp-terminal/platforms/env.hpp"
@@ -12,12 +13,12 @@ bool WindowsVersionGreater(const std::uint32_t& major, const std::uint32_t& mino
 {
 #if defined(_WIN32)
   #if defined(_MSC_VER)
-    #pragma warning( push )
-    #pragma warning( disable : 4191 )
+    #pragma warning(push)
+    #pragma warning(disable : 4191)
   #endif
-  NTSTATUS(WINAPI* getVersion)(PRTL_OSVERSIONINFOW)=(reinterpret_cast<NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW)>(GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "RtlGetVersion")));
+  NTSTATUS(WINAPI * getVersion)(PRTL_OSVERSIONINFOW) = (reinterpret_cast<NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW)>(GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "RtlGetVersion")));
   #if defined(_MSC_VER)
-    #pragma warning( pop )
+    #pragma warning(pop)
   #endif
   if(getVersion != nullptr)
   {
@@ -36,13 +37,13 @@ bool WindowsVersionGreater(const std::uint32_t& major, const std::uint32_t& mino
 #endif
 }
 
-void             Term::Terminfo::setLegacy()
+void Term::Terminfo::setLegacy()
 {
 #if defined(_WIN32)
   #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
     #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
   #endif
-  if(!hasANSIEscapeCode()) m_legacy=true;
+  if(!hasANSIEscapeCode()) m_legacy = true;
   else
   {
     DWORD dwOriginalOutMode{0};
@@ -56,16 +57,13 @@ void             Term::Terminfo::setLegacy()
     }
   }
 #else
-  m_legacy = false;
+  m_legacy         = false;
 #endif
 }
 
 Term::Terminfo::ColorMode Term::Terminfo::getColorMode() { return m_colorMode; }
 
-bool             Term::Terminfo::isLegacy() const
-{
-  return m_legacy;
-}
+bool Term::Terminfo::isLegacy() const { return m_legacy; }
 
 Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{Term::Terminfo::ColorMode::Unset};
 
@@ -87,7 +85,8 @@ void Term::Terminfo::setColorMode()
 {
   std::string colorterm = Private::getenv("COLORTERM").second;
   if(colorterm == "truecolor" || colorterm == "24bit") m_colorMode = Term::Terminfo::ColorMode::Bit24;
-  else m_colorMode = Term::Terminfo::ColorMode::Bit8;
+  else
+    m_colorMode = Term::Terminfo::ColorMode::Bit8;
   if(m_terminalName == "Apple_Terminal") m_colorMode = Term::Terminfo::ColorMode::Bit8;
   else if(m_terminalName == "JetBrains-JediTerm")
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
@@ -99,7 +98,7 @@ void Term::Terminfo::setColorMode()
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
   else if(m_terminalName == "ansicon")
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
-  else if(m_term=="linux")
+  else if(m_term == "linux")
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
   else
     m_colorMode = Term::Terminfo::ColorMode::Bit4;

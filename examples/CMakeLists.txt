@@ -8,6 +8,7 @@ target_compile_options(
 )
 add_library(Warnings::Examples ALIAS ExamplesWarnings)
 
+# Create an example
 function(cppterminal_example SOURCE)
   add_executable(${SOURCE} ${SOURCE}.cpp)
   target_link_libraries(${SOURCE} PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings Warnings::Examples)
