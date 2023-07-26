@@ -7,12 +7,11 @@
 #include "cpp-terminal/platforms/env.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
-#include <cstdint>
 #include <string>
 
-bool WindowsVersionGreater(const std::uint32_t& major, const std::uint32_t& minor, const std::uint32_t& patch)
-{
 #if defined(_WIN32)
+bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& patch)
+{
   #if defined(_MSC_VER)
     #pragma warning(push)
     #pragma warning(disable : 4191)
@@ -33,10 +32,8 @@ bool WindowsVersionGreater(const std::uint32_t& major, const std::uint32_t& mino
     }
   }
   return false;
-#else
-  return false;
-#endif
 }
+#endif
 
 void Term::Terminfo::setLegacy()
 {
@@ -93,14 +90,16 @@ void Term::Terminfo::setColorMode()
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
   else if(m_terminalName == "vscode")
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
-  else if(WindowsVersionGreater(10, 0, 10586) && !isLegacy())
-    m_colorMode = Term::Terminfo::ColorMode::Bit24;
-  else if(isLegacy())
-    m_colorMode = Term::Terminfo::ColorMode::Bit4;
   else if(m_terminalName == "ansicon")
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
   else if(m_term == "linux")
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
+#if defined(_WIN32)
+  else if(WindowsVersionGreater(10, 0, 10586) && !isLegacy())
+    m_colorMode = Term::Terminfo::ColorMode::Bit24;
+  else if(isLegacy())
+    m_colorMode = Term::Terminfo::ColorMode::Bit4;
+#endif
   else
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
 }
