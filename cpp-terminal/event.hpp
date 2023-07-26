@@ -83,7 +83,7 @@ private:
   
   // m_variant is just a buffer. do not think about its type. Think about its memory size and alignment.
   // use void* for alignment of the buffer. If you wonder why alignas() and alignof() have not been used
-  // is is because gcc 4.7 c++11 has troubles with it and not correctly support it.
+  // is is because gcc 4.7 c++11 (and only that one) has troubles with it and not correctly support it.
   void* m_variant[VARIANT_BUFFER_SIZE];
 
 #undef temp_max_2
