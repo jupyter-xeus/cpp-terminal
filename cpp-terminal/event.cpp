@@ -2,32 +2,31 @@
 
 #include "cpp-terminal/platforms/conversion.hpp"
 
-
 // copy constructs an event
 Term::Event::Event(const Term::Event& event) : m_Type(event.m_Type)
 {
-switch(event.m_Type)
-{
-  case Term::Event::Type::Empty: break;
-  case Term::Event::Type::Key: new(reinterpret_cast<void*>(this->m_variant)) Term::Key(*reinterpret_cast<const Key*>(event.m_variant)); break;
-  case Term::Event::Type::Screen: new(reinterpret_cast<void*>(this->m_variant)) Term::Screen(*reinterpret_cast<const Screen*>(event.m_variant)); break;
-  case Term::Event::Type::Cursor: new(reinterpret_cast<void*>(this->m_variant)) Term::Cursor(*reinterpret_cast<const Cursor*>(event.m_variant)); break;
-  case Term::Event::Type::CopyPaste: new(reinterpret_cast<void*>(this->m_variant)) std::string(*reinterpret_cast<const std::string*>(event.m_variant)); break;
-}
+  switch(event.m_Type)
+  {
+    case Term::Event::Type::Empty: break;
+    case Term::Event::Type::Key: new(reinterpret_cast<void*>(this->m_variant)) Term::Key(*reinterpret_cast<const Key*>(event.m_variant)); break;
+    case Term::Event::Type::Screen: new(reinterpret_cast<void*>(this->m_variant)) Term::Screen(*reinterpret_cast<const Screen*>(event.m_variant)); break;
+    case Term::Event::Type::Cursor: new(reinterpret_cast<void*>(this->m_variant)) Term::Cursor(*reinterpret_cast<const Cursor*>(event.m_variant)); break;
+    case Term::Event::Type::CopyPaste: new(reinterpret_cast<void*>(this->m_variant)) std::string(*reinterpret_cast<const std::string*>(event.m_variant)); break;
+  }
 }
 
 // move constructs an event, which makes the other event an empty event
 Term::Event::Event(Term::Event&& event) : m_Type(event.m_Type)
 {
-switch(event.m_Type)
-{
-  case Term::Event::Type::Empty: break;
-  case Term::Event::Type::Key: new(reinterpret_cast<void*>(this->m_variant)) Term::Key(std::move(*reinterpret_cast<Key*>(event.m_variant))); break;
-  case Term::Event::Type::Screen: new(reinterpret_cast<void*>(this->m_variant)) Term::Screen(std::move(*reinterpret_cast<Screen*>(event.m_variant))); break;
-  case Term::Event::Type::Cursor: new(reinterpret_cast<void*>(this->m_variant)) Term::Cursor(std::move(*reinterpret_cast<Cursor*>(event.m_variant))); break;
-  case Term::Event::Type::CopyPaste: new(reinterpret_cast<void*>(this->m_variant)) std::string(std::move(*reinterpret_cast<std::string*>(event.m_variant))); break;
-}
-event.m_Type = Term::Event::Type::Empty;
+  switch(event.m_Type)
+  {
+    case Term::Event::Type::Empty: break;
+    case Term::Event::Type::Key: new(reinterpret_cast<void*>(this->m_variant)) Term::Key(std::move(*reinterpret_cast<Key*>(event.m_variant))); break;
+    case Term::Event::Type::Screen: new(reinterpret_cast<void*>(this->m_variant)) Term::Screen(std::move(*reinterpret_cast<Screen*>(event.m_variant))); break;
+    case Term::Event::Type::Cursor: new(reinterpret_cast<void*>(this->m_variant)) Term::Cursor(std::move(*reinterpret_cast<Cursor*>(event.m_variant))); break;
+    case Term::Event::Type::CopyPaste: new(reinterpret_cast<void*>(this->m_variant)) std::string(std::move(*reinterpret_cast<std::string*>(event.m_variant))); break;
+  }
+  event.m_Type = Term::Event::Type::Empty;
 }
 
 // construcst a key event
@@ -57,137 +56,137 @@ Term::Event& Term::Event::operator=(Term::Event&& event) { return this->assign(s
 // assigning an event will call the destructor if the types differ and assign directly if the types are equal
 Term::Event& Term::Event::assign(const Term::Event& event)
 {
-switch(event.m_Type)
-{
-  case Term::Event::Type::Empty: this->clear(); break;
-  case Term::Event::Type::Key: this->assign(*reinterpret_cast<const Term::Key*>(event.m_variant)); break;
-  case Term::Event::Type::Screen: this->assign(*reinterpret_cast<const Term::Screen*>(event.m_variant)); break;
-  case Term::Event::Type::Cursor: this->assign(*reinterpret_cast<const Term::Cursor*>(event.m_variant)); break;
-  case Term::Event::Type::CopyPaste: this->assign(*reinterpret_cast<const std::string*>(event.m_variant)); break;
-}
-return *this;
+  switch(event.m_Type)
+  {
+    case Term::Event::Type::Empty: this->clear(); break;
+    case Term::Event::Type::Key: this->assign(*reinterpret_cast<const Term::Key*>(event.m_variant)); break;
+    case Term::Event::Type::Screen: this->assign(*reinterpret_cast<const Term::Screen*>(event.m_variant)); break;
+    case Term::Event::Type::Cursor: this->assign(*reinterpret_cast<const Term::Cursor*>(event.m_variant)); break;
+    case Term::Event::Type::CopyPaste: this->assign(*reinterpret_cast<const std::string*>(event.m_variant)); break;
+  }
+  return *this;
 }
 
 // assigning an event will call the destructor if the types differ and assign directly if the types are equal. make the other event an empty event
 Term::Event& Term::Event::assign(Term::Event&& event)
 {
-switch(event.m_Type)
-{
-  case Term::Event::Type::Empty: this->clear(); break;
-  case Term::Event::Type::Key: this->assign(std::move(*reinterpret_cast<Term::Key*>(event.m_variant))); break;
-  case Term::Event::Type::Screen: this->assign(std::move(*reinterpret_cast<Term::Screen*>(event.m_variant))); break;
-  case Term::Event::Type::Cursor: this->assign(std::move(*reinterpret_cast<Term::Cursor*>(event.m_variant))); break;
-  case Term::Event::Type::CopyPaste: this->assign(std::move(*reinterpret_cast<std::string*>(event.m_variant))); break;
-}
-event.m_Type = Term::Event::Type::Empty;
-return *this;
+  switch(event.m_Type)
+  {
+    case Term::Event::Type::Empty: this->clear(); break;
+    case Term::Event::Type::Key: this->assign(std::move(*reinterpret_cast<Term::Key*>(event.m_variant))); break;
+    case Term::Event::Type::Screen: this->assign(std::move(*reinterpret_cast<Term::Screen*>(event.m_variant))); break;
+    case Term::Event::Type::Cursor: this->assign(std::move(*reinterpret_cast<Term::Cursor*>(event.m_variant))); break;
+    case Term::Event::Type::CopyPaste: this->assign(std::move(*reinterpret_cast<std::string*>(event.m_variant))); break;
+  }
+  event.m_Type = Term::Event::Type::Empty;
+  return *this;
 }
 
 // copy assigns a key event. call the destructor and copy constructs a new key if this is not a the same type, otherwise assigns directly
 Term::Event& Term::Event::assign(const Term::Key& key)
 {
-switch(this->m_Type)
-{
-  case Term::Event::Type::Empty: break;
-  case Term::Event::Type::Key: *reinterpret_cast<Term::Key*>(this->m_variant) = key; return *this;
-  case Term::Event::Type::Screen: reinterpret_cast<Term::Screen*>(this->m_variant)->~Screen(); break;
-  case Term::Event::Type::Cursor: reinterpret_cast<Term::Cursor*>(this->m_variant)->~Cursor(); break;
-  case Term::Event::Type::CopyPaste: reinterpret_cast<std::string*>(this->m_variant)->~basic_string(); break;
-}
-new(reinterpret_cast<void*>(this->m_variant)) Key(key);
-this->m_Type = Term::Event::Type::Key;
-return *this;
+  switch(this->m_Type)
+  {
+    case Term::Event::Type::Empty: break;
+    case Term::Event::Type::Key: *reinterpret_cast<Term::Key*>(this->m_variant) = key; return *this;
+    case Term::Event::Type::Screen: reinterpret_cast<Term::Screen*>(this->m_variant)->~Screen(); break;
+    case Term::Event::Type::Cursor: reinterpret_cast<Term::Cursor*>(this->m_variant)->~Cursor(); break;
+    case Term::Event::Type::CopyPaste: reinterpret_cast<std::string*>(this->m_variant)->~basic_string(); break;
+  }
+  new(reinterpret_cast<void*>(this->m_variant)) Key(key);
+  this->m_Type = Term::Event::Type::Key;
+  return *this;
 }
 
 // copy assigns a screen event. call the destructor and copy constructs a new key if this is not a the same type, otherwise assigns directly
 Term::Event& Term::Event::assign(const Term::Screen& screen)
 {
-switch(this->m_Type)
-{
-  case Term::Event::Type::Empty: break;
-  case Term::Event::Type::Key: reinterpret_cast<Term::Key*>(this->m_variant)->~Key(); break;
-  case Term::Event::Type::Screen:
-	*reinterpret_cast<Screen*>(this->m_variant) = screen;
-	return *this;
-	break;
-  case Term::Event::Type::Cursor: reinterpret_cast<Term::Cursor*>(this->m_variant)->~Cursor(); break;
-  case Term::Event::Type::CopyPaste: reinterpret_cast<std::string*>(this->m_variant)->~basic_string(); break;
-}
-new(reinterpret_cast<void*>(this->m_variant)) Screen(screen);
-this->m_Type = Term::Event::Type::Screen;
-return *this;
+  switch(this->m_Type)
+  {
+    case Term::Event::Type::Empty: break;
+    case Term::Event::Type::Key: reinterpret_cast<Term::Key*>(this->m_variant)->~Key(); break;
+    case Term::Event::Type::Screen:
+      *reinterpret_cast<Screen*>(this->m_variant) = screen;
+      return *this;
+      break;
+    case Term::Event::Type::Cursor: reinterpret_cast<Term::Cursor*>(this->m_variant)->~Cursor(); break;
+    case Term::Event::Type::CopyPaste: reinterpret_cast<std::string*>(this->m_variant)->~basic_string(); break;
+  }
+  new(reinterpret_cast<void*>(this->m_variant)) Screen(screen);
+  this->m_Type = Term::Event::Type::Screen;
+  return *this;
 }
 
 // copy assigns a cursor event. call the destructor and copy constructs a new key if this is not a the same type, otherwise assigns directly
 Term::Event& Term::Event::assign(const Term::Cursor& cursor)
 {
-switch(this->m_Type)
-{
-  case Term::Event::Type::Empty: break;
-  case Term::Event::Type::Key: reinterpret_cast<Term::Key*>(this->m_variant)->~Key(); break;
-  case Term::Event::Type::Screen: reinterpret_cast<Term::Screen*>(this->m_variant)->~Screen(); break;
-  case Term::Event::Type::Cursor:
-	*reinterpret_cast<Term::Cursor*>(this->m_variant) = cursor;
-	return *this;
-	break;
-  case Term::Event::Type::CopyPaste: reinterpret_cast<std::string*>(this->m_variant)->~basic_string(); break;
-}
-new(reinterpret_cast<void*>(this->m_variant)) Cursor(cursor);
-this->m_Type = Term::Event::Type::Cursor;
-return *this;
+  switch(this->m_Type)
+  {
+    case Term::Event::Type::Empty: break;
+    case Term::Event::Type::Key: reinterpret_cast<Term::Key*>(this->m_variant)->~Key(); break;
+    case Term::Event::Type::Screen: reinterpret_cast<Term::Screen*>(this->m_variant)->~Screen(); break;
+    case Term::Event::Type::Cursor:
+      *reinterpret_cast<Term::Cursor*>(this->m_variant) = cursor;
+      return *this;
+      break;
+    case Term::Event::Type::CopyPaste: reinterpret_cast<std::string*>(this->m_variant)->~basic_string(); break;
+  }
+  new(reinterpret_cast<void*>(this->m_variant)) Cursor(cursor);
+  this->m_Type = Term::Event::Type::Cursor;
+  return *this;
 }
 
 // copy assigns a copy paste event. call the destructor and copy constructs a new key if this is not a the same type, otherwise assigns directly
 Term::Event& Term::Event::assign(const std::string& str)
 {
-switch(this->m_Type)
-{
-  case Term::Event::Type::Empty: break;
-  case Term::Event::Type::Key: reinterpret_cast<Term::Key*>(this->m_variant)->~Key(); break;
-  case Term::Event::Type::Screen: reinterpret_cast<Term::Screen*>(this->m_variant)->~Screen(); break;
-  case Term::Event::Type::Cursor: reinterpret_cast<Term::Cursor*>(this->m_variant)->~Cursor(); break;
-  case Term::Event::Type::CopyPaste:
-	reinterpret_cast<std::string*>(this->m_variant)->assign(str);
-	return *this;
-	break;
-}
-new(reinterpret_cast<void*>(this->m_variant)) std::string(str);
-this->m_Type = Term::Event::Type::CopyPaste;
-return *this;
+  switch(this->m_Type)
+  {
+    case Term::Event::Type::Empty: break;
+    case Term::Event::Type::Key: reinterpret_cast<Term::Key*>(this->m_variant)->~Key(); break;
+    case Term::Event::Type::Screen: reinterpret_cast<Term::Screen*>(this->m_variant)->~Screen(); break;
+    case Term::Event::Type::Cursor: reinterpret_cast<Term::Cursor*>(this->m_variant)->~Cursor(); break;
+    case Term::Event::Type::CopyPaste:
+      reinterpret_cast<std::string*>(this->m_variant)->assign(str);
+      return *this;
+      break;
+  }
+  new(reinterpret_cast<void*>(this->m_variant)) std::string(str);
+  this->m_Type = Term::Event::Type::CopyPaste;
+  return *this;
 }
 
 // move assigns a copy paste event. call the destructor and copy constructs a new key if this is not a the same type, otherwise assigns directly
 Term::Event& Term::Event::assign(std::string&& str)
 {
-switch(this->m_Type)
-{
-  case Term::Event::Type::Empty: break;
-  case Term::Event::Type::Key: reinterpret_cast<Term::Key*>(this->m_variant)->~Key(); break;
-  case Term::Event::Type::Screen: reinterpret_cast<Term::Screen*>(this->m_variant)->~Screen(); break;
-  case Term::Event::Type::Cursor: reinterpret_cast<Term::Cursor*>(this->m_variant)->~Cursor(); break;
-  case Term::Event::Type::CopyPaste:
-	reinterpret_cast<std::string*>(this->m_variant)->assign(std::move(str));
-	return *this;
-	break;
-}
-new(reinterpret_cast<void*>(this->m_variant)) std::string(std::move(str));
-this->m_Type = Term::Event::Type::CopyPaste;
-return *this;
+  switch(this->m_Type)
+  {
+    case Term::Event::Type::Empty: break;
+    case Term::Event::Type::Key: reinterpret_cast<Term::Key*>(this->m_variant)->~Key(); break;
+    case Term::Event::Type::Screen: reinterpret_cast<Term::Screen*>(this->m_variant)->~Screen(); break;
+    case Term::Event::Type::Cursor: reinterpret_cast<Term::Cursor*>(this->m_variant)->~Cursor(); break;
+    case Term::Event::Type::CopyPaste:
+      reinterpret_cast<std::string*>(this->m_variant)->assign(std::move(str));
+      return *this;
+      break;
+  }
+  new(reinterpret_cast<void*>(this->m_variant)) std::string(std::move(str));
+  this->m_Type = Term::Event::Type::CopyPaste;
+  return *this;
 }
 
 // destructs the containing type and makes this an empty type
 Term::Event& Term::Event::clear()
 {
-switch(this->m_Type)
-{
-  case Term::Event::Type::Empty: break;
-  case Term::Event::Type::Key: reinterpret_cast<Term::Key*>(this->m_variant)->~Key(); break;
-  case Term::Event::Type::Screen: reinterpret_cast<Term::Screen*>(this->m_variant)->~Screen(); break;
-  case Term::Event::Type::Cursor: reinterpret_cast<Term::Cursor*>(this->m_variant)->~Cursor(); break;
-  case Term::Event::Type::CopyPaste: reinterpret_cast<std::string*>(this->m_variant)->~basic_string(); break;
-}
-this->m_Type = Term::Event::Type::Empty;
-return *this;
+  switch(this->m_Type)
+  {
+    case Term::Event::Type::Empty: break;
+    case Term::Event::Type::Key: reinterpret_cast<Term::Key*>(this->m_variant)->~Key(); break;
+    case Term::Event::Type::Screen: reinterpret_cast<Term::Screen*>(this->m_variant)->~Screen(); break;
+    case Term::Event::Type::Cursor: reinterpret_cast<Term::Cursor*>(this->m_variant)->~Cursor(); break;
+    case Term::Event::Type::CopyPaste: reinterpret_cast<std::string*>(this->m_variant)->~basic_string(); break;
+  }
+  this->m_Type = Term::Event::Type::Empty;
+  return *this;
 }
 
 // returns true if this is an empty type
@@ -246,7 +245,6 @@ Term::Event::operator Term::Cursor() const { return (this->is_cursor()) ? *reint
 
 // constructs a std::string from the contained Copy Paste Event if it is one and otherwise returns a default one
 Term::Event::operator std::string() const { return (this->is_copy_paste()) ? *reinterpret_cast<const std::string*>(this->m_variant) : std::string(); }
-
 
 Term::Event Term::parse_event(std::string&& str)
 {
