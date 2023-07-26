@@ -196,36 +196,36 @@ public:
   Key() = default;
   explicit Key(const Term::Key::Value& value);
   // clang-format off
-  operator Term::Key::Value();
+  operator Term::Key::Value() const;
   // clang-format on
 
-  bool iscntrl();
-  bool isblank();
-  bool isspace();
-  bool isupper();
-  bool islower();
-  bool isalpha();
-  bool isdigit();
-  bool isxdigit();
-  bool isalnum();
-  bool ispunct();
-  bool isgraph();
-  bool isprint();
+  bool iscntrl() const;
+  bool isblank() const;
+  bool isspace() const;
+  bool isupper() const;
+  bool islower() const;
+  bool isalpha() const;
+  bool isdigit() const;
+  bool isxdigit() const;
+  bool isalnum() const;
+  bool ispunct() const;
+  bool isgraph() const;
+  bool isprint() const;
 
   char tolower();
   char toupper();
 
   // Detect if Key is convertible to ANSII
-  bool isASCII();
+  bool isASCII() const;
   // Detect if Key is convertible to Extended ANSII
-  bool isExtendedASCII();
+  bool isExtendedASCII() const;
   // Detect if Key is CTRL+*
-  bool isCTRL();
+  bool isCTRL() const;
   // Detect if Key is ALT+*
-  bool isALT();
-  bool empty();
+  bool isALT() const;
+  bool empty() const;
 
-  std::string str();
+  std::string str() const;
 
 private:
   Value m_value{NO_KEY};
