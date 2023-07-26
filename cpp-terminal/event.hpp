@@ -78,13 +78,18 @@ private:
 #define temp_max_2(a, b)       (((a) > (b)) ? (a) : (b))
 #define temp_max_4(a, b, c, d) temp_max_2(temp_max_2(a, b), temp_max_2(c, d))
 
-#define TEMP_MAX_SIZE  temp_max_4(sizeof(std::string), sizeof(Term::Key), sizeof(Term::Cursor), sizeof(Term::Screen))
-
-  alignas(void*) uint8_t m_variant[TEMP_MAX_SIZE];
+#define VARIANT_BUFFER_MIN_SIZE  temp_max_4(sizeof(std::string), sizeof(Term::Key), sizeof(Term::Cursor), sizeof(Term::Screen))
+#define VARIANT_BUFFER_SIZE  (VARIANT_BUFFER_MIN_SIZE + sizeof(void*) - 1) / sizeof(void*)
+  
+  // m_variant is just a buffer. do not think about its type. Think about its memory size and alignment.
+  // use void* for alignment of the buffer. If you wonder why alignas() and alignof() have not been used
+  // is is because gcc 4.7 c++11 has troubles with it and not correctly support it.
+  void* m_variant[VARIANT_BUFFER_SIZE];
 
 #undef temp_max_2
 #undef temp_max_4
-#undef TEMP_MAX_SIZE
+#undef VARIANT_BUFFER_MIN_SIZE
+#undef VARIANT_BUFFER_SIZE
  
   Type         m_Type{Type::Empty};
   std::string  m_str;
