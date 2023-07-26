@@ -7,6 +7,7 @@
 #include "cpp-terminal/platforms/env.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
+#include <cstdint>
 #include <string>
 
 bool WindowsVersionGreater(const std::uint32_t& major, const std::uint32_t& minor, const std::uint32_t& patch)
