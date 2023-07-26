@@ -23,7 +23,7 @@ Term::Event::operator Term::Screen() const
     return Term::Screen();
 }
 
-Term::Event::Event(const Term::Screen& screen) : m_Type(Type::Screen), m_Screen(screen) {}
+Term::Event::Event(const Term::Screen& screen) : m_Type(Type::Screen), m_Screen(screen) {this->m_variant[0] = 0; /* to use the member*/}
 
 Term::Event::Event(const Term::Key& key) : m_Type(Type::Key), m_Key(key) {}
 
