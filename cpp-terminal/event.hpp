@@ -78,14 +78,14 @@ private:
 #define temp_max_2(a, b)       (((a) > (b)) ? (a) : (b))
 #define temp_max_4(a, b, c, d) temp_max_2(temp_max_2(a, b), temp_max_2(c, d))
 
-#define TEMP_MAX_SIZE  temp_max_4(sizeof(std::string), sizeof(Term::Key), sizeof(Term::Cursor), sizeof(Term::Screen))
+#define TEMP_MAX_SIZE temp_max_4(sizeof(std::string), sizeof(Term::Key), sizeof(Term::Cursor), sizeof(Term::Screen))
 
   alignas(void*) uint8_t m_variant[TEMP_MAX_SIZE];
 
 #undef temp_max_2
 #undef temp_max_4
 #undef TEMP_MAX_SIZE
- 
+
   Type         m_Type{Type::Empty};
   std::string  m_str;
   Key          m_Key{Key::Value::NO_KEY};
