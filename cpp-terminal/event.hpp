@@ -21,81 +21,140 @@ public:
     Cursor,
     CopyPaste,
   };
+
+  // default constructs an event. A default constructed event is an empty event.
   Event() = default;
-  Event(const std::string&);
-  Event(const Term::Key&);
+
+  // copy constructs an event
+  Event(const Event& event);
+
+  // move constructs an event, which makes the other event an empty event
+  Event(Event&& event);
+
+  // construcst a key event
+  Event(const Term::Key& key);
+
+  // constructs a screen event
   Event(const Term::Screen& screen);
+
+  // constructs a cursor event
+  Event(const Term::Cursor& cursor);
+
+  // constructs a copy paste event by copying the string
+  Event(const std::string& str);
+
+  // constructs a copy paste event by moveing the string
+  Event(std::string&& str);
+
+  // safely deconstrucst an event by calling the destructor of the stored type
+  ~Event();
+
+  // assigning an event will call the destructor if the types differ and assign directly if the types are equal
+  Event& operator=(const Event& event);
+
+  // assigning an event will call the destructor if the types differ and assign directly if the types are equal. make the other event an empty event
+  Event& operator=(Event&& event);
+
+  // assigning an event will call the destructor if the types differ and assign directly if the types are equal
+  Event& assign(const Event& event);
+
+  // assigning an event will call the destructor if the types differ and assign directly if the types are equal. make the other event an empty event
+  Event& assign(Event&& event);
+
+  // copy assigns a key event. call the destructor and copy constructs a new key if this is not a the same type, otherwise assigns directly
+  Event& assign(const Term::Key& key);
+
+  // copy assigns a screen event. call the destructor and copy constructs a new key if this is not a the same type, otherwise assigns directly
+  Event& assign(const Term::Screen& screen);
+
+  // copy assigns a cursor event. call the destructor and copy constructs a new key if this is not a the same type, otherwise assigns directly
+  Event& assign(const Term::Cursor& cursor);
+
+  // copy assigns a copy paste event. call the destructor and copy constructs a new key if this is not a the same type, otherwise assigns directly
+  Event& assign(const std::string& str);
+
+  // move assigns a copy paste event. call the destructor and copy constructs a new key if this is not a the same type, otherwise assigns directly
+  Event& assign(std::string&& str);
+
+  // destructs the containing type and makes this an empty type
+  Event& clear();
+
+  // returns true if this is an empty type
   bool empty() const;
+
+  // returns the contained type enum
   Type type() const;
 
   // returns true if the contained type is an empty type
-  inline bool is_empty() const { return this->m_Type == Type::Empty; }
+  bool is_empty() const;
 
   // returns true if the contained type is a key type
-  inline bool is_key() const { return this->m_Type == Type::Key; }
+  bool is_key() const;
 
   // returns true if the contained type is a screen type
-  inline bool is_screen() const { return this->m_Type == Type::Screen; }
+  bool is_screen() const;
 
   // returns true if the contained type is a cursor type
-  inline bool is_cursor() const { return this->m_Type == Type::Cursor; }
+  bool is_cursor() const;
 
   // returns true if the contained type is a copy paset type
-  inline bool is_copy_paste() const { return this->m_Type == Type::CopyPaste; }
+  bool is_copy_paste() const;
 
   // returns a pointer to the contained key type if it is one and otherwise a nullptr
-  inline Key* get_if_key() { return (this->is_key()) ? &this->m_Key : nullptr; }
+  Key* get_if_key();
 
   // returns a const pointer to the contained key type if it is one and otherwise a nullptr
-  inline const Key* get_if_key() const { return (this->is_key()) ? &this->m_Key : nullptr; }
+  const Key* get_if_key() const;
 
   // returns a pointer to the contained screen type if it is one and otherwise a nullptr
-  inline Screen* get_if_screen() { return (this->is_screen()) ? &this->m_Screen : nullptr; }
+  Screen* get_if_screen();
 
   // returns a const pointer to the contained screen type if it is one and otherwise a nullptr
-  inline const Screen* get_if_screen() const { return (this->is_screen()) ? &this->m_Screen : nullptr; }
+  const Screen* get_if_screen() const;
 
   // returns a pointer to the contained cursor type if it is one and otherwise a nullptr
-  inline Cursor* get_if_cursor() { return (this->is_cursor()) ? &this->m_Cursor : nullptr; }
+  Cursor* get_if_cursor();
 
   // returns a const pointer to the contained cursor type if it is one and otherwise a nullptr
-  inline const Cursor* get_if_cursor() const { return (this->is_cursor()) ? &this->m_Cursor : nullptr; }
+  const Cursor* get_if_cursor() const;
 
   // returns a pointer to the contained copy paste type (aka string) if it is one and otherwise a nullptr
-  inline std::string* get_if_copy_paste() { return (this->is_copy_paste()) ? &this->m_str : nullptr; }
+  std::string* get_if_copy_paste();
 
   // returns a const pointer to the contained copy paste type (aka string) if it is one and otherwise a nullptr
-  inline const std::string* get_if_copy_paste() const { return (this->is_copy_paste()) ? &this->m_str : nullptr; }
+  const std::string* get_if_copy_paste() const;
 
+  // constructs a Key from the contained Key if it is one and otherwise returns a default one
   operator Term::Key() const;
+
+  // constructs a Screen from the contained Screen if it is one and otherwise returns a default one
   operator Term::Screen() const;
+
+  // constructs a Cursor from the contained Cursor if it is one and otherwise returns a default one
   operator Term::Cursor() const;
+
+  // constructs a std::string from the contained Copy Paste Event if it is one and otherwise returns a default one
   operator std::string() const;
 
 private:
-  void parse();
+#define term_temp_max_2(a, b)       (((a) > (b)) ? (a) : (b))
+#define term_temp_max_4(a, b, c, d) term_temp_max_2(term_temp_max_2(a, b), term_temp_max_2(c, d))
 
-#define temp_max_2(a, b)       (((a) > (b)) ? (a) : (b))
-#define temp_max_4(a, b, c, d) temp_max_2(temp_max_2(a, b), temp_max_2(c, d))
+#define TERM_NEEDED_SIZE term_temp_max_4(sizeof(std::string), sizeof(Key), sizeof(Cursor), sizeof(Term::Screen))
+#define TERM_ACTUAL_SIZE (TERM_NEEDED_SIZE + sizeof(void*) - 1) / sizeof(void*)
 
-#define VARIANT_BUFFER_MIN_SIZE  temp_max_4(sizeof(std::string), sizeof(Term::Key), sizeof(Term::Cursor), sizeof(Term::Screen))
-#define VARIANT_BUFFER_SIZE  (VARIANT_BUFFER_MIN_SIZE + sizeof(void*) - 1) / sizeof(void*)
-  
-  // m_variant is just a buffer. do not think about its type. Think about its memory size and alignment.
-  // use void* for alignment of the buffer. If you wonder why alignas() and alignof() have not been used
-  // is is because gcc 4.7 c++11 (and only that one) has troubles with it and not correctly support it.
-  void* m_variant[VARIANT_BUFFER_SIZE];
+  void* m_variant[TERM_ACTUAL_SIZE];
 
-#undef temp_max_2
-#undef temp_max_4
-#undef VARIANT_BUFFER_MIN_SIZE
-#undef VARIANT_BUFFER_SIZE
+#undef term_temp_max_2
+#undef term_temp_max_4
+#undef TERM_NEEDED_SIZE
+#undef TERM_ACTUAL_SIZE
 
-  Type         m_Type{Type::Empty};
-  std::string  m_str;
-  Key          m_Key{Key::Value::NO_KEY};
-  Cursor       m_Cursor;
-  Term::Screen m_Screen;
+  Type m_Type{Type::Empty};
 };
+
+// construcst an event by parsing a string in ANSI format
+// returns an event from the string
+Event parse_event(std::string&& str);
 
 }  // namespace Term
