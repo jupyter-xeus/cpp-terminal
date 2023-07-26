@@ -83,9 +83,8 @@ void Term::Terminfo::setColorMode()
 {
   std::string colorterm = Private::getenv("COLORTERM").second;
   if(colorterm == "truecolor" || colorterm == "24bit") m_colorMode = Term::Terminfo::ColorMode::Bit24;
-  else
+  else if(m_terminalName == "Apple_Terminal")
     m_colorMode = Term::Terminfo::ColorMode::Bit8;
-  if(m_terminalName == "Apple_Terminal") m_colorMode = Term::Terminfo::ColorMode::Bit8;
   else if(m_terminalName == "JetBrains-JediTerm")
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
   else if(m_terminalName == "vscode")
