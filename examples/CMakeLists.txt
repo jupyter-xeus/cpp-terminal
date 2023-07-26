@@ -1,48 +1,32 @@
-add_executable(cin_raw cin_raw.cpp)
-target_link_libraries(cin_raw PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
+# Suppress useless warnings in examples but useful in cpp-terminal
+add_library(ExamplesWarnings INTERFACE)
+target_compile_options(
+        ExamplesWarnings
+        INTERFACE
+        $<$<C_COMPILER_ID:MSVC>:/wd4061>
+        $<$<CXX_COMPILER_ID:MSVC>:/wd4061>
+)
+add_library(Warnings::Examples ALIAS ExamplesWarnings)
 
-add_executable(cin_cooked cin_cooked.cpp)
-target_link_libraries(cin_cooked PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
+# Create an example
+function(cppterminal_example SOURCE)
+  add_executable(${SOURCE} ${SOURCE}.cpp)
+  target_link_libraries(${SOURCE} PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings Warnings::Examples)
+  if(CPPTERMINAL_ENABLE_INSTALL)
+    install(TARGETS ${SOURCE} RUNTIME DESTINATION bin/examples)
+  endif()
+endfunction()
 
-add_executable(cout cout.cpp)
-target_link_libraries(cout PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-add_executable(minimal minimal.cpp)
-target_link_libraries(minimal PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-add_executable(prompt_multiline prompt_multiline.cpp)
-target_link_libraries(prompt_multiline PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-add_executable(prompt_immediate prompt_immediate.cpp)
-target_link_libraries(prompt_immediate PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-add_executable(prompt_not_immediate prompt_not_immediate.cpp)
-target_link_libraries(prompt_not_immediate PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-add_executable(prompt_simple prompt_simple.cpp)
-target_link_libraries(prompt_simple PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-add_executable(kilo kilo.cpp)
-target_link_libraries(kilo PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-add_executable(menu menu.cpp)
-target_link_libraries(menu PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-add_executable(menu_window menu_window.cpp)
-target_link_libraries(menu_window PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-add_executable(keys keys.cpp)
-target_link_libraries(keys PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-add_executable(colors colors.cpp)
-target_link_libraries(colors PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-add_executable(events events.cpp)
-target_link_libraries(events PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-add_executable(styles styles.cpp)
-target_link_libraries(styles PRIVATE cpp-terminal::cpp-terminal Warnings::Warnings)
-
-if(CPPTERMINAL_ENABLE_INSTALL)
-  install(TARGETS cin_raw cin_cooked cout minimal prompt_multiline prompt_immediate prompt_not_immediate prompt_simple kilo menu menu_window keys colors RUNTIME DESTINATION bin/examples)
-endif()
+cppterminal_example(cin)
+cppterminal_example(minimal)
+cppterminal_example(prompt_multiline)
+cppterminal_example(prompt_immediate)
+cppterminal_example(prompt_not_immediate)
+cppterminal_example(prompt_simple)
+cppterminal_example(kilo)
+cppterminal_example(menu)
+cppterminal_example(menu_window)
+cppterminal_example(keys)
+cppterminal_example(colors)
+cppterminal_example(events)
+cppterminal_example(styles)

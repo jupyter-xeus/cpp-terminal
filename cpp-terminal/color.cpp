@@ -63,9 +63,9 @@ std::uint8_t Term::Color::to8bits() const
   if(getType() == Term::Color::Type::Bit24)
   {
     // check gray scale in 24 steps
-    if(m_bit24[0] == m_bit24[1] && m_bit24[0] == m_bit24[2]) { return 232 + m_bit24[0] / 32 + m_bit24[1] / 32 + m_bit24[2] / 32; }
+    if(m_bit24[0] == m_bit24[1] && m_bit24[0] == m_bit24[2]) { return static_cast<std::uint8_t>(232 + m_bit24[0] / 32 + m_bit24[1] / 32 + m_bit24[2] / 32); }
     // normal color space
-    return 16 + 36 * (m_bit24[0] / 51) + 6 * (m_bit24[1] / 51) + (m_bit24[2] / 51);
+    return static_cast<std::uint8_t>(16 + 36 * (m_bit24[0] / 51) + 6 * (m_bit24[1] / 51) + (m_bit24[2] / 51));
   }
   else
     return m_bit8;
