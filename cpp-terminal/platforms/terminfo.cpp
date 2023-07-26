@@ -8,7 +8,7 @@
 
 #include <string>
 
-bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& patch)
+bool WindowsVersionGreater(const std::uint32_t& major, const std::uint32_t& minor, const std::uint32_t& patch)
 {
 #if defined(_WIN32)
   #if defined(_MSC_VER)
@@ -56,7 +56,7 @@ void             Term::Terminfo::setLegacy()
     }
   }
 #else
-  return false;
+  m_legacy = false;
 #endif
 }
 
