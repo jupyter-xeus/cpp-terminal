@@ -90,7 +90,7 @@ private:
 #undef temp_max_4
 #undef VARIANT_BUFFER_MIN_SIZE
 #undef VARIANT_BUFFER_SIZE
- 
+
   Type         m_Type{Type::Empty};
   std::string  m_str;
   Key          m_Key{Key::Value::NO_KEY};
