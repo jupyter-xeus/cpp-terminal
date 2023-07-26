@@ -1,6 +1,6 @@
 #ifdef _WIN32
   #include <windows.h>
-typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
+  #include "cpp-terminal/platforms/file.hpp"
 #endif
 
 #include "cpp-terminal/platforms/env.hpp"
@@ -8,15 +8,22 @@ typedef NTSTATUS(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
 
 #include <string>
 
-#ifdef _WIN32
 bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& patch)
 {
-  RtlGetVersionPtr fn = {reinterpret_cast<RtlGetVersionPtr>(GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "RtlGetVersion"))};
-  if(fn != nullptr)
+#if defined(_WIN32)
+  #if defined(_MSC_VER)
+    #pragma warning( push )
+    #pragma warning( disable : 4191 )
+  #endif
+  NTSTATUS(WINAPI* getVersion)(PRTL_OSVERSIONINFOW)=(reinterpret_cast<NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW)>(GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "RtlGetVersion")));
+  #if defined(_MSC_VER)
+    #pragma warning( pop )
+  #endif
+  if(getVersion != nullptr)
   {
     RTL_OSVERSIONINFOW rovi;
     rovi.dwOSVersionInfoSize = sizeof(rovi);
-    if(fn(&rovi) == 0)
+    if(getVersion(&rovi) == 0)
     {
       if(rovi.dwMajorVersion > major || (rovi.dwMajorVersion == major && (rovi.dwMinorVersion > minor || (rovi.dwMinorVersion == minor && rovi.dwBuildNumber >= patch)))) return true;
       else
@@ -24,8 +31,41 @@ bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& 
     }
   }
   return false;
-}
+#else
+  return false;
 #endif
+}
+
+void             Term::Terminfo::setLegacy()
+{
+#if defined(_WIN32)
+  #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+    #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+  #endif
+  if(!hasANSIEscapeCode()) m_legacy=true;
+  else
+  {
+    DWORD dwOriginalOutMode{0};
+    Term::Private::m_fileInitializer.initialize();  //Just in case
+    GetConsoleMode(Private::std_cout.getHandler(), &dwOriginalOutMode);
+    if(!SetConsoleMode(Private::std_cout.getHandler(), dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) m_legacy = true;
+    else
+    {
+      SetConsoleMode(Private::std_cout.getHandler(), dwOriginalOutMode);
+      m_legacy = false;
+    }
+  }
+#else
+  return false;
+#endif
+}
+
+Term::Terminfo::ColorMode Term::Terminfo::getColorMode() { return m_colorMode; }
+
+bool             Term::Terminfo::isLegacy() const
+{
+  return m_legacy;
+}
 
 Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{Term::Terminfo::ColorMode::Unset};
 
@@ -37,30 +77,32 @@ Term::Terminfo::Terminfo()
   if(Private::getenv("ANSICON").first) m_terminalName = "ansicon";
   m_terminalVersion = Private::getenv("TERM_PROGRAM_VERSION").second;
   setANSIEscapeCode();
+  setLegacy();
   setColorMode();
 }
 
-bool Term::Terminfo::hasANSIEscapeCode() { return m_ANSIEscapeCode; }
+bool Term::Terminfo::hasANSIEscapeCode() const { return m_ANSIEscapeCode; }
 
 void Term::Terminfo::setColorMode()
 {
   std::string colorterm = Private::getenv("COLORTERM").second;
   if(colorterm == "truecolor" || colorterm == "24bit") m_colorMode = Term::Terminfo::ColorMode::Bit24;
-  else
-    m_colorMode = Term::Terminfo::ColorMode::Bit8;
+  else m_colorMode = Term::Terminfo::ColorMode::Bit8;
   if(m_terminalName == "Apple_Terminal") m_colorMode = Term::Terminfo::ColorMode::Bit8;
   else if(m_terminalName == "JetBrains-JediTerm")
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
   else if(m_terminalName == "vscode")
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
-#ifdef _WIN32
-  else if(WindowsVersionGreater(10, 0, 10586))
+  else if(WindowsVersionGreater(10, 0, 10586) && !isLegacy())
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
+  else if(isLegacy())
+    m_colorMode = Term::Terminfo::ColorMode::Bit4;
   else if(m_terminalName == "ansicon")
+    m_colorMode = Term::Terminfo::ColorMode::Bit4;
+  else if(m_term=="linux")
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
   else
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
-#endif
 }
 
 void Term::Terminfo::setANSIEscapeCode()

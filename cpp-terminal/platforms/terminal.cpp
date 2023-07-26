@@ -7,15 +7,6 @@
 #ifdef _WIN32
   #include <io.h>
   #include <windows.h>
-  #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
-    #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
-  #endif
-  #ifndef DISABLE_NEWLINE_AUTO_RETURN
-    #define DISABLE_NEWLINE_AUTO_RETURN 0x0008
-  #endif
-  #ifndef ENABLE_VIRTUAL_TERMINAL_INPUT
-    #define ENABLE_VIRTUAL_TERMINAL_INPUT 0x0200
-  #endif
 #else
   #include <termios.h>
 #endif
@@ -40,13 +31,10 @@ void Term::Terminal::store_and_restore()
     if(!SetConsoleCP(CP_UTF8)) throw Term::Exception("SetConsoleCP(CP_UTF8) failed");
 
     if(!GetConsoleMode(Private::std_cout.getHandler(), &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
-    if(m_terminfo.hasANSIEscapeCode())
+    if(!GetConsoleMode(Private::std_cin.getHandler(), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(!m_terminfo.isLegacy())
     {
       if(!SetConsoleMode(Private::std_cout.getHandler(), dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
-    }
-    if(!GetConsoleMode(Private::std_cin.getHandler(), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
-    if(m_terminfo.hasANSIEscapeCode())
-    {
       if(!SetConsoleMode(Private::std_cin.getHandler(), dwOriginalInMode | ENABLE_VIRTUAL_TERMINAL_INPUT)) { throw Term::Exception("SetConsoleMode() failed"); }
     }
     enabled = true;

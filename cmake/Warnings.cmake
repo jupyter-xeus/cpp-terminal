@@ -64,7 +64,11 @@ set(INTEL_WARNINGS_WINDOWS
 set(MSVC_WARNINGS
     "/W4"
     "/Wall"
-    "/WL")
+    "/WL"
+        "/wd5045"
+        "/wd4820"
+        "/wd4514"
+        )
 
 target_compile_options(
   ${PROJECT_NAME}Warnings
