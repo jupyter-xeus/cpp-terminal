@@ -73,8 +73,8 @@ public:
   operator std::string() const;
 
 private:
-  void         parse();
-  
+  void parse();
+
 #define temp_max_2(a, b)       (((a) > (b)) ? (a) : (b))
 #define temp_max_4(a, b, c, d) temp_max_2(temp_max_2(a, b), temp_max_2(c, d))
 
@@ -85,7 +85,7 @@ private:
 #undef temp_max_2
 #undef temp_max_4
 #undef TEMP_MAX_SIZE
-  
+ 
   Type         m_Type{Type::Empty};
   std::string  m_str;
   Key          m_Key{Key::Value::NO_KEY};
