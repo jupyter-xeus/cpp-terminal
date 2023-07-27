@@ -37,7 +37,7 @@ private:
   void         parse();
   Type         m_Type{Type::Empty};
   std::string  m_str;
-  Key          m_Key{Key::Value::NO_KEY};
+  Key          m_Key{Key::Value::NoKey};
   Cursor       m_Cursor;
   Term::Screen m_Screen;
 };

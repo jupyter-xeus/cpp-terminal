@@ -38,12 +38,12 @@ void Term::Event::parse()
     m_Type = Type::Key;
     m_Key  = Key(static_cast<Term::Key::Value>(m_str[0]));
     /* Backspace return 127 CTRL+backspace return 8 */
-    if(m_Key == Term::Key::Value::DEL) m_Key = Key(Term::Key::Value::BACKSPACE);
+    if(m_Key == Term::Key::Value::Del) m_Key = Key(Term::Key::Value::Backspace);
     m_str.clear();
   }
   else if(m_str.size() == 2 && m_str[0] == '\033')
   {
-    m_Key  = Key(static_cast<Term::Key::Value>(Term::Key::Value::ALT + static_cast<Term::Key::Value>(m_str[1])));
+    m_Key  = Key(static_cast<Term::Key::Value>(Term::MetaKey::Value::Alt + static_cast<Term::Key::Value>(m_str[1])));
     m_Type = Type::Key;
     m_str.clear();
   }
@@ -76,13 +76,13 @@ void Term::Event::parse()
      * Cursor Left  | ESC D
      * -------------+--------------------
     */
-    if(m_str == "\033OA" || m_str == "\033[A" || m_str == "\033A") m_Key = Key(Term::Key::Value::ARROW_UP);
+    if(m_str == "\033OA" || m_str == "\033[A" || m_str == "\033A") m_Key = Key(Term::Key::Value::ArrowUp);
     else if(m_str == "\033OB" || m_str == "\033[B" || m_str == "\033B")
-      m_Key = Key(Term::Key::Value::ARROW_DOWN);
+      m_Key = Key(Term::Key::Value::ArrowDown);
     else if(m_str == "\033OC" || m_str == "\033[C" || m_str == "\033C")
-      m_Key = Key(Term::Key::Value::ARROW_RIGHT);
+      m_Key = Key(Term::Key::Value::ArrowRight);
     else if(m_str == "\033OD" || m_str == "\033[D" || m_str == "\033D")
-      m_Key = Key(Term::Key::Value::ARROW_LEFT);
+      m_Key = Key(Term::Key::Value::ArrowLeft);
     /*
      * Key        Normal     Application
      * ---------+----------+-------------
@@ -91,9 +91,9 @@ void Term::Event::parse()
      * ---------+----------+-------------
     */
     else if(m_str == "\033OH" || m_str == "\033[H")
-      m_Key = Key(Term::Key::Value::HOME);
+      m_Key = Key(Term::Key::Value::Home);
     else if(m_str == "\033OF" || m_str == "\033[F")
-      m_Key = Key(Term::Key::Value::END);
+      m_Key = Key(Term::Key::Value::End);
     /*
      * Key        Escape Sequence
      * ---------+-----------------
@@ -151,17 +151,17 @@ void Term::Event::parse()
      * ---------+----------+-------------
     */
     else if(m_str == "\033[2~")
-      m_Key = Key(Term::Key::Value::INSERT);
+      m_Key = Key(Term::Key::Value::Insert);
     else if(m_str == "\033[3~")
-      m_Key = Key(Term::Key::Value::DEL);
+      m_Key = Key(Term::Key::Value::Del);
     else if(m_str == "\033[1~")
-      m_Key = Key(Term::Key::Value::HOME);
+      m_Key = Key(Term::Key::Value::Home);
     else if(m_str == "\033[4~")
-      m_Key = Key(Term::Key::Value::END);
+      m_Key = Key(Term::Key::Value::End);
     else if(m_str == "\033[5~")
-      m_Key = Key(Term::Key::Value::PAGE_UP);
+      m_Key = Key(Term::Key::Value::PageUp);
     else if(m_str == "\033[6~")
-      m_Key = Key(Term::Key::Value::PAGE_DOWN);
+      m_Key = Key(Term::Key::Value::PageDown);
     /*
      * Key        Escape Sequence
      * ---------+-----------------
@@ -192,7 +192,7 @@ void Term::Event::parse()
     else if(m_str == "\033[34~")
       m_Key = Key(Term::Key::Value::F20);
     else if(m_str == "\033[G")
-      m_Key = Key(Term::Key::Value::NUMERIC_5);
+      m_Key = Key(Term::Key::Value::Numeric5);
     else if(m_str.size() == 2 && ((m_str[0] & 0b11100000) == 0b11000000) && ((m_str[1] & 0b11000000) == 0b10000000)) { m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0])); }
     else if(m_str.size() == 3 && ((m_str[0] & 0b11110000) == 0b11100000) && ((m_str[1] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000)) { m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0])); }
     else if(m_str.size() == 4 && ((m_str[0] & 0b11111000) == 0b11110000) && ((m_str[1] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000))

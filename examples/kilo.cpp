@@ -539,14 +539,14 @@ void editorFindCallback(char* query, int key)
     saved_hl = nullptr;
   }
 
-  if(key == Term::Key::ENTER || key == Term::Key::ESC)
+  if(key == Term::Key::Enter || key == Term::Key::Esc)
   {
     last_match = -1;
     direction  = 1;
     return;
   }
-  else if(key == Term::Key::ARROW_RIGHT || key == Term::Key::ARROW_DOWN) { direction = 1; }
-  else if(key == Term::Key::ARROW_LEFT || key == Term::Key::ARROW_UP) { direction = -1; }
+  else if(key == Term::Key::ArrowRight || key == Term::Key::ArrowDown) { direction = 1; }
+  else if(key == Term::Key::ArrowLeft || key == Term::Key::ArrowUp) { direction = -1; }
   else
   {
     last_match = -1;
@@ -754,18 +754,18 @@ char* editorPrompt(const char* prompt, void (*callback)(char*, int))
     Term::Key c = Term::read_event();
 
     if(c) continue;
-    if(c == Term::Key::DEL || c == Term::Key::CTRL_H || c == Term::Key::BACKSPACE)
+    if(c == Term::Key::Del || c == Term::Key::Ctrl_H || c == Term::Key::Backspace)
     {
       if(buflen != 0) buf[--buflen] = '\0';
     }
-    else if(c == Term::Key::ESC)
+    else if(c == Term::Key::Esc)
     {
       editorSetStatusMessage("");
       if(callback) callback(buf, c);
       free(buf);
       return nullptr;
     }
-    else if(c == Term::Key::ENTER)
+    else if(c == Term::Key::Enter)
     {
       if(buflen != 0)
       {
@@ -795,7 +795,7 @@ void editorMoveCursor(int key)
 
   switch(key)
   {
-    case Term::Key::ARROW_LEFT:
+    case Term::Key::ArrowLeft:
       if(E.cx != 0) { E.cx--; }
       else if(E.cy > 0)
       {
@@ -803,7 +803,7 @@ void editorMoveCursor(int key)
         E.cx = E.row[E.cy].size;
       }
       break;
-    case Term::Key::ARROW_RIGHT:
+    case Term::Key::ArrowRight:
       if(row && E.cx < row->size) { E.cx++; }
       else if(row && E.cx == row->size)
       {
@@ -811,10 +811,10 @@ void editorMoveCursor(int key)
         E.cx = 0;
       }
       break;
-    case Term::Key::ARROW_UP:
+    case Term::Key::ArrowUp:
       if(E.cy != 0) { E.cy--; }
       break;
-    case Term::Key::ARROW_DOWN:
+    case Term::Key::ArrowDown:
       if(E.cy < E.numrows) { E.cy++; }
       break;
   }
@@ -832,9 +832,9 @@ bool editorProcessKeypress()
   while((c = Term::read_event()).empty()) continue;  //NEEDED for windows (FIXME ?)
   switch(c)
   {
-    case Term::Key::ENTER: editorInsertNewline(); break;
+    case Term::Key::Enter: editorInsertNewline(); break;
 
-    case Term::Key::CTRL_Q:
+    case Term::Key::Ctrl_Q:
       if(E.dirty && quit_times > 0)
       {
         editorSetStatusMessage("WARNING!!! File has unsaved changes. Press Ctrl-Q %d more times to quit.", quit_times);
@@ -844,46 +844,46 @@ bool editorProcessKeypress()
       return false;
       break;
 
-    case Term::Key::CTRL_S: editorSave(); break;
+    case Term::Key::Ctrl_S: editorSave(); break;
 
-    case Term::Key::HOME: E.cx = 0; break;
+    case Term::Key::Home: E.cx = 0; break;
 
-    case Term::Key::END:
+    case Term::Key::End:
       if(E.cy < E.numrows) E.cx = E.row[E.cy].size;
       break;
 
-    case Term::Key::CTRL_F: editorFind(); break;
+    case Term::Key::Ctrl_F: editorFind(); break;
 
-    case Term::Key::BACKSPACE:
-    case Term::Key::DEL:
-      if(c == Term::Key::DEL) editorMoveCursor(Term::Key::ARROW_RIGHT);
+    case Term::Key::Backspace:
+    case Term::Key::Del:
+      if(c == Term::Key::Del) editorMoveCursor(Term::Key::ArrowRight);
       editorDelChar();
       break;
 
-    case Term::Key::PAGE_UP:
-    case Term::Key::PAGE_DOWN:
+    case Term::Key::PageUp:
+    case Term::Key::PageDown:
     {
-      if(c == Term::Key::PAGE_UP) { E.cy = E.rowoff; }
-      else if(c == Term::Key::PAGE_DOWN)
+      if(c == Term::Key::PageUp) { E.cy = E.rowoff; }
+      else if(c == Term::Key::PageDown)
       {
         E.cy = E.rowoff + E.screenrows - 1;
         if(E.cy > E.numrows) E.cy = E.numrows;
       }
 
       int times = E.screenrows;
-      while(times--) editorMoveCursor(c == Term::Key::PAGE_UP ? Term::Key::ARROW_UP : Term::Key::ARROW_DOWN);
+      while(times--) editorMoveCursor(c == Term::Key::PageUp ? Term::Key::ArrowUp : Term::Key::ArrowDown);
     }
     break;
 
-    case Term::Key::ARROW_UP:
-    case Term::Key::ARROW_DOWN:
-    case Term::Key::ARROW_LEFT:
-    case Term::Key::ARROW_RIGHT: editorMoveCursor(c); break;
+    case Term::Key::ArrowUp:
+    case Term::Key::ArrowDown:
+    case Term::Key::ArrowLeft:
+    case Term::Key::ArrowRight: editorMoveCursor(c); break;
 
-    case Term::Key::CTRL_L:
-    case Term::Key::ESC: break;
+    case Term::Key::Ctrl_L:
+    case Term::Key::Esc: break;
 
-    case Term::Key::TAB: editorInsertChar('\t'); break;
+    case Term::Key::Tab: editorInsertChar('\t'); break;
 
     default: editorInsertChar(c); break;
   }

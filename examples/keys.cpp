@@ -34,66 +34,7 @@ int main()
           if(key == Term::Key::Value::q) quit++;
           else
             quit = 0;
-          std::string ret;
-          if(key.isCTRL())
-          {
-            key = Term::Key(static_cast<Term::Key::Value>(key + 64));
-            ret += static_cast<std::string>("CTRL+");
-          }
-          if(key.isALT())
-          {
-            key = Term::Key(static_cast<Term::Key::Value>(key - Term::Key::Value::ALT));
-            ret += static_cast<std::string>("ALT+");
-          }
-          switch(key)
-          {
-            case Term::Key::SPACE: ret += "Space"; break;
-            case Term::Key::BACKSPACE: ret += "Backspace"; break;
-            case Term::Key::ENTER: ret += "Enter"; break;
-            case Term::Key::TAB: ret += "Tab"; break;
-            case Term::Key::ARROW_LEFT: ret += "Left Arrow"; break;
-            case Term::Key::ARROW_RIGHT: ret += "Right Arrow"; break;
-            case Term::Key::ARROW_UP: ret += "Up arrow"; break;
-            case Term::Key::ARROW_DOWN: ret += "Down arrow"; break;
-            case Term::Key::NUMERIC_5: ret += "5 Numeric pad"; break;
-            case Term::Key::DEL: ret += "Delete"; break;
-            case Term::Key::HOME: ret += "Home"; break;
-            case Term::Key::INSERT: ret += "Insert"; break;
-            case Term::Key::END: ret += "End"; break;
-            case Term::Key::PAGE_UP: ret += "Page up"; break;
-            case Term::Key::PAGE_DOWN: ret += "Page down"; break;
-            case Term::Key::ESC: ret += "Esc"; break;
-            case Term::Key::F1: ret += "F1"; break;
-            case Term::Key::F2: ret += "F2"; break;
-            case Term::Key::F3: ret += "F3"; break;
-            case Term::Key::F4: ret += "F4"; break;
-            case Term::Key::F5: ret += "F5"; break;
-            case Term::Key::F6: ret += "F6"; break;
-            case Term::Key::F7: ret += "F7"; break;
-            case Term::Key::F8: ret += "F8"; break;
-            case Term::Key::F9: ret += "F9"; break;
-            case Term::Key::F10: ret += "F10"; break;
-            case Term::Key::F11: ret += "F11"; break;
-            case Term::Key::F12: ret += "F12"; break;
-            case Term::Key::F13: ret += "F13"; break;
-            case Term::Key::F14: ret += "F14"; break;
-            case Term::Key::F15: ret += "F15"; break;
-            case Term::Key::F16: ret += "F16"; break;
-            case Term::Key::F17: ret += "F17"; break;
-            case Term::Key::F18: ret += "F18"; break;
-            case Term::Key::F19: ret += "F19"; break;
-            case Term::Key::F20: ret += "F20"; break;
-            case Term::Key::F21: ret += "F21"; break;
-            case Term::Key::F22: ret += "F22"; break;
-            case Term::Key::F23: ret += "F23"; break;
-            case Term::Key::F24: ret += "F24"; break;
-            default:
-              if(key.isprint()) ret += static_cast<char>(key);
-              else
-                ret += "Unknown";
-              break;
-          }
-          Term::cout << "Key: " << ret << " (" << std::to_string(key) << ") " << std::endl;
+          Term::cout << "Key: " << key.name() << " (" << static_cast<std::int32_t>(key) << ")"<< std::endl;
           break;
         }
         case Term::Event::Type::CopyPaste:
