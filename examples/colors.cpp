@@ -115,7 +115,7 @@ int main()
     Term::cout << Term::color_bg(Term::Color(Term::Color::Name::BrightRed).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightGreen).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightYellow).to3bits()) << " ";
     Term::cout << Term::color_bg(Term::Color(Term::Color::Name::BrightBlue).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightMagenta).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightCyan).to3bits()) << " ";
     Term::cout << Term::color_bg(Term::Color(Term::Color::Name::BrightWhite).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default) << " ";
-    Term::cout << "*\n";
+    Term::cout << "*"<<std::endl; //Windows prob
   }
   catch(const Term::Exception& re)
   {

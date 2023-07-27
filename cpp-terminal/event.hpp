@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <string>
+#include <iostream>
 
 namespace Term
 {
@@ -21,12 +22,17 @@ public:
     Cursor,
     CopyPaste,
   };
-  Event() = default;
+  Event();
   Event(const std::string&);
   Event(const Term::Key&);
   Event(const Term::Screen& screen);
+  Event(const Term::Cursor& cursor);
   bool empty() const;
   Type type() const;
+  Term::Event& operator=(const Term::Event& event) noexcept;
+  Event(const Term::Event& event) noexcept;
+  Event( Term::Event && event) noexcept;
+  Event& operator=(Event&& other) noexcept;
 
   operator Term::Key() const;
   operator Term::Screen() const;
@@ -35,11 +41,14 @@ public:
 
 private:
   void         parse();
-  Type         m_Type{Type::Empty};
+  Type         m_Type;
+  union
+  {
+   Term::Key    m_Key;
+   Term::Cursor m_Cursor;
+   Term::Screen m_Screen;
+  };
   std::string  m_str;
-  Key          m_Key{Key::Value::NoKey};
-  Cursor       m_Cursor;
-  Term::Screen m_Screen;
 };
 
 }  // namespace Term
