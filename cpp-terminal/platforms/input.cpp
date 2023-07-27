@@ -18,7 +18,7 @@
 #include <string>
 
 #if defined(_WIN32)
-static std::string to_utf8(LPCWCH utf16Str)
+std::string to_utf8(LPCWCH utf16Str)
 {
   std::string ret;
   int size_needed = WideCharToMultiByte(CP_UTF8, 0, utf16Str, -1, nullptr, 0, nullptr, nullptr);

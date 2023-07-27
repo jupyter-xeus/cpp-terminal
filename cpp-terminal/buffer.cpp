@@ -135,7 +135,4 @@ Term::Buffer::int_type Term::Buffer::overflow(int c)
   return c;
 }
 
-Term::Buffer::~Buffer()
-{
-  sync();
-}
+Term::Buffer::~Buffer() { sync(); }
