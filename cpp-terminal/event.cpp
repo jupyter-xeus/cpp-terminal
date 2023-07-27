@@ -248,9 +248,7 @@ Term::Event::operator std::string() const { return (this->is_copy_paste()) ? *re
 
 Term::Event Term::parse_event(std::string&& str)
 {
-  if (str.size() == 0) {
-    return Term::Event();
-  }
+  if(str.size() == 0) { return Term::Event(); }
   else if(str.size() == 1)
   {
     Term::Key key = Key(static_cast<Term::Key::Value>(str[0]));
