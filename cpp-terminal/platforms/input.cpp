@@ -21,7 +21,7 @@
 std::string to_utf8(LPCWCH utf16Str)
 {
   std::string ret;
-  int size_needed = WideCharToMultiByte(CP_UTF8, 0, utf16Str, -1, nullptr, 0, nullptr, nullptr);
+  int         size_needed = WideCharToMultiByte(CP_UTF8, 0, utf16Str, -1, nullptr, 0, nullptr, nullptr);
   ret.reserve(static_cast<std::size_t>(size_needed));
   WideCharToMultiByte(CP_UTF8, 0, utf16Str, 1, &ret[0], static_cast<int>(ret.capacity()), nullptr, nullptr);
   return ret.c_str();
@@ -43,13 +43,13 @@ Term::Event Term::Platform::read_raw()
 #ifdef _WIN32
   DWORD to_read{0};
   GetNumberOfConsoleInputEvents(Private::in.handle(), &to_read);
-  if(to_read==0) return Term::Event();
+  if(to_read == 0) return Term::Event();
   // If it's one event it's easy
-  else if(to_read==1)
+  else if(to_read == 1)
   {
-    DWORD read{0};
+    DWORD        read{0};
     INPUT_RECORD event{};
-    if(!ReadConsoleInputW(Private::in.handle(), &event, to_read, &read) || read!=to_read) Term::Exception("ReadFile() failed");
+    if(!ReadConsoleInputW(Private::in.handle(), &event, to_read, &read) || read != to_read) Term::Exception("ReadFile() failed");
     switch(event.EventType)
     {
       case KEY_EVENT:
@@ -58,132 +58,98 @@ Term::Event Term::Platform::read_raw()
         {
           // First check if we have ALT etc (CTRL is already done so skip it)
           Term::MetaKey toAdd{Term::MetaKey::Value::None};
-          if(((event.Event.KeyEvent.dwControlKeyState&LEFT_ALT_PRESSED)==LEFT_ALT_PRESSED)||((event.Event.KeyEvent.dwControlKeyState&RIGHT_ALT_PRESSED)==RIGHT_ALT_PRESSED)) toAdd=std::move(Term::MetaKey::Alt);
+          if(((event.Event.KeyEvent.dwControlKeyState & LEFT_ALT_PRESSED) == LEFT_ALT_PRESSED) || ((event.Event.KeyEvent.dwControlKeyState & RIGHT_ALT_PRESSED) == RIGHT_ALT_PRESSED)) toAdd = std::move(Term::MetaKey::Alt);
 
-          if(event.Event.KeyEvent.uChar.UnicodeChar==0)
+          if(event.Event.KeyEvent.uChar.UnicodeChar == 0)
           {
-
             switch(event.Event.KeyEvent.wVirtualKeyCode)
             {
-              case VK_CANCEL : //??
-              case VK_CLEAR: //??
+              case VK_CANCEL:  //??
+              case VK_CLEAR:   //??
               case VK_SHIFT:
               case VK_CONTROL:
               case VK_MENU:
-              case VK_PAUSE: //??
+              case VK_PAUSE:  //??
               case VK_CAPITAL:
               case VK_KANA:  //??
               //case VK_HANGUL: // Same
-              case VK_IME_ON: // ?
-              case VK_JUNJA: // ?
-              case VK_FINAL: // ?
+              case VK_IME_ON:  // ?
+              case VK_JUNJA:   // ?
+              case VK_FINAL:   // ?
               case VK_HANJA:
               //case VK_KANJI: // Same
-              case VK_IME_OFF: // ?
-              case VK_CONVERT: // ?
-              case VK_NONCONVERT: // ?
-              case VK_ACCEPT: // ?
-              case VK_MODECHANGE: // ?
+              case VK_IME_OFF:     // ?
+              case VK_CONVERT:     // ?
+              case VK_NONCONVERT:  // ?
+              case VK_ACCEPT:      // ?
+              case VK_MODECHANGE:  // ?
                 return Term::Event();
-              case VK_PRIOR:
-                return std::move(Term::Key(Key::Value::PageUp));
-              case VK_NEXT:
-                return std::move(Term::Key(Key::Value::PageDown));
-              case VK_END:
-                return std::move(Term::Key(Key::Value::End));
-              case VK_HOME:
-                return std::move(Term::Key(Key::Value::Home));
-              case VK_LEFT:
-                return std::move(Term::Key(Key::Value::ArrowLeft));
-              case VK_UP:
-                return std::move(Term::Key(Key::Value::ArrowUp));
-              case VK_RIGHT:
-                return std::move(Term::Key(Key::Value::ArrowRight));
-              case VK_DOWN:
-                return std::move(Term::Key(Key::Value::ArrowDown));
-              case VK_SELECT: //?
-              case VK_PRINT: //?
-              case VK_EXECUTE: //?
+              case VK_PRIOR: return std::move(Term::Key(Key::Value::PageUp));
+              case VK_NEXT: return std::move(Term::Key(Key::Value::PageDown));
+              case VK_END: return std::move(Term::Key(Key::Value::End));
+              case VK_HOME: return std::move(Term::Key(Key::Value::Home));
+              case VK_LEFT: return std::move(Term::Key(Key::Value::ArrowLeft));
+              case VK_UP: return std::move(Term::Key(Key::Value::ArrowUp));
+              case VK_RIGHT: return std::move(Term::Key(Key::Value::ArrowRight));
+              case VK_DOWN: return std::move(Term::Key(Key::Value::ArrowDown));
+              case VK_SELECT:   //?
+              case VK_PRINT:    //?
+              case VK_EXECUTE:  //?
                 return Term::Event();
-              case VK_SNAPSHOT:
-                return std::move(Term::Key(Key::Value::PrintScreen));
-              case VK_INSERT:
-                return std::move(Term::Key(Key::Value::Insert));
-              case VK_DELETE:
-                return std::move(Term::Key(Key::Value::Del));
-              case VK_HELP: //?
-              case VK_LWIN: //Maybe allow to detect Windows key Left and right
-              case VK_RWIN: //Maybe allow to detect Windows key Left and right
-              case VK_APPS: //?
-              case VK_SLEEP: //?
+              case VK_SNAPSHOT: return std::move(Term::Key(Key::Value::PrintScreen));
+              case VK_INSERT: return std::move(Term::Key(Key::Value::Insert));
+              case VK_DELETE: return std::move(Term::Key(Key::Value::Del));
+              case VK_HELP:   //?
+              case VK_LWIN:   //Maybe allow to detect Windows key Left and right
+              case VK_RWIN:   //Maybe allow to detect Windows key Left and right
+              case VK_APPS:   //?
+              case VK_SLEEP:  //?
                 return Term::Event();
-              case VK_F1:
-                return std::move(Term::Key(Key::Value::F1));
-              case VK_F2:
-                return std::move(Term::Key(Key::Value::F2));
-              case VK_F3:
-                return std::move(Term::Key(Key::Value::F3));
-              case VK_F4:
-                return std::move(Term::Key(Key::Value::F4));
-              case VK_F5:
-                return std::move(Term::Key(Key::Value::F5));
-              case VK_F6:
-                return std::move(Term::Key(Key::Value::F6));
-              case VK_F7:
-                return std::move(Term::Key(Key::Value::F7));
-              case VK_F8:
-                return std::move(Term::Key(Key::Value::F8));
-              case VK_F9:
-                return std::move(Term::Key(Key::Value::F9));
-              case VK_F10:
-                return std::move(Term::Key(Key::Value::F10));
-              case VK_F11:
-                return std::move(Term::Key(Key::Value::F11));
-              case VK_F12:
-                return std::move(Term::Key(Key::Value::F12));
-              case VK_F13:
-                return std::move(Term::Key(Key::Value::F13));
-              case VK_F14:
-                return std::move(Term::Key(Key::Value::F14));
-              case VK_F15:
-                return std::move(Term::Key(Key::Value::F15));
-              case VK_F16:
-                return std::move(Term::Key(Key::Value::F16));
-              case VK_F17:
-                return std::move(Term::Key(Key::Value::F17));
-              case VK_F18:
-                return std::move(Term::Key(Key::Value::F18));
-              case VK_F19:
-                return std::move(Term::Key(Key::Value::F19));
-              case VK_F20:
-                return std::move(Term::Key(Key::Value::F20));
-              case VK_F21:
-                return std::move(Term::Key(Key::Value::F21));
-              case VK_F22:
-                return std::move(Term::Key(Key::Value::F22));
-              case VK_F23:
-                return std::move(Term::Key(Key::Value::F23));
-              case VK_F24:
-                return std::move(Term::Key(Key::Value::F24));
+              case VK_F1: return std::move(Term::Key(Key::Value::F1));
+              case VK_F2: return std::move(Term::Key(Key::Value::F2));
+              case VK_F3: return std::move(Term::Key(Key::Value::F3));
+              case VK_F4: return std::move(Term::Key(Key::Value::F4));
+              case VK_F5: return std::move(Term::Key(Key::Value::F5));
+              case VK_F6: return std::move(Term::Key(Key::Value::F6));
+              case VK_F7: return std::move(Term::Key(Key::Value::F7));
+              case VK_F8: return std::move(Term::Key(Key::Value::F8));
+              case VK_F9: return std::move(Term::Key(Key::Value::F9));
+              case VK_F10: return std::move(Term::Key(Key::Value::F10));
+              case VK_F11: return std::move(Term::Key(Key::Value::F11));
+              case VK_F12: return std::move(Term::Key(Key::Value::F12));
+              case VK_F13: return std::move(Term::Key(Key::Value::F13));
+              case VK_F14: return std::move(Term::Key(Key::Value::F14));
+              case VK_F15: return std::move(Term::Key(Key::Value::F15));
+              case VK_F16: return std::move(Term::Key(Key::Value::F16));
+              case VK_F17: return std::move(Term::Key(Key::Value::F17));
+              case VK_F18: return std::move(Term::Key(Key::Value::F18));
+              case VK_F19: return std::move(Term::Key(Key::Value::F19));
+              case VK_F20: return std::move(Term::Key(Key::Value::F20));
+              case VK_F21: return std::move(Term::Key(Key::Value::F21));
+              case VK_F22: return std::move(Term::Key(Key::Value::F22));
+              case VK_F23: return std::move(Term::Key(Key::Value::F23));
+              case VK_F24: return std::move(Term::Key(Key::Value::F24));
               case VK_NUMLOCK:
               case VK_SCROLL:
-              default:
-                return Term::Event();
+              default: return Term::Event();
             }
           }
           else
           {
             std::string ret{to_utf8(&event.Event.KeyEvent.uChar.UnicodeChar)};
-            if(ret.size()==1)
+            if(ret.size() == 1)
             {
               //Special case DEL should be Backspace
-              if(ret[0]==Term::Key::Del) return toAdd+Key(Term::Key::Value::Backspace);
-              else return toAdd+Key(static_cast<Term::Key::Value>(ret[0]));
+              if(ret[0] == Term::Key::Del) return toAdd + Key(Term::Key::Value::Backspace);
+              else
+                return toAdd + Key(static_cast<Term::Key::Value>(ret[0]));
             }
-            else return Term::Event(ret);
+            else
+              return Term::Event(ret);
           }
         }
-        else return Term::Event();
+        else
+          return Term::Event();
       }
       case FOCUS_EVENT:
       {
@@ -203,13 +169,13 @@ Term::Event Term::Platform::read_raw()
       }
     }
   }
-  else // Here we have big problems we need to change this function to return std::vector<Event>;
+  else  // Here we have big problems we need to change this function to return std::vector<Event>;
   {
-    DWORD read{0};
+    DWORD                     read{0};
     std::vector<INPUT_RECORD> events{to_read};
-    if(!ReadConsoleInputW(Private::in.handle(), &events[0], to_read, &read) || read!=to_read) Term::Exception("ReadFile() failed");
-    std::string               ret;
-    int                       processed{0};
+    if(!ReadConsoleInputW(Private::in.handle(), &events[0], to_read, &read) || read != to_read) Term::Exception("ReadFile() failed");
+    std::string ret;
+    int         processed{0};
     for(std::size_t i = 0; i != read; ++i)
     {
       switch(events[i].EventType)
@@ -218,16 +184,18 @@ Term::Event Term::Platform::read_raw()
         {
           if(events[i].Event.KeyEvent.bKeyDown)
           {
-            if(events[i].Event.KeyEvent.uChar.UnicodeChar==0) break;
+            if(events[i].Event.KeyEvent.uChar.UnicodeChar == 0) break;
             else
             {
               std::string ch{to_utf8(&events[i].Event.KeyEvent.uChar.UnicodeChar)};
-              if(ch.size()==1&&ch[0]==Term::Key::Del) return Key(Term::Key::Value::Backspace);
-              else ret += ch;
+              if(ch.size() == 1 && ch[0] == Term::Key::Del) return Key(Term::Key::Value::Backspace);
+              else
+                ret += ch;
               ++processed;
             }
           }
-          else break;
+          else
+            break;
         }
         case FOCUS_EVENT:
         {
