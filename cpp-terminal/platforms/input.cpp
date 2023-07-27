@@ -73,8 +73,8 @@ Term::Event Term::Platform::read_raw()
               case VK_CAPITAL:
               case VK_KANA:  //??
               //case VK_HANGUL: // Same
-              case VK_JUNJA:   // ?
-              case VK_FINAL:   // ?
+              case VK_JUNJA:  // ?
+              case VK_FINAL:  // ?
               case VK_HANJA:
               //case VK_KANJI: // Same
               case VK_CONVERT:     // ?
