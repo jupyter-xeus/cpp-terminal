@@ -7,6 +7,7 @@
 #else
   #include <cerrno>
   #include <csignal>
+  #include <sys/ioctl.h>
   #include <unistd.h>
 #endif
 
@@ -32,14 +33,14 @@ Term::Event Term::Platform::read_raw()
 {
 #ifdef _WIN32
   DWORD nread{0};
-  GetNumberOfConsoleInputEvents(Private::std_cin.getHandler(), &nread);
+  GetNumberOfConsoleInputEvents(Private::in.handle(), &nread);
   if(nread >= 1)
   {
     std::string               ret;
     int                       processed{0};
     DWORD                     nre{0};
     std::vector<INPUT_RECORD> buf{nread};
-    if(!ReadConsoleInputW(Private::std_cin.getHandler(), &buf[0], buf.size(), &nre)) { Term::Exception("ReadFile() failed"); }
+    if(!ReadConsoleInputW(Private::in.handle(), &buf[0], buf.size(), &nre)) { Term::Exception("ReadFile() failed"); }
     for(std::size_t i = 0; i != nre; ++i)
     {
       switch(buf[i].EventType)
@@ -143,11 +144,16 @@ Term::Event Term::Platform::read_raw()
   }
   else
   {
-    std::string ret(4096, '\0');  // Max for cin
-    errno = 0;
-    ::ssize_t nread{::read(0, &ret[0], ret.size())};
-    if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-    if(nread >= 1) return parse_event(std::move(ret));
+    std::size_t nread{0};
+    ::ioctl(Private::in.fd(), FIONREAD, &nread);
+    if(nread != 0)
+    {
+      std::string ret(nread, '\0');
+      errno = 0;
+      ::ssize_t nread{::read(Private::in.fd(), &ret[0], ret.size())};
+      if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
+      return parse_event(std::move(ret));
+    }
     else
       return Event();
   }
