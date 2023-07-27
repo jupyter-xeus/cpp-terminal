@@ -2,23 +2,19 @@
 // PRIVATE !!!
 #pragma once
 
+#include <string>
+
 namespace Term
 {
 
 namespace Private
 {
 
-#if defined(_WIN32)
-typedef void* consoleFileHandler;
-#else
-typedef int consoleFileHandler;
-#endif
-
 class FileInitializer
 {
 public:
   FileInitializer();
-  void initialize();
+  static void init();
   ~FileInitializer();
 
 private:
@@ -30,19 +26,54 @@ static FileInitializer m_fileInitializer;
 class FileHandler
 {
 public:
-  FileHandler(const char*, const char*);
+#if defined(_WIN32)
+  using Handle = void*;
+#else
+  using Handle = FILE*;
+#endif
+  FileHandler(const std::string&, const std::string&);
   ~FileHandler();
-  consoleFileHandler getHandler();
-  bool               isNull();
+  Handle handle();
+  bool   null() const;
+  FILE*  file();
+  int    fd() const;
+  FileHandler(const FileHandler&)            = delete;
+  FileHandler& operator=(const FileHandler&) = delete;
+  FileHandler(FileHandler&&)                 = delete;
+  FileHandler& operator=(FileHandler&&)      = delete;
 
 private:
-  bool  m_isNull{false};
-  void* m_file{nullptr};
+  bool   m_null{false};
+  Handle m_handle{nullptr};
+  FILE*  m_file{nullptr};
+  int    m_fd{-1};
 };
 
-// Even in namespace it can't be called stdin because stdin can be a Macro :(
-extern FileHandler& std_cin;
-extern FileHandler& std_cout;
+class OutputFileHandler : public FileHandler
+{
+public:
+  explicit OutputFileHandler(const std::string& file, const std::string& mode = "w") : FileHandler(file, mode) {}
+  int write(const std::string& str);
+  int write(const char& ch);
+  OutputFileHandler(const OutputFileHandler& other)          = delete;
+  OutputFileHandler& operator=(const OutputFileHandler& rhs) = delete;
+  OutputFileHandler(OutputFileHandler&& other)               = delete;
+  OutputFileHandler& operator=(OutputFileHandler&& rhs)      = delete;
+};
+
+class InputFileHandler : public FileHandler
+{
+public:
+  explicit InputFileHandler(const std::string& file, const std::string& mode = "r") : FileHandler(file, mode) {}
+  std::string read();
+  InputFileHandler(const InputFileHandler&)            = delete;
+  InputFileHandler& operator=(const InputFileHandler&) = delete;
+  InputFileHandler(InputFileHandler&&)                 = delete;
+  InputFileHandler& operator=(InputFileHandler&&)      = delete;
+};
+
+extern InputFileHandler&  in;
+extern OutputFileHandler& out;
 
 }  // namespace Private
 

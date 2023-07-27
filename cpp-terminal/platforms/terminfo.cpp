@@ -45,12 +45,12 @@ void Term::Terminfo::setLegacy()
   else
   {
     DWORD dwOriginalOutMode{0};
-    Term::Private::m_fileInitializer.initialize();  //Just in case
-    GetConsoleMode(Private::std_cout.getHandler(), &dwOriginalOutMode);
-    if(!SetConsoleMode(Private::std_cout.getHandler(), dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) m_legacy = true;
+    Term::Private::m_fileInitializer.init();  //Just in case
+    GetConsoleMode(Private::out.handle(), &dwOriginalOutMode);
+    if(!SetConsoleMode(Private::out.handle(), dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) m_legacy = true;
     else
     {
-      SetConsoleMode(Private::std_cout.getHandler(), dwOriginalOutMode);
+      SetConsoleMode(Private::out.handle(), dwOriginalOutMode);
       m_legacy = false;
     }
   }
@@ -86,6 +86,8 @@ void Term::Terminfo::setColorMode()
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
   else if(m_terminalName == "vscode")
     m_colorMode = Term::Terminfo::ColorMode::Bit24;
+  else if(m_terminalName == "linux")
+    m_colorMode = Term::Terminfo::ColorMode::Bit4;
   else if(m_terminalName == "ansicon")
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
   else if(m_term == "linux")

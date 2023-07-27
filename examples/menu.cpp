@@ -1,7 +1,7 @@
 #include "cpp-terminal/color.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
-#include "cpp-terminal/io.hpp"
+#include "cpp-terminal/iostream.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
@@ -10,7 +10,6 @@
 
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
 {
-  Term::terminal << Term::clear_screen() << std::flush;
   std::string scr;
   scr.reserve(16 * 1024);
 
@@ -61,7 +60,7 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
   scr.append("Menu width: " + std::to_string(menuwidth) + "       \n");
   scr.append("Menu height: " + std::to_string(menuheight) + "    \n");
 
-  Term::terminal << scr << std::flush;
+  Term::cout << scr << std::flush;
 }
 
 int main()
@@ -107,7 +106,7 @@ int main()
           break;
         case Term::Event::Type::Screen:
           term_size = Term::Screen(event);
-          Term::terminal << Term::clear_screen() << std::flush;
+          Term::cout << Term::clear_screen() << std::flush;
           render(term_size.rows(), term_size.columns(), h, w, pos);
           break;
         default: break;
@@ -116,12 +115,12 @@ int main()
   }
   catch(const Term::Exception& re)
   {
-    Term::terminal << "cpp-terminal error: " << re.what() << std::endl;
+    Term::cerr << "cpp-terminal error: " << re.what() << std::endl;
     return 2;
   }
   catch(...)
   {
-    Term::terminal << "Unknown error." << std::endl;
+    Term::cerr << "Unknown error." << std::endl;
     return 1;
   }
   return 0;
