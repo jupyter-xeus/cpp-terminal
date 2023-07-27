@@ -1,6 +1,6 @@
 #include "cpp-terminal/cursor.hpp"
 
-Term::Cursor::Cursor(const std::uint16_t& row, const std::uint16_t& column) :  m_position({row, column}) {}
+Term::Cursor::Cursor(const std::uint16_t& row, const std::uint16_t& column) : m_position({row, column}) {}
 
 std::size_t Term::Cursor::row() const { return m_position.first; }
 

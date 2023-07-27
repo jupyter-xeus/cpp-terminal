@@ -22,7 +22,7 @@ public:
 protected:
   virtual int_type underflow() final;
   virtual int_type overflow(int c = std::char_traits<Term::Buffer::char_type>::eof());
-  virtual int                    sync() final;
+  virtual int      sync() final;
 
 private:
   void               setType(const Term::Buffer::Type& type);

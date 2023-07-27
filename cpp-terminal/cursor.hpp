@@ -18,7 +18,7 @@ public:
   bool        empty() const;
 
 private:
-  std::pair<std::uint16_t,std::uint16_t> m_position;
+  std::pair<std::uint16_t, std::uint16_t> m_position;
   //std::size_t m_rows{0};
   //std::size_t m_columns{0};
 };

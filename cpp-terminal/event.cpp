@@ -1,62 +1,59 @@
 #include "cpp-terminal/event.hpp"
+
 #include "cpp-terminal/platforms/conversion.hpp"
 
 Term::Event& Term::Event::operator=(const Term::Event& event) noexcept
 {
-  m_Type=event.m_Type;
+  m_Type = event.m_Type;
   switch(m_Type)
   {
     case Type::Empty: break;
-    case Type::Key: m_Key=Term::Key(event.m_Key);break;
-    case Type::CopyPaste: m_str=event.m_str;break;
-    case Type::Cursor: m_Cursor=Term::Cursor(event.m_Cursor);break;
-    case Type::Screen: m_Screen=Term::Screen(event.m_Screen);break;
+    case Type::Key: m_Key = Term::Key(event.m_Key); break;
+    case Type::CopyPaste: m_str = event.m_str; break;
+    case Type::Cursor: m_Cursor = Term::Cursor(event.m_Cursor); break;
+    case Type::Screen: m_Screen = Term::Screen(event.m_Screen); break;
   }
   return *this;
 }
 
 Term::Event::Event(const Term::Event& event) noexcept
 {
-  m_Type=event.m_Type;
+  m_Type = event.m_Type;
   switch(m_Type)
   {
     case Type::Empty: break;
-    case Type::Key: m_Key=Term::Key(event.m_Key);break;
-    case Type::CopyPaste: m_str=event.m_str;break;
-    case Type::Cursor: m_Cursor=Term::Cursor(event.m_Cursor);break;
-    case Type::Screen: m_Screen=Term::Screen(event.m_Screen);break;
+    case Type::Key: m_Key = Term::Key(event.m_Key); break;
+    case Type::CopyPaste: m_str = event.m_str; break;
+    case Type::Cursor: m_Cursor = Term::Cursor(event.m_Cursor); break;
+    case Type::Screen: m_Screen = Term::Screen(event.m_Screen); break;
   }
 }
 
-Term::Event::Event() :m_Type(Type::Empty)
-{
+Term::Event::Event() : m_Type(Type::Empty) {}
 
-}
-
-Term::Event::Event( Term::Event && event) noexcept
+Term::Event::Event(Term::Event&& event) noexcept
 {
-  m_Type=std::move(event.m_Type);
+  m_Type = std::move(event.m_Type);
   switch(m_Type)
   {
     case Type::Empty: break;
-    case Type::Key: std::swap(m_Key,event.m_Key);break;
-    case Type::CopyPaste: std::swap(m_str,event.m_str);break;
-    case Type::Cursor: std::swap(m_Cursor,event.m_Cursor);break;
-    case Type::Screen: std::swap(m_Screen,event.m_Screen);break;
+    case Type::Key: std::swap(m_Key, event.m_Key); break;
+    case Type::CopyPaste: std::swap(m_str, event.m_str); break;
+    case Type::Cursor: std::swap(m_Cursor, event.m_Cursor); break;
+    case Type::Screen: std::swap(m_Screen, event.m_Screen); break;
   }
 }
-
 
 Term::Event& Term::Event::operator=(Term::Event&& event) noexcept
 {
-  m_Type=std::move(event.m_Type);
+  m_Type = std::move(event.m_Type);
   switch(m_Type)
   {
     case Type::Empty: break;
-    case Type::Key: std::swap(m_Key,event.m_Key);break;
-    case Type::CopyPaste: std::swap(m_str,event.m_str);break;
-    case Type::Cursor: std::swap(m_Cursor,event.m_Cursor);break;
-    case Type::Screen: std::swap(m_Screen,event.m_Screen);break;
+    case Type::Key: std::swap(m_Key, event.m_Key); break;
+    case Type::CopyPaste: std::swap(m_str, event.m_str); break;
+    case Type::Cursor: std::swap(m_Cursor, event.m_Cursor); break;
+    case Type::Screen: std::swap(m_Screen, event.m_Screen); break;
   }
   return *this;
 }
