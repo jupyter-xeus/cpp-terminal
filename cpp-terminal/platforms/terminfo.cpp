@@ -98,6 +98,8 @@ void Term::Terminfo::setColorMode()
   else if(isLegacy())
     m_colorMode = Term::Terminfo::ColorMode::Bit4;
 #endif
+  else
+    m_colorMode = Term::Terminfo::ColorMode::Bit24;
   std::string colorterm = Private::getenv("COLORTERM").second;
   if((colorterm == "truecolor" || colorterm == "24bit") && m_colorMode != ColorMode::Unset) m_colorMode = Term::Terminfo::ColorMode::Bit24;
 }
