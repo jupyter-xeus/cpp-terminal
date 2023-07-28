@@ -54,7 +54,8 @@ private:
   Type m_Type{Type::Empty};
   union container
   {
-    Term::Key    m_Key{Term::Key::Value::NoKey};
+    container();
+    Term::Key    m_Key;
     Term::Cursor m_Cursor;
     Term::Screen m_Screen;
   };

@@ -2,6 +2,8 @@
 
 #include "cpp-terminal/platforms/conversion.hpp"
 
+Term::Event::container::container(){};
+
 Term::Key* Term::Event::get_if_key()
 {
   if(m_Type == Type::Key) return &m_container.m_Key;
