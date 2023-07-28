@@ -6,19 +6,9 @@ Term::MetaKey::MetaKey(const MetaKey::Value& value) : m_value(value) {}
 
 Term::MetaKey Term::MetaKey::operator+(const Term::MetaKey& meta) const { return MetaKey(static_cast<MetaKey::Value>(m_value | meta.m_value)); }
 
-bool Term::MetaKey::hasAlt() const
-{
-  if((m_value & Value::Alt) == Value::Alt) return true;
-  else
-    return false;
-}
+bool Term::MetaKey::hasAlt() const { return ((m_value & Value::Alt) == Value::Alt); }
 
-bool Term::MetaKey::hasCtrl() const
-{
-  if((m_value & Value::Ctrl) == Value::Ctrl) return true;
-  else
-    return false;
-}
+bool Term::MetaKey::hasCtrl() const { return ((m_value & Value::Ctrl) == Value::Ctrl); }
 
 Term::Key Term::MetaKey::operator+(const Term::Key& key) const
 {
@@ -34,15 +24,11 @@ Term::Key Term::MetaKey::operator+(const Term::Key& key) const
       if((m_value == Value::Alt) && key.hasAlt()) return key;
       else
         return Key(static_cast<Term::Key::Value>(key + Value::Alt));  // FIXME maybe a better check;
+    default: return key;
   }
 }
 
-bool Term::MetaKey::operator==(const Term::MetaKey& meta) const
-{
-  if(meta.m_value == m_value) return true;
-  else
-    return false;
-}
+bool Term::MetaKey::operator==(const Term::MetaKey& meta) const { return (meta.m_value == m_value); }
 
 bool Term::MetaKey::operator!=(const Term::MetaKey& meta) const { return !(meta == *this); }
 
@@ -61,132 +47,45 @@ std::string Term::Key::str() const
   }
 }
 
-bool Term::Key::isASCII() const
-{
-  if(m_value >= Null && m_value <= Del) return true;
-  else
-    return false;
-}
+bool Term::Key::isASCII() const { return (m_value >= Null && m_value <= Del); }
 
-bool Term::Key::isExtendedASCII() const
-{
-  if(m_value >= Null && m_value <= 255) return true;
-  else
-    return false;
-}
+bool Term::Key::isExtendedASCII() const { return (m_value >= Null && m_value <= 255); }
 
 bool Term::Key::hasCtrl() const
 {
   // Need to suppress the TAB etc...
-  if((iscntrl() || hasCtrlAll()) && m_value != Key::Backspace && m_value != Key::Tab && m_value != Esc && m_value != Enter && m_value != Del) return true;
-  else
-    return false;
+  return ((iscntrl() || hasCtrlAll()) && m_value != Key::Backspace && m_value != Key::Tab && m_value != Esc && m_value != Enter && m_value != Del);
 }
 
-bool Term::Key::hasCtrlAll() const
-{
-  if((iscntrl() || ((m_value & Term::MetaKey::Value::Ctrl) == Term::MetaKey::Value::Ctrl))) return true;
-  else
-    return false;
-}
+bool Term::Key::hasCtrlAll() const { return ((iscntrl() || ((m_value & Term::MetaKey::Value::Ctrl) == Term::MetaKey::Value::Ctrl))); }
 
-bool Term::Key::hasAlt() const
-{
-  if((m_value & Term::MetaKey::Value::Alt) == Term::MetaKey::Value::Alt) return true;
-  else
-    return false;
-}
+bool Term::Key::hasAlt() const { return ((m_value & Term::MetaKey::Value::Alt) == Term::MetaKey::Value::Alt); }
 
-bool Term::Key::empty() const
-{
-  if(m_value == NoKey) return true;
-  else
-    return false;
-}
+bool Term::Key::empty() const { return (m_value == NoKey); }
 
-bool Term::Key::iscntrl() const
-{
-  if((m_value >= Null && m_value <= Ctrl_Underscore) || m_value == Del) return true;
-  else
-    return false;
-}
+bool Term::Key::iscntrl() const { return ((m_value >= Null && m_value <= Ctrl_Underscore) || m_value == Del); }
 
-bool Term::Key::isblank() const
-{
-  if(m_value == Tab || m_value == Space) return true;
-  else
-    return false;
-}
+bool Term::Key::isblank() const { return (m_value == Tab || m_value == Space); }
 
-bool Term::Key::isspace() const
-{
-  if(isblank() || (m_value >= Ctrl_J && m_value <= Enter)) return true;
-  else
-    return false;
-}
+bool Term::Key::isspace() const { return (isblank() || (m_value >= Ctrl_J && m_value <= Enter)); }
 
-bool Term::Key::isupper() const
-{
-  if(m_value >= A && m_value <= Z) return true;
-  else
-    return false;
-}
+bool Term::Key::isupper() const { return (m_value >= A && m_value <= Z); }
 
-bool Term::Key::islower() const
-{
-  if(m_value >= a && m_value <= z) return true;
-  else
-    return false;
-}
+bool Term::Key::islower() const { return (m_value >= a && m_value <= z); }
 
-bool Term::Key::isalpha() const
-{
-  if(isupper() || islower()) return true;
-  else
-    return false;
-}
+bool Term::Key::isalpha() const { return (isupper() || islower()); }
 
-bool Term::Key::isdigit() const
-{
-  if(m_value >= Zero && m_value <= Nine) return true;
-  else
-    return false;
-}
+bool Term::Key::isdigit() const { return (m_value >= Zero && m_value <= Nine); }
 
-bool Term::Key::isxdigit() const
-{
-  if(isdigit() || (m_value >= A && m_value <= F) || (m_value >= a && m_value <= f)) return true;
-  else
-    return false;
-}
+bool Term::Key::isxdigit() const { return (isdigit() || (m_value >= A && m_value <= F) || (m_value >= a && m_value <= f)); }
 
-bool Term::Key::isalnum() const
-{
-  if(isdigit() || isalpha()) return true;
-  else
-    return false;
-}
+bool Term::Key::isalnum() const { return (isdigit() || isalpha()); }
 
-bool Term::Key::ispunct() const
-{
-  if((m_value >= ExclamationMark && m_value <= Slash) || (m_value >= Colon && m_value <= Arobase) || (m_value >= OpenBracket && m_value <= GraveAccent) || (m_value >= OpenBrace && m_value <= Tilde)) return true;
-  else
-    return false;
-}
+bool Term::Key::ispunct() const { return ((m_value >= ExclamationMark && m_value <= Slash) || (m_value >= Colon && m_value <= Arobase) || (m_value >= OpenBracket && m_value <= GraveAccent) || (m_value >= OpenBrace && m_value <= Tilde)); }
 
-bool Term::Key::isgraph() const
-{
-  if(isalnum() || ispunct()) return true;
-  else
-    return false;
-}
+bool Term::Key::isgraph() const { return (isalnum() || ispunct()); }
 
-bool Term::Key::isprint() const
-{
-  if(isgraph() || m_value == Space) return true;
-  else
-    return false;
-}
+bool Term::Key::isprint() const { return (isgraph() || m_value == Space); }
 
 char Term::Key::tolower()
 {
