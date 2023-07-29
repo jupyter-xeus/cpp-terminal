@@ -1,7 +1,7 @@
 #include "cpp-terminal/screen.hpp"
 
 #ifdef _WIN32
-  #include <Windows.h>
+  #include <windows.h>
 #else
   #include <sys/ioctl.h>
 #endif

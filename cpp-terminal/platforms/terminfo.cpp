@@ -1,7 +1,7 @@
 #ifdef _WIN32
   #include "cpp-terminal/platforms/file.hpp"
 
-  #include <Windows.h>
+  #include <windows.h>
 #endif
 
 #include "cpp-terminal/platforms/env.hpp"
