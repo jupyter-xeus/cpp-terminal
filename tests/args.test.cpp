@@ -28,7 +28,7 @@ std::string to_utf8(const std::string& ret) { return ret.c_str(); }
 #endif
 
 #if defined(_WIN32)
-int WinMain(int argc, char_type** argv)
+int wmain(int argc, char_type** argv)
 #else
 int         main(int argc, char_type** argv)
 #endif
