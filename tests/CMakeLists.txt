@@ -43,7 +43,10 @@ doctest_discover_tests(Key)
 add_executable(IOStream iostream.test.cpp)
 target_link_libraries(IOStream PRIVATE cpp-terminal::cpp-terminal)
 
-add_executable(Args WIN32 args.test.cpp)
+add_executable(Args args.test.cpp)
+if(MINGW OR MSYS)
+  target_compile_options(Args PRIVATE -municode)
+endif()
 target_link_libraries(Args PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
 doctest_discover_tests(Args)
 ## Needed to test args
