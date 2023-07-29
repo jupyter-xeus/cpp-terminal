@@ -1,4 +1,5 @@
 #include "cpp-terminal/platforms/conversion.hpp"
+
 #include "cpp-terminal/exception.hpp"
 
 #if defined(_WIN32)
@@ -10,17 +11,15 @@ namespace Term
 namespace Private
 {
 
-
 #if defined(_WIN32)
 std::string to_utf8(LPCWCH utf16Str)
 {
-  int size_needed = WideCharToMultiByte(CP_UTF8,0,utf16Str,-1,nullptr,0,nullptr,nullptr);
-  std::string ret(size_needed,'\0');
-  WideCharToMultiByte(CP_UTF8,0,utf16Str,wcslen(utf16Str),&ret[0],size_needed,nullptr,nullptr);
+  int         size_needed = WideCharToMultiByte(CP_UTF8, 0, utf16Str, -1, nullptr, 0, nullptr, nullptr);
+  std::string ret(size_needed, '\0');
+  WideCharToMultiByte(CP_UTF8, 0, utf16Str, wcslen(utf16Str), &ret[0], size_needed, nullptr, nullptr);
   return ret.c_str();
 }
 #endif
-
 
 static constexpr std::uint8_t UTF8_ACCEPT = 0;
 static constexpr std::uint8_t UTF8_REJECT = 0xf;
@@ -94,7 +93,6 @@ std::string utf32_to_utf8(const std::u32string& s)
   return r;
 }
 
-
 std::string vector_to_string(const std::vector<char>& vector)
 {
   std::string string;
@@ -102,5 +100,5 @@ std::string vector_to_string(const std::vector<char>& vector)
   return string;
 }
 
-}
-}
+}  // namespace Private
+}  // namespace Term

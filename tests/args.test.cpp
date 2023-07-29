@@ -5,36 +5,32 @@
 #include <string>
 
 #if defined(_WIN32)
- using char_type = wchar_t;
+using char_type = wchar_t;
 #else
- using char_type = char
+using char_type = char;
 #endif
 
-int    argc2;
+int         argc2;
 char_type** argv2;
-
 
 #if defined(_WIN32)
 
-#include <windows.h>
+  #include <windows.h>
 std::string to_utf8(LPCWCH utf16Str)
 {
-  int size_needed = WideCharToMultiByte(CP_UTF8,0,utf16Str,-1,nullptr,0,nullptr,nullptr);
-  std::string ret(size_needed,'\0');
-  WideCharToMultiByte(CP_UTF8,0,utf16Str,wcslen(utf16Str),&ret[0],size_needed,nullptr,nullptr);
+  int         size_needed = WideCharToMultiByte(CP_UTF8, 0, utf16Str, -1, nullptr, 0, nullptr, nullptr);
+  std::string ret(size_needed, '\0');
+  WideCharToMultiByte(CP_UTF8, 0, utf16Str, wcslen(utf16Str), &ret[0], size_needed, nullptr, nullptr);
   return ret.c_str();
 }
 #else
-std::string to_utf8(const std::string& ret)
-{
-  return ret.c_str();
-}
+std::string to_utf8(const std::string& ret) { return ret.c_str(); }
 #endif
 
 #if defined(_WIN32)
 int wmain(int argc, char_type** argv)
 #else
-int main(int argc, char_type** argv)
+int         main(int argc, char_type** argv)
 #endif
 {
   argc2 = argc;
@@ -96,7 +92,8 @@ TEST_CASE("argv")
 #if defined(_WIN32)
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
-    std::wcout << "argv[" << i << "] : " << std::wstring(argv2[i]); std::cout<< " Term::argv[" << i << "] : " << Term::argv[i] << std::endl;
+    std::wcout << "argv[" << i << "] : " << std::wstring(argv2[i]);
+    std::cout << " Term::argv[" << i << "] : " << Term::argv[i] << std::endl;
 #else
     std::cout << "argv[" << i << "] : " << std::string(argv2[i]) << " Term::argv[" << i << "] : " << Term::argv[i] << std::endl;
 #endif
