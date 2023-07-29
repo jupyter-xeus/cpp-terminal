@@ -3,9 +3,9 @@
 #include "cpp-terminal/platforms/conversion.hpp"
 
 #if defined(_WIN32)
+  #include <memory>
   #include <processenv.h>
   #include <windows.h>
-  #include <memory>
 #elif defined(__APPLE__)
   #include <crt_externs.h>
 #else
@@ -49,12 +49,9 @@ void Term::Arguments::parse()
 #elif defined(__APPLE__)
   int argc{*_NSGetArgc()};
   m_args.reserve(argc);
-  char**argv{*_NSGetArgv()};
-  for(std::size_t i=0;i!=argc;++i)
-  {
-    m_args.push_back(argv[i]);
-  }
-  m_parsed=true;
+  char** argv{*_NSGetArgv()};
+  for(std::size_t i = 0; i != argc; ++i) { m_args.push_back(argv[i]); }
+  m_parsed = true;
 #else
   std::string           cmdline;
   std::fstream          fs;
