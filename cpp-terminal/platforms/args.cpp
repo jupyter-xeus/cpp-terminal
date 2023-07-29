@@ -5,7 +5,7 @@
 #if defined(_WIN32)
   #include <memory>
 // clang-format off
-  #include <windows.h>
+  #include <Windows.h>
   #include <processenv.h>
 // clang-format on
 #elif defined(__APPLE__)

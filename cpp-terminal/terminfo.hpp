@@ -22,7 +22,7 @@ public:
     // a 8bit color was used
     Bit8,
     // a 24bit (RGB) color was used
-    Bit24,
+    Bit24
   };
   Terminfo();
   static ColorMode getColorMode();

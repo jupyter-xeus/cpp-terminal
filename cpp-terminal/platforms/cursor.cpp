@@ -1,7 +1,7 @@
 #include "cpp-terminal/cursor.hpp"
 
 #if defined(_WIN32)
-  #include "windows.h"
+  #include <Windows.h>
 #else
   #include "cpp-terminal/input.hpp"
 #endif

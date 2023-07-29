@@ -3,8 +3,8 @@
 #include <new>
 
 #if defined(_WIN32)
+  #include <Windows.h>
   #include <io.h>
-  #include <windows.h>
 #else
   #include <cstdio>
   #include <sys/ioctl.h>

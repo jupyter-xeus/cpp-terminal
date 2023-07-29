@@ -3,7 +3,7 @@
 #include "cpp-terminal/exception.hpp"
 
 #if defined(_WIN32)
-  #include <windows.h>
+  #include <Windows.h>
 #endif
 
 namespace Term
