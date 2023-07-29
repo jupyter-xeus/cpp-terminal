@@ -44,7 +44,10 @@ add_executable(IOStream iostream.test.cpp)
 target_link_libraries(IOStream PRIVATE cpp-terminal::cpp-terminal)
 
 add_executable(args args.test.cpp)
-target_link_libraries(args PRIVATE cpp-terminal::cpp-terminal)
+target_link_libraries(args PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
+doctest_discover_tests(args)
+## Needed to test args
+add_test(NAME args COMMAND args Bonjour Hello 你好)
 
 if (WIN32)
   find_program(POWERSHELL_EXECUTABLE NAMES powershell DOC "PowerShell command")

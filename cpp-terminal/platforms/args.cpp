@@ -22,6 +22,8 @@ void Term::Arguments::parse()
     cmdline.resize(fs.gcount());
     fs.seekg(0, std::ios_base::beg);
     fs.get(&cmdline[0], cmdline.size());
+    fs.exceptions(old_iostate);
+    if(fs.is_open()) fs.close();
     const std::size_t argc = static_cast<std::size_t>(std::count(cmdline.begin(), cmdline.end(), '\0'));
     m_args.reserve(argc);
     for(std::string::iterator it = cmdline.begin(); it != cmdline.end(); it = std::find(it, cmdline.end(), '\0') + 1) { m_args.push_back(cmdline.data() + (it - cmdline.begin())); }

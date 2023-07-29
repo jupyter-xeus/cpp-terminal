@@ -11,6 +11,7 @@ class Arguments
 public:
   static std::size_t              argc();
   static std::vector<std::string> argv();
+  std::string                     operator[](const std::size_t&) const;
 
 private:
   static void                     parse();
@@ -21,8 +22,14 @@ private:
 class Argc
 {
 public:
-  explicit operator int();
-  explicit operator int() const;
+  operator std::size_t();
+  operator std::size_t() const;
+  bool operator==(const int&) const;
+  bool operator!=(const int&) const;
+  bool operator>(const int&) const;
+  bool operator<(const int&) const;
+  bool operator>=(const int&) const;
+  bool operator<=(const int&) const;
 };
 
 static const Arguments argv;
