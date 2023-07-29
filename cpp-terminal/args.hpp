@@ -24,12 +24,6 @@ class Argc
 public:
   operator int();
   operator int() const;
-  bool operator==(const int&) const;
-  bool operator!=(const int&) const;
-  bool operator>(const int&) const;
-  bool operator<(const int&) const;
-  bool operator>=(const int&) const;
-  bool operator<=(const int&) const;
 };
 
 static const Arguments argv;
