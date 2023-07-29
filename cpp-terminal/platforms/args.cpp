@@ -4,8 +4,10 @@
 
 #if defined(_WIN32)
   #include <memory>
-  #include <processenv.h>
+// clang-format off
   #include <windows.h>
+  #include <processenv.h>
+// clang-format on
 #elif defined(__APPLE__)
   #include <crt_externs.h>
 #else
