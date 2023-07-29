@@ -2,9 +2,9 @@
 namespace Term
 {
 
-Term::Argc::operator std::size_t() { return Term::Arguments::argc(); }
+Term::Argc::operator int() { return static_cast<int>(Term::Arguments::argc()); }
 
-Term::Argc::operator std::size_t() const { return Term::Arguments::argc(); }
+Term::Argc::operator int() const { return static_cast<int>(Term::Arguments::argc()); }
 
 bool Term::Argc::operator==(const int& i) const { return static_cast<std::size_t>(i) == Term::Arguments::argc(); }
 

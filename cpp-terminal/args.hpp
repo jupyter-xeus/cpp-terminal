@@ -22,8 +22,8 @@ private:
 class Argc
 {
 public:
-  operator std::size_t();
-  operator std::size_t() const;
+  operator int();
+  operator int() const;
   bool operator==(const int&) const;
   bool operator!=(const int&) const;
   bool operator>(const int&) const;
