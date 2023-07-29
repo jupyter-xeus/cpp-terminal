@@ -9,7 +9,7 @@ namespace Term
 class Arguments
 {
 public:
-  Arguments() = default;
+  Arguments();
   static std::size_t              argc();
   static std::vector<std::string> argv();
   std::string                     operator[](const std::size_t&) const;
@@ -23,7 +23,7 @@ private:
 class Argc
 {
 public:
-  Argc() = default;
+  Argc();
   operator long unsigned int();
   operator long unsigned int() const;
 };
