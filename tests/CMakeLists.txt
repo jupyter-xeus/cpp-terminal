@@ -43,6 +43,9 @@ doctest_discover_tests(Key)
 add_executable(IOStream iostream.test.cpp)
 target_link_libraries(IOStream PRIVATE cpp-terminal::cpp-terminal)
 
+add_executable(args args.test.cpp)
+target_link_libraries(args PRIVATE cpp-terminal::cpp-terminal)
+
 if (WIN32)
   find_program(POWERSHELL_EXECUTABLE NAMES powershell DOC "PowerShell command")
   if (NOT ${POWERSHELL_EXECUTABLE} STREQUAL "POWERSHELL_EXECUTABLE-NOTFOUND")
