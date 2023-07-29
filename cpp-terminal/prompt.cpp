@@ -6,7 +6,8 @@
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
-#include "cursor.hpp"
+#include "cpp-terminal/cursor.hpp"
+#include "cpp-terminal/exception.hpp"
 
 #include <iostream>
 

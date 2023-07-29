@@ -1,4 +1,10 @@
 #include "cpp-terminal/args.hpp"
+#include "cpp-terminal/platforms/conversion.hpp"
+
+#if defined(_WIN32)
+  #include <windows.h>
+  #include <processenv.h>
+#endif
 
 #include <algorithm>
 #include <fstream>
@@ -9,7 +15,33 @@ void Term::Arguments::parse()
 {
   if(m_parsed == true) return;
 #if defined(_WIN32)
-  #elseif defined(__APPLE__)
+  int argc{0};
+  std::unique_ptr<LPWSTR[], void(*)(wchar_t **)> wargv=std::unique_ptr<LPWSTR[], void(*)(wchar_t **)>(CommandLineToArgvW(GetCommandLineW(),&argc),[](wchar_t **ptr) { LocalFree(ptr);});
+  if(wargv==nullptr) { m_parsed=false; return; }
+  else
+  {
+    m_args.reserve(static_cast<std::size_t>(argc));
+    for(std::size_t i=0;i!=static_cast<std::size_t>(argc);++i)
+    {
+      //std::wcout<<" i : "<<i<<" *"<<wargv[i]<<"*"<<std::endl;
+      //int size_needed = WideCharToMultiByte(CP_UTF8,0,&wargv.get()[i][0],-1,nullptr,0,nullptr,nullptr);
+      //std::string ret(size_needed,'\0');
+      //std::cout<<"::::"<<size_needed<<std::endl;
+      //WideCharToMultiByte(CP_UTF8,0,&wargv.get()[i][0],wcslen(&wargv.get()[i][0]),&ret[0],size_needed,nullptr,nullptr);
+
+
+
+      //std::wcout<<" i : "<<i<<" *"<<wargv[i]<<"*"<<std::endl;
+     // std::cout<<" i : "<<i<<" *"<<ret.c_str()<<"*"<<std::endl;
+     /* int size_needed2 = WideCharToMultiByte(CP_UTF8,0,&wargv.get()[i][0],-1,nullptr,0,nullptr,nullptr);
+      std::string ret2(size_needed,'\0');
+      WideCharToMultiByte(CP_UTF8,0,&wargv.get()[i][0],1,&ret[0],size_needed,nullptr,nullptr);
+      std::cout<<"***"<<ret<<"***"<<std::endl;*/
+      m_args.push_back(Term::Private::to_utf8(&wargv.get()[i][0]));
+    }
+    m_parsed=true;
+  }
+#elif defined(__APPLE__)
 #else
   std::string           cmdline;
   std::fstream          fs;
