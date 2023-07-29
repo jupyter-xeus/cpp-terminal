@@ -5,12 +5,14 @@
 #if defined(_WIN32)
   #include <processenv.h>
   #include <windows.h>
+  #include <memory>
+#elif defined(__APPLE__)
+  #include <crt_externs.h>
+#else
+  #include <algorithm>
+  #include <fstream>
+  #include <limits>
 #endif
-
-#include <algorithm>
-#include <fstream>
-#include <iostream>
-#include <limits>
 
 void Term::Arguments::parse()
 {
@@ -45,6 +47,14 @@ void Term::Arguments::parse()
     m_parsed = true;
   }
 #elif defined(__APPLE__)
+  int argc{*_NSGetArgc()};
+  m_args.reserve(argc);
+  char**argv{*_NSGetArgv()};
+  for(std::size_t i=0;i!=argc;++i)
+  {
+    m_args.push_back(argv[i]);
+  }
+  m_parsed=true;
 #else
   std::string           cmdline;
   std::fstream          fs;
