@@ -4,18 +4,20 @@
 #include <iostream>
 #include <string>
 
-#if defined(_WIN32)
+#if !defined(__wasm__)
+
+  #if defined(_WIN32)
 using char_type = wchar_t;
-#else
+  #else
 using char_type = char;
-#endif
+  #endif
 
 int         argc2;
 char_type** argv2;
 
-#if defined(_WIN32)
+  #if defined(_WIN32)
 
-  #include <windows.h>
+    #include <windows.h>
 std::string to_utf8(LPCWCH utf16Str)
 {
   int         size_needed = WideCharToMultiByte(CP_UTF8, 0, utf16Str, -1, nullptr, 0, nullptr, nullptr);
@@ -23,15 +25,15 @@ std::string to_utf8(LPCWCH utf16Str)
   WideCharToMultiByte(CP_UTF8, 0, utf16Str, wcslen(utf16Str), &ret[0], size_needed, nullptr, nullptr);
   return ret.c_str();
 }
-#else
+  #else
 std::string to_utf8(const std::string& ret) { return ret.c_str(); }
-#endif
+  #endif
 
-#if defined(_WIN32)
+  #if defined(_WIN32)
 int wmain(int argc, char_type** argv)
-#else
+  #else
 int         main(int argc, char_type** argv)
-#endif
+  #endif
 {
   argc2 = argc;
   argv2 = argv;
@@ -89,14 +91,16 @@ TEST_CASE("argv")
 {
   for(std::size_t i = 0; i != Term::argc; ++i)
   {
-#if defined(_WIN32)
+  #if defined(_WIN32)
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
     std::wcout << "argv[" << i << "] : " << std::wstring(argv2[i]);
     std::cout << " Term::argv[" << i << "] : " << Term::argv[i] << std::endl;
-#else
+  #else
     std::cout << "argv[" << i << "] : " << std::string(argv2[i]) << " Term::argv[" << i << "] : " << Term::argv[i] << std::endl;
-#endif
+  #endif
     CHECK(Term::argv[i] == to_utf8(&argv2[i][0]));
   }
 }
+
+#endif
