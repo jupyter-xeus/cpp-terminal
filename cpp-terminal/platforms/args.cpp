@@ -30,10 +30,7 @@ void Term::Arguments::parse()
   else
   {
     m_args.reserve(static_cast<std::size_t>(argc));
-    for(std::size_t i = 0; i != static_cast<std::size_t>(argc); ++i)
-    {
-      m_args.push_back(Term::Private::to_utf8(&wargv.get()[i][0]));
-    }
+    for(std::size_t i = 0; i != static_cast<std::size_t>(argc); ++i) { m_args.push_back(Term::Private::to_utf8(&wargv.get()[i][0])); }
     m_parsed = true;
   }
 #elif defined(__APPLE__)
