@@ -46,7 +46,6 @@ target_link_libraries(IOStream PRIVATE cpp-terminal::cpp-terminal)
 if(MINGW OR MSYS)
 else()
 add_executable(Args args.test.cpp)
-target_compile_options(Args PRIVATE -municode)
 target_link_libraries(Args PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
 doctest_discover_tests(Args)
 ## Needed to test args
