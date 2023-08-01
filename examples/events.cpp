@@ -35,7 +35,7 @@ int main()
         }
         case Term::Event::Type::Screen:
         {
-          Term::Screen screen{event};
+          Term::Screen screen(event);
           Term::cout << "Event: Screen (" << screen.rows() << "," << screen.columns() << ")" << std::endl;
           break;
         }
