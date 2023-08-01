@@ -8,11 +8,11 @@
   #if !defined(_GLIBCXX_USE_NANOSLEEP)
     #define _GLIBCXX_USE_NANOSLEEP
   #endif
-  #include <chrono>
-  #include <thread>
   #include <cerrno>
+  #include <chrono>
   #include <csignal>
   #include <sys/ioctl.h>
+  #include <thread>
   #include <unistd.h>
 #else
   #include <cerrno>
@@ -29,9 +29,8 @@
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 
-#include <string>
-
 #include <iostream>
+#include <string>
 
 #if !defined(_WIN32) && !defined(__APPLE__)
 namespace Term
@@ -53,27 +52,25 @@ private:
 #elif defined(__APPLE__)
 namespace Term
 {
- volatile std::sig_atomic_t m_signalStatus{0};
- static void sigwinchHandler(int sig)
- {
-   if(sig==SIGWINCH) m_signalStatus=1;
- }
+volatile std::sig_atomic_t m_signalStatus{0};
+static void                sigwinchHandler(int sig)
+{
+  if(sig == SIGWINCH) m_signalStatus = 1;
 }
+}  // namespace Term
 #endif
 
 Term::Event Term::read_event()
 {
 #if defined(_WIN32)
   Term::Event ret;
-  do
-  {
-    WaitForSingleObject(Term::Private::in.handle(),INFINITE);
-    ret=std::move(Platform::read_raw());
-  }
-  while(ret.empty());
+  do {
+    WaitForSingleObject(Term::Private::in.handle(), INFINITE);
+    ret = std::move(Platform::read_raw());
+  } while(ret.empty());
   return std::move(ret);
 #elif defined(__APPLE__)
-  static bool       enabled{false};
+  static bool enabled{false};
   if(!enabled)
   {
     ::sigset_t windows_event;
@@ -82,27 +79,26 @@ Term::Event Term::read_event()
     ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
     struct sigaction sa;
     sigemptyset(&sa.sa_mask);
-    sa.sa_flags=0;
-    sa.sa_handler =sigwinchHandler;
-    sigaction(SIGWINCH,&sa,nullptr);
+    sa.sa_flags   = 0;
+    sa.sa_handler = sigwinchHandler;
+    sigaction(SIGWINCH, &sa, nullptr);
     ::sigprocmask(SIG_UNBLOCK, &windows_event, nullptr);
-    enabled=true;
+    enabled = true;
   }
   Term::Event ret;
-  int wait{0};
-  do
-  {
-    if(m_signalStatus==1)
+  int         wait{0};
+  do {
+    if(m_signalStatus == 1)
     {
-      m_signalStatus=0;
+      m_signalStatus = 0;
       return Term::Event(screen_size());
     }
-    ret=Platform::read_raw();
-    if(wait<=9)std::this_thread::sleep_for(std::chrono::milliseconds(++wait));
-    else std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  }while(ret.empty());
+    ret = Platform::read_raw();
+    if(wait <= 9) std::this_thread::sleep_for(std::chrono::milliseconds(++wait));
+    else
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  } while(ret.empty());
   return ret;
-
 
 #else
   static bool       enabled{false};

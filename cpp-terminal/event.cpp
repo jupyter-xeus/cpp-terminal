@@ -35,7 +35,7 @@ void Term::Event::parse()
 {
   if(m_str.empty())
   {
-    m_Type=Type::Empty;
+    m_Type = Type::Empty;
     return;
   }
   else if(m_str.size() == 1)
