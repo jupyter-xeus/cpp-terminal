@@ -33,7 +33,12 @@ Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste), m_str(str)
 
 void Term::Event::parse()
 {
-  if(m_str.size() == 1)
+  if(m_str.empty())
+  {
+    m_Type=Type::Empty;
+    return;
+  }
+  else if(m_str.size() == 1)
   {
     m_Type = Type::Key;
     m_Key  = Key(static_cast<Term::Key::Value>(m_str[0]));

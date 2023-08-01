@@ -10,7 +10,10 @@
   #endif
   #include <chrono>
   #include <thread>
-  #include <type_traits>
+  #include <cerrno>
+  #include <csignal>
+  #include <sys/ioctl.h>
+  #include <unistd.h>
 #else
   #include <cerrno>
   #include <csignal>
@@ -28,8 +31,9 @@
 
 #include <string>
 
-#if !defined(_WIN32) && !defined(__APPLE__)
+#include <iostream>
 
+#if !defined(_WIN32) && !defined(__APPLE__)
 namespace Term
 {
 
@@ -45,7 +49,16 @@ private:
   int m_fd{-1};
 };
 
-};  // namespace Term
+}  // namespace Term
+#elif defined(__APPLE__)
+namespace Term
+{
+ volatile std::sig_atomic_t m_signalStatus{0};
+ static void sigwinchHandler(int sig)
+ {
+   if(sig==SIGWINCH) m_signalStatus=1;
+ }
+}
 #endif
 
 Term::Event Term::read_event()
@@ -59,6 +72,38 @@ Term::Event Term::read_event()
   }
   while(ret.empty());
   return std::move(ret);
+#elif defined(__APPLE__)
+  static bool       enabled{false};
+  if(!enabled)
+  {
+    ::sigset_t windows_event;
+    sigemptyset(&windows_event);
+    sigaddset(&windows_event, SIGWINCH);
+    ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
+    struct sigaction sa;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags=0;
+    sa.sa_handler =sigwinchHandler;
+    sigaction(SIGWINCH,&sa,nullptr);
+    ::sigprocmask(SIG_UNBLOCK, &windows_event, nullptr);
+    enabled=true;
+  }
+  Term::Event ret;
+  int wait{0};
+  do
+  {
+    if(m_signalStatus==1)
+    {
+      m_signalStatus=0;
+      return Term::Event(screen_size());
+    }
+    ret=Platform::read_raw();
+    if(wait<=9)std::this_thread::sleep_for(std::chrono::milliseconds(++wait));
+    else std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  }while(ret.empty());
+  return ret;
+
+
 #else
   static bool       enabled{false};
   static Term::fd   epoll(::epoll_create1(EPOLL_CLOEXEC));
@@ -66,8 +111,8 @@ Term::Event Term::read_event()
   static ::sigset_t windows_event;
   if(!enabled)
   {
-    ::sigemptyset(&windows_event);
-    ::sigaddset(&windows_event, SIGWINCH);
+    sigemptyset(&windows_event);
+    sigaddset(&windows_event, SIGWINCH);
     ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
     signal_fd.set(::signalfd(-1, &windows_event, SFD_NONBLOCK | SFD_CLOEXEC));
     ::epoll_event signal;
