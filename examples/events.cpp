@@ -35,7 +35,8 @@ int main()
         }
         case Term::Event::Type::Screen:
         {
-          Term::cout << "Event: Screen" << std::endl;
+          Term::Screen screen{event};
+          Term::cout << "Event: Screen (" << screen.rows() << "," << screen.columns() << ")" << std::endl;
           break;
         }
         case Term::Event::Type::Cursor:

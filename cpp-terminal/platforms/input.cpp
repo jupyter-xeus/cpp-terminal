@@ -1,33 +1,100 @@
-#ifdef _WIN32
-  // clang-format off
+#if defined(_WIN32)
+// clang-format off
   #include <windows.h>
   #include <stringapiset.h>
   // clang-format on
+  #include <chrono>
+  #include <thread>
+  #include <type_traits>
   #include <vector>
+#elif defined(__APPLE__)
+  #if !defined(_GLIBCXX_USE_NANOSLEEP)
+    #define _GLIBCXX_USE_NANOSLEEP
+  #endif
+  #include <chrono>
+  #include <thread>
+  #include <type_traits>
 #else
   #include <cerrno>
   #include <csignal>
+  #include <memory>
+  #include <sys/epoll.h>
   #include <sys/ioctl.h>
+  #include <sys/signalfd.h>
   #include <unistd.h>
 #endif
 
+#include "cpp-terminal/event.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 
 #include <string>
 
-#if !defined(_WIN32)
-namespace
-{
-volatile std::sig_atomic_t gSignalStatus;
-}
+#if !defined(_WIN32) && !defined(__APPLE__)
 
-static void sigwinchHandler(int sig)
+namespace Term
 {
-  if(sig == SIGWINCH) gSignalStatus = 1;
-}
+
+class fd
+{
+public:
+  fd(const int& i) : m_fd(i) {}
+  ~fd() { ::close(m_fd); }
+  void set(const int& i) { m_fd = i; }
+  int  get() { return m_fd; }
+
+private:
+  int m_fd{-1};
+};
+
+};  // namespace Term
 #endif
+
+Term::Event Term::read_event()
+{
+#if defined(_WIN32)
+  Term::Event event;
+  while((event = Platform::read_raw()).empty()) { std::this_thread::sleep_for(std::chrono::milliseconds(10)); }
+  return event;
+#else
+  static bool       enabled{false};
+  static Term::fd   epoll(::epoll_create1(EPOLL_CLOEXEC));
+  static Term::fd   signal_fd(-1);
+  static ::sigset_t windows_event;
+  if(!enabled)
+  {
+    ::sigemptyset(&windows_event);
+    ::sigaddset(&windows_event, SIGWINCH);
+    ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
+    signal_fd.set(::signalfd(-1, &windows_event, SFD_NONBLOCK | SFD_CLOEXEC));
+    ::epoll_event signal;
+    signal.data.fd = signal_fd.get();
+    signal.events  = EPOLLIN;
+    ::epoll_ctl(epoll.get(), EPOLL_CTL_ADD, signal_fd.get(), &signal);
+    ::epoll_event input;
+    input.events  = EPOLLIN;
+    input.data.fd = Term::Private::in.fd();
+    ::epoll_ctl(epoll.get(), EPOLL_CTL_ADD, Term::Private::in.fd(), &input);
+    ::sigemptyset(&windows_event);
+    enabled = true;
+  }
+  ::epoll_event ret;
+  ::sigaddset(&windows_event, SIGWINCH);
+  if(epoll_pwait(epoll.get(), &ret, 1, -1, &windows_event) == 1)
+  {
+    if(ret.data.fd == signal_fd.get())
+    {
+      ::signalfd_siginfo fdsi;
+      read(signal_fd.get(), &fdsi, sizeof(fdsi));
+      return Event(screen_size());
+    }
+    else
+      return Platform::read_raw();
+  }
+  Term::Exception("Error on read_event.");
+#endif
+}
 
 Term::Event Term::Platform::read_raw()
 {
@@ -125,37 +192,12 @@ Term::Event Term::Platform::read_raw()
   else
     return Event();
 #else
-  static bool activated{false};
-  if(!activated)
-  {
-    struct sigaction sa;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags   = 0;
-    sa.sa_handler = sigwinchHandler;
-    if(sigaction(SIGWINCH, &sa, nullptr) == -1) throw Term::Exception("signal() failed");
-    else
-      activated = true;
-  }
-
-  if(gSignalStatus == 1)
-  {
-    gSignalStatus = 0;
-    return Event(screen_size());
-  }
-  else
-  {
-    std::size_t nread{0};
-    ::ioctl(Private::in.fd(), FIONREAD, &nread);
-    if(nread != 0)
-    {
-      std::string ret(nread, '\0');
-      errno = 0;
-      ::ssize_t nread{::read(Private::in.fd(), &ret[0], ret.size())};
-      if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-      return Event(ret.c_str());
-    }
-    else
-      return Event();
-  }
+  std::size_t nread{0};
+  ::ioctl(Private::in.fd(), FIONREAD, &nread);
+  std::string ret(nread, '\0');
+  errno = 0;
+  ::ssize_t nrea{::read(Private::in.fd(), &ret[0], ret.size())};
+  if(nrea == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
+  return Event(ret.c_str());
 #endif
 }
