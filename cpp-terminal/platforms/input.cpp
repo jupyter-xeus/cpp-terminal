@@ -3,9 +3,6 @@
   #include <windows.h>
   #include <stringapiset.h>
   // clang-format on
-  #include <chrono>
-  #include <thread>
-  #include <type_traits>
   #include <vector>
 #elif defined(__APPLE__)
   #if !defined(_GLIBCXX_USE_NANOSLEEP)
@@ -54,9 +51,14 @@ private:
 Term::Event Term::read_event()
 {
 #if defined(_WIN32)
-  Term::Event event;
-  while((event = Platform::read_raw()).empty()) { std::this_thread::sleep_for(std::chrono::milliseconds(10)); }
-  return event;
+  Term::Event ret;
+  do
+  {
+    WaitForSingleObject(Term::Private::in.handle(),INFINITE);
+    ret=std::move(Platform::read_raw());
+  }
+  while(ret.empty());
+  return std::move(ret);
 #else
   static bool       enabled{false};
   static Term::fd   epoll(::epoll_create1(EPOLL_CLOEXEC));
@@ -181,7 +183,7 @@ Term::Event Term::Platform::read_raw()
         }
         case WINDOW_BUFFER_SIZE_EVENT:
         {
-          return Event(Screen(buf[i].Event.WindowBufferSizeEvent.dwSize.Y, buf[i].Event.WindowBufferSizeEvent.dwSize.X));
+          return Event(screen_size());
         }
       }
     }
