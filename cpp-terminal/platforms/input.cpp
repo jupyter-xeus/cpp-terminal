@@ -30,9 +30,8 @@
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/platforms/input.hpp"
 
-
-#include <string>
 #include <iostream>
+#include <string>
 
 std::thread Term::Private::Input::m_thread = std::thread(Term::Private::Input::read_event);
 
@@ -55,7 +54,7 @@ private:
 };
 
 }  // namespace Term
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
 namespace Term
 {
 volatile std::sig_atomic_t m_signalStatus{0};
@@ -75,7 +74,7 @@ void Term::Private::Input::read_event()
     WaitForSingleObject(Term::Private::in.handle(), INFINITE);
     ret = std::move(read_raw());
     if(!ret.empty()) m_events.push(std::move(ret));
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
     static bool enabled{false};
     if(!enabled)
     {
