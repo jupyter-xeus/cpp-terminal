@@ -30,6 +30,7 @@
 #include "cpp-terminal/platforms/file.hpp"
 
 #include <string>
+#include <iostream>
 
 std::thread Term::Platform::Input::m_thread = std::thread(Term::Platform::Input::read_event);
 
@@ -69,11 +70,9 @@ void Term::Platform::Input::read_event()
   {
 #if defined(_WIN32)
     Term::Event ret;
-    do {
-      WaitForSingleObject(Term::Private::in.handle(), INFINITE);
-      ret = std::move(Platform::read_raw());
-    } while(ret.empty());
-    return std::move(ret);
+    WaitForSingleObject(Term::Private::in.handle(), INFINITE);
+    ret = read_raw();
+    if(!ret.empty()) m_events.push(ret);
 #elif defined(__APPLE__)
     static bool enabled{false};
     if(!enabled)
@@ -195,6 +194,7 @@ Term::Event Term::Platform::Input::read_raw()
     }
     if(processed >= 1) return Event(ret);
   }
+  return Event();
 #else
   std::size_t nread{0};
   ::ioctl(Private::in.fd(), FIONREAD, &nread);
