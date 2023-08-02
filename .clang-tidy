@@ -1,0 +1,4 @@
+---
+WarningsAsErrors: false
+FormatStyle: .clang-format
+...
