@@ -17,8 +17,13 @@ Term::Cursor Term::cursor_position()
     return Term::Cursor(0, 0);
 #else
   Term::Private::out.write(Term::cursor_position_report());
-  Term::Cursor c;
-  while((c = Platform::read_raw()).empty()) continue;
-  return c;
+  do {
+    std::string ret = Term::Private::in.read();
+    if(ret[0] == '\033' && ret[1] == '[' && ret[ret.size() - 1] == 'R')
+    {
+      std::size_t found = ret.find(';', 2);
+      if(found != std::string::npos) { return Cursor(std::stoi(ret.substr(2, found - 2)), std::stoi(ret.substr(found + 1, ret.size() - (found + 2)))); }
+    }
+  } while(true);
 #endif
 }
