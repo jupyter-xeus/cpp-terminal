@@ -82,16 +82,8 @@ public:
     return check;
   }
 };
-}  // namespace Private
-}  // namespace Term
-
-std::thread Term::Private::Input::m_thread = std::thread(Term::Private::Input::read_event);
-
-Term::Private::BlockingQueue<Term::Event> Term::Private::Input::m_events;
 
 #if !defined(_WIN32) && !defined(__APPLE__)
-namespace Term
-{
 
 class fd
 {
@@ -105,17 +97,20 @@ private:
   int m_fd{-1};
 };
 
-}  // namespace Term
 #elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
-namespace Term
-{
 volatile std::sig_atomic_t m_signalStatus{0};
 static void                sigwinchHandler(int sig)
 {
   if(sig == SIGWINCH) m_signalStatus = 1;
 }
-}  // namespace Term
 #endif
+
+}  // namespace Private
+}  // namespace Term
+
+std::thread Term::Private::Input::m_thread = std::thread(Term::Private::Input::read_event);
+
+Term::Private::BlockingQueue<Term::Event> Term::Private::Input::m_events;
 
 void Term::Private::Input::read_event()
 {
@@ -137,7 +132,7 @@ void Term::Private::Input::read_event()
       struct sigaction sa;
       sigemptyset(&sa.sa_mask);
       sa.sa_flags   = 0;
-      sa.sa_handler = sigwinchHandler;
+      sa.sa_handler = Term::Private::sigwinchHandler;
       sigaction(SIGWINCH, &sa, nullptr);
       ::sigprocmask(SIG_UNBLOCK, &windows_event, nullptr);
       enabled = true;
@@ -147,9 +142,9 @@ void Term::Private::Input::read_event()
     do {
       ret = read_raw();
       if(!ret.empty()) m_events.push(ret);
-      else if(m_signalStatus == 1)
+      else if(Term::Private::m_signalStatus == 1)
       {
-        m_signalStatus = 0;
+        Term::Private::m_signalStatus = 0;
         m_events.push(screen_size());
       }
       else
@@ -160,10 +155,10 @@ void Term::Private::Input::read_event()
       }
     } while(true);
 #else
-    static bool       enabled{false};
-    static Term::fd   epoll(::epoll_create1(EPOLL_CLOEXEC));
-    static Term::fd   signal_fd(-1);
-    static ::sigset_t windows_event;
+    static bool              enabled{false};
+    static Term::Private::fd epoll(::epoll_create1(EPOLL_CLOEXEC));
+    static Term::Private::fd signal_fd(-1);
+    static ::sigset_t        windows_event;
     if(!enabled)
     {
       sigemptyset(&windows_event);
