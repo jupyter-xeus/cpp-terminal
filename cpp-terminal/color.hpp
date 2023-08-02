@@ -19,7 +19,7 @@ public:
     Bit3,
     Bit4,
     Bit8,
-    Bit24,
+    Bit24
   };
   /*
  * The 3bit/4bit colors for the terminal
