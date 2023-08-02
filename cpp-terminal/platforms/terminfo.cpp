@@ -16,7 +16,8 @@ bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& 
     #pragma warning(push)
     #pragma warning(disable : 4191)
   #endif
-  NTSTATUS(WINAPI * getVersion)(PRTL_OSVERSIONINFOW) = (reinterpret_cast<NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW)>(GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "RtlGetVersion")));
+  NTSTATUS(WINAPI * getVersion)
+  (PRTL_OSVERSIONINFOW) = (reinterpret_cast<NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW)>(GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "RtlGetVersion")));
   #if defined(_MSC_VER)
     #pragma warning(pop)
   #endif

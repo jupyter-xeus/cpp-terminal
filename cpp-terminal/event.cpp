@@ -200,10 +200,7 @@ void Term::Event::parse()
       m_Key = Key(Term::Key::Value::NUMERIC_5);
     else if(m_str.size() == 2 && ((m_str[0] & 0b11100000) == 0b11000000) && ((m_str[1] & 0b11000000) == 0b10000000)) { m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0])); }
     else if(m_str.size() == 3 && ((m_str[0] & 0b11110000) == 0b11100000) && ((m_str[1] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000)) { m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0])); }
-    else if(m_str.size() == 4 && ((m_str[0] & 0b11111000) == 0b11110000) && ((m_str[1] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000))
-    {
-      m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0]));
-    }
+    else if(m_str.size() == 4 && ((m_str[0] & 0b11111000) == 0b11110000) && ((m_str[1] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000)) { m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0])); }
   }
   else { m_Type = Type::CopyPaste; }
   if(!m_Key.empty())
