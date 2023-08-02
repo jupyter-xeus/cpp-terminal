@@ -83,8 +83,14 @@ public:
   }
 };
 
-#if !defined(_WIN32) && !defined(__APPLE__)
-
+#if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
+volatile std::sig_atomic_t m_signalStatus{0};
+static void                sigwinchHandler(int sig)
+{
+  if(sig == SIGWINCH) m_signalStatus = 1;
+}
+#elif defined(_WIN32)
+#else
 class fd
 {
 public:
@@ -96,13 +102,6 @@ public:
 private:
   int m_fd{-1};
 };
-
-#elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
-volatile std::sig_atomic_t m_signalStatus{0};
-static void                sigwinchHandler(int sig)
-{
-  if(sig == SIGWINCH) m_signalStatus = 1;
-}
 #endif
 
 }  // namespace Private
