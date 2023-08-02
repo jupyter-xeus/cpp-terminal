@@ -1,7 +1,6 @@
 #include "cpp-terminal/iostream.hpp"
 #include "cpp-terminal/terminal.hpp"
 
-#include <cpp-terminal/event.hpp>
 #include <cpp-terminal/input.hpp>
 #include <cpp-terminal/key.hpp>
 

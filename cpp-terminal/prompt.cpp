@@ -6,6 +6,7 @@
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
+#include "cpp-terminal/event.hpp"
 #include "cursor.hpp"
 
 #include <iostream>

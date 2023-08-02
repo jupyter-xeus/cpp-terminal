@@ -28,13 +28,15 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/platforms/file.hpp"
+#include "cpp-terminal/platforms/input.hpp"
+
 
 #include <string>
 #include <iostream>
 
-std::thread Term::Platform::Input::m_thread = std::thread(Term::Platform::Input::read_event);
+std::thread Term::Private::Input::m_thread = std::thread(Term::Private::Input::read_event);
 
-Term::Platform::Input::BlockingQueue<Term::Event> Term::Platform::Input::m_events;
+Term::Private::Input::BlockingQueue<Term::Event> Term::Private::Input::m_events;
 
 #if !defined(_WIN32) && !defined(__APPLE__)
 namespace Term
@@ -64,15 +66,15 @@ static void                sigwinchHandler(int sig)
 }  // namespace Term
 #endif
 
-void Term::Platform::Input::read_event()
+void Term::Private::Input::read_event()
 {
   while(true)
   {
 #if defined(_WIN32)
     Term::Event ret;
     WaitForSingleObject(Term::Private::in.handle(), INFINITE);
-    ret = read_raw();
-    if(!ret.empty()) m_events.push(ret);
+    ret = std::move(read_raw());
+    if(!ret.empty()) m_events.push(std::move(ret));
 #elif defined(__APPLE__)
     static bool enabled{false};
     if(!enabled)
@@ -143,7 +145,7 @@ void Term::Platform::Input::read_event()
   }
 }
 
-Term::Event Term::Platform::Input::read_raw()
+Term::Event Term::Private::Input::read_raw()
 {
 #ifdef _WIN32
   DWORD nread{0};
@@ -206,9 +208,9 @@ Term::Event Term::Platform::Input::read_raw()
 #endif
 }
 
-Term::Platform::Input::Input() {}
+Term::Private::Input::Input() {}
 
-void Term::Platform::Input::startReading()
+void Term::Private::Input::startReading()
 {
   static bool activated{false};
   if(!activated)
@@ -218,14 +220,14 @@ void Term::Platform::Input::startReading()
   }
 }
 
-Term::Event Term::Platform::Input::getEvent()
+Term::Event Term::Private::Input::getEvent()
 {
   if(m_events.empty()) return Term::Event();
   else
     return m_events.pop();
 }
 
-Term::Event Term::Platform::Input::getEventBlocking()
+Term::Event Term::Private::Input::getEventBlocking()
 {
   while(m_events.empty()) continue;
   return m_events.pop();
@@ -233,7 +235,7 @@ Term::Event Term::Platform::Input::getEventBlocking()
 
 Term::Event Term::read_event()
 {
-  static Term::Platform::Input m_input;
+  static Term::Private::Input m_input;
   m_input.startReading();
   return m_input.getEventBlocking();
 }
