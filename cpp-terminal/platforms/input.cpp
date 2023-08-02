@@ -145,18 +145,20 @@ void Term::Private::Input::read_event()
     Term::Event ret;
     int         wait{0};
     do {
-      if(m_signalStatus == 1)
+      ret = read_raw();
+      if(!ret.empty()) m_events.push(ret);
+      else if(m_signalStatus == 1)
       {
         m_signalStatus = 0;
-        return Term::Event(screen_size());
+        m_events.push(screen_size());
       }
-      ret = Platform::read_raw();
-      if(wait <= 9) std::this_thread::sleep_for(std::chrono::milliseconds(++wait));
       else
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    } while(ret.empty());
-    return ret;
-
+      {
+        if(wait <= 9) std::this_thread::sleep_for(std::chrono::milliseconds(++wait));
+        else
+          std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      }
+    } while(true);
 #else
     static bool       enabled{false};
     static Term::fd   epoll(::epoll_create1(EPOLL_CLOEXEC));
