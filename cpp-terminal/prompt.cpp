@@ -1,7 +1,7 @@
 #include "cpp-terminal/prompt.hpp"
 
-#include "cpp-terminal/event.hpp"
 #include "cpp-terminal/cursor.hpp"
+#include "cpp-terminal/event.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/key.hpp"

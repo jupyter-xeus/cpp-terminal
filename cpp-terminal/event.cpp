@@ -149,10 +149,7 @@ Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste) { parse(str
 
 void Term::Event::parse(const std::string& str)
 {
-  if(str.empty())
-  {
-    m_Type = Type::Empty;
-  }
+  if(str.empty()) { m_Type = Type::Empty; }
   else if(str.size() == 1)
   {
     m_Type            = Type::Key;
@@ -313,10 +310,7 @@ void Term::Event::parse(const std::string& str)
       m_container.m_Key = Key(Term::Key::Value::Numeric5);
     else if(str.size() == 2 && ((str[0] & 0b11100000) == 0b11000000) && ((str[1] & 0b11000000) == 0b10000000)) { m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0])); }
     else if(str.size() == 3 && ((str[0] & 0b11110000) == 0b11100000) && ((str[1] & 0b11000000) == 0b10000000) && ((str[2] & 0b11000000) == 0b10000000)) { m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0])); }
-    else if(str.size() == 4 && ((str[0] & 0b11111000) == 0b11110000) && ((str[1] & 0b11000000) == 0b10000000) && ((str[2] & 0b11000000) == 0b10000000) && ((str[3] & 0b11000000) == 0b10000000))
-    {
-      m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0]));
-    }
+    else if(str.size() == 4 && ((str[0] & 0b11111000) == 0b11110000) && ((str[1] & 0b11000000) == 0b10000000) && ((str[2] & 0b11000000) == 0b10000000) && ((str[3] & 0b11000000) == 0b10000000)) { m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0])); }
   }
   else
   {

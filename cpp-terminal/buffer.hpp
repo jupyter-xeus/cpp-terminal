@@ -17,7 +17,7 @@ public:
     FullBuffered
   };
   explicit Buffer(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::streamsize& size = BUFSIZ);
-  virtual ~Buffer() final          = default;
+  virtual ~Buffer() final;
   Buffer(const Buffer&)            = delete;
   Buffer& operator=(const Buffer&) = delete;
   Buffer(Buffer&&)                 = delete;

@@ -30,6 +30,7 @@
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/platforms/input.hpp"
 
+#include <iostream>
 #include <string>
 #include <thread>
 
@@ -44,6 +45,7 @@ std::string to_utf8(LPCWCH utf16Str)
   WideCharToMultiByte(CP_UTF8, 0, utf16Str, 1, &ret[0], static_cast<int>(ret.capacity()), nullptr, nullptr);
   return ret.c_str();
 }
+#endif
 
 namespace Private
 {
@@ -175,25 +177,26 @@ void Term::Private::Input::read_event()
       ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
       signal_fd.set(::signalfd(-1, &windows_event, SFD_NONBLOCK | SFD_CLOEXEC));
       ::epoll_event signal;
-      signal.data.fd = signal_fd.get();
       signal.events  = EPOLLIN;
+      signal.data.fd = signal_fd.get();
       ::epoll_ctl(epoll.get(), EPOLL_CTL_ADD, signal_fd.get(), &signal);
       ::epoll_event input;
       input.events  = EPOLLIN;
       input.data.fd = Term::Private::in.fd();
       ::epoll_ctl(epoll.get(), EPOLL_CTL_ADD, Term::Private::in.fd(), &input);
-      ::sigemptyset(&windows_event);
+      ::sigprocmask(SIG_UNBLOCK, &windows_event, nullptr);
       enabled = true;
     }
     ::epoll_event ret;
+    ::sigemptyset(&windows_event);
     ::sigaddset(&windows_event, SIGWINCH);
-    if(epoll_pwait(epoll.get(), &ret, 1, -1, &windows_event) == 1)
+    if(epoll_wait(epoll.get(), &ret, 1, -1) == 1)
     {
       if(ret.data.fd == signal_fd.get())
       {
         ::signalfd_siginfo fdsi;
         read(signal_fd.get(), &fdsi, sizeof(fdsi));
-        m_events.push(screen_size());
+        m_events.push(Term::Screen(screen_size()));
       }
       else
         m_events.push(read_raw());
@@ -391,7 +394,13 @@ Term::Event Term::Private::Input::read_raw()
 #endif
 }
 
-Term::Private::Input::Input() {}
+Term::Private::Input::Input()
+{
+  static ::sigset_t windows_event;
+  sigemptyset(&windows_event);
+  sigaddset(&windows_event, SIGWINCH);
+  ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
+}
 
 void Term::Private::Input::startReading()
 {
