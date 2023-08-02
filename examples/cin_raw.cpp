@@ -21,7 +21,7 @@ int main()
   std::cout << "Your number is " << number << " and string is " << string << std::endl;
   std::cout << "Now we are back to raw mode. Play with keys and press CTRL_C to quit." << std::endl;
   Term::Key event;
-  while((event = Term::read_event()) != Term::Key(Term::Key::CTRL_C))
+  while((event = Term::read_event()) != Term::Key(Term::Key::Ctrl_C))
   {
     if(event.isprint()) std::cout << "You typed :" << static_cast<char>(event) << std::endl;
     else

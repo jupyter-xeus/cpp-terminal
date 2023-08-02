@@ -10,7 +10,6 @@ class Terminal
 public:
   Terminal();
   ~Terminal();
-
   template<typename Arg1 = Term::Option, typename... Args> void setOptions(Arg1 arg1, Args... args)
   {
     m_options.set(arg1);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 
 namespace Term
@@ -10,7 +11,7 @@ class Cursor
 {
 public:
   Cursor() = default;
-  Cursor(const std::size_t&, const std::size_t&);
+  Cursor(const std::uint16_t&, const std::uint16_t&);
   std::size_t row() const;
   std::size_t column() const;
   void        setRow(const std::size_t&);
@@ -18,8 +19,9 @@ public:
   bool        empty() const;
 
 private:
-  std::size_t m_rows{0};
-  std::size_t m_columns{0};
+  std::pair<std::uint16_t, std::uint16_t> m_position;
+  //std::size_t m_rows{0};
+  //std::size_t m_columns{0};
 };
 
 // returns the current cursor position (row, column) (Y, X)

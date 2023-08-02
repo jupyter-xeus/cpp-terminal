@@ -29,7 +29,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
     while(true)
     {
       key = Term::read_event();
-      if(key == Term::Key::NO_KEY) continue;
+      if(key == Term::Key::NoKey) continue;
       if(key == 'y' || key == 'Y')
       {
         std::cout << '\n' << std::flush;
@@ -40,12 +40,12 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
         std::cout << '\n' << std::flush;
         return Result::NO;
       }
-      else if(key == Term::Key::CTRL_C || key == Term::Key::CTRL_D)
+      else if(key == Term::Key::Ctrl_C || key == Term::Key::Ctrl_D)
       {
         std::cout << '\n' << std::flush;
         return Result::ABORT;
       }
-      else if(key == Term::Key::ENTER)
+      else if(key == Term::Key::Enter)
       {
         std::cout << '\n' << std::flush;
         return Result::NONE;
@@ -64,7 +64,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
     while(true)
     {
       key = Term::read_event();
-      if(key == Term::Key::NO_KEY) continue;
+      if(key == Term::Key::NoKey) continue;
       if(key >= 'a' && key <= 'z')
       {
         std::cout << (char)key << std::flush;
@@ -77,12 +77,12 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
         length++;
         input.push_back(static_cast<char>(key + 32));  // convert upper case to lowercase
       }
-      else if(key == Term::Key::CTRL_C || key == Term::Key::CTRL_D)
+      else if(key == Term::Key::Ctrl_C || key == Term::Key::Ctrl_D)
       {
         std::cout << '\n';
         return Result::ABORT;
       }
-      else if(key == Term::Key::BACKSPACE)
+      else if(key == Term::Key::Backspace)
       {
         if(length != 0)
         {
@@ -91,7 +91,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
           input.pop_back();
         }
       }
-      else if(key == Term::Key::ENTER)
+      else if(key == Term::Key::Enter)
       {
         if(Private::vector_to_string(input) == "y" || Private::vector_to_string(input) == "yes")
         {
@@ -226,7 +226,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
   while(not_complete)
   {
     key = Term::read_event();
-    if(key == Term::Key::NO_KEY) continue;
+    if(key == Term::Key::NoKey) continue;
     if(key.isprint())
     {
       std::string before = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
@@ -236,11 +236,11 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
       m.lines[m.cursor_row - 1] = before += newchar += after;
       m.cursor_col++;
     }
-    else if(key == Key::CTRL_D)
+    else if(key == Key::Ctrl_D)
     {
       if(m.lines.size() == 1 && m.lines[m.cursor_row - 1].empty())
       {
-        m.lines[m.cursor_row - 1].push_back(Key::CTRL_D);
+        m.lines[m.cursor_row - 1].push_back(Key::Ctrl_D);
         std::cout << "\n" << std::flush;
         m_history.push_back(m.lines[0]);
         return m.lines[0];
@@ -250,13 +250,13 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     {
       switch(key)
       {
-        case Key::ENTER:
+        case Key::Enter:
           not_complete = !iscomplete(concat(m.lines));
-          if(not_complete) key = Key(static_cast<Term::Key::Value>(Key::ALT + Key::ENTER));
+          if(not_complete) key = Key(static_cast<Term::Key::Value>(MetaKey::Value::Alt + Key::Enter));
           else
             break;
           CPP_TERMINAL_FALLTHROUGH;
-        case Key::BACKSPACE:
+        case Key::Backspace:
           if(m.cursor_col > 1)
           {
             std::string before        = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 2);
@@ -272,7 +272,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
             m.cursor_row--;
           }
           break;
-        case Key::DEL:
+        case Key::Del:
           if(m.cursor_col <= m.lines[m.cursor_row - 1].size())
           {
             std::string before        = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
@@ -280,15 +280,15 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
             m.lines[m.cursor_row - 1] = before + after;
           }
           break;
-        case Key::ARROW_LEFT:
+        case Key::ArrowLeft:
           if(m.cursor_col > 1) { m.cursor_col--; }
           break;
-        case Key::ARROW_RIGHT:
+        case Key::ArrowRight:
           if(m.cursor_col <= m.lines[m.cursor_row - 1].size()) { m.cursor_col++; }
           break;
-        case Key::HOME: m.cursor_col = 1; break;
-        case Key::END: m.cursor_col = m.lines[m.cursor_row - 1].size() + 1; break;
-        case Key::ARROW_UP:
+        case Key::Home: m.cursor_col = 1; break;
+        case Key::End: m.cursor_col = m.lines[m.cursor_row - 1].size() + 1; break;
+        case Key::ArrowUp:
           if(m.cursor_row == 1)
           {
             if(history_pos > 0)
@@ -307,7 +307,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
             if(m.cursor_col > m.lines[m.cursor_row - 1].size() + 1) { m.cursor_col = m.lines[m.cursor_row - 1].size() + 1; }
           }
           break;
-        case Key::ARROW_DOWN:
+        case Key::ArrowDown:
           if(m.cursor_row == m.lines.size())
           {
             if(history_pos < history.size() - 1)
@@ -326,7 +326,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
             if(m.cursor_col > m.lines[m.cursor_row - 1].size() + 1) { m.cursor_col = m.lines[m.cursor_row - 1].size() + 1; }
           }
           break;
-        case Key::CTRL_N:
+        case Key::Ctrl_N:
         {
           std::string before        = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
           std::string after         = m.lines[m.cursor_row - 1].substr(m.cursor_col - 1);
