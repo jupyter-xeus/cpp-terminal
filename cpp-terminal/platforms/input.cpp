@@ -124,7 +124,7 @@ void Term::Private::Input::read_event()
 #if defined(_WIN32)
     Term::Event ret;
     WaitForSingleObject(Term::Private::in.handle(), INFINITE);
-    ret = std::move(read_raw());
+    ret = read_raw();
     if(!ret.empty()) m_events.push(std::move(ret));
 #elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
     static bool enabled{false};
