@@ -5,6 +5,13 @@
 #include <cpp-terminal/input.hpp>
 #include <cpp-terminal/key.hpp>
 
+#if !defined(_GLIBCXX_USE_NANOSLEEP)
+  #define _GLIBCXX_USE_NANOSLEEP
+#endif
+#include <chrono>
+#include <thread>
+
+// Same than event but add 1s to slow down the event processing.
 int main()
 {
   try
@@ -17,6 +24,7 @@ int main()
     while(main_loop_continue)
     {
       auto event = Term::read_event();
+      std::this_thread::sleep_for(std::chrono::milliseconds(1000));
       switch(event.type())
       {
         case Term::Event::Type::Empty:
