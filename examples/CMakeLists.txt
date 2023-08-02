@@ -17,6 +17,7 @@ function(cppterminal_example SOURCE)
   endif()
 endfunction()
 
+cppterminal_example(args)
 cppterminal_example(cin_cooked)
 cppterminal_example(cin_raw)
 cppterminal_example(colors)

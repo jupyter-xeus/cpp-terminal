@@ -48,14 +48,7 @@ cmake_install.cmake
 CMakeCache.txt
 
 # Clion
-cmake-build-release/
-cmake-build-release-visual-studio/
-cmake-build-release-cygwin/
-cmake-build-debug/
-cmake-build-debug-visual-studio/
-cmake-build-debug-cygwin/
-cmake-build-minsizerel/
-cmake-build-relwithdebinfo/
+cmake-build*
 .idea/
 
 # cmake

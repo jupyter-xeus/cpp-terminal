@@ -36,7 +36,7 @@ int main()
     while(true)
     {
       std::string answer = Term::prompt_multiline("> ", history, iscomplete);
-      if(answer.size() == 1 && answer[0] == Term::Key::CTRL_D) break;
+      if(answer.size() == 1 && answer[0] == Term::Key::Ctrl_D) break;
       std::cout << "Submitted text: " << answer << std::endl;
     }
   }

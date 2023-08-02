@@ -2,6 +2,122 @@
 
 #include "cpp-terminal/platforms/conversion.hpp"
 
+Term::Event::container::container(){};
+
+Term::Key* Term::Event::get_if_key()
+{
+  if(m_Type == Type::Key) return &m_container.m_Key;
+  else
+    return nullptr;
+}
+
+const Term::Key* Term::Event::get_if_key() const
+{
+  if(m_Type == Type::Key) return &m_container.m_Key;
+  else
+    return nullptr;
+}
+
+Term::Screen* Term::Event::get_if_screen()
+{
+  if(m_Type == Type::Screen) return &m_container.m_Screen;
+  else
+    return nullptr;
+}
+
+const Term::Screen* Term::Event::get_if_screen() const
+{
+  if(m_Type == Type::Screen) return &m_container.m_Screen;
+  else
+    return nullptr;
+}
+
+Term::Cursor* Term::Event::get_if_cursor()
+{
+  if(m_Type == Type::Cursor) return &m_container.m_Cursor;
+  else
+    return nullptr;
+}
+
+const Term::Cursor* Term::Event::get_if_cursor() const
+{
+  if(m_Type == Type::Cursor) return &m_container.m_Cursor;
+  else
+    return nullptr;
+}
+
+std::string* Term::Event::get_if_copy_paste()
+{
+  if(m_Type == Type::CopyPaste) return &m_str;
+  else
+    return nullptr;
+}
+
+const std::string* Term::Event::get_if_copy_paste() const
+{
+  if(m_Type == Type::CopyPaste) return &m_str;
+  else
+    return nullptr;
+}
+
+Term::Event& Term::Event::operator=(const Term::Event& event)
+{
+  m_Type = event.m_Type;
+  switch(m_Type)
+  {
+    case Type::Empty: break;
+    case Type::Key: m_container.m_Key = Term::Key(event.m_container.m_Key); break;
+    case Type::CopyPaste: m_str = event.m_str; break;
+    case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
+    case Type::Screen: m_container.m_Screen = Term::Screen(event.m_container.m_Screen); break;
+  }
+  return *this;
+}
+
+Term::Event::Event(const Term::Event& event)
+{
+  m_Type = event.m_Type;
+  switch(m_Type)
+  {
+    case Type::Empty: break;
+    case Type::Key: m_container.m_Key = Term::Key(event.m_container.m_Key); break;
+    case Type::CopyPaste: m_str = event.m_str; break;
+    case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
+    case Type::Screen: m_container.m_Screen = Term::Screen(event.m_container.m_Screen); break;
+  }
+}
+
+Term::Event::~Event() {}
+
+Term::Event::Event() : m_Type(Type::Empty) {}
+
+Term::Event::Event(Term::Event&& event) noexcept
+{
+  m_Type = std::move(event.m_Type);
+  switch(m_Type)
+  {
+    case Type::Empty: break;
+    case Type::Key: std::swap(m_container.m_Key, event.m_container.m_Key); break;
+    case Type::CopyPaste: std::swap(m_str, event.m_str); break;
+    case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
+    case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
+  }
+}
+
+Term::Event& Term::Event::operator=(Term::Event&& event) noexcept
+{
+  m_Type = std::move(event.m_Type);
+  switch(m_Type)
+  {
+    case Type::Empty: break;
+    case Type::Key: std::swap(m_container.m_Key, event.m_container.m_Key); break;
+    case Type::CopyPaste: std::swap(m_str, event.m_str); break;
+    case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
+    case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
+  }
+  return *this;
+}
+
 bool Term::Event::empty() const
 {
   if(m_Type == Type::Empty) return true;
@@ -18,50 +134,47 @@ Term::Event::operator std::string() const
 
 Term::Event::operator Term::Screen() const
 {
-  if(m_Type == Type::Screen) return m_Screen;
+  if(m_Type == Type::Screen) return m_container.m_Screen;
   else
     return Term::Screen();
 }
 
-Term::Event::Event(const Term::Screen& screen) : m_Type(Type::Screen), m_Screen(screen) {}
+Term::Event::Event(const Term::Screen& screen) : m_Type(Type::Screen) { m_container.m_Screen = screen; }
 
-Term::Event::Event(const Term::Key& key) : m_Type(Type::Key), m_Key(key) {}
+Term::Event::Event(const Term::Key& key) : m_Type(Type::Key) { m_container.m_Key = key; }
 
 Term::Event::Type Term::Event::type() const { return m_Type; }
 
-Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste), m_str(str) { parse(); }
+Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste) { parse(str); }
 
-void Term::Event::parse()
+void Term::Event::parse(const std::string& str)
 {
-  if(m_str.empty())
+  if(str.empty())
   {
     m_Type = Type::Empty;
-    return;
   }
-  else if(m_str.size() == 1)
+  else if(str.size() == 1)
   {
-    m_Type = Type::Key;
-    m_Key  = Key(static_cast<Term::Key::Value>(m_str[0]));
+    m_Type            = Type::Key;
+    m_container.m_Key = Key(static_cast<Term::Key::Value>(str[0]));
     /* Backspace return 127 CTRL+backspace return 8 */
-    if(m_Key == Term::Key::Value::DEL) m_Key = Key(Term::Key::Value::BACKSPACE);
-    m_str.clear();
+    if(m_container.m_Key == Term::Key::Value::Del) m_container.m_Key = Key(Term::Key::Value::Backspace);
   }
-  else if(m_str.size() == 2 && m_str[0] == '\033')
+  else if(str.size() == 2 && str[0] == '\033')
   {
-    m_Key  = Key(static_cast<Term::Key::Value>(Term::Key::Value::ALT + static_cast<Term::Key::Value>(m_str[1])));
-    m_Type = Type::Key;
-    m_str.clear();
+    m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::MetaKey::Value::Alt + static_cast<Term::Key::Value>(str[1])));
+    m_Type            = Type::Key;
   }
-  else if(m_str[0] == '\033' && m_str[1] == '[' && m_str[m_str.size() - 1] == 'R')
+  else if(str[0] == '\033' && str[1] == '[' && str[str.size() - 1] == 'R')
   {
-    std::size_t found = m_str.find(';', 2);
+    std::size_t found = str.find(';', 2);
     if(found != std::string::npos)
     {
-      m_Type   = Type::Cursor;
-      m_Cursor = Cursor(std::stoi(m_str.substr(2, found - 2)), std::stoi(m_str.substr(found + 1, m_str.size() - (found + 2))));
+      m_Type               = Type::Cursor;
+      m_container.m_Cursor = Cursor(std::stoi(str.substr(2, found - 2)), std::stoi(str.substr(found + 1, str.size() - (found + 2))));
     }
   }
-  else if(m_str.size() <= 10)
+  else if(str.size() <= 10)
   {
     //https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
     // CSI = ESC[ SS3 = ESCO
@@ -81,13 +194,13 @@ void Term::Event::parse()
      * Cursor Left  | ESC D
      * -------------+--------------------
     */
-    if(m_str == "\033OA" || m_str == "\033[A" || m_str == "\033A") m_Key = Key(Term::Key::Value::ARROW_UP);
-    else if(m_str == "\033OB" || m_str == "\033[B" || m_str == "\033B")
-      m_Key = Key(Term::Key::Value::ARROW_DOWN);
-    else if(m_str == "\033OC" || m_str == "\033[C" || m_str == "\033C")
-      m_Key = Key(Term::Key::Value::ARROW_RIGHT);
-    else if(m_str == "\033OD" || m_str == "\033[D" || m_str == "\033D")
-      m_Key = Key(Term::Key::Value::ARROW_LEFT);
+    if(str == "\033OA" || str == "\033[A" || str == "\033A") m_container.m_Key = Key(Term::Key::Value::ArrowUp);
+    else if(str == "\033OB" || str == "\033[B" || str == "\033B")
+      m_container.m_Key = Key(Term::Key::Value::ArrowDown);
+    else if(str == "\033OC" || str == "\033[C" || str == "\033C")
+      m_container.m_Key = Key(Term::Key::Value::ArrowRight);
+    else if(str == "\033OD" || str == "\033[D" || str == "\033D")
+      m_container.m_Key = Key(Term::Key::Value::ArrowLeft);
     /*
      * Key        Normal     Application
      * ---------+----------+-------------
@@ -95,10 +208,10 @@ void Term::Event::parse()
      * End      | CSI F    | SS3 F
      * ---------+----------+-------------
     */
-    else if(m_str == "\033OH" || m_str == "\033[H")
-      m_Key = Key(Term::Key::Value::HOME);
-    else if(m_str == "\033OF" || m_str == "\033[F")
-      m_Key = Key(Term::Key::Value::END);
+    else if(str == "\033OH" || str == "\033[H")
+      m_container.m_Key = Key(Term::Key::Value::Home);
+    else if(str == "\033OF" || str == "\033[F")
+      m_container.m_Key = Key(Term::Key::Value::End);
     /*
      * Key        Escape Sequence
      * ---------+-----------------
@@ -120,30 +233,30 @@ void Term::Event::parse()
      * F12      | CSI 2 4 ~
      * ---------+-----------------
     */
-    else if(m_str == "\033OP" || m_str == "\033[11~")
-      m_Key = Key(Term::Key::Value::F1);
-    else if(m_str == "\033OQ" || m_str == "\033[12~")
-      m_Key = Key(Term::Key::Value::F2);
-    else if(m_str == "\033OR" || m_str == "\033[13~")
-      m_Key = Key(Term::Key::Value::F3);
-    else if(m_str == "\033OS" || m_str == "\033[14~")
-      m_Key = Key(Term::Key::Value::F4);
-    else if(m_str == "\033[15~")
-      m_Key = Key(Term::Key::Value::F5);
-    else if(m_str == "\033[17~")
-      m_Key = Key(Term::Key::Value::F6);
-    else if(m_str == "\033[18~")
-      m_Key = Key(Term::Key::Value::F7);
-    else if(m_str == "\033[19~")
-      m_Key = Key(Term::Key::Value::F8);
-    else if(m_str == "\033[20~")
-      m_Key = Key(Term::Key::Value::F9);
-    else if(m_str == "\033[21~")
-      m_Key = Key(Term::Key::Value::F10);
-    else if(m_str == "\033[23~")
-      m_Key = Key(Term::Key::Value::F11);
-    else if(m_str == "\033[24~")
-      m_Key = Key(Term::Key::Value::F12);
+    else if(str == "\033OP" || str == "\033[11~")
+      m_container.m_Key = Key(Term::Key::Value::F1);
+    else if(str == "\033OQ" || str == "\033[12~")
+      m_container.m_Key = Key(Term::Key::Value::F2);
+    else if(str == "\033OR" || str == "\033[13~")
+      m_container.m_Key = Key(Term::Key::Value::F3);
+    else if(str == "\033OS" || str == "\033[14~")
+      m_container.m_Key = Key(Term::Key::Value::F4);
+    else if(str == "\033[15~")
+      m_container.m_Key = Key(Term::Key::Value::F5);
+    else if(str == "\033[17~")
+      m_container.m_Key = Key(Term::Key::Value::F6);
+    else if(str == "\033[18~")
+      m_container.m_Key = Key(Term::Key::Value::F7);
+    else if(str == "\033[19~")
+      m_container.m_Key = Key(Term::Key::Value::F8);
+    else if(str == "\033[20~")
+      m_container.m_Key = Key(Term::Key::Value::F9);
+    else if(str == "\033[21~")
+      m_container.m_Key = Key(Term::Key::Value::F10);
+    else if(str == "\033[23~")
+      m_container.m_Key = Key(Term::Key::Value::F11);
+    else if(str == "\033[24~")
+      m_container.m_Key = Key(Term::Key::Value::F12);
     /*
      * Key        Normal     Application
      * ---------+----------+-------------
@@ -155,18 +268,18 @@ void Term::Event::parse()
      * PageDown | CSI 6 ~  | CSI 6 ~
      * ---------+----------+-------------
     */
-    else if(m_str == "\033[2~")
-      m_Key = Key(Term::Key::Value::INSERT);
-    else if(m_str == "\033[3~")
-      m_Key = Key(Term::Key::Value::DEL);
-    else if(m_str == "\033[1~")
-      m_Key = Key(Term::Key::Value::HOME);
-    else if(m_str == "\033[4~")
-      m_Key = Key(Term::Key::Value::END);
-    else if(m_str == "\033[5~")
-      m_Key = Key(Term::Key::Value::PAGE_UP);
-    else if(m_str == "\033[6~")
-      m_Key = Key(Term::Key::Value::PAGE_DOWN);
+    else if(str == "\033[2~")
+      m_container.m_Key = Key(Term::Key::Value::Insert);
+    else if(str == "\033[3~")
+      m_container.m_Key = Key(Term::Key::Value::Del);
+    else if(str == "\033[1~")
+      m_container.m_Key = Key(Term::Key::Value::Home);
+    else if(str == "\033[4~")
+      m_container.m_Key = Key(Term::Key::Value::End);
+    else if(str == "\033[5~")
+      m_container.m_Key = Key(Term::Key::Value::PageUp);
+    else if(str == "\033[6~")
+      m_container.m_Key = Key(Term::Key::Value::PageDown);
     /*
      * Key        Escape Sequence
      * ---------+-----------------
@@ -180,46 +293,49 @@ void Term::Event::parse()
      * F20      | CSI 3 4 ~
      * ---------+-----------------
     */
-    else if(m_str == "\033[25~")
-      m_Key = Key(Term::Key::Value::F13);
-    else if(m_str == "\033[26~")
-      m_Key = Key(Term::Key::Value::F14);
-    else if(m_str == "\033[28~")
-      m_Key = Key(Term::Key::Value::F15);
-    else if(m_str == "\033[29~")
-      m_Key = Key(Term::Key::Value::F16);
-    else if(m_str == "\033[31~")
-      m_Key = Key(Term::Key::Value::F17);
-    else if(m_str == "\033[32~")
-      m_Key = Key(Term::Key::Value::F18);
-    else if(m_str == "\033[33~")
-      m_Key = Key(Term::Key::Value::F19);
-    else if(m_str == "\033[34~")
-      m_Key = Key(Term::Key::Value::F20);
-    else if(m_str == "\033[G")
-      m_Key = Key(Term::Key::Value::NUMERIC_5);
-    else if(m_str.size() == 2 && ((m_str[0] & 0b11100000) == 0b11000000) && ((m_str[1] & 0b11000000) == 0b10000000)) { m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0])); }
-    else if(m_str.size() == 3 && ((m_str[0] & 0b11110000) == 0b11100000) && ((m_str[1] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000)) { m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0])); }
-    else if(m_str.size() == 4 && ((m_str[0] & 0b11111000) == 0b11110000) && ((m_str[1] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000) && ((m_str[2] & 0b11000000) == 0b10000000)) { m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(m_str)[0])); }
+    else if(str == "\033[25~")
+      m_container.m_Key = Key(Term::Key::Value::F13);
+    else if(str == "\033[26~")
+      m_container.m_Key = Key(Term::Key::Value::F14);
+    else if(str == "\033[28~")
+      m_container.m_Key = Key(Term::Key::Value::F15);
+    else if(str == "\033[29~")
+      m_container.m_Key = Key(Term::Key::Value::F16);
+    else if(str == "\033[31~")
+      m_container.m_Key = Key(Term::Key::Value::F17);
+    else if(str == "\033[32~")
+      m_container.m_Key = Key(Term::Key::Value::F18);
+    else if(str == "\033[33~")
+      m_container.m_Key = Key(Term::Key::Value::F19);
+    else if(str == "\033[34~")
+      m_container.m_Key = Key(Term::Key::Value::F20);
+    else if(str == "\033[G")
+      m_container.m_Key = Key(Term::Key::Value::Numeric5);
+    else if(str.size() == 2 && ((str[0] & 0b11100000) == 0b11000000) && ((str[1] & 0b11000000) == 0b10000000)) { m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0])); }
+    else if(str.size() == 3 && ((str[0] & 0b11110000) == 0b11100000) && ((str[1] & 0b11000000) == 0b10000000) && ((str[2] & 0b11000000) == 0b10000000)) { m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0])); }
+    else if(str.size() == 4 && ((str[0] & 0b11111000) == 0b11110000) && ((str[1] & 0b11000000) == 0b10000000) && ((str[2] & 0b11000000) == 0b10000000) && ((str[3] & 0b11000000) == 0b10000000))
+    {
+      m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0]));
+    }
   }
-  else { m_Type = Type::CopyPaste; }
-  if(!m_Key.empty())
+  else
   {
-    m_Type = Type::Key;
-    m_str.clear();
+    m_Type = Type::CopyPaste;
+    m_str  = str;
   }
+  if(!m_container.m_Key.empty()) { m_Type = Type::Key; }
 }
 
 Term::Event::operator Term::Key() const
 {
-  if(m_Type == Type::Key) return m_Key;
+  if(m_Type == Type::Key) return m_container.m_Key;
   else
     return Key();
 }
 
 Term::Event::operator Term::Cursor() const
 {
-  if(m_Type == Type::Cursor) return m_Cursor;
+  if(m_Type == Type::Cursor) return m_container.m_Cursor;
   else
     return Cursor();
 }
