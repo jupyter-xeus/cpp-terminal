@@ -1,14 +1,14 @@
-#include "cpp-terminal/iostream.hpp"
-#include "cpp-terminal/terminal.hpp"
-
-#include <cpp-terminal/event.hpp>
-#include <cpp-terminal/input.hpp>
-#include <cpp-terminal/key.hpp>
-
 #if !defined(_GLIBCXX_USE_NANOSLEEP)
   #define _GLIBCXX_USE_NANOSLEEP
 #endif
+
+#include "cpp-terminal/iostream.hpp"
+#include "cpp-terminal/terminal.hpp"
+
 #include <chrono>
+#include <cpp-terminal/event.hpp>
+#include <cpp-terminal/input.hpp>
+#include <cpp-terminal/key.hpp>
 #include <thread>
 
 // Same than event but add 1s to slow down the event processing.
