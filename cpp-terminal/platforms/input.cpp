@@ -57,7 +57,7 @@ Term::Event Term::Platform::read_raw()
         if(event.Event.KeyEvent.bKeyDown)
         {
           // First check if we have ALT etc (CTRL is already done so skip it)
-          Term::MetaKey toAdd{Term::MetaKey::Value::None};
+          Term::MetaKey toAdd{Term::MetaKey::None};
           if(((event.Event.KeyEvent.dwControlKeyState & LEFT_ALT_PRESSED) == LEFT_ALT_PRESSED) || ((event.Event.KeyEvent.dwControlKeyState & RIGHT_ALT_PRESSED) == RIGHT_ALT_PRESSED)) toAdd = std::move(Term::MetaKey::Alt);
 
           if(event.Event.KeyEvent.uChar.UnicodeChar == 0)
@@ -82,51 +82,51 @@ Term::Event Term::Platform::read_raw()
               case VK_ACCEPT:      // ?
               case VK_MODECHANGE:  // ?
                 return Term::Event();
-              case VK_PRIOR: return std::move(Term::Key(Key::Value::PageUp));
-              case VK_NEXT: return std::move(Term::Key(Key::Value::PageDown));
-              case VK_END: return std::move(Term::Key(Key::Value::End));
-              case VK_HOME: return std::move(Term::Key(Key::Value::Home));
-              case VK_LEFT: return std::move(Term::Key(Key::Value::ArrowLeft));
-              case VK_UP: return std::move(Term::Key(Key::Value::ArrowUp));
-              case VK_RIGHT: return std::move(Term::Key(Key::Value::ArrowRight));
-              case VK_DOWN: return std::move(Term::Key(Key::Value::ArrowDown));
+              case VK_PRIOR: return std::move(Term::Key(Key::PageUp));
+              case VK_NEXT: return std::move(Term::Key(Key::PageDown));
+              case VK_END: return std::move(Term::Key(Key::End));
+              case VK_HOME: return std::move(Term::Key(Key::Home));
+              case VK_LEFT: return std::move(Term::Key(Key::ArrowLeft));
+              case VK_UP: return std::move(Term::Key(Key::ArrowUp));
+              case VK_RIGHT: return std::move(Term::Key(Key::ArrowRight));
+              case VK_DOWN: return std::move(Term::Key(Key::ArrowDown));
               case VK_SELECT:   //?
               case VK_PRINT:    //?
               case VK_EXECUTE:  //?
                 return Term::Event();
-              case VK_SNAPSHOT: return std::move(Term::Key(Key::Value::PrintScreen));
-              case VK_INSERT: return std::move(Term::Key(Key::Value::Insert));
-              case VK_DELETE: return std::move(Term::Key(Key::Value::Del));
+              case VK_SNAPSHOT: return std::move(Term::Key(Key::PrintScreen));
+              case VK_INSERT: return std::move(Term::Key(Key::Insert));
+              case VK_DELETE: return std::move(Term::Key(Key::Del));
               case VK_HELP:   //?
               case VK_LWIN:   //Maybe allow to detect Windows key Left and right
               case VK_RWIN:   //Maybe allow to detect Windows key Left and right
               case VK_APPS:   //?
               case VK_SLEEP:  //?
                 return Term::Event();
-              case VK_F1: return std::move(Term::Key(Key::Value::F1));
-              case VK_F2: return std::move(Term::Key(Key::Value::F2));
-              case VK_F3: return std::move(Term::Key(Key::Value::F3));
-              case VK_F4: return std::move(Term::Key(Key::Value::F4));
-              case VK_F5: return std::move(Term::Key(Key::Value::F5));
-              case VK_F6: return std::move(Term::Key(Key::Value::F6));
-              case VK_F7: return std::move(Term::Key(Key::Value::F7));
-              case VK_F8: return std::move(Term::Key(Key::Value::F8));
-              case VK_F9: return std::move(Term::Key(Key::Value::F9));
-              case VK_F10: return std::move(Term::Key(Key::Value::F10));
-              case VK_F11: return std::move(Term::Key(Key::Value::F11));
-              case VK_F12: return std::move(Term::Key(Key::Value::F12));
-              case VK_F13: return std::move(Term::Key(Key::Value::F13));
-              case VK_F14: return std::move(Term::Key(Key::Value::F14));
-              case VK_F15: return std::move(Term::Key(Key::Value::F15));
-              case VK_F16: return std::move(Term::Key(Key::Value::F16));
-              case VK_F17: return std::move(Term::Key(Key::Value::F17));
-              case VK_F18: return std::move(Term::Key(Key::Value::F18));
-              case VK_F19: return std::move(Term::Key(Key::Value::F19));
-              case VK_F20: return std::move(Term::Key(Key::Value::F20));
-              case VK_F21: return std::move(Term::Key(Key::Value::F21));
-              case VK_F22: return std::move(Term::Key(Key::Value::F22));
-              case VK_F23: return std::move(Term::Key(Key::Value::F23));
-              case VK_F24: return std::move(Term::Key(Key::Value::F24));
+              case VK_F1: return std::move(Term::Key(Key::F1));
+              case VK_F2: return std::move(Term::Key(Key::F2));
+              case VK_F3: return std::move(Term::Key(Key::F3));
+              case VK_F4: return std::move(Term::Key(Key::F4));
+              case VK_F5: return std::move(Term::Key(Key::F5));
+              case VK_F6: return std::move(Term::Key(Key::F6));
+              case VK_F7: return std::move(Term::Key(Key::F7));
+              case VK_F8: return std::move(Term::Key(Key::F8));
+              case VK_F9: return std::move(Term::Key(Key::F9));
+              case VK_F10: return std::move(Term::Key(Key::F10));
+              case VK_F11: return std::move(Term::Key(Key::F11));
+              case VK_F12: return std::move(Term::Key(Key::F12));
+              case VK_F13: return std::move(Term::Key(Key::F13));
+              case VK_F14: return std::move(Term::Key(Key::F14));
+              case VK_F15: return std::move(Term::Key(Key::F15));
+              case VK_F16: return std::move(Term::Key(Key::F16));
+              case VK_F17: return std::move(Term::Key(Key::F17));
+              case VK_F18: return std::move(Term::Key(Key::F18));
+              case VK_F19: return std::move(Term::Key(Key::F19));
+              case VK_F20: return std::move(Term::Key(Key::F20));
+              case VK_F21: return std::move(Term::Key(Key::F21));
+              case VK_F22: return std::move(Term::Key(Key::F22));
+              case VK_F23: return std::move(Term::Key(Key::F23));
+              case VK_F24: return std::move(Term::Key(Key::F24));
               case VK_NUMLOCK:
               case VK_SCROLL:
               default: return Term::Event();
@@ -138,9 +138,9 @@ Term::Event Term::Platform::read_raw()
             if(ret.size() == 1)
             {
               //Special case DEL should be Backspace
-              if(ret[0] == Term::Key::Del) return toAdd + Key(Term::Key::Value::Backspace);
+              if(ret[0] == Term::Key::Del) return toAdd + Key(Term::Key::Backspace);
               else
-                return toAdd + Key(static_cast<Term::Key::Value>(ret[0]));
+                return toAdd + Key(static_cast<Term::Key>(ret[0]));
             }
             else
               return Term::Event(ret);
@@ -186,7 +186,7 @@ Term::Event Term::Platform::read_raw()
             else
             {
               std::string ch{to_utf8(&events[i].Event.KeyEvent.uChar.UnicodeChar)};
-              if(ch.size() == 1 && ch[0] == Term::Key::Del) return Key(Term::Key::Value::Backspace);
+              if(ch.size() == 1 && ch[0] == Term::Key::Del) return Key(Term::Key::Backspace);
               else
                 ret += ch;
               ++processed;
@@ -251,4 +251,5 @@ Term::Event Term::Platform::read_raw()
       return Event();
   }
 #endif
+	return Event();
 }
