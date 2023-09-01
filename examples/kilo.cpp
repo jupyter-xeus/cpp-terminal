@@ -98,7 +98,7 @@ int is_separator(int c) { return isspace(c) || c == '\0' || strchr(",.()+-/*=~%<
 void editorUpdateSyntax(erow* row)
 {
   row->hl = reinterpret_cast<unsigned char*>(realloc(row->hl, static_cast<size_t>(row->rsize)));
-  if(row->hl == nullptr) { exit(-1); /*TODO: better handler*/}
+  if(row->hl == nullptr) { exit(-1); /*TODO: better handler*/ }
   memset(row->hl, HL_NORMAL, static_cast<size_t>(row->rsize));
 
   if(E.syntax == nullptr) return;
@@ -340,9 +340,10 @@ void editorInsertRow(int at, const char* s, std::size_t len)
 
   E.row[at].size  = static_cast<int>(len);
   E.row[at].chars = (char*)malloc(len + 1);
-  if (E.row[at].chars == nullptr) {
+  if(E.row[at].chars == nullptr)
+  {
     // allocation could fail and return nullptr
-    exit(-1); // insert better error handling if needed
+    exit(-1);  // insert better error handling if needed
   }
   memcpy(E.row[at].chars, s, len);
   E.row[at].chars[len] = '\0';
@@ -461,7 +462,7 @@ char* editorRowsToString(int* buflen)
 
   char* buf = reinterpret_cast<char*>(malloc(static_cast<size_t>(totlen)));
   if(buf == nullptr) { exit(-1); /*TODO: better error handler*/ }
-  char* p   = buf;
+  char* p = buf;
   for(int j = 0; j < E.numrows; j++)
   {
     memcpy(p, E.row[j].chars, static_cast<size_t>(E.row[j].size));
@@ -829,7 +830,7 @@ void editorMoveCursor(Term::Key key)
     case Term::Key::ArrowDown:
       if(E.cy < E.numrows) { E.cy++; }
       break;
-	 default: return;
+    default: return;
   }
 
   row        = (E.cy >= E.numrows) ? nullptr : &E.row[E.cy];
@@ -842,8 +843,9 @@ bool editorProcessKeypress()
   static int quit_times = KILO_QUIT_TIMES;
 
   Term::Key c = Term::Key::NoKey;
-  while(Term::empty(c)){//NEEDED for windows (FIXME ?)
-	  c = Term::read_event();
+  while(Term::empty(c))
+  {  //NEEDED for windows (FIXME ?)
+    c = Term::read_event();
   }
   switch(c)
   {
