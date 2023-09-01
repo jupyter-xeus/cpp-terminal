@@ -328,15 +328,15 @@ TERM_CONSTEXPR inline Key operator+(MetaKey metaKey, Key key) {
   if(empty(key)) return key;
   switch(metaKey)
   {
-    case None: return key;
-    case Ctrl:
-      if(key.hasCtrlAll()) return key;
+    case MetaKey::None: return key;
+    case MetaKey::Ctrl:
+      if(hasCtrlAll(key)) return key;
       else
-        return Key(static_cast<Term::Key::Value>(key + Value::Ctrl));  // FIXME maybe a better check;
-    case Alt:
-      if(key.hasAlt()) return key;
+        return Key(static_cast<Term::Key>(static_cast<std::int32_t>(key) + static_cast<std::int32_t>(MetaKey::Ctrl)));  // FIXME maybe a better check;
+    case MetaKey::Alt:
+      if(hasAlt(key)) return key;
       else
-        return Key(static_cast<Term::Key::Value>(key + Value::Alt));  // FIXME maybe a better check;
+        return Key(static_cast<Term::Key>(static_cast<std::int32_t>(key) + static_cast<std::int32_t>(MetaKey::Alt)));  // FIXME maybe a better check;
     default: return key;
   }
 }
