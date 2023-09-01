@@ -331,7 +331,7 @@ TERM_CONSTEXPR inline Key operator+(Key key, MetaKey meta) { return meta + key; 
 TERM_CONSTEXPR inline bool hasAlt(MetaKey metaKey) { return (static_cast<std::int32_t>(metaKey) & static_cast<std::int32_t>(MetaKey::Alt)) == static_cast<std::int32_t>(MetaKey::Alt); }
 TERM_CONSTEXPR inline bool hasCtrl(MetaKey metaKey) { return (static_cast<std::int32_t>(metaKey) & static_cast<std::int32_t>(MetaKey::Ctrl)) == static_cast<std::int32_t>(MetaKey::Ctrl); }
 
-TERM_CONSTEXPR inline MetaKey Alt = MetaKey::Alt;
+TERM_CONSTEXPR inline MetaKey Alt  = MetaKey::Alt;
 TERM_CONSTEXPR inline MetaKey Ctrl = MetaKey::Ctrl;
 
 }  // namespace Term

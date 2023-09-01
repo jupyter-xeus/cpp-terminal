@@ -251,5 +251,5 @@ Term::Event Term::Platform::read_raw()
       return Event();
   }
 #endif
-	return Event();
+  return Event();
 }
