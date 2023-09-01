@@ -324,7 +324,8 @@ TERM_CONSTEXPR inline bool operator>=(char l, MetaKey r) { return static_cast<st
 
 TERM_CONSTEXPR inline MetaKey operator+(MetaKey l, MetaKey r) { return MetaKey(static_cast<MetaKey>(static_cast<std::int32_t>(l) | static_cast<std::int32_t>(r))); }
 
-TERM_CONSTEXPR inline Key operator+(MetaKey metaKey, Key key) {
+TERM_CONSTEXPR inline Key operator+(MetaKey metaKey, Key key)
+{
   if(empty(key)) return key;
   switch(metaKey)
   {
