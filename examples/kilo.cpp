@@ -118,7 +118,7 @@ void editorUpdateSyntax(erow* row)
   int in_comment = (row->idx > 0) && (E.row[row->idx - 1].hl_open_comment != 0);
 
   size_t i = 0;
-  while(i < row->rsize)
+  while(i < static_cast<size_t>(row->rsize))
   {
     char          c       = row->render[i];
     unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : static_cast<unsigned char>(HL_NORMAL);
@@ -165,7 +165,7 @@ void editorUpdateSyntax(erow* row)
       if(in_string)
       {
         row->hl[i] = HL_STRING;
-        if(c == '\\' && i + 1 < row->rsize)
+        if(c == '\\' && i + 1 < static_cast<size_t>(row->rsize))
         {
           row->hl[i + 1] = HL_STRING;
           i += 2;
