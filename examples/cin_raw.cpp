@@ -23,7 +23,7 @@ int main()
   Term::Key event;
   while((event = Term::read_event()) != Term::Key(Term::Key::Ctrl_C))
   {
-    if(event.isprint()) std::cout << "You typed :" << static_cast<char>(event) << std::endl;
+    if(Term::isprint(event)) std::cout << "You typed :" << static_cast<char>(event) << std::endl;
     else
       std::cout << "You typed key :" << static_cast<std::uint32_t>(event) << std::endl;
   }

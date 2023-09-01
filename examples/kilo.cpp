@@ -89,7 +89,7 @@ struct editorSyntax HLDB[] = {
 
 /*** prototypes ***/
 
-char* editorPrompt(const char* prompt, void (*callback)(char*, int));
+char* editorPrompt(const char* prompt, void (*callback)(char*, Term::Key));
 
 /*** syntax highlighting ***/
 
@@ -524,7 +524,7 @@ void editorSave()
 
 /*** find ***/
 
-void editorFindCallback(char* query, int key)
+void editorFindCallback(char* query, Term::Key key)
 {
   static int last_match = -1;
   static int direction  = 1;
@@ -738,7 +738,7 @@ void editorRefreshScreen()
 
 /*** input ***/
 
-char* editorPrompt(const char* prompt, void (*callback)(char*, int))
+char* editorPrompt(const char* prompt, void (*callback)(char*, Term::Key))
 {
   std::size_t bufsize = 128;
   char*       buf     = (char*)malloc(bufsize);
@@ -753,7 +753,7 @@ char* editorPrompt(const char* prompt, void (*callback)(char*, int))
 
     Term::Key c = Term::read_event();
 
-    if(c) continue;
+    if(Term::empty(c)) continue;
     if(c == Term::Key::Del || c == Term::Key::Ctrl_H || c == Term::Key::Backspace)
     {
       if(buflen != 0) buf[--buflen] = '\0';
