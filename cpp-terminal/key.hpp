@@ -324,7 +324,22 @@ TERM_CONSTEXPR inline bool operator>=(char l, MetaKey r) { return static_cast<st
 
 TERM_CONSTEXPR inline MetaKey operator+(MetaKey l, MetaKey r) { return MetaKey(static_cast<MetaKey>(static_cast<std::int32_t>(l) | static_cast<std::int32_t>(r))); }
 
-TERM_CONSTEXPR inline Key operator+(MetaKey metaKey, Key key) { return static_cast<Key>(static_cast<std::int32_t>(metaKey) | static_cast<std::int32_t>(key)); }
+TERM_CONSTEXPR inline Key operator+(MetaKey metaKey, Key key) {
+  if(empty(key)) return key;
+  switch(metaKey)
+  {
+    case None: return key;
+    case Ctrl:
+      if(key.hasCtrlAll()) return key;
+      else
+        return Key(static_cast<Term::Key::Value>(key + Value::Ctrl));  // FIXME maybe a better check;
+    case Alt:
+      if(key.hasAlt()) return key;
+      else
+        return Key(static_cast<Term::Key::Value>(key + Value::Alt));  // FIXME maybe a better check;
+    default: return key;
+  }
+}
 
 TERM_CONSTEXPR inline Key operator+(Key key, MetaKey meta) { return meta + key; }
 
