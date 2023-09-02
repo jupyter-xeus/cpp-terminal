@@ -537,7 +537,8 @@ TERM_CONSTEXPR_FUNCTION inline Key     operator+(MetaKey metakey, Key key)
 	  if(hasCtrlAll(key)) return key;
       else
         key = Key(key.value + static_cast<std::int32_t>(MetaKey::Value::Ctrl));  // FIXME maybe a better check;
-
+  }
+  
   if(metakey == MetaKey::Alt)
   {
     if(hasAlt(key)) return key;
