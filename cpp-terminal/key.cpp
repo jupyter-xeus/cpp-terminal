@@ -81,14 +81,14 @@ void Term::append_str(Term::Key key, std::string& strOut)
   if(!(key.value >= 0x10FFFFL)) { Term::Private::codepoint_to_utf8(strOut, static_cast<char32_t>(key)); }
 }
 
- std::string Term::name(Key key)
+std::string Term::name(Key key)
 {
   std::string str;
   Term::append_name(key, str);
   return str;
 }
 
- std::string Term::str(Key key)
+std::string Term::str(Key key)
 {
   std::string str;
   Term::append_str(key, str);
