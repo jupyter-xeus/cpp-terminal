@@ -371,52 +371,24 @@ TERM_CONSTEXPR_FUNCTION inline bool operator<=(std::int32_t l, Key r) { return !
 TERM_CONSTEXPR_FUNCTION inline bool operator<=(Key l, std::size_t r) { return !(l > r); }
 TERM_CONSTEXPR_FUNCTION inline bool operator<=(std::size_t l, Key r) { return !(l > r); }
 
-TERM_CONSTEXPR_FUNCTION inline bool iscntrl(Key key) {
-  return (key >= Key::Null && key <= Key::Ctrl_Underscore) || key == Key::Del;
-}
-TERM_CONSTEXPR_FUNCTION inline bool isblank(Key key) {
-  return key == Key::Tab || key == Key::Space;
-}
-TERM_CONSTEXPR_FUNCTION inline bool isspace(Key key) {
-  return isblank(key) || (key >= Key::Ctrl_J && key <= Key::Enter);
-}
-TERM_CONSTEXPR_FUNCTION inline bool isupper(Key key) {
-  return key >= Key::A && key <= Key::Z;
-}
-TERM_CONSTEXPR_FUNCTION inline bool islower(Key key) {
-  return key >= Key::a && key <= Key::z;
-}
-TERM_CONSTEXPR_FUNCTION inline bool isalpha(Key key) {
-  return (isupper(key) || islower(key));
-}
-TERM_CONSTEXPR_FUNCTION inline bool isdigit(Key key) {
-  return key >= Key::Zero && key <= Key::Nine;
-}
-TERM_CONSTEXPR_FUNCTION inline bool isxdigit(Key key) {
-  return isdigit(key) || (key >= Key::A && key <= Key::F) || (key >= Key::a && key <= Key::f);
-}
-TERM_CONSTEXPR_FUNCTION inline bool isalnum(Key key) {
-  return (isdigit(key) || isalpha(key));
-}
+TERM_CONSTEXPR_FUNCTION inline bool iscntrl(Key key) { return (key >= Key::Null && key <= Key::Ctrl_Underscore) || key == Key::Del; }
+TERM_CONSTEXPR_FUNCTION inline bool isblank(Key key) { return key == Key::Tab || key == Key::Space; }
+TERM_CONSTEXPR_FUNCTION inline bool isspace(Key key) { return isblank(key) || (key >= Key::Ctrl_J && key <= Key::Enter); }
+TERM_CONSTEXPR_FUNCTION inline bool isupper(Key key) { return key >= Key::A && key <= Key::Z; }
+TERM_CONSTEXPR_FUNCTION inline bool islower(Key key) { return key >= Key::a && key <= Key::z; }
+TERM_CONSTEXPR_FUNCTION inline bool isalpha(Key key) { return (isupper(key) || islower(key)); }
+TERM_CONSTEXPR_FUNCTION inline bool isdigit(Key key) { return key >= Key::Zero && key <= Key::Nine; }
+TERM_CONSTEXPR_FUNCTION inline bool isxdigit(Key key) { return isdigit(key) || (key >= Key::A && key <= Key::F) || (key >= Key::a && key <= Key::f); }
+TERM_CONSTEXPR_FUNCTION inline bool isalnum(Key key) { return (isdigit(key) || isalpha(key)); }
 TERM_CONSTEXPR_FUNCTION inline bool ispunct(Key key)
 {
   return (key >= Key::ExclamationMark && key <= Key::Slash) || (key >= Key::Colon && key <= Key::Arobase) || (key >= Key::OpenBracket && key <= Key::GraveAccent) || (key >= Key::OpenBrace && key <= Key::Tilde);
 }
-TERM_CONSTEXPR_FUNCTION inline bool isgraph(Key key) {
-  return (isalnum(key) || ispunct(key));
-}
-TERM_CONSTEXPR_FUNCTION inline bool isprint(Key key) {
-  return (isgraph(key) || key == Key::Space);
-}
-TERM_CONSTEXPR_FUNCTION inline bool isunicode(Key key) {
-  return key >= Key::Null && key.value <= 0x10FFFFL;
-}
-TERM_CONSTEXPR_FUNCTION inline Key  tolower(Key key) {
-  return (isalpha(key) && isupper(key)) ? Key(key.value + 32) : key;
-}
-TERM_CONSTEXPR_FUNCTION inline Key  toupper(Key key) {
-  return (isalpha(key) && islower(key)) ? Key(key.value - 32) : key;
-}
+TERM_CONSTEXPR_FUNCTION inline bool isgraph(Key key) { return (isalnum(key) || ispunct(key)); }
+TERM_CONSTEXPR_FUNCTION inline bool isprint(Key key) { return (isgraph(key) || key == Key::Space); }
+TERM_CONSTEXPR_FUNCTION inline bool isunicode(Key key) { return key >= Key::Null && key.value <= 0x10FFFFL; }
+TERM_CONSTEXPR_FUNCTION inline Key  tolower(Key key) { return (isalpha(key) && isupper(key)) ? Key(key.value + 32) : key; }
+TERM_CONSTEXPR_FUNCTION inline Key  toupper(Key key) { return (isalpha(key) && islower(key)) ? Key(key.value - 32) : key; }
 
 // Detect if key is convertible to ANSII
 TERM_CONSTEXPR_FUNCTION inline bool isASCII(Key key) { return key >= Key::Null && key <= Key::Del; }
