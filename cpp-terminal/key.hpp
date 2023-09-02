@@ -499,7 +499,7 @@ TERM_CONSTEXPR_FUNCTION inline Key operator+(MetaKey metakey, Key key)
 	 return key;
   }
   
-  // two seperate 'if' because metakey could be both at the same time 
+  // two separate 'if' because metakey could be both at the same time 
   if(metakey == MetaKey::Value::Ctrl){
 	  if(hasCtrlAll(key)) return key;
       else
