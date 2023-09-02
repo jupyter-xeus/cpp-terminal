@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-
+set(CMAKE_CXX_STANDARD 11)
 # see https://cmake.org/cmake/help/latest/policy/CMP0092.html
 set(CMAKE_CXX_FLAGS_OLD ${CMAKE_CXX_FLAGS})
 if(MSVC)
