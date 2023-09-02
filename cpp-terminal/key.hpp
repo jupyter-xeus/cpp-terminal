@@ -411,12 +411,9 @@ constexpr bool hasCtrl(MetaKey metakey) { return (metakey.value & static_cast<st
 constexpr MetaKey operator+(MetaKey l, MetaKey r) { return MetaKey(l.value | r.value); }
 constexpr Key     operator+(MetaKey metakey, Key key)
 {
-  const bool         is_empty = empty(key);
-  const bool         add_ctrl = metakey == MetaKey::Ctrl && !hasCtrlAll(key) && is_empty;
-  const bool         add_alt  = metakey == MetaKey::Alt && !hasAlt(key) && is_empty;
-  const std::int32_t ctrl_v   = add_ctrl * static_cast<std::int32_t>(MetaKey::Value::Ctrl);
-  const std::int32_t alt_v    = add_alt * static_cast<std::int32_t>(MetaKey::Value::Alt);
-  return Key(key.value + ctrl_v + alt_v);
+  return Key(key.value 
+			+ ((metakey == MetaKey::Ctrl && !hasCtrlAll(key) && empty(key)) ? static_cast<std::int32_t>(MetaKey::Value::Ctrl) : 0) 
+			+ (metakey == MetaKey::Alt && !hasAlt(key) && empty(key)) ? static_cast<std::int32_t>(MetaKey::Value::Alt) : 0);
 }
 constexpr Key     operator+(Key key, MetaKey meta) { return meta + key; }
 constexpr MetaKey operator+(MetaKey::Value l, MetaKey::Value r) { return MetaKey(l) + MetaKey(r); }
