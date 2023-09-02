@@ -244,13 +244,6 @@ public:
     return *this;
   }
 
-  explicit TERM_CONSTEXPR_FUNCTION inline Key(std::string_view str) { (void)Term::utf8_to_utf32(str.begin(), str.end(), &this->value); }
-  TERM_CONSTEXPR_FUNCTION inline Key& operator=(std::string_view str)
-  {
-    (void)Term::utf8_to_utf32(str.begin(), str.end(), &this->value);
-    return *this;
-  }
-
   TERM_CONSTEXPR_FUNCTION inline operator std::int32_t() { return this->value; }
 };
 
@@ -304,13 +297,6 @@ TERM_CONSTEXPR_FUNCTION inline bool operator==(Key l, std::int32_t r) { return l
 TERM_CONSTEXPR_FUNCTION inline bool operator==(std::int32_t l, Key r) { return Key(l) == r; }
 TERM_CONSTEXPR_FUNCTION inline bool operator==(Key l, std::size_t r) { return static_cast<std::size_t>(l.value) == r; }
 TERM_CONSTEXPR_FUNCTION inline bool operator==(std::size_t l, Key r) { return l == static_cast<std::size_t>(r.value); }
-TERM_CONSTEXPR_FUNCTION inline bool operator==(Key l, std::string_view r)
-{
-  if(r.size() == 0) return l == Key::Null;
-  else
-    return (r.size() == static_cast<size_t>(Term::Private::identify(r.front()))) && (l == Key(r));
-}
-TERM_CONSTEXPR_FUNCTION inline bool operator==(std::string_view l, Key r) { return r == l; }
 
 TERM_CONSTEXPR_FUNCTION inline bool operator<(Key l, Key r) { return l.value < r.value; }
 TERM_CONSTEXPR_FUNCTION inline bool operator<(MetaKey l, MetaKey r) { return l.value < r.value; }
@@ -324,18 +310,6 @@ TERM_CONSTEXPR_FUNCTION inline bool operator<(Key l, std::int32_t r) { return l 
 TERM_CONSTEXPR_FUNCTION inline bool operator<(std::int32_t l, Key r) { return Key(l) < r; }
 TERM_CONSTEXPR_FUNCTION inline bool operator<(Key l, std::size_t r) { return static_cast<std::size_t>(l.value) < r; }
 TERM_CONSTEXPR_FUNCTION inline bool operator<(std::size_t l, Key r) { return l < static_cast<std::size_t>(r.value); }
-TERM_CONSTEXPR_FUNCTION inline bool operator<(Key l, std::string_view r)
-{
-  if(r.size() == 0) return l != Key::Null;
-  else
-    return (r.size() == static_cast<size_t>(Term::Private::identify(r.front()))) && (l < Key(r));
-}
-TERM_CONSTEXPR_FUNCTION inline bool operator<(std::string_view l, Key r)
-{
-  if(l.size() == 0) return r != Key::Null;
-  else
-    return (l.size() == static_cast<size_t>(Term::Private::identify(l.front()))) && (Key(l) < r);
-}
 
 TERM_CONSTEXPR_FUNCTION inline bool operator!=(Key l, Key r) { return !(l == r); }
 TERM_CONSTEXPR_FUNCTION inline bool operator!=(MetaKey l, MetaKey r) { return !(l == r); }
@@ -351,8 +325,6 @@ TERM_CONSTEXPR_FUNCTION inline bool operator!=(Key l, std::int32_t r) { return !
 TERM_CONSTEXPR_FUNCTION inline bool operator!=(std::int32_t l, Key r) { return !(l == r); }
 TERM_CONSTEXPR_FUNCTION inline bool operator!=(Key l, std::size_t r) { return !(l == r); }
 TERM_CONSTEXPR_FUNCTION inline bool operator!=(std::size_t l, Key r) { return !(l == r); }
-TERM_CONSTEXPR_FUNCTION inline bool operator!=(Key l, std::string_view r) { return !(l == r); }
-TERM_CONSTEXPR_FUNCTION inline bool operator!=(std::string_view l, Key r) { return !(l == r); }
 
 TERM_CONSTEXPR_FUNCTION inline bool operator>=(Key l, Key r) { return !(l < r); }
 TERM_CONSTEXPR_FUNCTION inline bool operator>=(MetaKey l, MetaKey r) { return !(l < r); }
@@ -368,8 +340,6 @@ TERM_CONSTEXPR_FUNCTION inline bool operator>=(Key l, std::int32_t r) { return !
 TERM_CONSTEXPR_FUNCTION inline bool operator>=(std::int32_t l, Key r) { return !(l < r); }
 TERM_CONSTEXPR_FUNCTION inline bool operator>=(Key l, std::size_t r) { return !(l < r); }
 TERM_CONSTEXPR_FUNCTION inline bool operator>=(std::size_t l, Key r) { return !(l < r); }
-TERM_CONSTEXPR_FUNCTION inline bool operator>=(Key l, std::string_view r) { return !(l < r); }
-TERM_CONSTEXPR_FUNCTION inline bool operator>=(std::string_view l, Key r) { return !(l < r); }
 
 TERM_CONSTEXPR_FUNCTION inline bool operator>(Key l, Key r) { return r < l; }
 TERM_CONSTEXPR_FUNCTION inline bool operator>(MetaKey l, MetaKey r) { return r < l; }
@@ -385,8 +355,6 @@ TERM_CONSTEXPR_FUNCTION inline bool operator>(Key l, std::int32_t r) { return r 
 TERM_CONSTEXPR_FUNCTION inline bool operator>(std::int32_t l, Key r) { return r < l; }
 TERM_CONSTEXPR_FUNCTION inline bool operator>(Key l, std::size_t r) { return r < l; }
 TERM_CONSTEXPR_FUNCTION inline bool operator>(std::size_t l, Key r) { return r < l; }
-TERM_CONSTEXPR_FUNCTION inline bool operator>(Key l, std::string_view r) { return r < l; }
-TERM_CONSTEXPR_FUNCTION inline bool operator>(std::string_view l, Key r) { return r < l; }
 
 TERM_CONSTEXPR_FUNCTION inline bool operator<=(Key l, Key r) { return !(l > r); }
 TERM_CONSTEXPR_FUNCTION inline bool operator<=(MetaKey l, MetaKey r) { return !(l > r); }
@@ -402,12 +370,6 @@ TERM_CONSTEXPR_FUNCTION inline bool operator<=(Key l, std::int32_t r) { return !
 TERM_CONSTEXPR_FUNCTION inline bool operator<=(std::int32_t l, Key r) { return !(l > r); }
 TERM_CONSTEXPR_FUNCTION inline bool operator<=(Key l, std::size_t r) { return !(l > r); }
 TERM_CONSTEXPR_FUNCTION inline bool operator<=(std::size_t l, Key r) { return !(l > r); }
-TERM_CONSTEXPR_FUNCTION inline bool operator<=(Key l, std::string_view r) {
-  return !(l > r);
-}
-TERM_CONSTEXPR_FUNCTION inline bool operator<=(std::string_view l, Key r) {
-  return !(l > r);
-}
 
 TERM_CONSTEXPR_FUNCTION inline bool iscntrl(Key key) {
   return (key >= Key::Null && key <= Key::Ctrl_Underscore) || key == Key::Del;
