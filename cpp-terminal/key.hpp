@@ -409,27 +409,15 @@ constexpr bool hasAlt(MetaKey metakey) { return (metakey.value & static_cast<std
 constexpr bool hasCtrl(MetaKey metakey) { return (metakey.value & static_cast<std::int32_t>(MetaKey::Value::Ctrl)) == static_cast<std::int32_t>(MetaKey::Value::Ctrl); }
 
 constexpr MetaKey operator+(MetaKey l, MetaKey r) { return MetaKey(l.value | r.value); }
-constexpr Key     operator+(MetaKey metakey, Key key)
-{
-  if(empty(key)) { return key; }
-  else if(metakey == MetaKey::None) { return key; }
+constexpr Key     operator+(MetaKey metakey, Key key){
+	if(!empty(key) && metakey != MetaKey::None){
+		if(metakey == MetaKey::Ctrl && !hasCtrlAll(key))
+			key = Key(key.value + static_cast<std::int32_t>(MetaKey::Value::Ctrl));  // FIXME maybe a better check;
 
-  // two separate 'if' because metakey could be both at the same time
-  if(metakey == MetaKey::Ctrl)
-  {
-    if(hasCtrlAll(key)) return key;
-    else
-      key = Key(key.value + static_cast<std::int32_t>(MetaKey::Value::Ctrl));  // FIXME maybe a better check;
-  }
-
-  if(metakey == MetaKey::Alt)
-  {
-    if(hasAlt(key)) return key;
-    else
-      key = Key(key.value + static_cast<std::int32_t>(MetaKey::Value::Alt));  // FIXME maybe a better check;
-  }
-
-  return key;
+		if(metakey == MetaKey::Alt && !hasAlt(key))
+				key = Key(key.value + static_cast<std::int32_t>(MetaKey::Value::Alt));  // FIXME maybe a better check;
+	}
+	return key;
 }
 constexpr Key     operator+(Key key, MetaKey meta) { return meta + key; }
 constexpr MetaKey operator+(MetaKey::Value l, MetaKey::Value r) { return MetaKey(l) + MetaKey(r); }
