@@ -203,40 +203,40 @@ public:
 
   constexpr Key() : value(NoKey) {}
   constexpr Key(const Key& key)            = default;
-  constexpr Key& operator=(const Key& key) = default;
+  inline Key& operator=(const Key& key) = default;
 
   //constexpr Key(const Value& v) : value(static_cast<std::int32_t>(v)){}
   //constexpr Key& operator=(const Value& v){this->value = static_cast<std::int32_t>(v); return *this;}
 
   explicit constexpr Key(char val) : value(static_cast<std::int32_t>(val)) {}
-  constexpr Key& operator=(char val)
+  inline Key& operator=(char val)
   {
     value = static_cast<std::int32_t>(val);
     return *this;
   }
 
   constexpr Key(std::int32_t val) : value(val) {}
-  constexpr Key& operator=(std::int32_t val)
+  inline Key& operator=(std::int32_t val)
   {
     value = val;
     return *this;
   }
 
   explicit constexpr Key(std::size_t val) : value(static_cast<std::int32_t>(val)) {}
-  constexpr Key& operator=(std::size_t val)
+  inline Key& operator=(std::size_t val)
   {
     value = static_cast<std::int32_t>(val);
     return *this;
   }
 
   explicit constexpr Key(char32_t val) : value(static_cast<std::int32_t>(val)) {}
-  constexpr Key& operator=(char32_t val)
+  inline Key& operator=(char32_t val)
   {
     value = static_cast<std::int32_t>(val);
     return *this;
   }
 
-  constexpr operator std::int32_t() { return this->value; }
+  constexpr operator std::int32_t() const { return this->value; }
 };
 
 class MetaKey
@@ -256,17 +256,17 @@ public:
 
   constexpr MetaKey() : value(static_cast<std::int32_t>(Value::None)) {}
   constexpr MetaKey(const MetaKey& key)            = default;
-  constexpr MetaKey& operator=(const MetaKey& key) = default;
+  inline MetaKey& operator=(const MetaKey& key) = default;
 
   constexpr MetaKey(const Value& v) : value(static_cast<std::int32_t>(v)) {}
-  constexpr MetaKey& operator=(const Value& v)
+  inline MetaKey& operator=(const Value& v)
   {
     this->value = static_cast<std::int32_t>(v);
     return *this;
   }
 
   explicit constexpr MetaKey(std::int32_t val) : value(val) {}
-  constexpr MetaKey& operator=(std::int32_t val)
+  inline MetaKey& operator=(std::int32_t val)
   {
     this->value = val;
     return *this;
