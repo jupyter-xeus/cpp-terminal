@@ -159,7 +159,7 @@ void Term::Event::parse(const std::string& str)
   }
   else if(str.size() == 2 && str[0] == '\033')
   {
-    m_container.m_Key = Key(static_cast<Term::Key>(Term::MetaKey::Alt + static_cast<Term::Key>(str[1])));
+    m_container.m_Key = Key(static_cast<Term::Key>(Term::MetaKey::Value::Alt + static_cast<Term::Key>(str[1])));
     m_Type            = Type::Key;
   }
   else if(str[0] == '\033' && str[1] == '[' && str[str.size() - 1] == 'R')

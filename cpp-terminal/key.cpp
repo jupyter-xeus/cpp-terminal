@@ -10,12 +10,12 @@ void Term::append_name(Term::Key key, std::string& strOut)
   if(Term::hasAlt(key))
   {
     strOut += "Alt+";
-    key = static_cast<Term::Key>(static_cast<std::int32_t>(key) - static_cast<std::int32_t>(Term::MetaKey::Alt));
+    key = static_cast<Term::Key>(key.value - static_cast<std::int32_t>(Term::MetaKey::Value::Alt));
   }
   if(Term::hasCtrl(key))
   {
     strOut += "Ctrl+";
-    if(!Term::iscntrl(key)) key = static_cast<Term::Key>(static_cast<std::int32_t>(key) - static_cast<std::int32_t>(Term::MetaKey::Ctrl));
+    if(!Term::iscntrl(key)) key = static_cast<Term::Key>(key.value - static_cast<std::int32_t>(Term::MetaKey::Value::Ctrl));
   }
   if(key == Term::Key::Tab) strOut += "Tab";
   else if(key == Term::Key::Enter)
@@ -27,7 +27,7 @@ void Term::append_name(Term::Key key, std::string& strOut)
   else if(key == Term::Key::Del)
     strOut += "Del";
   else if(Term::iscntrl(key))
-    strOut += static_cast<char>(static_cast<std::int32_t>(key) + 64);
+    strOut += static_cast<char>(key.value + 64);
   else if(key == Term::Key::Space)
     strOut += "Space";
   else if(Term::isunicode(key)) { append_str(key, strOut); }
@@ -78,5 +78,5 @@ void Term::append_name(Term::Key key, std::string& strOut)
 
 void Term::append_str(Term::Key key, std::string& strOut)
 {
-  if(!(static_cast<std::int32_t>(key) >= 0x10FFFFL)) { Term::Private::codepoint_to_utf8(strOut, static_cast<char32_t>(key)); }
+  if(!(key.value >= 0x10FFFFL)) { Term::Private::codepoint_to_utf8(strOut, static_cast<char32_t>(key)); }
 }

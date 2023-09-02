@@ -101,4 +101,5 @@ std::string vector_to_string(const std::vector<char>& vector)
 }
 
 }  // namespace Private
+
 }  // namespace Term
