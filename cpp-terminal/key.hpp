@@ -532,13 +532,14 @@ TERM_CONSTEXPR_FUNCTION inline Key     operator+(MetaKey metakey, Key key)
   if(empty(key)) { return key; }
   else if(metakey == MetaKey::None) { return key; }
 
-  // two separate 'if' because metakey could be both at the same time 
-  if(metakey == MetaKey::Ctrl){
-	  if(hasCtrlAll(key)) return key;
-      else
-        key = Key(key.value + static_cast<std::int32_t>(MetaKey::Value::Ctrl));  // FIXME maybe a better check;
+  // two separate 'if' because metakey could be both at the same time
+  if(metakey == MetaKey::Ctrl)
+  {
+    if(hasCtrlAll(key)) return key;
+    else
+      key = Key(key.value + static_cast<std::int32_t>(MetaKey::Value::Ctrl));  // FIXME maybe a better check;
   }
-  
+
   if(metakey == MetaKey::Alt)
   {
     if(hasAlt(key)) return key;
