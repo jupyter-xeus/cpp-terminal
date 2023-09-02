@@ -308,9 +308,9 @@ void Term::Event::parse(const std::string& str)
       m_container.m_Key = Key(Term::Key::F20);
     else if(str == "\033[G")
       m_container.m_Key = Key(Term::Key::Numeric5);
-    else if(str.size() == 2 && ((str[0] & 0b11100000) == 0b11000000) && ((str[1] & 0b11000000) == 0b10000000)) { m_container.m_Key = Key(static_cast<Term::Key>(Term::Private::utf8_to_utf32(str)[0])); }
-    else if(str.size() == 3 && ((str[0] & 0b11110000) == 0b11100000) && ((str[1] & 0b11000000) == 0b10000000) && ((str[2] & 0b11000000) == 0b10000000)) { m_container.m_Key = Key(static_cast<Term::Key>(Term::Private::utf8_to_utf32(str)[0])); }
-    else if(str.size() == 4 && ((str[0] & 0b11111000) == 0b11110000) && ((str[1] & 0b11000000) == 0b10000000) && ((str[2] & 0b11000000) == 0b10000000) && ((str[3] & 0b11000000) == 0b10000000))
+    else if(str.size() == 2 && ((str[0] & 0xE0) == 0xC0) && ((str[1] & 0xC0) == 0x80)) { m_container.m_Key = Key(static_cast<Term::Key>(Term::Private::utf8_to_utf32(str)[0])); }
+    else if(str.size() == 3 && ((str[0] & 0xF0) == 0xE0) && ((str[1] & 0xC0) == 0x80) && ((str[2] & 0xC0) == 0x80)) { m_container.m_Key = Key(static_cast<Term::Key>(Term::Private::utf8_to_utf32(str)[0])); }
+    else if(str.size() == 4 && ((str[0] & 0xF8) == 0xF0) && ((str[1] & 0xC0) == 0x80) && ((str[2] & 0xC0) == 0x80) && ((str[3] & 0xC0) == 0x80))
     {
       m_container.m_Key = Key(static_cast<Term::Key>(Term::Private::utf8_to_utf32(str)[0]));
     }

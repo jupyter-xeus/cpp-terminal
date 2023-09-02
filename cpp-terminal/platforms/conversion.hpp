@@ -45,7 +45,7 @@ enum class Identifier : std::int8_t
 /// returns '-1' if it is an unsupported character by the utf8 standard
 TERM_CONSTEXPR inline Identifier identify(char c)
 {
-  const auto       prefix = (c & 0b11111000) >> 3;
+  const auto       prefix = (c & 0xF8) >> 3;
   const Identifier lookupTable[32]{
     /*00000*/ Identifier::Bytes1,
     /*00001*/ Identifier::Bytes1,
