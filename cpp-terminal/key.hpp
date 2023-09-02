@@ -12,12 +12,13 @@ class Key
 {
 public:
   using value_type = std::int32_t;
-  
-  enum Value : std::int32_t{
-    NoKey = -1,
-  // Now use << to for detecting special key + key press
 
-  // Begin ASCII (some ASCII names has been change to their Ctrl_+key part) the value is different to be able to do
+  enum Value : std::int32_t
+  {
+    NoKey = -1,
+    // Now use << to for detecting special key + key press
+
+    // Begin ASCII (some ASCII names has been change to their Ctrl_+key part) the value is different to be able to do
     Ctrl_Arobase      = 0,
     Ctrl_A            = 1,
     Ctrl_B            = 2,
@@ -149,17 +150,17 @@ public:
     Close_Brace       = 125,
     Tilde             = 126,
     CTRL_QuestionMark = 127,
-  // Very useful CTRL_* alternative names
+    // Very useful CTRL_* alternative names
     Null              = 0,
     Backspace         = 8,
     Tab               = 9,
     Enter             = 13,
     Esc               = 27,
     Del               = 127,
-  //
-  // End ASCII
-  // Extended ASCII goes up to 255
-  // Last Unicode codepage 0x10FFFF
+    //
+    // End ASCII
+    // Extended ASCII goes up to 255
+    // Last Unicode codepage 0x10FFFF
     ArrowLeft         = 0x10FFFF + 1,
     ArrowRight        = 0x10FFFF + 2,
     ArrowUp           = 0x10FFFF + 3,
@@ -207,8 +208,12 @@ public:
   constexpr Key(const Key& key)         = default;
   inline Key& operator=(const Key& key) = default;
 
-  constexpr Key(const Value& v) : value(static_cast<std::int32_t>(v)){}
-  inline Key& operator=(const Value& v){this->value = static_cast<std::int32_t>(v); return *this;}
+  constexpr Key(const Value& v) : value(static_cast<std::int32_t>(v)) {}
+  inline Key& operator=(const Value& v)
+  {
+    this->value = static_cast<std::int32_t>(v);
+    return *this;
+  }
 
   explicit constexpr Key(char val) : value(static_cast<std::int32_t>(val)) {}
   inline Key& operator=(char val)
