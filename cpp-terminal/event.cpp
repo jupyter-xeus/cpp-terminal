@@ -2,7 +2,7 @@
 
 #include "cpp-terminal/platforms/conversion.hpp"
 
-Term::Event::container::container(){};
+Term::Event::container::container(){}
 
 Term::Key* Term::Event::get_if_key()
 {
