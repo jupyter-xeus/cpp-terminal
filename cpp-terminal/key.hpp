@@ -202,7 +202,7 @@ public:
   std::int32_t value;
 
   constexpr Key() : value(NoKey) {}
-  constexpr Key(const Key& key)            = default;
+  constexpr Key(const Key& key)         = default;
   inline Key& operator=(const Key& key) = default;
 
   //constexpr Key(const Value& v) : value(static_cast<std::int32_t>(v)){}
@@ -255,7 +255,7 @@ public:
   static constexpr Value None = MetaKey::Value::None;
 
   constexpr MetaKey() : value(static_cast<std::int32_t>(Value::None)) {}
-  constexpr MetaKey(const MetaKey& key)            = default;
+  constexpr MetaKey(const MetaKey& key)         = default;
   inline MetaKey& operator=(const MetaKey& key) = default;
 
   constexpr MetaKey(const Value& v) : value(static_cast<std::int32_t>(v)) {}
@@ -409,15 +409,15 @@ constexpr bool hasAlt(MetaKey metakey) { return (metakey.value & static_cast<std
 constexpr bool hasCtrl(MetaKey metakey) { return (metakey.value & static_cast<std::int32_t>(MetaKey::Value::Ctrl)) == static_cast<std::int32_t>(MetaKey::Value::Ctrl); }
 
 constexpr MetaKey operator+(MetaKey l, MetaKey r) { return MetaKey(l.value | r.value); }
-constexpr Key     operator+(MetaKey metakey, Key key){
-	if(!empty(key) && metakey != MetaKey::None){
-		if(metakey == MetaKey::Ctrl && !hasCtrlAll(key))
-			key = Key(key.value + static_cast<std::int32_t>(MetaKey::Value::Ctrl));  // FIXME maybe a better check;
+constexpr Key     operator+(MetaKey metakey, Key key)
+{
+  if(!empty(key) && metakey != MetaKey::None)
+  {
+    if(metakey == MetaKey::Ctrl && !hasCtrlAll(key)) key = Key(key.value + static_cast<std::int32_t>(MetaKey::Value::Ctrl));  // FIXME maybe a better check;
 
-		if(metakey == MetaKey::Alt && !hasAlt(key))
-				key = Key(key.value + static_cast<std::int32_t>(MetaKey::Value::Alt));  // FIXME maybe a better check;
-	}
-	return key;
+    if(metakey == MetaKey::Alt && !hasAlt(key)) key = Key(key.value + static_cast<std::int32_t>(MetaKey::Value::Alt));  // FIXME maybe a better check;
+  }
+  return key;
 }
 constexpr Key     operator+(Key key, MetaKey meta) { return meta + key; }
 constexpr MetaKey operator+(MetaKey::Value l, MetaKey::Value r) { return MetaKey(l) + MetaKey(r); }
