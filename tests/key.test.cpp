@@ -80,32 +80,32 @@ TEST_CASE("key")
 
 TEST_CASE("test MetaKey arithmetic")
 {
-  Term::MetaKey MyCtrl(Term::MetaKey::Ctrl);
+  Term::MetaKey MyCtrl(Term::MetaKey::Value::Ctrl);
   CHECK(Term::hasAlt(MyCtrl) == false);
   CHECK(Term::hasCtrl(MyCtrl) == true);
 
-  CHECK(Term::hasAlt(Term::MetaKey::Alt) == true);
-  CHECK(Term::hasCtrl(Term::MetaKey::Alt) == false);
-  CHECK(Term::hasAlt(Term::MetaKey::Ctrl) == false);
-  CHECK(Term::hasCtrl(Term::MetaKey::Ctrl) == true);
+  CHECK(Term::hasAlt(Term::MetaKey::Value::Alt) == true);
+  CHECK(Term::hasCtrl(Term::MetaKey::Value::Alt) == false);
+  CHECK(Term::hasAlt(Term::MetaKey::Value::Ctrl) == false);
+  CHECK(Term::hasCtrl(Term::MetaKey::Value::Ctrl) == true);
 
-  CHECK(Term::hasAlt((Term::MetaKey::Ctrl + Term::MetaKey::Alt)) == true);
-  CHECK(Term::hasCtrl((Term::MetaKey::Ctrl + Term::MetaKey::Alt)) == true);
-  CHECK(Term::hasAlt((Term::MetaKey::Alt + Term::MetaKey::Ctrl)) == true);
-  CHECK(Term::hasCtrl((Term::MetaKey::Alt + Term::MetaKey::Ctrl)) == true);
+  CHECK(Term::hasAlt((Term::MetaKey::Value::Ctrl + Term::MetaKey::Value::Alt)) == true);
+  CHECK(Term::hasCtrl((Term::MetaKey::Value::Ctrl + Term::MetaKey::Value::Alt)) == true);
+  CHECK(Term::hasAlt((Term::MetaKey::Value::Alt + Term::MetaKey::Value::Ctrl)) == true);
+  CHECK(Term::hasCtrl((Term::MetaKey::Value::Alt + Term::MetaKey::Value::Ctrl)) == true);
 
-  CHECK((Term::MetaKey::Alt + Term::MetaKey::Alt) == Term::MetaKey::Alt);
-  CHECK((Term::MetaKey::Ctrl + Term::MetaKey::Ctrl) == Term::MetaKey::Ctrl);
+  CHECK((Term::MetaKey::Value::Alt + Term::MetaKey::Value::Alt) == Term::MetaKey::Value::Alt);
+  CHECK((Term::MetaKey::Value::Ctrl + Term::MetaKey::Value::Ctrl) == Term::MetaKey::Value::Ctrl);
 }
 
 TEST_CASE("test MetaKey+NoKey arithmetic")
 {
   Term::Key empty = Term::Key::NoKey;
   CHECK(Term::empty(empty) == true);
-  CHECK(Term::empty((Term::MetaKey::Ctrl + empty)) == true);
-  CHECK(Term::empty((Term::MetaKey::Ctrl + Term::MetaKey::Ctrl + empty)) == true);
-  CHECK(Term::empty((Term::MetaKey::Ctrl + Term::MetaKey::Alt + empty)) == true);
-  CHECK(Term::empty((Term::MetaKey::Alt + empty)) == true);
+  CHECK(Term::empty((Term::MetaKey::Value::Ctrl + empty)) == true);
+  CHECK(Term::empty((Term::MetaKey::Value::Ctrl + Term::MetaKey::Value::Ctrl + empty)) == true);
+  CHECK(Term::empty((Term::MetaKey::Value::Ctrl + Term::MetaKey::Value::Alt + empty)) == true);
+  CHECK(Term::empty((Term::MetaKey::Value::Alt + empty)) == true);
 }
 
 TEST_CASE("test Ctrl+Key arithmetic with CTRL_*")
@@ -115,12 +115,12 @@ TEST_CASE("test Ctrl+Key arithmetic with CTRL_*")
     Term::Key key(i);
     CHECK(Term::iscntrl(key) == true);  // Take care here we need iscntrl not isCTRL
     CHECK(Term::hasAlt(key) == false);
-    CHECK(Term::iscntrl((Term::MetaKey::Ctrl + key)) == true);
-    CHECK(Term::iscntrl((Term::MetaKey::Ctrl + Term::MetaKey::Ctrl + key)) == true);
-    CHECK(Term::hasCtrlAll((Term::MetaKey::Ctrl + Term::MetaKey::Ctrl + key)) == true);
-    CHECK(Term::iscntrl((Term::MetaKey::Alt + key)) == false);
-    //std::cout<<static_cast<std::int32_t>(Term::MetaKey::Alt +key)<<std::endl;
-    CHECK(Term::hasAlt((Term::MetaKey::Alt + key)) == true);
+    CHECK(Term::iscntrl((Term::MetaKey::Value::Ctrl + key)) == true);
+    CHECK(Term::iscntrl((Term::MetaKey::Value::Ctrl + Term::MetaKey::Value::Ctrl + key)) == true);
+    CHECK(Term::hasCtrlAll((Term::MetaKey::Value::Ctrl + Term::MetaKey::Value::Ctrl + key)) == true);
+    CHECK(Term::iscntrl((Term::MetaKey::Value::Alt + key)) == false);
+    //std::cout<<static_cast<std::int32_t>(Term::MetaKey::Value::Alt +key)<<std::endl;
+    CHECK(Term::hasAlt((Term::MetaKey::Value::Alt + key)) == true);
   }
 }
 
@@ -130,8 +130,8 @@ TEST_CASE("test ALT+Key arithmetic")
   {
     //std::cout<<"Begin"<<std::endl;
     Term::Key key(i);
-    CHECK(Term::hasAlt((Term::MetaKey::Alt + key)) == true);
-    // std::cout<<static_cast<std::int32_t>(Term::MetaKey::Alt+Term::MetaKey::Ctrl+Term::Key(Term::Key::Null))<<std::endl;
+    CHECK(Term::hasAlt((Term::MetaKey::Value::Alt + key)) == true);
+    // std::cout<<static_cast<std::int32_t>(Term::MetaKey::Value::Alt+Term::MetaKey::Value::Ctrl+Term::Key(Term::Key::Null))<<std::endl;
     // std::cout<<"End"<<std::endl;
   }
 }

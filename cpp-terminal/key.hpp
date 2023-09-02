@@ -250,10 +250,6 @@ public:
     Ctrl = (1 << 23),
   };
 
-  static constexpr Value Alt  = MetaKey::Value::Alt;
-  static constexpr Value Ctrl = MetaKey::Value::Ctrl;
-  static constexpr Value None = MetaKey::Value::None;
-
   constexpr MetaKey() : value(static_cast<std::int32_t>(Value::None)) {}
   constexpr MetaKey(const MetaKey& key)         = default;
   inline MetaKey& operator=(const MetaKey& key) = default;
@@ -411,7 +407,7 @@ constexpr bool hasCtrl(MetaKey metakey) { return (metakey.value & static_cast<st
 constexpr MetaKey operator+(MetaKey l, MetaKey r) { return MetaKey(l.value | r.value); }
 constexpr Key     operator+(MetaKey metakey, Key key)
 {
-  return Key(key.value + ((metakey == MetaKey::Ctrl && !hasCtrlAll(key) && empty(key)) ? static_cast<std::int32_t>(MetaKey::Value::Ctrl) : 0) + ((metakey == MetaKey::Alt && !hasAlt(key) && empty(key)) ? static_cast<std::int32_t>(MetaKey::Value::Alt) : 0));
+  return Key(key.value + ((metakey == MetaKey::Value::Ctrl && !hasCtrlAll(key) && empty(key)) ? static_cast<std::int32_t>(MetaKey::Value::Ctrl) : 0) + ((metakey == MetaKey::Value::Alt && !hasAlt(key) && empty(key)) ? static_cast<std::int32_t>(MetaKey::Value::Alt) : 0));
 }
 constexpr Key     operator+(Key key, MetaKey meta) { return meta + key; }
 constexpr MetaKey operator+(MetaKey::Value l, MetaKey::Value r) { return MetaKey(l) + MetaKey(r); }

@@ -57,8 +57,8 @@ Term::Event Term::Platform::read_raw()
         if(event.Event.KeyEvent.bKeyDown)
         {
           // First check if we have ALT etc (CTRL is already done so skip it)
-          Term::MetaKey toAdd{Term::MetaKey::None};
-          if(((event.Event.KeyEvent.dwControlKeyState & LEFT_ALT_PRESSED) == LEFT_ALT_PRESSED) || ((event.Event.KeyEvent.dwControlKeyState & RIGHT_ALT_PRESSED) == RIGHT_ALT_PRESSED)) toAdd = std::move(Term::MetaKey::Alt);
+          Term::MetaKey toAdd{Term::MetaKey::Value::None};
+          if(((event.Event.KeyEvent.dwControlKeyState & LEFT_ALT_PRESSED) == LEFT_ALT_PRESSED) || ((event.Event.KeyEvent.dwControlKeyState & RIGHT_ALT_PRESSED) == RIGHT_ALT_PRESSED)) toAdd = std::move(Term::MetaKey::Value::Alt);
 
           if(event.Event.KeyEvent.uChar.UnicodeChar == 0)
           {

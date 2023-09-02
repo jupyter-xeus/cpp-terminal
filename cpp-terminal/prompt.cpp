@@ -252,7 +252,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
       {
         case Key::Enter:
           not_complete = !iscomplete(concat(m.lines));
-          if(not_complete) key = Key(static_cast<Term::Key>(Term::MetaKey::Alt + Term::Key::Enter));
+          if(not_complete) key = Key(static_cast<Term::Key>(Term::MetaKey::Value::Alt + Term::Key::Enter));
           else
             break;
           CPP_TERMINAL_FALLTHROUGH;
