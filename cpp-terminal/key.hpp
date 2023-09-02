@@ -416,7 +416,7 @@ constexpr Key     operator+(MetaKey metakey, Key key)
   const bool         add_alt  = metakey == MetaKey::Alt && !hasAlt(key);
   const std::int32_t ctrl_v   = add_ctrl ? static_cast<std::int32_t>(MetaKey::Value::Ctrl) : 0;
   const std::int32_t alt_v    = add_alt ? static_cast<std::int32_t>(MetaKey::Value::Alt) : 0;
-  return is_empty ? key : key + ctrl_v + alt_v;
+  return is_empty ? key : Key(key.value + ctrl_v + alt_v);
 }
 constexpr Key     operator+(Key key, MetaKey meta) { return meta + key; }
 constexpr MetaKey operator+(MetaKey::Value l, MetaKey::Value r) { return MetaKey(l) + MetaKey(r); }
