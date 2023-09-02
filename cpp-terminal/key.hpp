@@ -408,7 +408,7 @@ constexpr MetaKey operator+(MetaKey l, MetaKey r) { return MetaKey(l.value | r.v
 constexpr Key     operator+(MetaKey metakey, Key key)
 {
   return Key(key.value + ((metakey == MetaKey::Value::Ctrl && !hasCtrlAll(key) && !empty(key)) ? static_cast<std::int32_t>(MetaKey::Value::Ctrl) : 0)
-            + ((metakey == MetaKey::Value::Alt && !hasAlt(key) && !empty(key)) ? static_cast<std::int32_t>(MetaKey::Value::Alt) : 0));
+             + ((metakey == MetaKey::Value::Alt && !hasAlt(key) && !empty(key)) ? static_cast<std::int32_t>(MetaKey::Value::Alt) : 0));
 }
 constexpr Key     operator+(Key key, MetaKey meta) { return meta + key; }
 constexpr MetaKey operator+(MetaKey::Value l, MetaKey::Value r) { return MetaKey(l) + MetaKey(r); }
