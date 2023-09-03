@@ -27,12 +27,12 @@ public:
     Ctrl_E            = 5,
     Ctrl_F            = 6,
     Ctrl_G            = 7,
-    Ctrl_H            = 8,	/*corresponds to Backspace*/
-    Ctrl_I            = 9,	/*corresponds to Tab*/
+    Ctrl_H            = 8, /*corresponds to Backspace*/
+    Ctrl_I            = 9, /*corresponds to Tab*/
     Ctrl_J            = 10,
     Ctrl_K            = 11,
     Ctrl_L            = 12,
-    Ctrl_M            = 13,	/*corresponds to Enter*/
+    Ctrl_M            = 13, /*corresponds to Enter*/
     Ctrl_N            = 14,
     Ctrl_O            = 15,
     Ctrl_P            = 16,
@@ -46,7 +46,7 @@ public:
     Ctrl_X            = 24,
     Ctrl_Y            = 25,
     Ctrl_Z            = 26,
-    Ctrl_OpenBracket  = 27,	/*corresponds to Escape*/
+    Ctrl_OpenBracket  = 27, /*corresponds to Escape*/
     Ctrl_BackSlash    = 28,
     Ctrl_CloseBracket = 29,
     Ctrl_Caret        = 30,
@@ -149,7 +149,7 @@ public:
     VerticalBar       = 124,
     Close_Brace       = 125,
     Tilde             = 126,
-    CTRL_QuestionMark = 127,	/*corresponds to DEL*/
+    CTRL_QuestionMark = 127, /*corresponds to DEL*/
     // Very useful CTRL_* alternative names
     Null              = 0,
     Backspace         = 8,
