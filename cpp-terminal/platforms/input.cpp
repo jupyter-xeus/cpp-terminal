@@ -3,6 +3,8 @@
   #include <windows.h>
   #include <stringapiset.h>
   // clang-format on
+  #include "cpp-terminal/platforms/conversion.hpp"
+
   #include <vector>
 #elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
   #if !defined(_GLIBCXX_USE_NANOSLEEP)
@@ -30,22 +32,11 @@
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/platforms/input.hpp"
 
-#include <iostream>
 #include <string>
 #include <thread>
 
 namespace Term
 {
-#if defined(_WIN32)
-std::string to_utf8(LPCWCH utf16Str)
-{
-  std::string ret;
-  int         size_needed = WideCharToMultiByte(CP_UTF8, 0, utf16Str, -1, nullptr, 0, nullptr, nullptr);
-  ret.reserve(static_cast<std::size_t>(size_needed));
-  WideCharToMultiByte(CP_UTF8, 0, utf16Str, 1, &ret[0], static_cast<int>(ret.capacity()), nullptr, nullptr);
-  return ret.c_str();
-}
-#endif
 
 namespace Private
 {
@@ -396,10 +387,12 @@ Term::Event Term::Private::Input::read_raw()
 
 Term::Private::Input::Input()
 {
+#if !defined(_WIN32)
   static ::sigset_t windows_event;
   sigemptyset(&windows_event);
   sigaddset(&windows_event, SIGWINCH);
   ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
+#endif
 }
 
 void Term::Private::Input::startReading()
