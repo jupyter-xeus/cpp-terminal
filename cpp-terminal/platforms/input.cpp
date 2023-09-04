@@ -321,7 +321,7 @@ Term::Event Term::Private::Input::read_raw()
       }
       case WINDOW_BUFFER_SIZE_EVENT:
       {
-        return Event(std::move(Screen(static_cast<std::size_t>(event.Event.WindowBufferSizeEvent.dwSize.Y), static_cast<std::size_t>(event.Event.WindowBufferSizeEvent.dwSize.X))));
+        return Event(screen_size());
       }
     }
   }
