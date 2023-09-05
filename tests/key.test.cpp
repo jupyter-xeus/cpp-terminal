@@ -72,3 +72,75 @@ TEST_CASE("toupper")
 {
   for(std::size_t i = 0; i != 127; ++i) { CHECK(toupper(static_cast<char>(i)) == Term::Key(static_cast<Term::Key::Value>(i)).toupper()); }
 }
+
+TEST_CASE("key")
+{
+  for(std::size_t i = 0; i != 255; ++i) { CHECK(Term::Key(Term::Key::Value(i)) == i); }
+}
+
+TEST_CASE("test MetaKey arithmetic")
+{
+  Term::MetaKey MyCtrl(Term::MetaKey::Value::Ctrl);
+  CHECK(MyCtrl.hasAlt() == false);
+  CHECK(MyCtrl.hasCtrl() == true);
+
+  CHECK(Term::Alt.hasAlt() == true);
+  CHECK(Term::Alt.hasCtrl() == false);
+  CHECK(Term::Ctrl.hasAlt() == false);
+  CHECK(Term::Ctrl.hasCtrl() == true);
+
+  CHECK((Term::Ctrl + Term::Alt).hasAlt() == true);
+  CHECK((Term::Ctrl + Term::Alt).hasCtrl() == true);
+  CHECK((Term::Alt + Term::Ctrl).hasAlt() == true);
+  CHECK((Term::Alt + Term::Ctrl).hasCtrl() == true);
+
+  CHECK((Term::Alt + Term::Alt) == Term::Alt);
+  CHECK((Term::Ctrl + Term::Ctrl) == Term::Ctrl);
+}
+
+TEST_CASE("test MetaKey+NoKey arithmetic")
+{
+  Term::Key empty;
+  CHECK(empty.empty() == true);
+  CHECK((Term::Ctrl + empty).empty() == true);
+  CHECK((Term::Ctrl + Term::Ctrl + empty).empty() == true);
+  CHECK((Term::Ctrl + Term::Alt + empty).empty() == true);
+  CHECK((Term::Alt + empty).empty() == true);
+}
+
+TEST_CASE("test Ctrl+Key arithmetic with CTRL_*")
+{
+  for(std::size_t i = 0; i != 31; ++i)
+  {
+    Term::Key key(static_cast<Term::Key::Value>(i));
+    CHECK(key.iscntrl() == true);  // Take care here we need iscntrl not isCTRL
+    CHECK(key.hasAlt() == false);
+    CHECK((Term::Ctrl + key).iscntrl() == true);
+    CHECK((Term::Ctrl + Term::Ctrl + key).iscntrl() == true);
+    CHECK((Term::Ctrl + Term::Ctrl + key).hasCtrlAll() == true);
+    CHECK((Term::Alt + key).iscntrl() == false);
+    //std::cout<<static_cast<std::int32_t>(Term::Alt +key)<<std::endl;
+    CHECK((Term::Alt + key).hasAlt() == true);
+  }
+}
+
+TEST_CASE("test ALT+Key arithmetic")
+{
+  for(std::size_t i = 0; i != 255; ++i)
+  {
+    //std::cout<<"Begin"<<std::endl;
+    Term::Key key(static_cast<Term::Key::Value>(i));
+    CHECK((Term::Alt + key).hasAlt() == true);
+    // std::cout<<static_cast<std::int32_t>(Term::Alt+Term::Ctrl+Term::Key(Term::Key::Value::Null))<<std::endl;
+    // std::cout<<"End"<<std::endl;
+  }
+}
+
+TEST_CASE("test name()")
+{
+  for(std::size_t i = 0; i != 255; ++i)
+  {
+    Term::Key key(static_cast<Term::Key::Value>(i));
+    std::cout << "Value : " << i << " Name : " << key.name() << std::endl;
+  }
+}

@@ -8,6 +8,8 @@
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 
+#include <iostream>
+
 void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
 {
   std::string scr;
@@ -84,23 +86,23 @@ int main()
         case Term::Event::Type::Key:
           switch(Term::Key(event))
           {
-            case Term::Key::ARROW_LEFT:
+            case Term::Key::ArrowLeft:
               if(w > 10) w--;
               break;
-            case Term::Key::ARROW_RIGHT:
+            case Term::Key::ArrowRight:
               if(w < (term_size.columns() - 5)) w++;
               break;
-            case Term::Key::ARROW_UP:
+            case Term::Key::ArrowUp:
               if(pos > 1) pos--;
               break;
-            case Term::Key::ARROW_DOWN:
+            case Term::Key::ArrowDown:
               if(pos < h) pos++;
               break;
-            case Term::Key::HOME: pos = 1; break;
-            case Term::Key::END: pos = h; break;
+            case Term::Key::Home: pos = 1; break;
+            case Term::Key::End: pos = h; break;
             case Term::Key::q:
-            case Term::Key::ESC:
-            case Term::Key::CTRL_C: on = false; break;
+            case Term::Key::Esc:
+            case Term::Key::Ctrl_C: on = false; break;
             default: break;
           }
           break;

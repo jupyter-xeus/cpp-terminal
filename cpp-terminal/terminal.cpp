@@ -7,6 +7,7 @@
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 
+#include <iostream>
 #include <new>
 
 namespace Term

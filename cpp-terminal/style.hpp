@@ -74,7 +74,7 @@ enum class Style : std::uint8_t
 
   SUPERSCRIPT                 = 73,  // only implemented in mintty
   SUBSCRIPT                   = 74,  // only implemented in mintty
-  RESET_SUPERSCRIPT_SUBSCRIPT = 75,  // only implemented in mintty
+  RESET_SUPERSCRIPT_SUBSCRIPT = 75   // only implemented in mintty
 
 };
 

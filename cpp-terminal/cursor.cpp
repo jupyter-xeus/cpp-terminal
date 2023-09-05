@@ -1,21 +1,21 @@
 #include "cpp-terminal/cursor.hpp"
 
-Term::Cursor::Cursor(const std::size_t& row, const std::size_t& column) : m_rows(row), m_columns(column) {}
+Term::Cursor::Cursor(const std::uint16_t& row, const std::uint16_t& column) : m_position({row, column}) {}
 
-std::size_t Term::Cursor::row() const { return m_rows; }
+std::size_t Term::Cursor::row() const { return m_position.first; }
 
-std::size_t Term::Cursor::column() const { return m_columns; }
+std::size_t Term::Cursor::column() const { return m_position.second; }
 
 bool Term::Cursor::empty() const
 {
-  if(m_rows == 0 && m_columns == 0) return true;
+  if(m_position.first == 0 && m_position.second == 0) return true;
   else
     return false;
 }
 
-void Term::Cursor::setRow(const std::size_t& row) { m_rows = row; }
+void Term::Cursor::setRow(const std::size_t& row) { m_position.first = row; }
 
-void Term::Cursor::setColum(const std::size_t& column) { m_columns = column; }
+void Term::Cursor::setColum(const std::size_t& column) { m_position.second = column; }
 
 std::string Term::cursor_off() { return "\x1b[?25l"; }
 

@@ -43,6 +43,15 @@ doctest_discover_tests(Key)
 add_executable(IOStream iostream.test.cpp)
 target_link_libraries(IOStream PRIVATE cpp-terminal::cpp-terminal)
 
+if(MINGW OR MSYS)
+else()
+add_executable(Args args.test.cpp)
+target_link_libraries(Args PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
+doctest_discover_tests(Args)
+## Needed to test args
+add_test(NAME Args COMMAND Args Bonjour Hello 你好)
+endif()
+
 if (WIN32)
   find_program(POWERSHELL_EXECUTABLE NAMES powershell DOC "PowerShell command")
   if (NOT ${POWERSHELL_EXECUTABLE} STREQUAL "POWERSHELL_EXECUTABLE-NOTFOUND")

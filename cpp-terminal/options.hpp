@@ -17,7 +17,7 @@ enum class Option : int
   SignalKeys    = 3,
   NoSignalKeys  = -3,
   Cursor        = 4,
-  NoCursor      = -4,
+  NoCursor      = -4
 };
 
 class Options
