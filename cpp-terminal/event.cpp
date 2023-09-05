@@ -53,7 +53,7 @@ void Term::Event::parse()
     if(found != std::string::npos)
     {
       m_Type   = Type::Cursor;
-      m_Cursor = Cursor(std::stoi(m_str.substr(2, found - 2)), std::stoi(m_str.substr(found + 1, m_str.size() - (found + 2))));
+      m_Cursor = Cursor(static_cast<std::size_t>(std::stoi(m_str.substr(2, found - 2))), static_cast<std::size_t>(std::stoi(m_str.substr(found + 1, m_str.size() - (found + 2)))));
     }
   }
   else if(m_str.size() <= 10)

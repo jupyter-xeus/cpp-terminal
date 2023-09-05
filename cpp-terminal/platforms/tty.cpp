@@ -11,7 +11,7 @@
 bool is_a_tty(const FILE* fd)
 {
 #ifdef _WIN32
-  return _isatty(_fileno(const_cast<FILE*>(fd)));
+  return static_cast<bool>(_isatty(_fileno(const_cast<FILE*>(fd))));
 #else
   return isatty(fileno(const_cast<FILE*>(fd)));
 #endif

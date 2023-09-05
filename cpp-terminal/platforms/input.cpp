@@ -40,7 +40,7 @@ Term::Event Term::Platform::read_raw()
     int                       processed{0};
     DWORD                     nre{0};
     std::vector<INPUT_RECORD> buf{nread};
-    if(!ReadConsoleInputW(Private::in.handle(), &buf[0], buf.size(), &nre)) { Term::Exception("ReadFile() failed"); }
+    if(!ReadConsoleInputW(Private::in.handle(), &buf[0], static_cast<DWORD>(buf.size()), &nre)) { Term::Exception("ReadFile() failed"); }
     for(std::size_t i = 0; i != nre; ++i)
     {
       switch(buf[i].EventType)
@@ -50,9 +50,9 @@ Term::Event Term::Platform::read_raw()
           //if(buf[i].Event.KeyEvent.wVirtualKeyCode != 0) break;  //skip them for now
           if(buf[i].Event.KeyEvent.bKeyDown)
           {
-            std::size_t size_needed = WideCharToMultiByte(CP_UTF8, 0, &buf[i].Event.KeyEvent.uChar.UnicodeChar, -1, NULL, 0, NULL, NULL);
+            std::size_t size_needed = static_cast<std::size_t>(WideCharToMultiByte(CP_UTF8, 0, &buf[i].Event.KeyEvent.uChar.UnicodeChar, -1, NULL, 0, NULL, NULL));
             std::string strTo(size_needed, '\0');
-            WideCharToMultiByte(CP_UTF8, 0, &buf[i].Event.KeyEvent.uChar.UnicodeChar, 1, &strTo[0], size_needed, NULL, NULL);
+            WideCharToMultiByte(CP_UTF8, 0, &buf[i].Event.KeyEvent.uChar.UnicodeChar, 1, &strTo[0], static_cast<int>(size_needed), NULL, NULL);
             ret += strTo.c_str();
             ++processed;
             break;

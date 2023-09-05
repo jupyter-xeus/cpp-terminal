@@ -20,8 +20,8 @@ public:
   virtual ~Buffer() = default;
 
 protected:
-  virtual Term::Buffer::int_type underflow() final;
-  virtual Term::Buffer::int_type overflow(int c = std::char_traits<Term::Buffer::char_type>::eof());
+  virtual int_type underflow() final;
+  virtual int_type overflow(int c = std::char_traits<Term::Buffer::char_type>::eof());
   virtual int                    sync() final;
 
 private:
