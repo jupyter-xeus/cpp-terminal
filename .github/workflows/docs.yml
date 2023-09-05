@@ -50,7 +50,7 @@ jobs:
           tlmgr list --only-installed
 
       - name: 🐍 Install Conda environment
-        uses: mamba-org/setup-micromamba@v1.4.3
+        uses: mamba-org/setup-micromamba@v1.4.4
         with:
           environment-file: .github/workflows/micromamba/docs.yml
           environment-name: docs
