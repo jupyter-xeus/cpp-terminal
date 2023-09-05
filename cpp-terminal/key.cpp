@@ -182,6 +182,7 @@ std::string Term::Key::name() const
       case Term::Key::F24: ret += "F24"; break;
       case Term::Key::PrintScreen: ret += "Print Screen"; break;
       case Term::Key::Menu: ret += "Menu"; break;
+      default: break;
     }
   }
   return ret;

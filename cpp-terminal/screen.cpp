@@ -17,10 +17,10 @@ std::string Term::clear_screen() { return "\x1b[2J"; }
 
 std::string Term::screen_save()
 {
-  return "\x1b""7\x1b[?1049h";  // save current cursor position, save screen
+  return static_cast<std::string>("\x1b") + "7\x1b[?1049h";  // save current cursor position, save screen
 }
 
 std::string Term::screen_load()
 {
-  return "\x1b[?1049l\x1b""8";  // restores screen, restore current cursor position
+  return "\x1b[?1049l\x1b" + '8';  // restores screen, restore current cursor position
 }

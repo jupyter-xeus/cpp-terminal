@@ -100,5 +100,22 @@ std::string vector_to_string(const std::vector<char>& vector)
   return string;
 }
 
+bool is_valid_utf8_code_unit(const std::string& s)
+{
+  static const constexpr int b1OOOOOOO{128};
+  static const constexpr int b11OOOOOO{192};
+  static const constexpr int b111OOOOO{224};
+  static const constexpr int b1111OOOO{240};
+  static const constexpr int b11111OOO{248};
+  switch(s.size())
+  {
+    case 1: return ((s[0] & b1OOOOOOO) == 0) ? true : false;
+    case 2: return ((s[0] & b111OOOOO) == b11OOOOOO) && ((s[1] & b11OOOOOO) == b1OOOOOOO) ? true : false;
+    case 3: return ((s[0] & b1111OOOO) == b111OOOOO) && ((s[1] & b11OOOOOO) == b1OOOOOOO) && ((s[2] & b11OOOOOO) == b1OOOOOOO) ? true : false;
+    case 4: return ((s[0] & b11111OOO) == b1111OOOO) && ((s[1] & b11OOOOOO) == b1OOOOOOO) && ((s[2] & b11OOOOOO) == b1OOOOOOO) && ((s[3] & b11OOOOOO) == b1OOOOOOO) ? true : false;
+    default: return false;
+  }
+}
+
 }  // namespace Private
 }  // namespace Term
