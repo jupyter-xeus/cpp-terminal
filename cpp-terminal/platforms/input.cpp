@@ -47,12 +47,10 @@ Term::Event Term::Platform::read_raw()
   // If it's one event it's easy
   else if(to_read == 1)
   {
-    std::string               ret;
-    int                       processed{0};
-    DWORD                     nre{0};
-    std::vector<INPUT_RECORD> buf{nread};
-    if(!ReadConsoleInputW(Private::in.handle(), &buf[0], static_cast<DWORD>(buf.size()), &nre)) { Term::Exception("ReadFile() failed"); }
-    for(std::size_t i = 0; i != nre; ++i)
+    DWORD        read{0};
+    INPUT_RECORD event{};
+    if(!ReadConsoleInputW(Private::in.handle(), &event, to_read, &read) || read != to_read) Term::Exception("ReadFile() failed");
+    switch(event.EventType)
     {
       case KEY_EVENT:
       {
