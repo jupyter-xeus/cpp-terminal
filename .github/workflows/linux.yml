@@ -57,6 +57,7 @@ jobs:
             standard: 20
 
     steps:
+      - uses: ammaraskar/gcc-problem-matcher@master
       - name: ⬇️ Install git
         run: apt-get update ; apt-get install --no-install-recommends -y git
       - name: ⬇️ Setup CMake
@@ -126,6 +127,7 @@ jobs:
             standard: 20
 
     steps:
+      - uses: ammaraskar/gcc-problem-matcher@master
       - name: ⬇️ Install git
         run: apt-get update ; apt-get install --no-install-recommends -y git
       - name: ⬇️ Setup CMake
@@ -163,6 +165,7 @@ jobs:
         standard: [ 11, 14, 17, 20 ]
 
     steps:
+      - uses: ammaraskar/gcc-problem-matcher@master
       - name: ⬇️ Install git
         run: apt-get update ; apt-get install --no-install-recommends -y git
       - name: ⬇️ Setup CMake
