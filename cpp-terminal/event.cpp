@@ -168,7 +168,7 @@ void Term::Event::parse(const std::string& str)
     if(found != std::string::npos)
     {
       m_Type   = Type::Cursor;
-      m_Cursor = Cursor(static_cast<std::size_t>(std::stoi(m_str.substr(2, found - 2))), static_cast<std::size_t>(std::stoi(m_str.substr(found + 1, m_str.size() - (found + 2)))));
+      m_container.m_Cursor = Cursor(static_cast<std::size_t>(std::stoi(m_str.substr(2, found - 2))), static_cast<std::size_t>(std::stoi(m_str.substr(found + 1, m_str.size() - (found + 2)))));
     }
   }
   else if(str.size() <= 10)
