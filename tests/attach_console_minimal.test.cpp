@@ -5,7 +5,7 @@
 
 #ifdef _WIN32
   #include <windows.h>
-int __stdcall WinMain(HINSTANCE hinst, HINSTANCE hprev, LPSTR cmdline, int show)
+int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #else
 int main()
 #endif

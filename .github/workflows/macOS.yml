@@ -23,6 +23,7 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
 
     steps:
+      - uses: ammaraskar/gcc-problem-matcher@master
       - name: 📥 Checkout
         uses: actions/checkout@v4
         with:
@@ -60,6 +61,7 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
 
     steps:
+      - uses: ammaraskar/gcc-problem-matcher@master
       - name: 📥 Checkout
         uses: actions/checkout@v4
         with:
@@ -95,6 +97,7 @@ jobs:
         standard: [ 11, 14, 17, 20 ]
 
     steps:
+      - uses: ammaraskar/gcc-problem-matcher@master
       - name: 📥 Checkout
         uses: actions/checkout@v4
         with:
