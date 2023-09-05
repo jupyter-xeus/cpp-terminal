@@ -26,7 +26,6 @@ public:
   Options() = default;
   bool has(const Option&);
   void set(const Option&);
-  ~Options() = default;
 
 private:
   std::vector<Option> m_Options;

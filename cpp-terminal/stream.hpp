@@ -11,7 +11,7 @@ namespace Term
 class TIstream
 {
 public:
-  explicit TIstream(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::size_t& size = BUFSIZ);
+  explicit TIstream(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::streamsize& size = BUFSIZ);
   template<typename T> TIstream& operator>>(T& t)
   {
     m_stream >> t;
@@ -31,7 +31,7 @@ private:
 class TOstream
 {
 public:
-  explicit TOstream(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::size_t& size = BUFSIZ);
+  explicit TOstream(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::streamsize& size = BUFSIZ);
   ~TOstream();
   template<typename T> TOstream& operator<<(const T& t)
   {

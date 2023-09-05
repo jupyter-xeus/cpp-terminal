@@ -57,6 +57,7 @@ jobs:
             standard: 20
 
     steps:
+      - uses: ammaraskar/gcc-problem-matcher@master
       - name: ⬇️ Install git
         run: apt-get update ; apt-get install --no-install-recommends -y git
       - name: ⬇️ Setup CMake
@@ -65,7 +66,7 @@ jobs:
           cmakeVersion: ^3
           ninjaVersion: ^1.11.1
       - name: 📥 Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: 📂 Load .env file
@@ -126,6 +127,7 @@ jobs:
             standard: 20
 
     steps:
+      - uses: ammaraskar/gcc-problem-matcher@master
       - name: ⬇️ Install git
         run: apt-get update ; apt-get install --no-install-recommends -y git
       - name: ⬇️ Setup CMake
@@ -134,7 +136,7 @@ jobs:
           cmakeVersion: ^3
           ninjaVersion: ^1.11.1
       - name: 📥 Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: 📂 Load .env file
@@ -163,6 +165,7 @@ jobs:
         standard: [ 11, 14, 17, 20 ]
 
     steps:
+      - uses: ammaraskar/gcc-problem-matcher@master
       - name: ⬇️ Install git
         run: apt-get update ; apt-get install --no-install-recommends -y git
       - name: ⬇️ Setup CMake
@@ -171,7 +174,7 @@ jobs:
           cmakeVersion: ^3
           ninjaVersion: ^1.11.1
       - name: 📥 Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: 📂 Load .env file

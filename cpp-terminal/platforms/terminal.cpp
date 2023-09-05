@@ -76,7 +76,7 @@ void Term::Terminal::setBadStateReturnCode()
   std::pair<bool, std::string> returnCode{Private::getenv("CPP_TERMINAL_BADSTATE")};
   try
   {
-    if(returnCode.first && stoi(returnCode.second) != EXIT_SUCCESS) m_badReturnCode = stoi(returnCode.second);
+    if(returnCode.first && stoi(returnCode.second) != EXIT_SUCCESS) m_badReturnCode = static_cast<std::uint8_t>(stoi(returnCode.second));
   }
   catch(...)
   {

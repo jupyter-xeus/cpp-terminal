@@ -24,9 +24,9 @@ public:
   Buffer& operator=(Buffer&&)      = delete;
 
 protected:
-  virtual Term::Buffer::int_type underflow() final;
-  virtual Term::Buffer::int_type overflow(int c = std::char_traits<Term::Buffer::char_type>::eof()) final;
-  virtual int                    sync() final;
+  virtual int_type underflow() final;
+  virtual int_type overflow(int c = std::char_traits<Term::Buffer::char_type>::eof()) final;
+  virtual int      sync() final;
 
 private:
   void               setType(const Term::Buffer::Type& type);

@@ -232,7 +232,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     {
       std::string before = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
       std::string newchar;
-      newchar.push_back(key);
+      newchar.push_back(static_cast<char>(key));
       std::string after         = m.lines[m.cursor_row - 1].substr(m.cursor_col - 1);
       m.lines[m.cursor_row - 1] = before += newchar += after;
       m.cursor_col++;
@@ -269,7 +269,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
           {
             m.cursor_col = m.lines[m.cursor_row - 2].size() + 1;
             m.lines[m.cursor_row - 2] += m.lines[m.cursor_row - 1];
-            m.lines.erase(m.lines.begin() + m.cursor_row - 1);
+            m.lines.erase(m.lines.begin() + static_cast<int>(m.cursor_row - 1));
             m.cursor_row--;
           }
           break;
@@ -335,7 +335,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
           if(m.cursor_row < m.lines.size())
           {
             // Not at the bottom row, can't push back
-            m.lines.insert(m.lines.begin() + m.cursor_row, after);
+            m.lines.insert(m.lines.begin() + static_cast<int>(m.cursor_row), after);
           }
           else { m.lines.push_back(after); }
           m.cursor_col = 1;

@@ -24,5 +24,7 @@ std::string utf32_to_utf8(const std::u32string& s);
 // converts a vector of char into a string
 std::string vector_to_string(const std::vector<char>& vector);
 
+bool is_valid_utf8_code_unit(const std::string& s);
+
 }  // namespace Private
 }  // namespace Term
