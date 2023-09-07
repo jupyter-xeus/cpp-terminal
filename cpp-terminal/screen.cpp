@@ -11,8 +11,6 @@ bool Term::Screen::empty() const
     return false;
 }
 
-std::pair<std::size_t, std::size_t> Term::Screen::size() const { return m_size; }
-
 std::string Term::clear_screen() { return "\x1b[2J"; }
 
 std::string Term::screen_save()

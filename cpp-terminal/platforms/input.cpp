@@ -29,12 +29,11 @@
 #include "cpp-terminal/event.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
+#include "cpp-terminal/platforms/blocking_queue.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/platforms/input.hpp"
 
-#include <condition_variable>
 #include <mutex>
-#include <queue>
 #include <string>
 
 namespace Term
@@ -42,51 +41,6 @@ namespace Term
 
 namespace Private
 {
-template<typename T> class BlockingQueue
-{
-private:
-  std::mutex              mutex_;
-  std::queue<T>           queue_;
-  std::condition_variable cv;
-
-public:
-  T pop()
-  {
-    const std::lock_guard<std::mutex> lk(mutex_);
-    T                                 value = this->queue_.front();
-    queue_.pop();
-    return value;
-  }
-
-  void push(const T& value)
-  {
-    const std::lock_guard<std::mutex> lk(mutex_);
-    queue_.push(value);
-    cv.notify_all();
-  }
-
-  void push(T&& value)
-  {
-    const std::lock_guard<std::mutex> lk(mutex_);
-    queue_.push(std::move(value));
-    cv.notify_all();
-  }
-
-  bool empty()
-  {
-    const std::lock_guard<std::mutex> lk(mutex_);
-    bool                              check = queue_.empty();
-    return check;
-  }
-
-  std::size_t size()
-  {
-    const std::lock_guard<std::mutex> lk(mutex_);
-    std::size_t                       check = queue_.size();
-    return check;
-  }
-  void wait_for_events(std::unique_lock<std::mutex>& lock) { cv.wait(lock); }
-};
 
 #if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
 volatile std::sig_atomic_t m_signalStatus{0};
@@ -114,7 +68,7 @@ private:
 
 std::thread Term::Private::Input::m_thread = std::thread(Term::Private::Input::read_event);
 
-Term::Private::BlockingQueue<Term::Event> Term::Private::Input::m_events;
+Term::Private::BlockingQueue Term::Private::Input::m_events;
 
 void Term::Private::Input::read_event()
 {
