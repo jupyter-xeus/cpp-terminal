@@ -33,7 +33,8 @@
 #include "cpp-terminal/platforms/input.hpp"
 
 #include <string>
-#include <thread>
+#include <mutex>
+#include <queue>
 
 namespace Term
 {
@@ -139,22 +140,17 @@ void Term::Private::Input::read_event()
       ::sigprocmask(SIG_UNBLOCK, &windows_event, nullptr);
       enabled = true;
     }
-    Term::Event ret;
-    int         wait{0};
+    int wait{0};
     do {
-      ret = read_raw();
-      if(!ret.empty()) m_events.push(ret);
-      else if(Term::Private::m_signalStatus == 1)
+      if(!read_raw().empty()) wait=0;
+      if(Term::Private::m_signalStatus == 1)
       {
         Term::Private::m_signalStatus = 0;
         m_events.push(screen_size());
+        wait=0;
       }
-      else
-      {
-        if(wait <= 9) std::this_thread::sleep_for(std::chrono::milliseconds(++wait));
-        else
-          std::this_thread::sleep_for(std::chrono::milliseconds(10));
-      }
+      if(wait==200) std::this_thread::sleep_for(std::chrono::duration<int,std::micro>(wait));
+      else { wait+=20;std::this_thread::sleep_for(std::chrono::duration<int, std::micro>(wait )); }
     } while(true);
 #else
     static bool              enabled{false};
@@ -189,8 +185,7 @@ void Term::Private::Input::read_event()
         read(signal_fd.get(), &fdsi, sizeof(fdsi));
         m_events.push(Term::Screen(screen_size()));
       }
-      else
-        m_events.push(read_raw());
+      else read_raw();
     }
 #endif
   }
@@ -377,11 +372,13 @@ Term::Event Term::Private::Input::read_raw()
 #else
   std::size_t nread{0};
   ::ioctl(Private::in.fd(), FIONREAD, &nread);
+  if(nread==0) return Term::Event(); //FIXME
   std::string ret(nread, '\0');
   errno = 0;
-  ::ssize_t nrea{::read(Private::in.fd(), &ret[0], ret.size())};
+  ::ssize_t nrea{::read(Private::in.fd(), &ret[0], nread)};
   if(nrea == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-  return Event(ret.c_str());
+  m_events.push(Event(ret.c_str()));
+  return Event(ret.c_str()); //FIXME
 #endif
 }
 
@@ -414,7 +411,7 @@ Term::Event Term::Private::Input::getEvent()
 
 Term::Event Term::Private::Input::getEventBlocking()
 {
-  while(m_events.empty()) continue;
+  while(m_events.empty())std::this_thread::sleep_for(std::chrono::duration<int,std::milli>(10));
   return m_events.pop();
 }
 

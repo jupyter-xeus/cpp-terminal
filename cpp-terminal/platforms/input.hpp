@@ -2,8 +2,6 @@
 
 #include "cpp-terminal/event.hpp"
 
-#include <mutex>
-#include <queue>
 #include <thread>
 
 namespace Term
