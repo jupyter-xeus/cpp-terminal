@@ -1,7 +1,5 @@
 #include "cpp-terminal/platforms/blocking_queue.hpp"
 
-#include "cpp-terminal/event.hpp"
-
 Term::Event Term::Private::BlockingQueue::pop()
 {
   const std::lock_guard<std::mutex> lk(mutex_);

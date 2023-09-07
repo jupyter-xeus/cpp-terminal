@@ -1,13 +1,13 @@
 #pragma once
 
+#include "cpp-terminal/event.hpp"
+
 #include <condition_variable>
 #include <mutex>
 #include <queue>
 
 namespace Term
 {
-
-class Event;
 
 namespace Private
 {
