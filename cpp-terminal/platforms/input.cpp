@@ -32,9 +32,10 @@
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/platforms/input.hpp"
 
-#include <string>
+#include <condition_variable>
 #include <mutex>
 #include <queue>
+#include <string>
 
 namespace Term
 {
@@ -44,47 +45,47 @@ namespace Private
 template<typename T> class BlockingQueue
 {
 private:
-  std::mutex    mutex_;
-  std::queue<T> queue_;
+  std::mutex              mutex_;
+  std::queue<T>           queue_;
+  std::condition_variable cv;
 
 public:
   T pop()
   {
-    this->mutex_.lock();
-    T value = this->queue_.front();
-    this->queue_.pop();
-    this->mutex_.unlock();
+    const std::lock_guard<std::mutex> lk(mutex_);
+    T                                 value = this->queue_.front();
+    queue_.pop();
     return value;
   }
 
   void push(const T& value)
   {
-    this->mutex_.lock();
-    this->queue_.push(value);
-    this->mutex_.unlock();
+    const std::lock_guard<std::mutex> lk(mutex_);
+    queue_.push(value);
+    cv.notify_all();
   }
 
   void push(T&& value)
   {
-    this->mutex_.lock();
-    this->queue_.push(std::move(value));
-    this->mutex_.unlock();
+    const std::lock_guard<std::mutex> lk(mutex_);
+    queue_.push(std::move(value));
+    cv.notify_all();
   }
 
   bool empty()
   {
-    this->mutex_.lock();
-    bool check = this->queue_.empty();
-    this->mutex_.unlock();
+    const std::lock_guard<std::mutex> lk(mutex_);
+    bool                              check = queue_.empty();
     return check;
   }
+
   std::size_t size()
   {
-    this->mutex_.lock();
-    std::size_t check = this->queue_.size();
-    this->mutex_.unlock();
+    const std::lock_guard<std::mutex> lk(mutex_);
+    std::size_t                       check = queue_.size();
     return check;
   }
+  void wait_for_events(std::unique_lock<std::mutex>& lock) { cv.wait(lock); }
 };
 
 #if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
@@ -142,15 +143,19 @@ void Term::Private::Input::read_event()
     }
     int wait{0};
     do {
-      if(!read_raw().empty()) wait=0;
+      if(!read_raw().empty()) wait = 0;
       if(Term::Private::m_signalStatus == 1)
       {
         Term::Private::m_signalStatus = 0;
         m_events.push(screen_size());
-        wait=0;
+        wait = 0;
       }
-      if(wait==200) std::this_thread::sleep_for(std::chrono::duration<int,std::micro>(wait));
-      else { wait+=20;std::this_thread::sleep_for(std::chrono::duration<int, std::micro>(wait )); }
+      if(wait == 200) std::this_thread::sleep_for(std::chrono::duration<int, std::micro>(wait));
+      else
+      {
+        wait += 20;
+        std::this_thread::sleep_for(std::chrono::duration<int, std::micro>(wait));
+      }
     } while(true);
 #else
     static bool              enabled{false};
@@ -185,7 +190,8 @@ void Term::Private::Input::read_event()
         read(signal_fd.get(), &fdsi, sizeof(fdsi));
         m_events.push(Term::Screen(screen_size()));
       }
-      else read_raw();
+      else
+        read_raw();
     }
 #endif
   }
@@ -372,13 +378,13 @@ Term::Event Term::Private::Input::read_raw()
 #else
   std::size_t nread{0};
   ::ioctl(Private::in.fd(), FIONREAD, &nread);
-  if(nread==0) return Term::Event(); //FIXME
+  if(nread == 0) return Term::Event();  //FIXME
   std::string ret(nread, '\0');
   errno = 0;
   ::ssize_t nrea{::read(Private::in.fd(), &ret[0], nread)};
   if(nrea == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
   m_events.push(Event(ret.c_str()));
-  return Event(ret.c_str()); //FIXME
+  return Event(ret.c_str());  //FIXME
 #endif
 }
 
@@ -411,7 +417,9 @@ Term::Event Term::Private::Input::getEvent()
 
 Term::Event Term::Private::Input::getEventBlocking()
 {
-  while(m_events.empty())std::this_thread::sleep_for(std::chrono::duration<int,std::milli>(10));
+  static std::mutex                   cv_m;
+  static std::unique_lock<std::mutex> lk(cv_m);
+  m_events.wait_for_events(lk);
   return m_events.pop();
 }
 
