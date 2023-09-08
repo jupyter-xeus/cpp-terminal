@@ -328,20 +328,11 @@ Term::Private::Input::Input()
   ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
 #endif
 #if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
-  static bool enabled{false};
-  if(!enabled)
-  {
-    ::sigset_t windows_event;
-    sigemptyset(&windows_event);
-    sigaddset(&windows_event, SIGWINCH);
-    ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
-    struct sigaction sa;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags   = 0;
-    sa.sa_handler = Term::Private::sigwinchHandler;
-    sigaction(SIGWINCH, &sa, nullptr);
-    enabled = true;
-  }
+  static struct sigaction sa;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags   = 0;
+  sa.sa_handler = Term::Private::sigwinchHandler;
+  sigaction(SIGWINCH, &sa, nullptr);
 #endif
 }
 
