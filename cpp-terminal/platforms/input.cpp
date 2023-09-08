@@ -29,7 +29,6 @@
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/platforms/input.hpp"
 
-#include <iostream>
 #include <mutex>
 #include <string>
 
