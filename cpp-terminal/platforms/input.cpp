@@ -7,11 +7,7 @@
 
   #include <vector>
 #elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
-  #if !defined(_GLIBCXX_USE_NANOSLEEP)
-    #define _GLIBCXX_USE_NANOSLEEP
-  #endif
   #include <cerrno>
-  #include <chrono>
   #include <csignal>
   #include <sys/ioctl.h>
   #include <thread>
@@ -33,6 +29,7 @@
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/platforms/input.hpp"
 
+#include <iostream>
 #include <mutex>
 #include <string>
 
@@ -47,6 +44,8 @@ volatile std::sig_atomic_t m_signalStatus{0};
 static void                sigwinchHandler(int sig)
 {
   if(sig == SIGWINCH) m_signalStatus = 1;
+  else
+    m_signalStatus = 0;
 }
 #elif defined(_WIN32)
 #else
@@ -80,37 +79,16 @@ void Term::Private::Input::read_event()
     ret = read_raw();
     if(!ret.empty()) m_events.push(std::move(ret));
 #elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
-    static bool enabled{false};
-    if(!enabled)
+    ::sigset_t windows_event;
+    sigemptyset(&windows_event);
+    sigaddset(&windows_event, SIGWINCH);
+    ::sigprocmask(SIG_UNBLOCK, &windows_event, nullptr);
+    if(Term::Private::m_signalStatus == 1)
     {
-      ::sigset_t windows_event;
-      sigemptyset(&windows_event);
-      sigaddset(&windows_event, SIGWINCH);
-      ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
-      struct sigaction sa;
-      sigemptyset(&sa.sa_mask);
-      sa.sa_flags   = 0;
-      sa.sa_handler = Term::Private::sigwinchHandler;
-      sigaction(SIGWINCH, &sa, nullptr);
-      ::sigprocmask(SIG_UNBLOCK, &windows_event, nullptr);
-      enabled = true;
+      Term::Private::m_signalStatus = 0;
+      m_events.push(screen_size());
     }
-    int wait{0};
-    do {
-      if(!read_raw().empty()) wait = 0;
-      if(Term::Private::m_signalStatus == 1)
-      {
-        Term::Private::m_signalStatus = 0;
-        m_events.push(screen_size());
-        wait = 0;
-      }
-      if(wait == 200) std::this_thread::sleep_for(std::chrono::duration<int, std::micro>(wait));
-      else
-      {
-        wait += 20;
-        std::this_thread::sleep_for(std::chrono::duration<int, std::micro>(wait));
-      }
-    } while(true);
+    read_raw();
 #else
     static bool              enabled{false};
     static Term::Private::fd epoll(::epoll_create1(EPOLL_CLOEXEC));
@@ -350,6 +328,22 @@ Term::Private::Input::Input()
   sigaddset(&windows_event, SIGWINCH);
   ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
 #endif
+#if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
+  static bool enabled{false};
+  if(!enabled)
+  {
+    ::sigset_t windows_event;
+    sigemptyset(&windows_event);
+    sigaddset(&windows_event, SIGWINCH);
+    ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
+    struct sigaction sa;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags   = 0;
+    sa.sa_handler = Term::Private::sigwinchHandler;
+    sigaction(SIGWINCH, &sa, nullptr);
+    enabled = true;
+  }
+#endif
 }
 
 void Term::Private::Input::startReading()
@@ -374,6 +368,8 @@ Term::Event Term::Private::Input::getEventBlocking()
   static std::mutex                   cv_m;
   static std::unique_lock<std::mutex> lk(cv_m);
   m_events.wait_for_events(lk);
+  // fix for macos
+  if(m_events.empty()) { m_events.wait_for_events(lk); }
   return m_events.pop();
 }
 
