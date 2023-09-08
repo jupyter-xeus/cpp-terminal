@@ -356,12 +356,7 @@ void Term::Private::Input::startReading()
   }
 }
 
-Term::Event Term::Private::Input::getEvent()
-{
-  if(m_events.empty()) return Term::Event();
-  else
-    return m_events.pop();
-}
+Term::Event Term::Private::Input::getEvent() { return m_events.pop(); }
 
 Term::Event Term::Private::Input::getEventBlocking()
 {
