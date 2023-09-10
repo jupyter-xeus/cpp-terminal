@@ -252,6 +252,7 @@ public:
   MetaKey(const MetaKey::Value& value);
   Term::MetaKey operator+(const MetaKey& meta) const;
   Term::Key     operator+(const Key& key) const;
+  Term::MetaKey& operator+=(const MetaKey& meta);
   bool          operator==(const Term::MetaKey& meta) const;
   bool          operator!=(const Term::MetaKey& meta) const;
   bool          hasAlt() const;

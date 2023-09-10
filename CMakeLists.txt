@@ -9,7 +9,6 @@ project(cpp-terminal
         LANGUAGES CXX)
 
 # see https://cmake.org/cmake/help/latest/policy/CMP0092.html
-message(STATUS "${CMAKE_CXX_FLAGS}")
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   set(CMAKE_CXX_FLAGS_OLD "${CMAKE_CXX_FLAGS}")
   if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")

@@ -8,18 +8,24 @@ Term::Event Term::Private::BlockingQueue::pop()
   return value;
 }
 
-void Term::Private::BlockingQueue::push(const Term::Event& value)
+void Term::Private::BlockingQueue::push(const Term::Event& value,const std::size_t& occurence)
 {
-  const std::lock_guard<std::mutex> lk(mutex_);
-  queue_.push(value);
-  cv.notify_all();
+  for(std::size_t i = 0; i != occurence; ++i)
+  {
+    const std::lock_guard<std::mutex> lk(mutex_);
+    queue_.push(value);
+    cv.notify_all();
+  }
 }
 
-void Term::Private::BlockingQueue::push(Term::Event&& value)
+void Term::Private::BlockingQueue::push(const Term::Event&& value, const std::size_t& occurence)
 {
-  const std::lock_guard<std::mutex> lk(mutex_);
-  queue_.push(std::move(value));
-  cv.notify_all();
+  for(std::size_t i = 0; i != occurence; ++i)
+  {
+    const std::lock_guard<std::mutex> lk(mutex_);
+    queue_.push(std::move(value));
+    cv.notify_all();
+  }
 }
 
 bool Term::Private::BlockingQueue::empty()

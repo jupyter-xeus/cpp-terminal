@@ -145,7 +145,10 @@ Term::Event::Event(const Term::Key& key) : m_Type(Type::Key) { m_container.m_Key
 
 Term::Event::Type Term::Event::type() const { return m_Type; }
 
-Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste) { parse(str); }
+Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste)
+{
+  parse(str);
+}
 
 void Term::Event::parse(const std::string& str)
 {
@@ -310,14 +313,20 @@ void Term::Event::parse(const std::string& str)
       m_container.m_Key = Key(Term::Key::Value::Numeric5);
     else if(Term::Private::is_valid_utf8_code_unit(str))
       m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0]));
+    else
+    {
+      m_Type = Type::CopyPaste;
+      m_str  = str;
+      return;
+    }
+    m_Type = Type::Key;
   }
   else
   {
     m_Type = Type::CopyPaste;
     m_str  = str;
   }
-  if(!m_container.m_Key.empty()) { m_Type = Type::Key; }
-}
+  }
 
 Term::Event::operator Term::Key() const
 {
