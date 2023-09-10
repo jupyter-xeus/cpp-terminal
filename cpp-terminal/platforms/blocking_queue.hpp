@@ -21,8 +21,8 @@ private:
 
 public:
   Term::Event pop();
-  void        push(const Term::Event& value, const std::size_t& occurence = 1);
-  void        push(const Term::Event&& value, const std::size_t& occurence=1);
+  void        push(const Term::Event& value, const std::size_t& occurrence = 1);
+  void        push(const Term::Event&& value, const std::size_t& occurrence = 1);
   bool        empty();
   std::size_t size();
   void        wait_for_events(std::unique_lock<std::mutex>& lock);

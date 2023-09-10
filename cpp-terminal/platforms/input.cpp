@@ -29,8 +29,8 @@
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/platforms/input.hpp"
 
-#include <mutex>
 #include <iostream>
+#include <mutex>
 #include <string>
 
 namespace Term
@@ -127,8 +127,7 @@ void Term::Private::Input::read_event()
   }
 }
 
-
- void Term::Private::Input::read_windows_key(const std::uint16_t& virtual_key_code, const std::uint32_t& control_key_state, const std::size_t& occurence)
+void Term::Private::Input::read_windows_key(const std::uint16_t& virtual_key_code, const std::uint32_t& control_key_state, const std::size_t& occurrence)
 {
 #ifdef _WIN32
   // First check if we have ALT etc (CTRL is already done so skip it)
@@ -155,52 +154,52 @@ void Term::Private::Input::read_event()
     case VK_NONCONVERT:  // ?
     case VK_ACCEPT:      // ?
     case VK_MODECHANGE:  // ?
-       break;
-    case VK_PRIOR: m_events.push(std::move(toAdd + Term::Key(Key::Value::PageUp)), occurence); break;
-    case VK_NEXT: m_events.push(std::move(toAdd + Term::Key(Key::Value::PageDown)), occurence); break;
-    case VK_END: m_events.push(std::move(toAdd + Term::Key(Key::Value::End)), occurence); break;
-    case VK_HOME: m_events.push(std::move(toAdd + Term::Key(Key::Value::Home)), occurence); break;
-    case VK_LEFT: m_events.push(std::move(toAdd + Term::Key(Key::Value::ArrowLeft)), occurence); break;
-    case VK_UP: m_events.push(std::move(toAdd + Term::Key(Key::Value::ArrowUp)), occurence); break;
-    case VK_RIGHT: m_events.push(std::move(toAdd + Term::Key(Key::Value::ArrowRight)), occurence); break;
-    case VK_DOWN: m_events.push(std::move(toAdd + Term::Key(Key::Value::ArrowDown)), occurence); break;
+      break;
+    case VK_PRIOR: m_events.push(std::move(toAdd + Term::Key(Key::Value::PageUp)), occurrence); break;
+    case VK_NEXT: m_events.push(std::move(toAdd + Term::Key(Key::Value::PageDown)), occurrence); break;
+    case VK_END: m_events.push(std::move(toAdd + Term::Key(Key::Value::End)), occurrence); break;
+    case VK_HOME: m_events.push(std::move(toAdd + Term::Key(Key::Value::Home)), occurrence); break;
+    case VK_LEFT: m_events.push(std::move(toAdd + Term::Key(Key::Value::ArrowLeft)), occurrence); break;
+    case VK_UP: m_events.push(std::move(toAdd + Term::Key(Key::Value::ArrowUp)), occurrence); break;
+    case VK_RIGHT: m_events.push(std::move(toAdd + Term::Key(Key::Value::ArrowRight)), occurrence); break;
+    case VK_DOWN: m_events.push(std::move(toAdd + Term::Key(Key::Value::ArrowDown)), occurrence); break;
     case VK_SELECT:   //?
     case VK_PRINT:    //?
     case VK_EXECUTE:  //?
-       break;
-    case VK_SNAPSHOT: m_events.push(std::move(toAdd + Term::Key(Key::Value::PrintScreen)), occurence); break;
-    case VK_INSERT: m_events.push(std::move(toAdd + Term::Key(Key::Value::Insert)), occurence); break;
-    case VK_DELETE: m_events.push(std::move(toAdd + Term::Key(Key::Value::Del)), occurence); break;
+      break;
+    case VK_SNAPSHOT: m_events.push(std::move(toAdd + Term::Key(Key::Value::PrintScreen)), occurrence); break;
+    case VK_INSERT: m_events.push(std::move(toAdd + Term::Key(Key::Value::Insert)), occurrence); break;
+    case VK_DELETE: m_events.push(std::move(toAdd + Term::Key(Key::Value::Del)), occurrence); break;
     case VK_HELP:   //?
     case VK_LWIN:   //Maybe allow to detect Windows key Left and right
     case VK_RWIN:   //Maybe allow to detect Windows key Left and right
     case VK_APPS:   //?
     case VK_SLEEP:  //?
-       break;
-    case VK_F1: m_events.push(std::move(toAdd + Term::Key(Key::Value::F1)), occurence); break;
-    case VK_F2: m_events.push(std::move(toAdd + Term::Key(Key::Value::F2)), occurence); break;
-    case VK_F3: m_events.push(std::move(toAdd + Term::Key(Key::Value::F3)), occurence); break;
-    case VK_F4: m_events.push(std::move(toAdd + Term::Key(Key::Value::F4)), occurence); break;
-    case VK_F5: m_events.push(std::move(toAdd + Term::Key(Key::Value::F5)), occurence); break;
-    case VK_F6: m_events.push(std::move(toAdd + Term::Key(Key::Value::F6)), occurence); break;
-    case VK_F7: m_events.push(std::move(toAdd + Term::Key(Key::Value::F7)), occurence); break;
-    case VK_F8: m_events.push(std::move(toAdd + Term::Key(Key::Value::F8)), occurence); break;
-    case VK_F9: m_events.push(std::move(toAdd + Term::Key(Key::Value::F9)), occurence); break;
-    case VK_F10: m_events.push(std::move(toAdd + Term::Key(Key::Value::F10)), occurence); break;
-    case VK_F11: m_events.push(std::move(toAdd + Term::Key(Key::Value::F11)), occurence); break;
-    case VK_F12: m_events.push(std::move(toAdd + Term::Key(Key::Value::F12)), occurence); break;
-    case VK_F13: m_events.push(std::move(toAdd + Term::Key(Key::Value::F13)), occurence); break;
-    case VK_F14: m_events.push(std::move(toAdd + Term::Key(Key::Value::F14)), occurence); break;
-    case VK_F15: m_events.push(std::move(toAdd + Term::Key(Key::Value::F15)), occurence); break;
-    case VK_F16: m_events.push(std::move(toAdd + Term::Key(Key::Value::F16)), occurence); break;
-    case VK_F17: m_events.push(std::move(toAdd + Term::Key(Key::Value::F17)), occurence); break;
-    case VK_F18: m_events.push(std::move(toAdd + Term::Key(Key::Value::F18)), occurence); break;
-    case VK_F19: m_events.push(std::move(toAdd + Term::Key(Key::Value::F19)), occurence); break;
-    case VK_F20: m_events.push(std::move(toAdd + Term::Key(Key::Value::F20)), occurence); break;
-    case VK_F21: m_events.push(std::move(toAdd + Term::Key(Key::Value::F21)), occurence); break;
-    case VK_F22: m_events.push(std::move(toAdd + Term::Key(Key::Value::F22)), occurence); break;
-    case VK_F23: m_events.push(std::move(toAdd + Term::Key(Key::Value::F23)), occurence); break;
-    case VK_F24: m_events.push(std::move(toAdd + Term::Key(Key::Value::F24)), occurence); break;
+      break;
+    case VK_F1: m_events.push(std::move(toAdd + Term::Key(Key::Value::F1)), occurrence); break;
+    case VK_F2: m_events.push(std::move(toAdd + Term::Key(Key::Value::F2)), occurrence); break;
+    case VK_F3: m_events.push(std::move(toAdd + Term::Key(Key::Value::F3)), occurrence); break;
+    case VK_F4: m_events.push(std::move(toAdd + Term::Key(Key::Value::F4)), occurrence); break;
+    case VK_F5: m_events.push(std::move(toAdd + Term::Key(Key::Value::F5)), occurrence); break;
+    case VK_F6: m_events.push(std::move(toAdd + Term::Key(Key::Value::F6)), occurrence); break;
+    case VK_F7: m_events.push(std::move(toAdd + Term::Key(Key::Value::F7)), occurrence); break;
+    case VK_F8: m_events.push(std::move(toAdd + Term::Key(Key::Value::F8)), occurrence); break;
+    case VK_F9: m_events.push(std::move(toAdd + Term::Key(Key::Value::F9)), occurrence); break;
+    case VK_F10: m_events.push(std::move(toAdd + Term::Key(Key::Value::F10)), occurrence); break;
+    case VK_F11: m_events.push(std::move(toAdd + Term::Key(Key::Value::F11)), occurrence); break;
+    case VK_F12: m_events.push(std::move(toAdd + Term::Key(Key::Value::F12)), occurrence); break;
+    case VK_F13: m_events.push(std::move(toAdd + Term::Key(Key::Value::F13)), occurrence); break;
+    case VK_F14: m_events.push(std::move(toAdd + Term::Key(Key::Value::F14)), occurrence); break;
+    case VK_F15: m_events.push(std::move(toAdd + Term::Key(Key::Value::F15)), occurrence); break;
+    case VK_F16: m_events.push(std::move(toAdd + Term::Key(Key::Value::F16)), occurrence); break;
+    case VK_F17: m_events.push(std::move(toAdd + Term::Key(Key::Value::F17)), occurrence); break;
+    case VK_F18: m_events.push(std::move(toAdd + Term::Key(Key::Value::F18)), occurrence); break;
+    case VK_F19: m_events.push(std::move(toAdd + Term::Key(Key::Value::F19)), occurrence); break;
+    case VK_F20: m_events.push(std::move(toAdd + Term::Key(Key::Value::F20)), occurrence); break;
+    case VK_F21: m_events.push(std::move(toAdd + Term::Key(Key::Value::F21)), occurrence); break;
+    case VK_F22: m_events.push(std::move(toAdd + Term::Key(Key::Value::F22)), occurrence); break;
+    case VK_F23: m_events.push(std::move(toAdd + Term::Key(Key::Value::F23)), occurrence); break;
+    case VK_F24: m_events.push(std::move(toAdd + Term::Key(Key::Value::F24)), occurrence); break;
     case VK_NUMLOCK:
     case VK_SCROLL:
     default: break;
@@ -214,7 +213,7 @@ void Term::Private::Input::read_raw()
   DWORD to_read{0};
   GetNumberOfConsoleInputEvents(Private::in.handle(), &to_read);
   if(to_read == 0) return;
-  DWORD read{0};
+  DWORD                     read{0};
   std::vector<INPUT_RECORD> events{to_read};
   if(!ReadConsoleInputW(Private::in.handle(), &events[0], to_read, &read) || read != to_read) Term::Exception("ReadFile() failed");
   std::string ret;
@@ -223,74 +222,67 @@ void Term::Private::Input::read_raw()
   {
     switch(events[i].EventType)
     {
-       case KEY_EVENT:
-       {
-         if(events[i].Event.KeyEvent.bKeyDown)
-         {
-           if(events[i].Event.KeyEvent.uChar.UnicodeChar == 0 )
-           {
-             read_windows_key(events[i].Event.KeyEvent.wVirtualKeyCode, events[i].Event.KeyEvent.dwControlKeyState, events[i].Event.KeyEvent.wRepeatCount);
-           }
-           else
-           {
-             if(events[i].Event.KeyEvent.uChar.UnicodeChar <= 127)  //MAYBE BUG in to_utf8 (me or Windaube)
-             {
-               if(events[i].Event.KeyEvent.uChar.UnicodeChar == Term::Key::Del) ret.append(events[i].Event.KeyEvent.wRepeatCount, Key(Term::Key::Value::Backspace));
-               ret.append(events[i].Event.KeyEvent.wRepeatCount, events[i].Event.KeyEvent.uChar.UnicodeChar);
-             }
-             else
-               for(std::size_t j = 0; j != events[i].Event.KeyEvent.wRepeatCount;++j) ret.append(to_utf8(&events[i].Event.KeyEvent.uChar.UnicodeChar));
-           }
-           break;
-         }
-         else
-           break;
-       }
-       case FOCUS_EVENT:
-       {
-         if(!ret.empty())
-         {
-           m_events.push(Term::Event(ret));
-           ret.clear();
-         }
-         break;
-       }
-       case MENU_EVENT:
-       {
-         if(!ret.empty())
-         {
-           m_events.push(Term::Event(ret));
-           ret.clear();
-         }
-         break;
-       }
-       case MOUSE_EVENT:
-       {
-         if(!ret.empty())
-         {
-           m_events.push(Term::Event(ret));
-           ret.clear();
-         }
-         break;
-       }
-       case WINDOW_BUFFER_SIZE_EVENT:
-       {
-         need_windows_size = true; // if we send directly it's too much generations
-         if(!ret.empty())
-         {
-           m_events.push(Term::Event(ret));
-           ret.clear();
-         }
-         break;
-       }
-       default:
-         break;
+      case KEY_EVENT:
+      {
+        if(events[i].Event.KeyEvent.bKeyDown)
+        {
+          if(events[i].Event.KeyEvent.uChar.UnicodeChar == 0) { read_windows_key(events[i].Event.KeyEvent.wVirtualKeyCode, events[i].Event.KeyEvent.dwControlKeyState, events[i].Event.KeyEvent.wRepeatCount); }
+          else
+          {
+            if(events[i].Event.KeyEvent.uChar.UnicodeChar <= 127)  //MAYBE BUG in to_utf8 (me or Windaube)
+            {
+              if(events[i].Event.KeyEvent.uChar.UnicodeChar == Term::Key::Del) ret.append(events[i].Event.KeyEvent.wRepeatCount, Key(Term::Key::Value::Backspace));
+              ret.append(events[i].Event.KeyEvent.wRepeatCount, events[i].Event.KeyEvent.uChar.UnicodeChar);
+            }
+            else
+              for(std::size_t j = 0; j != events[i].Event.KeyEvent.wRepeatCount; ++j) ret.append(to_utf8(&events[i].Event.KeyEvent.uChar.UnicodeChar));
+          }
+          break;
+        }
+        else
+          break;
+      }
+      case FOCUS_EVENT:
+      {
+        if(!ret.empty())
+        {
+          m_events.push(Term::Event(ret));
+          ret.clear();
+        }
+        break;
+      }
+      case MENU_EVENT:
+      {
+        if(!ret.empty())
+        {
+          m_events.push(Term::Event(ret));
+          ret.clear();
+        }
+        break;
+      }
+      case MOUSE_EVENT:
+      {
+        if(!ret.empty())
+        {
+          m_events.push(Term::Event(ret));
+          ret.clear();
+        }
+        break;
+      }
+      case WINDOW_BUFFER_SIZE_EVENT:
+      {
+        need_windows_size = true;  // if we send directly it's too much generations
+        if(!ret.empty())
+        {
+          m_events.push(Term::Event(ret));
+          ret.clear();
+        }
+        break;
+      }
+      default: break;
     }
   }
-  if(!ret.empty())
-  {
-    m_events.push(Term::Event(ret.c_str()));
-  }
+  if(!ret.empty()) { m_events.push(Term::Event(ret.c_str())); }
   if(need_windows_size == true) { m_events.push(screen_size()); }
 #else
   std::size_t nread{0};

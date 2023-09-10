@@ -32,14 +32,11 @@ bool Term::MetaKey::operator==(const Term::MetaKey& meta) const { return (meta.m
 
 bool Term::MetaKey::operator!=(const Term::MetaKey& meta) const { return !(meta == *this); }
 
-
-  Term::MetaKey& Term::MetaKey::operator+=(const MetaKey& meta)
+Term::MetaKey& Term::MetaKey::operator+=(const MetaKey& meta)
 {
-    this->m_value = static_cast<Term::MetaKey::Value>(static_cast<Term::MetaKey::Value>(this->m_value) + static_cast<Term::MetaKey::Value>(meta.m_value));
+  this->m_value = static_cast<Term::MetaKey::Value>(static_cast<Term::MetaKey::Value>(this->m_value) + static_cast<Term::MetaKey::Value>(meta.m_value));
   return *this;
-
-  }
-
+}
 
 Term::Key::Key(const Term::Key::Value& value) : m_value(value) {}
 

@@ -8,9 +8,9 @@ Term::Event Term::Private::BlockingQueue::pop()
   return value;
 }
 
-void Term::Private::BlockingQueue::push(const Term::Event& value,const std::size_t& occurence)
+void Term::Private::BlockingQueue::push(const Term::Event& value, const std::size_t& occurrence)
 {
-  for(std::size_t i = 0; i != occurence; ++i)
+  for(std::size_t i = 0; i != occurrence; ++i)
   {
     const std::lock_guard<std::mutex> lk(mutex_);
     queue_.push(value);
@@ -18,9 +18,9 @@ void Term::Private::BlockingQueue::push(const Term::Event& value,const std::size
   }
 }
 
-void Term::Private::BlockingQueue::push(const Term::Event&& value, const std::size_t& occurence)
+void Term::Private::BlockingQueue::push(const Term::Event&& value, const std::size_t& occurrence)
 {
-  for(std::size_t i = 0; i != occurence; ++i)
+  for(std::size_t i = 0; i != occurrence; ++i)
   {
     const std::lock_guard<std::mutex> lk(mutex_);
     queue_.push(std::move(value));

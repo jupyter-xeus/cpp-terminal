@@ -145,10 +145,7 @@ Term::Event::Event(const Term::Key& key) : m_Type(Type::Key) { m_container.m_Key
 
 Term::Event::Type Term::Event::type() const { return m_Type; }
 
-Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste)
-{
-  parse(str);
-}
+Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste) { parse(str); }
 
 void Term::Event::parse(const std::string& str)
 {
@@ -326,7 +323,7 @@ void Term::Event::parse(const std::string& str)
     m_Type = Type::CopyPaste;
     m_str  = str;
   }
-  }
+}
 
 Term::Event::operator Term::Key() const
 {
