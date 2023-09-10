@@ -146,8 +146,8 @@ std::string Term::Private::InputFileHandler::read()
   {
     std::string ret(nread, '\0');
     errno = 0;
-    ::ssize_t nread{::read(Private::in.fd(), &ret[0], ret.size())};
-    if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
+    ::ssize_t nnread{::read(Private::in.fd(), &ret[0], ret.size())};
+    if(nnread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
     return ret.c_str();
   }
   else
