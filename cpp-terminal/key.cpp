@@ -19,11 +19,11 @@ Term::Key Term::MetaKey::operator+(const Term::Key& key) const
     case Ctrl:
       if((m_value == Value::Ctrl) && key.hasCtrlAll()) return key;
       else
-        return Key(static_cast<Term::Key::Value>(key + Value::Ctrl));  // FIXME maybe a better check;
+        return Key(static_cast<Term::Key::Value>(+key + Value::Ctrl));  // FIXME maybe a better check;
     case Alt:
       if((m_value == Value::Alt) && key.hasAlt()) return key;
       else
-        return Key(static_cast<Term::Key::Value>(key + Value::Alt));  // FIXME maybe a better check;
+        return Key(static_cast<Term::Key::Value>(+key + Value::Alt));  // FIXME maybe a better check;
     default: return key;
   }
 }
