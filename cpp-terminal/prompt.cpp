@@ -60,8 +60,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
   }
   else
   {
-    std::string        input;
-    unsigned short int length = 0;
+    std::string input;
     while(true)
     {
       key = Term::read_event();
@@ -69,13 +68,11 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
       if(key >= 'a' && key <= 'z')
       {
         std::cout << (char)key << std::flush;
-        length++;
         input.push_back(static_cast<char>(key));
       }
       else if(key >= 'A' && key <= 'Z')
       {
         std::cout << (char)key << std::flush;
-        length++;
         input.push_back(static_cast<char>(key + 32));  // convert upper case to lowercase
       }
       else if(key == Term::Key::Ctrl_C || key == Term::Key::Ctrl_D)
@@ -85,10 +82,9 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
       }
       else if(key == Term::Key::Backspace)
       {
-        if(length != 0)
+        if(input.empty() != 0)
         {
           std::cout << "\033[D \033[D" << std::flush;  // erase last line and move the cursor back
-          length--;
           input.pop_back();
         }
       }
@@ -104,7 +100,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
           std::cout << '\n' << std::flush;
           return Result::NO;
         }
-        else if(length == 0)
+        else if(input.empty())
         {
           std::cout << '\n' << std::flush;
           return Result::NONE;
