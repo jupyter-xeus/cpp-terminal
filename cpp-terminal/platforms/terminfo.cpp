@@ -17,7 +17,7 @@ bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& 
     #pragma warning(disable : 4191)
   #else
     #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wuninitialized"
+    #pragma GCC diagnostic ignored "-Wcast-function-type"
   #endif
   NTSTATUS(WINAPI * getVersion)
   (PRTL_OSVERSIONINFOW) = (reinterpret_cast<NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW)>(GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "RtlGetVersion")));
