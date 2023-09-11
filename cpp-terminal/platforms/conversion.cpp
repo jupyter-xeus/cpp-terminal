@@ -21,8 +21,8 @@ std::string to_utf8(LPCWCH utf16Str)
 }
 #endif
 
-static constexpr std::uint8_t UTF8_ACCEPT = 0;
-static constexpr std::uint8_t UTF8_REJECT = 0xf;
+static constexpr std::uint8_t UTF8_ACCEPT{0};
+static constexpr std::uint8_t UTF8_REJECT{0xf};
 
 std::uint8_t utf8_decode_step(std::uint8_t state, std::uint8_t octet, std::uint32_t* cpp)
 {
@@ -34,8 +34,9 @@ std::uint8_t utf8_decode_step(std::uint8_t state, std::uint8_t octet, std::uint3
     0xfffffff0UL, 0xffffffffUL, 0xfffffff1UL, 0xfffffff3UL, 0xfffffff4UL, 0xfffffff7UL, 0xfffffff6UL, 0xffffffffUL, 0x33f11f0fUL, 0xf3311f0fUL, 0xf33f110fUL, 0xfffffff2UL, 0xfffffff5UL, 0xffffffffUL, 0xffffffffUL, 0xffffffffUL,
   };
 
-  const std::uint8_t reject = (state >> 3), nonAscii = (octet >> 7);
-  const std::uint8_t class_ = (!nonAscii ? 0 : (0xf & (utf8ClassTab[(octet >> 3) & 0xf] >> (4 * (octet & 7)))));
+  const std::uint8_t reject{static_cast<std::uint8_t>(state >> 3)};
+  const std::uint8_t nonAscii{static_cast<std::uint8_t>(octet >> 7)};
+  const std::uint8_t class_{static_cast<std::uint8_t>(!nonAscii ? 0 : (0xf & (utf8ClassTab[(octet >> 3) & 0xf] >> (4 * (octet & 7)))))};
 
   *cpp = (state == UTF8_ACCEPT ? (octet & (0xffU >> class_)) : ((octet & 0x3fU) | (*cpp << 6)));
 
@@ -73,9 +74,9 @@ void codepoint_to_utf8(std::string& s, char32_t c)
 
 std::u32string utf8_to_utf32(const std::string& s)
 {
-  std::uint32_t  codepoint{};
-  std::uint8_t   state = UTF8_ACCEPT;
-  std::u32string r{};
+  std::uint32_t  codepoint{0};
+  std::uint8_t   state{UTF8_ACCEPT};
+  std::u32string r;
   for(char i: s)
   {
     state = utf8_decode_step(state, i, &codepoint);
@@ -88,16 +89,9 @@ std::u32string utf8_to_utf32(const std::string& s)
 
 std::string utf32_to_utf8(const std::u32string& s)
 {
-  std::string r{};
+  std::string r;
   for(char32_t i: s) { codepoint_to_utf8(r, i); }
   return r;
-}
-
-std::string vector_to_string(const std::vector<char>& vector)
-{
-  std::string string;
-  for(char i: vector) { string.push_back(i); }
-  return string;
 }
 
 bool is_valid_utf8_code_unit(const std::string& s)

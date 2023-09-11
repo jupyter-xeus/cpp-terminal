@@ -31,12 +31,12 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
     {
       key = Term::read_event();
       if(key == Term::Key::NoKey) continue;
-      if(key == 'y' || key == 'Y')
+      if(key == Term::Key::y || key == Term::Key::Y)
       {
         std::cout << '\n' << std::flush;
         return Result::YES;
       }
-      else if(key == 'n' || key == 'N')
+      else if(key == Term::Key::n || key == Term::Key::N)
       {
         std::cout << '\n' << std::flush;
         return Result::NO;
@@ -60,7 +60,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
   }
   else
   {
-    std::vector<char>  input;
+    std::string        input;
     unsigned short int length = 0;
     while(true)
     {
@@ -94,12 +94,12 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
       }
       else if(key == Term::Key::Enter)
       {
-        if(Private::vector_to_string(input) == "y" || Private::vector_to_string(input) == "yes")
+        if(input == "y" || input == "yes")
         {
           std::cout << '\n' << std::flush;
           return Result::YES;
         }
-        else if(Private::vector_to_string(input) == "n" || Private::vector_to_string(input) == "no")
+        else if(input == "n" || input == "no")
         {
           std::cout << '\n' << std::flush;
           return Result::NO;
