@@ -46,9 +46,9 @@ std::uint8_t utf8_decode_step(std::uint8_t state, std::uint8_t octet, std::uint3
 void codepoint_to_utf8(std::string& s, char32_t c)
 {
   if(c > 0x0010FFFF) { throw Term::Exception("Invalid UTF32 codepoint."); }
-  char     bytes[4];
-  int      nbytes = 1;
-  char32_t d      = c;
+  char        bytes[4];
+  std::size_t nbytes{1};
+  char32_t    d{c};
   if(c >= 0x10000)
   {
     nbytes++;
@@ -79,7 +79,7 @@ std::u32string utf8_to_utf32(const std::string& s)
   std::u32string r;
   for(char i: s)
   {
-    state = utf8_decode_step(state, i, &codepoint);
+    state = utf8_decode_step(state, static_cast<std::uint8_t>(i), &codepoint);
     if(state == UTF8_ACCEPT) { r.push_back(codepoint); }
     else if(state == UTF8_REJECT) { throw Term::Exception("Invalid byte in UTF8 encoded string"); }
   }
