@@ -52,23 +52,23 @@ void codepoint_to_utf8(std::string& s, char32_t c)
   if(c >= 0x10000)
   {
     nbytes++;
-    bytes[3] = ((d | 0x80) & 0xBF);
+    bytes[3] = static_cast<char>((d | 0x80) & 0xBF);
     d >>= 6;
   }
   if(c >= 0x800)
   {
     nbytes++;
-    bytes[2] = ((d | 0x80) & 0xBF);
+    bytes[2] = static_cast<char>((d | 0x80) & 0xBF);
     d >>= 6;
   }
   if(c >= 0x80)
   {
     nbytes++;
-    bytes[1] = ((d | 0x80) & 0xBF);
+    bytes[1] = static_cast<char>((d | 0x80) & 0xBF);
     d >>= 6;
   }
-  static const unsigned char mask[4] = {0x00, 0xC0, 0xE0, 0xF0};
-  bytes[0]                           = static_cast<char>(d | mask[nbytes - 1]);
+  static const constexpr unsigned char mask[4] = {0x00, 0xC0, 0xE0, 0xF0};
+  bytes[0]                                     = static_cast<char>(d | mask[nbytes - 1]);
   s.append(bytes, nbytes);
 }
 
