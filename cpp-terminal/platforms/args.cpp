@@ -37,7 +37,7 @@ void Term::Arguments::parse()
   int argc{*_NSGetArgc()};
   m_args.reserve(argc);
   char** argv{*_NSGetArgv()};
-  for(std::size_t i = 0; i != argc; ++i) { m_args.push_back(argv[i]); }
+  for(std::size_t i = 0; i != static_cast<std::size_t>(argc); ++i) { m_args.push_back(argv[i]); }
   m_parsed = true;
 #else
   std::string           cmdline;
