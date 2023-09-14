@@ -24,17 +24,16 @@ set(GCC_LIKE_WARNINGS
 set(GCC_LIKE_CXX_WARNINGS)
 #GCC
 set(GCC_WARNINGS
-    "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.8.0>:-Wpedantic>"
-    "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.9.0>:-fdiagnostics-color=auto>"
-    "-Wno-implicit-fallthrough"
-    "-Wno-maybe-uninitialized"
-    "-Wno-strict-overflow"
+        "$<$<VERSION_GREATER_EQUAL:$<C_COMPILER_VERSION>,4.8.0>:-Wpedantic>"
+        "$<$<VERSION_GREATER_EQUAL:$<C_COMPILER_VERSION>,4.9.0>:-fdiagnostics-color=auto>"
     "-Wpointer-arith"
     "-Wredundant-decls"
     "-Wundef"
     "-Wwrite-strings")
 set(GCC_CXX_WARNINGS
     "-Wdelete-non-virtual-dtor"
+        "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.8.0>:-Wpedantic>"
+        "$<$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,4.9.0>:-fdiagnostics-color=auto>"
     "-Wnoexcept")
 #Clang like
 set(CLANG_LIKE_WARNINGS

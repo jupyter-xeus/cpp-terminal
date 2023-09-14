@@ -106,7 +106,7 @@ void Term::Terminal::setRawMode()
     raw.c_cflag |= CS8;
     raw.c_lflag &= ~(ECHO | ICANON | IEXTEN);
     if(m_options.has(Option::NoSignalKeys)) { raw.c_lflag &= ~ISIG; }
-    raw.c_cc[VMIN]  = 0;
+    raw.c_cc[VMIN]  = 1;
     raw.c_cc[VTIME] = 0;
     if(tcsetattr(Private::out.fd(), TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
   }

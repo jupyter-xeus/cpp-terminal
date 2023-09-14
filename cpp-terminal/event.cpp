@@ -310,13 +310,19 @@ void Term::Event::parse(const std::string& str)
       m_container.m_Key = Key(Term::Key::Value::Numeric5);
     else if(Term::Private::is_valid_utf8_code_unit(str))
       m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0]));
+    else
+    {
+      m_Type = Type::CopyPaste;
+      m_str  = str;
+      return;
+    }
+    m_Type = Type::Key;
   }
   else
   {
     m_Type = Type::CopyPaste;
     m_str  = str;
   }
-  if(!m_container.m_Key.empty()) { m_Type = Type::Key; }
 }
 
 Term::Event::operator Term::Key() const

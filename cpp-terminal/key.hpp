@@ -250,12 +250,13 @@ public:
   };
   MetaKey() = default;
   MetaKey(const MetaKey::Value& value);
-  Term::MetaKey operator+(const MetaKey& meta) const;
-  Term::Key     operator+(const Key& key) const;
-  bool          operator==(const Term::MetaKey& meta) const;
-  bool          operator!=(const Term::MetaKey& meta) const;
-  bool          hasAlt() const;
-  bool          hasCtrl() const;
+  Term::MetaKey  operator+(const MetaKey& meta) const;
+  Term::Key      operator+(const Key& key) const;
+  Term::MetaKey& operator+=(const MetaKey& meta);
+  bool           operator==(const Term::MetaKey& meta) const;
+  bool           operator!=(const Term::MetaKey& meta) const;
+  bool           hasAlt() const;
+  bool           hasCtrl() const;
 
 private:
   MetaKey::Value m_value{Value::None};
