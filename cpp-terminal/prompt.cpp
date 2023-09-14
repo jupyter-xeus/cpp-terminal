@@ -31,12 +31,12 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
     {
       key = Term::read_event();
       if(key == Term::Key::NoKey) continue;
-      if(key == 'y' || key == 'Y')
+      if(key == Term::Key::y || key == Term::Key::Y)
       {
         std::cout << '\n' << std::flush;
         return Result::YES;
       }
-      else if(key == 'n' || key == 'N')
+      else if(key == Term::Key::n || key == Term::Key::N)
       {
         std::cout << '\n' << std::flush;
         return Result::NO;
@@ -60,8 +60,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
   }
   else
   {
-    std::vector<char>  input;
-    unsigned short int length = 0;
+    std::string input;
     while(true)
     {
       key = Term::read_event();
@@ -69,13 +68,11 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
       if(key >= 'a' && key <= 'z')
       {
         std::cout << (char)key << std::flush;
-        length++;
         input.push_back(static_cast<char>(key));
       }
       else if(key >= 'A' && key <= 'Z')
       {
         std::cout << (char)key << std::flush;
-        length++;
         input.push_back(static_cast<char>(key + 32));  // convert upper case to lowercase
       }
       else if(key == Term::Key::Ctrl_C || key == Term::Key::Ctrl_D)
@@ -85,26 +82,25 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
       }
       else if(key == Term::Key::Backspace)
       {
-        if(length != 0)
+        if(input.empty() != 0)
         {
           std::cout << "\033[D \033[D" << std::flush;  // erase last line and move the cursor back
-          length--;
           input.pop_back();
         }
       }
       else if(key == Term::Key::Enter)
       {
-        if(Private::vector_to_string(input) == "y" || Private::vector_to_string(input) == "yes")
+        if(input == "y" || input == "yes")
         {
           std::cout << '\n' << std::flush;
           return Result::YES;
         }
-        else if(Private::vector_to_string(input) == "n" || Private::vector_to_string(input) == "no")
+        else if(input == "n" || input == "no")
         {
           std::cout << '\n' << std::flush;
           return Result::NO;
         }
-        else if(length == 0)
+        else if(input.empty())
         {
           std::cout << '\n' << std::flush;
           return Result::NONE;

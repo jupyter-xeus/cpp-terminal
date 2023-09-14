@@ -55,6 +55,10 @@ private:
   union container
   {
     container();
+    container(const container&)              = delete;
+    container(container&&)                   = delete;
+    container&   operator=(const container&) = delete;
+    container&   operator=(container&&)      = delete;
     Term::Key    m_Key;
     Term::Cursor m_Cursor;
     Term::Screen m_Screen;

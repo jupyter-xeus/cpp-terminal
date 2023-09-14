@@ -19,11 +19,11 @@ Term::Key Term::MetaKey::operator+(const Term::Key& key) const
     case Ctrl:
       if((m_value == Value::Ctrl) && key.hasCtrlAll()) return key;
       else
-        return Key(static_cast<Term::Key::Value>(key + Value::Ctrl));  // FIXME maybe a better check;
+        return Key(static_cast<Term::Key::Value>(+key + Value::Ctrl));  // FIXME maybe a better check;
     case Alt:
       if((m_value == Value::Alt) && key.hasAlt()) return key;
       else
-        return Key(static_cast<Term::Key::Value>(key + Value::Alt));  // FIXME maybe a better check;
+        return Key(static_cast<Term::Key::Value>(+key + Value::Alt));  // FIXME maybe a better check;
     default: return key;
   }
 }
@@ -63,9 +63,9 @@ bool Term::Key::hasCtrl() const
   return ((iscntrl() || hasCtrlAll()) && m_value != Key::Backspace && m_value != Key::Tab && m_value != Esc && m_value != Enter && m_value != Del);
 }
 
-bool Term::Key::hasCtrlAll() const { return ((iscntrl() || ((m_value & Term::MetaKey::Value::Ctrl) == Term::MetaKey::Value::Ctrl))); }
+bool Term::Key::hasCtrlAll() const { return ((iscntrl() || ((m_value & +Term::MetaKey::Value::Ctrl) == Term::MetaKey::Value::Ctrl))); }
 
-bool Term::Key::hasAlt() const { return ((m_value & Term::MetaKey::Value::Alt) == Term::MetaKey::Value::Alt); }
+bool Term::Key::hasAlt() const { return ((m_value & +Term::MetaKey::Value::Alt) == Term::MetaKey::Value::Alt); }
 
 bool Term::Key::empty() const { return (m_value == NoKey); }
 
@@ -122,12 +122,12 @@ std::string Term::Key::name() const
   if(hasAlt())
   {
     ret += "Alt+";
-    key = static_cast<Term::Key::Value>(key - Term::MetaKey::Alt);
+    key = static_cast<Term::Key::Value>(+key - Term::MetaKey::Alt);
   }
   if(hasCtrl())
   {
     ret += "Ctrl+";
-    if(!iscntrl()) key = static_cast<Term::Key::Value>(key - Term::MetaKey::Ctrl);
+    if(!iscntrl()) key = static_cast<Term::Key::Value>(+key - Term::MetaKey::Ctrl);
   }
   if(m_value == Tab) ret += "Tab";
   else if(m_value == Enter)

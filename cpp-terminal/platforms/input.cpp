@@ -127,9 +127,9 @@ void Term::Private::Input::read_event()
   }
 }
 
+#if defined(_WIN32)
 void Term::Private::Input::read_windows_key(const std::uint16_t& virtual_key_code, const std::uint32_t& control_key_state, const std::size_t& occurrence)
 {
-#ifdef _WIN32
   // First check if we have ALT etc (CTRL is already done so skip it)
   Term::MetaKey toAdd{Term::MetaKey::Value::None};
   if(((control_key_state & LEFT_ALT_PRESSED) == LEFT_ALT_PRESSED) || ((control_key_state & RIGHT_ALT_PRESSED) == RIGHT_ALT_PRESSED)) toAdd += std::move(Term::MetaKey::Alt);
@@ -204,8 +204,8 @@ void Term::Private::Input::read_windows_key(const std::uint16_t& virtual_key_cod
     case VK_SCROLL:
     default: break;
   }
-#endif
 }
+#endif
 
 void Term::Private::Input::read_raw()
 {
