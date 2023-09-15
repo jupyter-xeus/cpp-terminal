@@ -285,14 +285,10 @@ void Term::Private::Input::read_raw()
   if(!ret.empty()) { m_events.push(Term::Event(ret.c_str())); }
   if(need_windows_size == true) { m_events.push(screen_size()); }
 #else
-  std::size_t nread{0};
-  ::ioctl(Private::in.fd(), FIONREAD, &nread);
-  if(nread == 0) return;
-  std::string ret(nread, '\0');
-  errno = 0;
-  ::ssize_t nrea{::read(Private::in.fd(), &ret[0], nread)};
-  if(nrea == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-  m_events.push(Event(ret.c_str()));
+  Private::in.lock();
+  std::string ret=Term::Private::in.read();
+  Private::in.unlock();
+  if(!ret.empty())m_events.push(Event(ret.c_str()));
 #endif
 }
 
@@ -330,14 +326,13 @@ Term::Event Term::Private::Input::getEventBlocking()
   static std::mutex                   cv_m;
   static std::unique_lock<std::mutex> lk(cv_m);
   m_events.wait_for_events(lk);
-  // fix for macos
-  if(m_events.empty()) { m_events.wait_for_events(lk); }
   return m_events.pop();
 }
 
+static Term::Private::Input m_input;
+
 Term::Event Term::read_event()
 {
-  static Term::Private::Input m_input;
   m_input.startReading();
   return m_input.getEventBlocking();
 }

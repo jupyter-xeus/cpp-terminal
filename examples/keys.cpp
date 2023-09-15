@@ -25,7 +25,7 @@ int main()
     int quit{0};
     while(quit != 3)
     {
-      Term::Event event{Term::read_event()};
+      Term::Event event = Term::read_event();
       switch(event.type())
       {
         case Term::Event::Type::Key:

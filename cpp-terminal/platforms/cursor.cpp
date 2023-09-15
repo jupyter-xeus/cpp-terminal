@@ -4,9 +4,16 @@
   #include <windows.h>
 #else
   #include "cpp-terminal/input.hpp"
+  #include <cstdio>
+  #include <sys/ioctl.h>
+  #include <unistd.h>
 #endif
 
 #include "cpp-terminal/platforms/file.hpp"
+
+#include <thread>
+#include <chrono>
+#include <iostream>
 
 Term::Cursor Term::cursor_position()
 {
@@ -16,14 +23,22 @@ Term::Cursor Term::cursor_position()
   else
     return Term::Cursor(0, 0);
 #else
-  Term::Private::out.write(Term::cursor_position_report());
-  do {
-    std::string ret = Term::Private::in.read();
-    if(ret[0] == '\033' && ret[1] == '[' && ret[ret.size() - 1] == 'R')
-    {
-      std::size_t found = ret.find(';', 2);
-      if(found != std::string::npos) { return Cursor(std::stoi(ret.substr(2, found - 2)), std::stoi(ret.substr(found + 1, ret.size() - (found + 2)))); }
-    }
-  } while(true);
+  std::string ret;
+  Term::Private::out.lock();
+  Term::Private::in.lock();
+  Term::Private::out.write(Term::cursor_position_report().c_str());
+  fflush(Term::Private::out.file());
+  std::size_t nread{0};
+  while(nread==0)::ioctl(Private::in.fd(), FIONREAD, &nread);
+  ret=Term::Private::in.read();
+  Term::Private::out.unlock();
+  Term::Private::in.unlock();
+  if(ret[0] == '\033' && ret[1] == '[' && ret[ret.size() - 1] == 'R')
+  {
+    std::size_t found = ret.find(';', 2);
+    if(found != std::string::npos) { return Cursor(std::stoi(ret.substr(2, found - 2)), std::stoi(ret.substr(found + 1, ret.size() - (found + 2)))); }
+    else return Term::Cursor();
+  }
+  else return Term::Cursor();
 #endif
 }
