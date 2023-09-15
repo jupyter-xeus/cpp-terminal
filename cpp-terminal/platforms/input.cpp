@@ -1,5 +1,5 @@
 #if defined(_WIN32)
-// clang-format off
+  // clang-format off
   #include <windows.h>
   #include <stringapiset.h>
   // clang-format on
@@ -13,11 +13,9 @@
   #include <thread>
   #include <unistd.h>
 #else
-  #include <cerrno>
   #include <csignal>
   #include <memory>
   #include <sys/epoll.h>
-  #include <sys/ioctl.h>
   #include <sys/signalfd.h>
   #include <unistd.h>
 #endif
@@ -286,9 +284,9 @@ void Term::Private::Input::read_raw()
   if(need_windows_size == true) { m_events.push(screen_size()); }
 #else
   Private::in.lock();
-  std::string ret=Term::Private::in.read();
+  std::string ret = Term::Private::in.read();
   Private::in.unlock();
-  if(!ret.empty())m_events.push(Event(ret.c_str()));
+  if(!ret.empty()) m_events.push(Event(ret.c_str()));
 #endif
 }
 

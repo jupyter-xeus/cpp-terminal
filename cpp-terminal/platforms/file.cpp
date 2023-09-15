@@ -15,7 +15,6 @@
 
 #include <cerrno>
 #include <fcntl.h>
-#include <iostream>
 
 namespace Term
 {
@@ -32,14 +31,8 @@ Term::Private::OutputFileHandler& out = reinterpret_cast<Term::Private::OutputFi
 
 std::recursive_mutex Term::Private::FileHandler::m_mutex{};
 
-void   Term::Private::FileHandler::lock() const
-{
-  m_mutex.lock();
-}
-void   Term::Private::FileHandler::unlock() const
-{
-  m_mutex.unlock();
-}
+void Term::Private::FileHandler::lock() const { m_mutex.lock(); }
+void Term::Private::FileHandler::unlock() const { m_mutex.unlock(); }
 
 Term::Private::FileHandler::FileHandler(const std::string& filename, const std::string& mode)
 {
@@ -56,7 +49,7 @@ Term::Private::FileHandler::FileHandler(const std::string& filename, const std::
     m_file = _fdopen(m_fd, mode.c_str());
   }
 #else
-  std::size_t flag{O_ASYNC | O_DSYNC | O_NOCTTY | O_SYNC };
+  std::size_t flag{O_ASYNC | O_DSYNC | O_NOCTTY | O_SYNC};
   if(mode.find('r') != std::string::npos) flag |= O_RDONLY;
   else if(mode.find('w') != std::string::npos)
     flag |= O_WRONLY;
@@ -83,10 +76,7 @@ Term::Private::FileHandler::~FileHandler()
   std::fclose(m_file);
 }
 
-bool   Term::Private::FileHandler::try_lock() const
-{
-  return m_mutex.try_lock();
-}
+bool Term::Private::FileHandler::try_lock() const { return m_mutex.try_lock(); }
 
 bool Term::Private::FileHandler::null() const { return m_null; }
 
@@ -126,7 +116,7 @@ Term::Private::FileInitializer::~FileInitializer()
 int Term::Private::OutputFileHandler::write(const std::string& str)
 {
   if(str.empty()) return 0;
-  //std::lock_guard<std::mutex> lock(m_mut);
+    //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
   DWORD dwCount{0};
   if(WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &dwCount, nullptr) == 0) return -1;
