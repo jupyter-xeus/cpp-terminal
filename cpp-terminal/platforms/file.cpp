@@ -111,6 +111,7 @@ Term::Private::FileInitializer::~FileInitializer()
 int Term::Private::OutputFileHandler::write(const std::string& str)
 {
   if(str.empty()) return 0;
+    //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
   DWORD dwCount{0};
   if(WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &dwCount, nullptr) == 0) return -1;
@@ -123,6 +124,7 @@ int Term::Private::OutputFileHandler::write(const std::string& str)
 
 int Term::Private::OutputFileHandler::write(const char& ch)
 {
+  //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
   DWORD dwCount{0};
   if(WriteConsole(handle(), &ch, 1, &dwCount, nullptr) == 0) return -1;
@@ -135,6 +137,7 @@ int Term::Private::OutputFileHandler::write(const char& ch)
 
 std::string Term::Private::InputFileHandler::read()
 {
+  //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
   DWORD       nread{0};
   std::string ret(4096, '\0');

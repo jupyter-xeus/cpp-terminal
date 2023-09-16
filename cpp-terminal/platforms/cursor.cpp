@@ -11,6 +11,7 @@
 
 Term::Cursor Term::cursor_position()
 {
+  if(Term::Private::in.null()) return Term::Cursor();
 #if defined(_WIN32)
   CONSOLE_SCREEN_BUFFER_INFO inf;
   if(GetConsoleScreenBufferInfo(Private::out.handle(), &inf)) return Term::Cursor(static_cast<std::size_t>(inf.dwCursorPosition.Y + 1), static_cast<std::size_t>(inf.dwCursorPosition.X + 1));
@@ -21,7 +22,6 @@ Term::Cursor Term::cursor_position()
   std::size_t nread{0};
   Term::Private::in.lockIO();
   Term::Private::out.write(Term::cursor_position_report());
-  //fflush(Term::Private::out.file());
   while(nread == 0) ::ioctl(Private::in.fd(), FIONREAD, &nread);
   ret = Term::Private::in.read();
   Term::Private::in.unlockIO();
