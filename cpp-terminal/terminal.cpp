@@ -4,10 +4,10 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/platforms/file.hpp"
+#include "cpp-terminal/platforms/sigwinch.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 
-#include <iostream>
 #include <new>
 
 namespace Term
@@ -40,6 +40,7 @@ Term::Options Term::Terminal::getOptions() { return m_options; }
 
 Term::Terminal::Terminal()
 {
+  Term::Private::Sigwinch::blockSigwinch();
   setBadStateReturnCode();
   attachConsole();
   store_and_restore();
