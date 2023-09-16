@@ -1,5 +1,5 @@
 #if defined(_WIN32)
-// clang-format off
+  // clang-format off
   #include <windows.h>
   #include <stringapiset.h>
   // clang-format on
@@ -13,13 +13,8 @@
   #include <thread>
   #include <unistd.h>
 #else
-  #include <cerrno>
-  #include <csignal>
   #include <memory>
   #include <sys/epoll.h>
-  #include <sys/ioctl.h>
-  #include <sys/signalfd.h>
-  #include <unistd.h>
 #endif
 
 #include "cpp-terminal/event.hpp"
@@ -28,98 +23,49 @@
 #include "cpp-terminal/platforms/blocking_queue.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/platforms/input.hpp"
+#include "cpp-terminal/platforms/sigwinch.hpp"
 
-#include <iostream>
 #include <mutex>
 #include <string>
-
-namespace Term
-{
-
-namespace Private
-{
-
-#if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
-volatile std::sig_atomic_t m_signalStatus{0};
-static void                sigwinchHandler(int sig)
-{
-  if(sig == SIGWINCH) m_signalStatus = 1;
-  else
-    m_signalStatus = 0;
-}
-#elif defined(_WIN32)
-#else
-class fd
-{
-public:
-  fd(const int& i) : m_fd(i) {}
-  ~fd() { ::close(m_fd); }
-  void set(const int& i) { m_fd = i; }
-  int  get() { return m_fd; }
-
-private:
-  int m_fd{-1};
-};
-#endif
-
-}  // namespace Private
-}  // namespace Term
 
 std::thread Term::Private::Input::m_thread = std::thread(Term::Private::Input::read_event);
 
 Term::Private::BlockingQueue Term::Private::Input::m_events;
 
+int Term::Private::Input::m_poll{-1};
+
+void Term::Private::Input::init_thread()
+{
+  Term::Private::Sigwinch::unblockSigwinch();
+#if defined(__linux__)
+  m_poll = {::epoll_create1(EPOLL_CLOEXEC)};
+  ::epoll_event signal;
+  signal.events  = {EPOLLIN};
+  signal.data.fd = {Term::Private::Sigwinch::get()};
+  ::epoll_ctl(m_poll, EPOLL_CTL_ADD, Term::Private::Sigwinch::get(), &signal);
+  ::epoll_event input;
+  input.events  = {EPOLLIN};
+  input.data.fd = {Term::Private::in.fd()};
+  ::epoll_ctl(m_poll, EPOLL_CTL_ADD, Term::Private::in.fd(), &input);
+#endif
+}
+
 void Term::Private::Input::read_event()
 {
+  init_thread();
   while(true)
   {
 #if defined(_WIN32)
     WaitForSingleObject(Term::Private::in.handle(), INFINITE);
     read_raw();
 #elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
-    ::sigset_t windows_event;
-    sigemptyset(&windows_event);
-    sigaddset(&windows_event, SIGWINCH);
-    ::sigprocmask(SIG_UNBLOCK, &windows_event, nullptr);
-    if(Term::Private::m_signalStatus == 1)
-    {
-      Term::Private::m_signalStatus = 0;
-      m_events.push(screen_size());
-    }
+    if(Term::Private::Sigwinch::isSigwinch()) m_events.push(screen_size());
     read_raw();
 #else
-    static bool              enabled{false};
-    static Term::Private::fd epoll(::epoll_create1(EPOLL_CLOEXEC));
-    static Term::Private::fd signal_fd(-1);
-    static ::sigset_t        windows_event;
-    if(!enabled)
-    {
-      sigemptyset(&windows_event);
-      sigaddset(&windows_event, SIGWINCH);
-      ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
-      signal_fd.set(::signalfd(-1, &windows_event, SFD_NONBLOCK | SFD_CLOEXEC));
-      ::epoll_event signal;
-      signal.events  = EPOLLIN;
-      signal.data.fd = signal_fd.get();
-      ::epoll_ctl(epoll.get(), EPOLL_CTL_ADD, signal_fd.get(), &signal);
-      ::epoll_event input;
-      input.events  = EPOLLIN;
-      input.data.fd = Term::Private::in.fd();
-      ::epoll_ctl(epoll.get(), EPOLL_CTL_ADD, Term::Private::in.fd(), &input);
-      ::sigprocmask(SIG_UNBLOCK, &windows_event, nullptr);
-      enabled = true;
-    }
     ::epoll_event ret;
-    ::sigemptyset(&windows_event);
-    ::sigaddset(&windows_event, SIGWINCH);
-    if(epoll_wait(epoll.get(), &ret, 1, -1) == 1)
+    if(epoll_wait(m_poll, &ret, 1, -1) == 1)
     {
-      if(ret.data.fd == signal_fd.get())
-      {
-        ::signalfd_siginfo fdsi;
-        read(signal_fd.get(), &fdsi, sizeof(fdsi));
-        m_events.push(Term::Screen(screen_size()));
-      }
+      if(Term::Private::Sigwinch::isSigwinch(ret.data.fd)) m_events.push(Term::Screen(screen_size()));
       else
         read_raw();
     }
@@ -285,33 +231,14 @@ void Term::Private::Input::read_raw()
   if(!ret.empty()) { m_events.push(Term::Event(ret.c_str())); }
   if(need_windows_size == true) { m_events.push(screen_size()); }
 #else
-  std::size_t nread{0};
-  ::ioctl(Private::in.fd(), FIONREAD, &nread);
-  if(nread == 0) return;
-  std::string ret(nread, '\0');
-  errno = 0;
-  ::ssize_t nrea{::read(Private::in.fd(), &ret[0], nread)};
-  if(nrea == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-  m_events.push(Event(ret.c_str()));
+  Private::in.lock();
+  std::string ret = Term::Private::in.read();
+  Private::in.unlock();
+  if(!ret.empty()) m_events.push(Event(ret.c_str()));
 #endif
 }
 
-Term::Private::Input::Input()
-{
-#if !defined(_WIN32)
-  static ::sigset_t windows_event;
-  sigemptyset(&windows_event);
-  sigaddset(&windows_event, SIGWINCH);
-  ::sigprocmask(SIG_BLOCK, &windows_event, nullptr);
-#endif
-#if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
-  static struct sigaction sa;
-  sigemptyset(&sa.sa_mask);
-  sa.sa_flags   = 0;
-  sa.sa_handler = Term::Private::sigwinchHandler;
-  sigaction(SIGWINCH, &sa, nullptr);
-#endif
-}
+Term::Private::Input::Input() {}
 
 void Term::Private::Input::startReading()
 {
@@ -330,14 +257,13 @@ Term::Event Term::Private::Input::getEventBlocking()
   static std::mutex                   cv_m;
   static std::unique_lock<std::mutex> lk(cv_m);
   m_events.wait_for_events(lk);
-  // fix for macos
-  if(m_events.empty()) { m_events.wait_for_events(lk); }
   return m_events.pop();
 }
 
+static Term::Private::Input m_input;
+
 Term::Event Term::read_event()
 {
-  static Term::Private::Input m_input;
   m_input.startReading();
   return m_input.getEventBlocking();
 }

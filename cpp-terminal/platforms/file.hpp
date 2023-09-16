@@ -2,6 +2,7 @@
 // PRIVATE !!!
 #pragma once
 
+#include <mutex>
 #include <string>
 
 namespace Term
@@ -37,10 +38,16 @@ public:
   bool   null() const;
   FILE*  file();
   int    fd() const;
+  void   lock() const;
+  bool   try_lock() const;
+  void   unlock() const;
   FileHandler(const FileHandler&)            = delete;
   FileHandler& operator=(const FileHandler&) = delete;
   FileHandler(FileHandler&&)                 = delete;
   FileHandler& operator=(FileHandler&&)      = delete;
+
+protected:
+  static std::recursive_mutex m_mutex;
 
 private:
   bool   m_null{false};
@@ -59,6 +66,9 @@ public:
   OutputFileHandler& operator=(const OutputFileHandler& rhs) = delete;
   OutputFileHandler(OutputFileHandler&& other)               = delete;
   OutputFileHandler& operator=(OutputFileHandler&& rhs)      = delete;
+
+private:
+  static std::mutex m_mut;
 };
 
 class InputFileHandler : public FileHandler
@@ -70,6 +80,9 @@ public:
   InputFileHandler& operator=(const InputFileHandler&) = delete;
   InputFileHandler(InputFileHandler&&)                 = delete;
   InputFileHandler& operator=(InputFileHandler&&)      = delete;
+
+private:
+  static std::mutex m_mut;
 };
 
 extern InputFileHandler&  in;

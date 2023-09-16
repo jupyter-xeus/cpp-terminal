@@ -27,8 +27,10 @@ private:
 #if defined(_WIN32)
   static void read_windows_key(const std::uint16_t& virtual_key_code, const std::uint32_t& control_key_state, const std::size_t& occurrence);
 #endif
+  static void                         init_thread();
   static std::thread                  m_thread;
   static Term::Private::BlockingQueue m_events;
+  static int                          m_poll;  // for linux
 };
 
 }  // namespace Private
