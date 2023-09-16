@@ -11,7 +11,7 @@ public:
   static void registerSigwinch();
   static void blockSigwinch();
   static void unblockSigwinch();
-  static bool isSigwinch(const int& fd);
+  static bool isSigwinch(const int& fd=-1);
   static int  get();
 
 private:
