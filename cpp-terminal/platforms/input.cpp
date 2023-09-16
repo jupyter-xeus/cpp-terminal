@@ -231,9 +231,9 @@ void Term::Private::Input::read_raw()
   if(!ret.empty()) { m_events.push(Term::Event(ret.c_str())); }
   if(need_windows_size == true) { m_events.push(screen_size()); }
 #else
-  Private::in.lock();
+  Private::in.lockIO();
   std::string ret = Term::Private::in.read();
-  Private::in.unlock();
+  Private::in.unlockIO();
   if(!ret.empty()) m_events.push(Event(ret.c_str()));
 #endif
 }

@@ -18,15 +18,13 @@ Term::Cursor Term::cursor_position()
     return Term::Cursor(0, 0);
 #else
   std::string ret;
-  Term::Private::out.lock();
-  Term::Private::in.lock();
-  Term::Private::out.write(Term::cursor_position_report().c_str());
-  fflush(Term::Private::out.file());
   std::size_t nread{0};
-  while(nread == 0) ::ioctl(Private::in.fd(), FIONREAD, &nread);
+  Term::Private::in.lockIO();
+  Term::Private::out.write(Term::cursor_position_report());
+  //fflush(Term::Private::out.file());
+  while(nread==0)::ioctl(Private::in.fd(), FIONREAD, &nread);
   ret = Term::Private::in.read();
-  Term::Private::out.unlock();
-  Term::Private::in.unlock();
+  Term::Private::in.unlockIO();
   if(ret[0] == '\033' && ret[1] == '[' && ret[ret.size() - 1] == 'R')
   {
     std::size_t found = ret.find(';', 2);
