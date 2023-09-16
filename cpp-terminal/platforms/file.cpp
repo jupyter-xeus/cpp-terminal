@@ -71,8 +71,6 @@ Term::Private::FileHandler::~FileHandler()
   std::fclose(m_file);
 }
 
-bool Term::Private::FileHandler::try_lock() const { return m_mutex.try_lock(); }
-
 bool Term::Private::FileHandler::null() const { return m_null; }
 
 FILE* Term::Private::FileHandler::file() { return m_file; }
@@ -124,8 +122,6 @@ int Term::Private::OutputFileHandler::write(const std::string& str)
 #endif
 }
 
-std::mutex Term::Private::OutputFileHandler::m_mut{};
-
 int Term::Private::OutputFileHandler::write(const char& ch)
 {
   //std::lock_guard<std::mutex> lock(m_mut);
@@ -138,8 +134,6 @@ int Term::Private::OutputFileHandler::write(const char& ch)
   return ::write(fd(), &ch, 1);
 #endif
 }
-
-std::mutex Term::Private::InputFileHandler::m_mut{};
 
 std::string Term::Private::InputFileHandler::read()
 {
