@@ -40,7 +40,7 @@ void Term::Private::Sigwinch::registerSigwinch()
 #if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
   struct sigaction sa;
   sigemptyset(&sa.sa_mask);
-  sa.sa_flags={0};
+  sa.sa_flags   = {0};
   sa.sa_handler = {Term::Private::sigwinchHandler};
   sigaction(SIGWINCH, &sa, nullptr);
 #elif defined(__linux__)
@@ -77,7 +77,7 @@ bool Term::Private::Sigwinch::isSigwinch(const int& fd)
 #if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
   if(Term::Private::m_signalStatus == 1)
   {
-    static_cast<void>(fd); // supress warning
+    static_cast<void>(fd);  // suppress warning
     Term::Private::m_signalStatus = {0};
     return true;
   }
@@ -94,7 +94,7 @@ bool Term::Private::Sigwinch::isSigwinch(const int& fd)
   else
     return false;
 #else
-  static_cast<void>(fd); // supress warning
+  static_cast<void>(fd);  // suppress warning
   return false;
 #endif
 }

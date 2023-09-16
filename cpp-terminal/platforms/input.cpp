@@ -18,12 +18,12 @@
 #endif
 
 #include "cpp-terminal/event.hpp"
+#include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/platforms/blocking_queue.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/platforms/input.hpp"
 #include "cpp-terminal/platforms/sigwinch.hpp"
-#include "cpp-terminal/exception.hpp"
 
 #include <mutex>
 #include <string>
