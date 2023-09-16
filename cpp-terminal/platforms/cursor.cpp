@@ -22,7 +22,7 @@ Term::Cursor Term::cursor_position()
   Term::Private::in.lockIO();
   Term::Private::out.write(Term::cursor_position_report());
   //fflush(Term::Private::out.file());
-  while(nread==0)::ioctl(Private::in.fd(), FIONREAD, &nread);
+  while(nread == 0) ::ioctl(Private::in.fd(), FIONREAD, &nread);
   ret = Term::Private::in.read();
   Term::Private::in.unlockIO();
   if(ret[0] == '\033' && ret[1] == '[' && ret[ret.size() - 1] == 'R')
