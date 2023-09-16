@@ -23,6 +23,7 @@
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/platforms/input.hpp"
 #include "cpp-terminal/platforms/sigwinch.hpp"
+#include "cpp-terminal/exception.hpp"
 
 #include <mutex>
 #include <string>

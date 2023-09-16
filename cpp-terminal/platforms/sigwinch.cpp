@@ -93,5 +93,8 @@ bool Term::Private::Sigwinch::isSigwinch(const int& fd)
   }
   else
     return false;
+#else
+  static_cast<void>(fd); // supress warning
+  return false;
 #endif
 }
