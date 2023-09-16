@@ -44,7 +44,13 @@ Term::Terminal::Terminal()
   setBadStateReturnCode();
   attachConsole();
   store_and_restore();
+  setRawMode();
+  m_terminfo.setUTF8();
+  store_and_restore();
+  store_and_restore();
 }
+
+bool Term::Terminal::supportUTF8() { return m_terminfo.hasUTF8(); }
 
 Term::Terminal::~Terminal()
 {

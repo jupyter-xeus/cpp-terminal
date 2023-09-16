@@ -28,6 +28,8 @@ public:
   static ColorMode getColorMode();
   bool             hasANSIEscapeCode() const;
   bool             isLegacy() const;
+  bool             hasUTF8();
+  void             setUTF8();
 
 private:
   void             setANSIEscapeCode();
@@ -35,6 +37,7 @@ private:
   void             setLegacy();
   bool             m_ANSIEscapeCode{true};
   bool             m_legacy{false};
+  bool             m_UTF8{false};
   static ColorMode m_colorMode;
   std::string      m_terminalName;
   std::string      m_terminalVersion;
