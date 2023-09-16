@@ -23,14 +23,25 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
   for(int j = 1; j <= menuy0; j++) { scr.append("\n"); }
 
   for(int j = 1; j <= menux0; j++) { scr.append(" "); }
-  scr.append("┌");
-  for(int j = 1; j <= menuwidth; j++) { scr.append("─"); }
-  scr.append("┐");
+  if(Term::terminal.supportUTF8()) scr.append("┌");
+  else
+    scr.append("+");
+  for(int j = 1; j <= menuwidth; j++)
+  {
+    if(Term::terminal.supportUTF8()) scr.append("─");
+    else
+      scr.append("-");
+  }
+  if(Term::terminal.supportUTF8()) scr.append("┐");
+  else
+    scr.append("+");
   scr.append(" \n");
   for(int i = 1; i <= menuheight; i++)
   {
     for(int j = 1; j <= menux0; j++) { scr.append(" "); }
-    scr.append("│");
+    if(Term::terminal.supportUTF8()) scr.append("│");
+    else
+      scr.append("|");
     if(i == menupos)
     {
       scr.append(Term::color_fg(Term::Color::Name::Red));
@@ -48,13 +59,24 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
     scr.append(Term::color_bg(Term::Color::Name::Default));
     scr.append(Term::color_fg(Term::Color::Name::Default));
     scr.append(Term::style(Term::Style::RESET));
-    scr.append("│");
+    if(Term::terminal.supportUTF8()) scr.append("│");
+    else
+      scr.append("|");
     scr.append(" \n");
   }
   for(int j = 1; j <= menux0; j++) { scr.append(" "); }
-  scr.append("└");
-  for(int j = 1; j <= menuwidth; j++) { scr.append("─"); }
-  scr.append("┘");
+  if(Term::terminal.supportUTF8()) scr.append("└");
+  else
+    scr.append("+");
+  for(int j = 1; j <= menuwidth; j++)
+  {
+    if(Term::terminal.supportUTF8()) scr.append("─");
+    else
+      scr.append("-");
+  }
+  if(Term::terminal.supportUTF8()) scr.append("┘");
+  else
+    scr.append("+");
   scr.append(" \n");
 
   scr.append(Term::cursor_move(menuy0 + menuheight + 5, 1));

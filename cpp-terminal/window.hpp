@@ -72,9 +72,9 @@ public:
 
   void fill_style(const std::size_t&, const std::size_t&, const std::size_t&, const std::size_t&, const Style&);
 
-  void print_border(bool = true);
+  void print_border();
 
-  void print_rect(const std::size_t&, const std::size_t&, const std::size_t&, const std::size_t&, bool = true);
+  void print_rect(const std::size_t&, const std::size_t&, const std::size_t&, const std::size_t&);
 
   void clear();
 
