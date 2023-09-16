@@ -21,7 +21,6 @@ Term::Cursor Term::cursor_position()
   std::size_t nread{0};
   Term::Private::in.lockIO();
   Term::Private::out.write(Term::cursor_position_report());
-  //fflush(Term::Private::out.file());
   while(nread == 0) ::ioctl(Private::in.fd(), FIONREAD, &nread);
   ret = Term::Private::in.read();
   Term::Private::in.unlockIO();
