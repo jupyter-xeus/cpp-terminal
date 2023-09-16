@@ -2,6 +2,7 @@
 
 #if !defined(_WIN32)
   #include <csignal>
+  #include <unistd.h>
 #endif
 
 #if defined(__linux__)
