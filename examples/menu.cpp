@@ -101,11 +101,11 @@ int main()
     bool         on = true;
     while(on)
     {
-      render(term_size.rows(), term_size.columns(), h, w, pos);
-      Term::Event event = Term::read_event();
+      Term::Event event{Term::read_event()};
       switch(event.type())
       {
         case Term::Event::Type::Key:
+        {
           switch(Term::Key(event))
           {
             case Term::Key::ArrowLeft:
@@ -120,19 +120,27 @@ int main()
             case Term::Key::ArrowDown:
               if(pos < h) pos++;
               break;
-            case Term::Key::Home: pos = 1; break;
-            case Term::Key::End: pos = h; break;
+            case Term::Key::Home:
+              pos = 1;
+              break;
+            case Term::Key::End:
+              pos = h;
+              break;
             case Term::Key::q:
             case Term::Key::Esc:
-            case Term::Key::Ctrl_C: on = false; break;
+            case Term::Key::Ctrl_C: on = false;
             default: break;
           }
+          render(term_size.rows(), term_size.columns(), h, w, pos);
           break;
+        }
         case Term::Event::Type::Screen:
+        {
           term_size = Term::Screen(event);
           Term::cout << Term::clear_screen() << std::flush;
           render(term_size.rows(), term_size.columns(), h, w, pos);
           break;
+        }
         default: break;
       }
     }
