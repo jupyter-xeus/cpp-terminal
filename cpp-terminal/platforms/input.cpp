@@ -27,6 +27,7 @@
 
 #include <mutex>
 #include <string>
+#include <iostream>
 
 std::thread Term::Private::Input::m_thread = std::thread(Term::Private::Input::read_event);
 
@@ -177,8 +178,9 @@ void Term::Private::Input::read_raw()
           {
             if(events[i].Event.KeyEvent.uChar.UnicodeChar <= 127)  //MAYBE BUG in to_utf8 (me or Windaube)
             {
-              if(events[i].Event.KeyEvent.uChar.UnicodeChar == Term::Key::Del) ret.append(events[i].Event.KeyEvent.wRepeatCount, Key(Term::Key::Value::Backspace));
-              ret.append(events[i].Event.KeyEvent.wRepeatCount, events[i].Event.KeyEvent.uChar.UnicodeChar);
+
+              if(events[i].Event.KeyEvent.uChar.UnicodeChar == Term::Key::Del)ret.append(events[i].Event.KeyEvent.wRepeatCount, Key(Term::Key::Value::Backspace));
+              else ret.append(events[i].Event.KeyEvent.wRepeatCount, events[i].Event.KeyEvent.uChar.UnicodeChar);
             }
             else
               for(std::size_t j = 0; j != events[i].Event.KeyEvent.wRepeatCount; ++j) ret.append(to_utf8(&events[i].Event.KeyEvent.uChar.UnicodeChar));
