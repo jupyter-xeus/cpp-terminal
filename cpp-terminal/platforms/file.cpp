@@ -29,12 +29,7 @@ Term::Private::OutputFileHandler& out = reinterpret_cast<Term::Private::OutputFi
 
 }  // namespace Term
 
-std::recursive_mutex Term::Private::FileHandler::m_mutex{};
-
-void Term::Private::FileHandler::lock() const { m_mutex.lock(); }
-void Term::Private::FileHandler::unlock() const { m_mutex.unlock(); }
-
-Term::Private::FileHandler::FileHandler(const std::string& filename, const std::string& mode)
+Term::Private::FileHandler::FileHandler(std::recursive_mutex& mutex, const std::string& filename, const std::string& mode) : m_mutex(mutex)
 {
 #if defined(_WIN32)
   m_handle = {CreateFile(filename.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
@@ -76,8 +71,6 @@ Term::Private::FileHandler::~FileHandler()
   std::fclose(m_file);
 }
 
-bool Term::Private::FileHandler::try_lock() const { return m_mutex.try_lock(); }
-
 bool Term::Private::FileHandler::null() const { return m_null; }
 
 FILE* Term::Private::FileHandler::file() { return m_file; }
@@ -90,14 +83,16 @@ int Term::Private::FileInitializer::m_counter = {0};
 
 void Term::Private::FileInitializer::init()
 {
+  // MacOS was not happy wish a static mutex in the class so we create it and pass to each class;
+  static std::recursive_mutex io_mutex;
   if(m_counter++ == 0)
   {
 #if defined(_WIN32)
-    new(&Term::Private::in) InputFileHandler("CONIN$");
-    new(&Term::Private::out) OutputFileHandler("CONOUT$");
+    new(&Term::Private::in) InputFileHandler(io_mutex, "CONIN$");
+    new(&Term::Private::out) OutputFileHandler(io_mutex, "CONOUT$");
 #else
-    new(&Term::Private::in) InputFileHandler("/dev/tty");
-    new(&Term::Private::out) OutputFileHandler("/dev/tty");
+    new(&Term::Private::in) InputFileHandler(io_mutex, "/dev/tty");
+    new(&Term::Private::out) OutputFileHandler(io_mutex, "/dev/tty");
 #endif
   }
 }
@@ -127,8 +122,6 @@ int Term::Private::OutputFileHandler::write(const std::string& str)
 #endif
 }
 
-std::mutex Term::Private::OutputFileHandler::m_mut{};
-
 int Term::Private::OutputFileHandler::write(const char& ch)
 {
   //std::lock_guard<std::mutex> lock(m_mut);
@@ -141,8 +134,6 @@ int Term::Private::OutputFileHandler::write(const char& ch)
   return ::write(fd(), &ch, 1);
 #endif
 }
-
-std::mutex Term::Private::InputFileHandler::m_mut{};
 
 std::string Term::Private::InputFileHandler::read()
 {
@@ -168,3 +159,6 @@ std::string Term::Private::InputFileHandler::read()
     return std::string();
 #endif
 }
+
+void Term::Private::FileHandler::lockIO() { m_mutex.lock(); }
+void Term::Private::FileHandler::unlockIO() { m_mutex.unlock(); }

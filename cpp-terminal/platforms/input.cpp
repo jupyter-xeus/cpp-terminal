@@ -178,7 +178,8 @@ void Term::Private::Input::read_raw()
             if(events[i].Event.KeyEvent.uChar.UnicodeChar <= 127)  //MAYBE BUG in to_utf8 (me or Windaube)
             {
               if(events[i].Event.KeyEvent.uChar.UnicodeChar == Term::Key::Del) ret.append(events[i].Event.KeyEvent.wRepeatCount, Key(Term::Key::Value::Backspace));
-              ret.append(events[i].Event.KeyEvent.wRepeatCount, events[i].Event.KeyEvent.uChar.UnicodeChar);
+              else
+                ret.append(events[i].Event.KeyEvent.wRepeatCount, events[i].Event.KeyEvent.uChar.UnicodeChar);
             }
             else
               for(std::size_t j = 0; j != events[i].Event.KeyEvent.wRepeatCount; ++j) ret.append(to_utf8(&events[i].Event.KeyEvent.uChar.UnicodeChar));
@@ -231,9 +232,9 @@ void Term::Private::Input::read_raw()
   if(!ret.empty()) { m_events.push(Term::Event(ret.c_str())); }
   if(need_windows_size == true) { m_events.push(screen_size()); }
 #else
-  Private::in.lock();
+  Private::in.lockIO();
   std::string ret = Term::Private::in.read();
-  Private::in.unlock();
+  Private::in.unlockIO();
   if(!ret.empty()) m_events.push(Event(ret.c_str()));
 #endif
 }

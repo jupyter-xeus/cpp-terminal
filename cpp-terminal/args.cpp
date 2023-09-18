@@ -1,4 +1,5 @@
 #include "cpp-terminal/args.hpp"
+
 namespace Term
 {
 

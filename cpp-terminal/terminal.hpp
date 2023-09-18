@@ -24,6 +24,7 @@ public:
   Terminal& operator=(const Terminal&) = delete;
   Terminal(Terminal&&)                 = delete;
   Terminal& operator=(Terminal&&)      = delete;
+  bool      supportUTF8();
 
 private:
   void           store_and_restore();
