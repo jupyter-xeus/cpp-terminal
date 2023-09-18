@@ -120,12 +120,8 @@ int main()
             case Term::Key::ArrowDown:
               if(pos < h) pos++;
               break;
-            case Term::Key::Home:
-              pos = 1;
-              break;
-            case Term::Key::End:
-              pos = h;
-              break;
+            case Term::Key::Home: pos = 1; break;
+            case Term::Key::End: pos = h; break;
             case Term::Key::q:
             case Term::Key::Esc:
             case Term::Key::Ctrl_C: on = false;

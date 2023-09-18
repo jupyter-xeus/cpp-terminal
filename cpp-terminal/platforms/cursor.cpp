@@ -3,7 +3,6 @@
 #if defined(_WIN32)
   #include <windows.h>
 #else
-  #include <cstdio>
   #include <sys/ioctl.h>
 #endif
 
