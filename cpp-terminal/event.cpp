@@ -2,7 +2,12 @@
 
 #include "cpp-terminal/platforms/conversion.hpp"
 
+#include <cstring>
+#include <iostream>
+
 Term::Event::container::container() {}
+
+Term::Event::container::~container() {}
 
 Term::Key* Term::Event::get_if_key()
 {
@@ -46,16 +51,16 @@ const Term::Cursor* Term::Event::get_if_cursor() const
     return nullptr;
 }
 
-std::string* Term::Event::get_if_copy_paste()
+std::string Term::Event::get_if_copy_paste()
 {
-  if(m_Type == Type::CopyPaste) return &m_str;
+  if(m_Type == Type::CopyPaste) return m_container.m_string.get();
   else
     return nullptr;
 }
 
-const std::string* Term::Event::get_if_copy_paste() const
+const std::string Term::Event::get_if_copy_paste() const
 {
-  if(m_Type == Type::CopyPaste) return &m_str;
+  if(m_Type == Type::CopyPaste) return m_container.m_string.get();
   else
     return nullptr;
 }
@@ -67,7 +72,12 @@ Term::Event& Term::Event::operator=(const Term::Event& event)
   {
     case Type::Empty: break;
     case Type::Key: m_container.m_Key = Term::Key(event.m_container.m_Key); break;
-    case Type::CopyPaste: m_str = event.m_str; break;
+    case Type::CopyPaste:
+    {
+      m_container.m_string.reset(new char[std::strlen(event.m_container.m_string.get())]);
+      std::strcpy(m_container.m_string.get(), event.m_container.m_string.get());
+      break;
+    }
     case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
     case Type::Screen: m_container.m_Screen = Term::Screen(event.m_container.m_Screen); break;
   }
@@ -81,7 +91,13 @@ Term::Event::Event(const Term::Event& event)
   {
     case Type::Empty: break;
     case Type::Key: m_container.m_Key = Term::Key(event.m_container.m_Key); break;
-    case Type::CopyPaste: m_str = event.m_str; break;
+    case Type::CopyPaste:
+    {
+      //m_str = event.m_str;
+      m_container.m_string.reset(new char[std::strlen(event.m_container.m_string.get())]);
+      std::strcpy(m_container.m_string.get(), event.m_container.m_string.get());
+      break;
+    }
     case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
     case Type::Screen: m_container.m_Screen = Term::Screen(event.m_container.m_Screen); break;
   }
@@ -98,7 +114,12 @@ Term::Event::Event(Term::Event&& event) noexcept
   {
     case Type::Empty: break;
     case Type::Key: std::swap(m_container.m_Key, event.m_container.m_Key); break;
-    case Type::CopyPaste: std::swap(m_str, event.m_str); break;
+    case Type::CopyPaste:
+    {
+      //std::swap(m_str, event.m_str);
+      std::swap(m_container.m_string, event.m_container.m_string);
+      break;
+    }
     case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
     case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
   }
@@ -111,7 +132,7 @@ Term::Event& Term::Event::operator=(Term::Event&& event) noexcept
   {
     case Type::Empty: break;
     case Type::Key: std::swap(m_container.m_Key, event.m_container.m_Key); break;
-    case Type::CopyPaste: std::swap(m_str, event.m_str); break;
+    case Type::CopyPaste: std::swap(m_container.m_string, event.m_container.m_string); break;
     case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
     case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
   }
@@ -127,7 +148,7 @@ bool Term::Event::empty() const
 
 Term::Event::operator std::string() const
 {
-  if(m_Type == Type::CopyPaste) return m_str;
+  if(m_Type == Type::CopyPaste) return m_container.m_string.get();
   else
     return std::string();
 }
@@ -313,7 +334,9 @@ void Term::Event::parse(const std::string& str)
     else
     {
       m_Type = Type::CopyPaste;
-      m_str  = str;
+      m_container.m_string.reset(new char[str.size() + 1]);
+      str.copy(m_container.m_string.get(), str.size());
+      m_container.m_string.get()[str.size() + 1] = '\0';
       return;
     }
     m_Type = Type::Key;
@@ -321,7 +344,9 @@ void Term::Event::parse(const std::string& str)
   else
   {
     m_Type = Type::CopyPaste;
-    m_str  = str;
+    m_container.m_string.reset(new char[str.size() + 1]);
+    str.copy(m_container.m_string.get(), str.size());
+    m_container.m_string.get()[str.size() + 1] = '\0';
   }
 }
 

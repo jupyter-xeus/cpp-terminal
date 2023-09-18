@@ -5,6 +5,7 @@
 #include "cpp-terminal/screen.hpp"
 
 #include <cstdint>
+#include <memory>
 #include <string>
 
 namespace Term
@@ -22,6 +23,7 @@ public:
     CopyPaste,
   };
   Event();
+  ~Event();
   Event(const std::string&);
   Event(const Term::Key&);
   Event(const Term::Screen& screen);
@@ -32,7 +34,6 @@ public:
   Event(const Term::Event& event);
   Event(Term::Event&& event) noexcept;
   Event& operator=(Event&& other) noexcept;
-  ~Event();
 
   operator Term::Key() const;
   operator Term::Screen() const;
@@ -40,31 +41,32 @@ public:
   operator std::string() const;
 
   // getters
-  Key*               get_if_key();
-  const Key*         get_if_key() const;
-  Screen*            get_if_screen();
-  const Screen*      get_if_screen() const;
-  Cursor*            get_if_cursor();
-  const Cursor*      get_if_cursor() const;
-  std::string*       get_if_copy_paste();
-  const std::string* get_if_copy_paste() const;
+  Key*              get_if_key();
+  const Key*        get_if_key() const;
+  Screen*           get_if_screen();
+  const Screen*     get_if_screen() const;
+  Cursor*           get_if_cursor();
+  const Cursor*     get_if_cursor() const;
+  std::string       get_if_copy_paste();
+  const std::string get_if_copy_paste() const;
 
 private:
   void parse(const std::string&);
-  Type m_Type{Type::Empty};
   union container
   {
     container();
-    container(const container&)              = delete;
-    container(container&&)                   = delete;
-    container&   operator=(const container&) = delete;
-    container&   operator=(container&&)      = delete;
-    Term::Key    m_Key;
-    Term::Cursor m_Cursor;
-    Term::Screen m_Screen;
+    ~container();
+    container(const container&)                         = delete;
+    container(container&&)                              = delete;
+    container&              operator=(const container&) = delete;
+    container&              operator=(container&&)      = delete;
+    Term::Key               m_Key;
+    Term::Cursor            m_Cursor;
+    Term::Screen            m_Screen;
+    std::unique_ptr<char[]> m_string{nullptr};
   };
-  container   m_container;
-  std::string m_str;
+  Type      m_Type{Type::Empty};
+  container m_container;
 };
 
 }  // namespace Term
