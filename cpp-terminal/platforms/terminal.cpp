@@ -71,6 +71,23 @@ void Term::Terminal::store_and_restore()
 #endif
 }
 
+void Term::Terminal::activateFocusAndMouseEvent()
+{
+#if defined(_WIN32)
+#else
+  Term::Private::out.write("\033[?1004h");
+#endif
+}
+
+void Term::Terminal::desactivateFocusAndMouseEvent()
+{
+#if defined(_WIN32)
+#else
+  Term::Private::out.write("\033[?1004l");
+#endif
+}
+
+
 void Term::Terminal::setBadStateReturnCode()
 {
   std::pair<bool, std::string> returnCode{Private::getenv("CPP_TERMINAL_BADSTATE")};

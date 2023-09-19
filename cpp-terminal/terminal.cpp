@@ -44,6 +44,7 @@ Term::Terminal::Terminal()
   setBadStateReturnCode();
   attachConsole();
   store_and_restore();
+  activateFocusAndMouseEvent();
   setRawMode();
   m_terminfo.setUTF8();
   store_and_restore();
@@ -59,6 +60,7 @@ Term::Terminal::~Terminal()
     if(m_options.has(Option::ClearScreen)) Term::Private::out.write(clear_buffer() + style(Style::RESET) + cursor_move(1, 1) + screen_load());
     if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_on());
     store_and_restore();
+    desactivateFocusAndMouseEvent();
     detachConsole();
   }
   catch(const Term::Exception& e)

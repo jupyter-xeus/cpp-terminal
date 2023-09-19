@@ -34,6 +34,8 @@ private:
   void           setRawMode();
   void           attachConsole();
   void           detachConsole();
+  void           activateFocusAndMouseEvent();
+  void           desactivateFocusAndMouseEvent();
   bool           has_allocated_console{false};
   Term::Terminfo m_terminfo;
   Term::Options  m_options;

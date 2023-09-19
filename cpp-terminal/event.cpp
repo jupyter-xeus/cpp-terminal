@@ -64,6 +64,22 @@ const std::string Term::Event::get_if_copy_paste() const
     return nullptr;
 }
 
+Term::Focus*            Term::Event::get_if_focus()
+{
+  if(m_Type == Type::Focus) return &m_container.m_Focus;
+  else
+    return nullptr;
+}
+
+const Term::Focus*      Term::Event::get_if_focus() const
+{
+  if(m_Type == Type::Focus) return &m_container.m_Focus;
+  else
+    return nullptr;
+}
+
+
+
 Term::Event& Term::Event::operator=(const Term::Event& event)
 {
   m_Type = event.m_Type;
@@ -83,9 +99,13 @@ Term::Event& Term::Event::operator=(const Term::Event& event)
     }
     case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
     case Type::Screen: m_container.m_Screen = Term::Screen(event.m_container.m_Screen); break;
+    case Type::Focus: m_container.m_Focus = Term::Focus(event.m_container.m_Focus); break;
   }
   return *this;
 }
+
+Term::Event::Event(const Term::Focus& focus) : m_Type(Type::Focus) {m_container.m_Focus=focus;}
+
 
 Term::Event::Event(const Term::Event& event)
 {
@@ -106,6 +126,7 @@ Term::Event::Event(const Term::Event& event)
     }
     case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
     case Type::Screen: m_container.m_Screen = Term::Screen(event.m_container.m_Screen); break;
+    case Type::Focus: m_container.m_Focus = Term::Focus(event.m_container.m_Focus); break;
   }
 }
 
@@ -127,6 +148,7 @@ Term::Event::Event(Term::Event&& event) noexcept
     }
     case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
     case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
+    case Type::Focus: std::swap(m_container.m_Focus, event.m_container.m_Focus); break;
   }
 }
 
@@ -140,6 +162,7 @@ Term::Event& Term::Event::operator=(Term::Event&& event) noexcept
     case Type::CopyPaste: std::swap(m_container.m_string, event.m_container.m_string); break;
     case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
     case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
+    case Type::Focus: std::swap(m_container.m_Focus, event.m_container.m_Focus); break;
   }
   return *this;
 }
@@ -182,6 +205,16 @@ void Term::Event::parse(const std::string& str)
     m_container.m_Key = Key(static_cast<Term::Key::Value>(str[0]));
     /* Backspace return 127 CTRL+backspace return 8 */
     if(m_container.m_Key == Term::Key::Value::Del) m_container.m_Key = Key(Term::Key::Value::Backspace);
+  }
+  else if(str=="\033[I")
+  {
+    m_Type=Type::Focus;
+    m_container.m_Focus=Term::Focus(Term::Focus::Type::In);
+  }
+  else if(str=="\033[O")
+  {
+    m_Type=Type::Focus;
+    m_container.m_Focus=Term::Focus(Term::Focus::Type::Out);
   }
   else if(str.size() == 2 && str[0] == '\033')
   {
@@ -367,4 +400,11 @@ Term::Event::operator Term::Cursor() const
   if(m_Type == Type::Cursor) return m_container.m_Cursor;
   else
     return Cursor();
+}
+
+Term::Event::operator Term::Focus() const
+{
+  if(m_Type == Type::Focus) return m_container.m_Focus;
+  else
+    return Focus();
 }
