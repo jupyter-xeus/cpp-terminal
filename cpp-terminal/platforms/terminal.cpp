@@ -44,7 +44,7 @@ void Term::Terminal::store_and_restore()
     if(!m_terminfo.isLegacy())
     {
       dwOriginalOutMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
-      dwOriginalInMode |=  ENABLE_VIRTUAL_TERMINAL_INPUT;
+      dwOriginalInMode |= ENABLE_VIRTUAL_TERMINAL_INPUT;
     }
     if(!SetConsoleMode(Private::out.handle(), dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     if(!SetConsoleMode(Private::in.handle(), dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed"); }
@@ -87,7 +87,7 @@ int Term::Terminal::activateFocusEvents()
 int Term::Terminal::desactivateFocusEvents()
 {
 #if defined(_WIN32)
- return  ENABLE_WINDOW_INPUT;
+  return ENABLE_WINDOW_INPUT;
 #else
   return Term::Private::out.write("\033[?1004l");
 #endif
