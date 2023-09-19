@@ -20,12 +20,18 @@ private:
   std::condition_variable cv;
 
 public:
+  BlockingQueue()  = default;
+  ~BlockingQueue() = default;
   Term::Event pop();
   void        push(const Term::Event& value, const std::size_t& occurrence = 1);
   void        push(const Term::Event&& value, const std::size_t& occurrence = 1);
   bool        empty();
   std::size_t size();
   void        wait_for_events(std::unique_lock<std::mutex>& lock);
+  BlockingQueue(const BlockingQueue& other)            = delete;
+  BlockingQueue(BlockingQueue&& other)                 = delete;
+  BlockingQueue& operator=(const BlockingQueue& other) = delete;
+  BlockingQueue& operator=(BlockingQueue&& other)      = delete;
 };
 
 }  // namespace Private
