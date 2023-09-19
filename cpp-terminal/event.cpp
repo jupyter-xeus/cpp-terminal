@@ -3,9 +3,14 @@
 #include "cpp-terminal/platforms/conversion.hpp"
 
 #include <cstring>
-#include <iostream>
 
-Term::Event::container::container() {}
+Term::Event::container::container()
+{
+  m_Key    = {};
+  m_Cursor = {};
+  m_Screen = {};
+  m_string = {nullptr};
+}
 
 Term::Event::container::~container() {}
 
@@ -75,7 +80,11 @@ Term::Event& Term::Event::operator=(const Term::Event& event)
     case Type::CopyPaste:
     {
       m_container.m_string.reset(new char[std::strlen(event.m_container.m_string.get())]);
-      strcpy_s(m_container.m_string.get(),std::strlen(m_container.m_string.get()), event.m_container.m_string.get());
+#if defined(_WIN32)
+      strcpy_s(m_container.m_string.get(), std::strlen(m_container.m_string.get()), event.m_container.m_string.get());
+#else
+      strcpy(m_container.m_string.get(), event.m_container.m_string.get());
+#endif
       break;
     }
     case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
@@ -94,7 +103,11 @@ Term::Event::Event(const Term::Event& event)
     case Type::CopyPaste:
     {
       m_container.m_string.reset(new char[std::strlen(event.m_container.m_string.get())]);
-      strcpy_s(m_container.m_string.get(),std::strlen(m_container.m_string.get()), event.m_container.m_string.get());
+#if defined(_WIN32)
+      strcpy_s(m_container.m_string.get(), std::strlen(m_container.m_string.get()), event.m_container.m_string.get());
+#else
+      strcpy(m_container.m_string.get(), event.m_container.m_string.get());
+#endif
       break;
     }
     case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
@@ -187,7 +200,7 @@ void Term::Event::parse(const std::string& str)
     if(found != std::string::npos)
     {
       m_Type               = Type::Cursor;
-      m_container.m_Cursor = Cursor(static_cast<std::uint16_t >(std::stoi(str.substr(2, found - 2))), static_cast<std::uint16_t>(std::stoi(str.substr(found + 1, str.size() - (found + 2)))));
+      m_container.m_Cursor = Cursor(static_cast<std::uint16_t>(std::stoi(str.substr(2, found - 2))), static_cast<std::uint16_t>(std::stoi(str.substr(found + 1, str.size() - (found + 2)))));
     }
   }
   else if(str.size() <= 10)
@@ -332,8 +345,8 @@ void Term::Event::parse(const std::string& str)
     else
     {
       m_Type = Type::CopyPaste;
-      m_container.m_string.reset(new char[str.size()+1]);
-      std::copy(str.begin(),str.end(),m_container.m_string.get());
+      m_container.m_string.reset(new char[str.size() + 1]);
+      std::copy(str.begin(), str.end(), m_container.m_string.get());
       m_container.m_string.get()[str.size()] = '\0';
       return;
     }
@@ -342,8 +355,8 @@ void Term::Event::parse(const std::string& str)
   else
   {
     m_Type = Type::CopyPaste;
-    m_container.m_string.reset(new char[str.size()+1]);
-    std::copy(str.begin(),str.end(),m_container.m_string.get());
+    m_container.m_string.reset(new char[str.size() + 1]);
+    std::copy(str.begin(), str.end(), m_container.m_string.get());
     m_container.m_string.get()[str.size()] = '\0';
   }
 }
