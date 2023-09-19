@@ -4,13 +4,7 @@
 
 #include <cstring>
 
-Term::Event::container::container()
-{
-  m_Key    = {};
-  m_Cursor = {};
-  m_Screen = {};
-  m_string = {nullptr};
-}
+Term::Event::container::container() {}
 
 Term::Event::container::~container() {}
 
