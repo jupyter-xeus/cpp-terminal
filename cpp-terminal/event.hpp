@@ -1,9 +1,9 @@
 #pragma once
 
 #include "cpp-terminal/cursor.hpp"
+#include "cpp-terminal/focus.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/screen.hpp"
-#include "cpp-terminal/focus.hpp"
 
 #include <cstdint>
 #include <memory>

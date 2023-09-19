@@ -64,21 +64,19 @@ const std::string Term::Event::get_if_copy_paste() const
     return nullptr;
 }
 
-Term::Focus*            Term::Event::get_if_focus()
+Term::Focus* Term::Event::get_if_focus()
 {
   if(m_Type == Type::Focus) return &m_container.m_Focus;
   else
     return nullptr;
 }
 
-const Term::Focus*      Term::Event::get_if_focus() const
+const Term::Focus* Term::Event::get_if_focus() const
 {
   if(m_Type == Type::Focus) return &m_container.m_Focus;
   else
     return nullptr;
 }
-
-
 
 Term::Event& Term::Event::operator=(const Term::Event& event)
 {
@@ -104,8 +102,7 @@ Term::Event& Term::Event::operator=(const Term::Event& event)
   return *this;
 }
 
-Term::Event::Event(const Term::Focus& focus) : m_Type(Type::Focus) {m_container.m_Focus=focus;}
-
+Term::Event::Event(const Term::Focus& focus) : m_Type(Type::Focus) { m_container.m_Focus = focus; }
 
 Term::Event::Event(const Term::Event& event)
 {
@@ -206,15 +203,15 @@ void Term::Event::parse(const std::string& str)
     /* Backspace return 127 CTRL+backspace return 8 */
     if(m_container.m_Key == Term::Key::Value::Del) m_container.m_Key = Key(Term::Key::Value::Backspace);
   }
-  else if(str=="\033[I")
+  else if(str == "\033[I")
   {
-    m_Type=Type::Focus;
-    m_container.m_Focus=Term::Focus(Term::Focus::Type::In);
+    m_Type              = Type::Focus;
+    m_container.m_Focus = Term::Focus(Term::Focus::Type::In);
   }
-  else if(str=="\033[O")
+  else if(str == "\033[O")
   {
-    m_Type=Type::Focus;
-    m_container.m_Focus=Term::Focus(Term::Focus::Type::Out);
+    m_Type              = Type::Focus;
+    m_container.m_Focus = Term::Focus(Term::Focus::Type::Out);
   }
   else if(str.size() == 2 && str[0] == '\033')
   {

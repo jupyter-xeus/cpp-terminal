@@ -87,7 +87,6 @@ void Term::Terminal::desactivateFocusAndMouseEvent()
 #endif
 }
 
-
 void Term::Terminal::setBadStateReturnCode()
 {
   std::pair<bool, std::string> returnCode{Private::getenv("CPP_TERMINAL_BADSTATE")};

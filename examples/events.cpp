@@ -51,7 +51,8 @@ int main()
         case Term::Event::Type::Focus:
         {
           if(static_cast<Term::Focus>(event).isIn()) Term::cout << "Event: Focus (In)" << std::endl;
-          else Term::cout << "Event: Focus (Out)" << std::endl;
+          else
+            Term::cout << "Event: Focus (Out)" << std::endl;
           break;
         }
         case Term::Event::Type::Key:
