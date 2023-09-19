@@ -8,6 +8,8 @@
 
 #include "cpp-terminal/platforms/file.hpp"
 
+#include <iostream>
+
 Term::Cursor Term::cursor_position()
 {
   if(Term::Private::in.null()) return Term::Cursor();
@@ -24,14 +26,20 @@ Term::Cursor Term::cursor_position()
   while(nread == 0) ::ioctl(Private::in.fd(), FIONREAD, &nread);
   ret = Term::Private::in.read();
   Term::Private::in.unlockIO();
-  if(ret[0] == '\033' && ret[1] == '[' && ret[ret.size() - 1] == 'R')
+  try
   {
-    std::size_t found = ret.find(';', 2);
-    if(found != std::string::npos) { return Cursor(std::stoi(ret.substr(2, found - 2)), std::stoi(ret.substr(found + 1, ret.size() - (found + 2)))); }
-    else
-      return Term::Cursor();
-  }
-  else
+    if(ret[0] == '\033' && ret[1] == '[' && ret[ret.size() - 1] == 'R')
+    {
+      std::size_t found = ret.find(';', 2);
+      if(found != std::string::npos) { return Cursor(std::stoi(ret.substr(2, found - 2)), std::stoi(ret.substr(found + 1, ret.size() - (found + 2)))); }
+      else
+        return Term::Cursor();
+    }
     return Term::Cursor();
+  }
+  catch(...)
+  {
+    return Term::Cursor();
+  }
 #endif
 }
