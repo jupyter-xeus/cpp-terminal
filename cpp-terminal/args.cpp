@@ -5,9 +5,9 @@ namespace Term
 
 Term::Argc::Argc() {}
 
-Term::Argc::operator long unsigned int() { return static_cast<int>(Term::Arguments::argc()); }
+Term::Argc::operator long unsigned int() { return static_cast<long unsigned>(Term::Arguments::argc()); }
 
-Term::Argc::operator long unsigned int() const { return static_cast<int>(Term::Arguments::argc()); }
+Term::Argc::operator long unsigned int() const { return static_cast<long unsigned>(Term::Arguments::argc()); }
 
 Term::Arguments::Arguments() {}
 
