@@ -8,6 +8,68 @@
 namespace Term
 {
 
+class MetaKey
+{
+public:
+  enum class Value : std::int32_t
+  {
+    // Last utf8 codepoint is U+10FFFF (000100001111111111111111) So:
+    None = 0,
+    Alt  = (1 << 22),
+    Ctrl = (1 << 23),
+  };
+
+  constexpr MetaKey() : value(static_cast<std::int32_t>(Value::None)) {}
+  constexpr MetaKey(const MetaKey& key)         = default;
+  inline MetaKey& operator=(const MetaKey& key) = default;
+
+  constexpr MetaKey(const Value& v) : value(static_cast<std::int32_t>(v)) {}
+  inline MetaKey& operator=(const Value& v)
+  {
+    this->value = static_cast<std::int32_t>(v);
+    return *this;
+  }
+
+  explicit constexpr MetaKey(std::int32_t val) : value(val) {}
+  inline MetaKey& operator=(std::int32_t val)
+  {
+    this->value = val;
+    return *this;
+  }
+
+explicit constexpr operator std::int32_t() const { return this->value; }
+
+constexpr bool hasAlt() const { return (this->value & static_cast<std::int32_t>(MetaKey::Value::Alt)) == static_cast<std::int32_t>(MetaKey::Value::Alt); }
+constexpr bool hasCtrl() const { return (this->value & static_cast<std::int32_t>(MetaKey::Value::Ctrl)) == static_cast<std::int32_t>(MetaKey::Value::Ctrl); }
+
+friend constexpr MetaKey operator+(MetaKey l, MetaKey r) { return MetaKey(l.value | r.value); }
+  
+  friend constexpr bool operator==(MetaKey l, MetaKey r) { return l.value == r.value; }
+friend constexpr bool operator==(MetaKey l, MetaKey::Value r) { return l == MetaKey(r); }
+friend constexpr bool operator==(MetaKey::Value l, MetaKey r) { return MetaKey(l) == r; }
+
+friend constexpr bool operator!=(MetaKey l, MetaKey r) { return !(l == r); }
+friend constexpr bool operator!=(MetaKey l, MetaKey::Value r) { return !(l == r); }
+friend constexpr bool operator!=(MetaKey::Value l, MetaKey r) { return !(l == r); }
+
+friend constexpr bool operator<(MetaKey l, MetaKey r) { return l.value < r.value; }
+
+friend constexpr bool operator>=(MetaKey l, MetaKey r) { return !(l < r); }
+friend constexpr bool operator>=(MetaKey l, MetaKey::Value r) { return !(l < r); }
+friend constexpr bool operator>=(MetaKey::Value l, MetaKey r) { return !(l < r); }
+
+friend constexpr bool operator>(MetaKey l, MetaKey r) { return r < l; }
+friend constexpr bool operator>(MetaKey l, MetaKey::Value r) { return r < l; }
+friend constexpr bool operator>(MetaKey::Value l, MetaKey r) { return r < l; }
+
+
+friend constexpr bool operator<=(MetaKey l, MetaKey r) { return !(l > r); }
+friend constexpr bool operator<=(MetaKey l, MetaKey::Value r) { return !(l > r); }
+friend constexpr bool operator<=(MetaKey::Value l, MetaKey r) { return !(l > r); }
+
+  std::int32_t value;
+};
+
 class Key
 {
 public:
@@ -244,178 +306,140 @@ public:
   }
 
   constexpr operator std::int32_t() const { return this->value; }
+  
+  friend constexpr bool operator==(Key l, Key r) { return l.value == r.value; }
+friend constexpr bool operator==(Key l, char r) { return l == Key(r); }
+friend constexpr bool operator==(char l, Key r) { return Key(l) == r; }
+friend constexpr bool operator==(Key l, char32_t r) { return l == Key(r); }
+friend constexpr bool operator==(char32_t l, Key r) { return Key(l) == r; }
+friend constexpr bool operator==(Key l, std::int32_t r) { return l == Key(r); }
+friend constexpr bool operator==(std::int32_t l, Key r) { return Key(l) == r; }
+friend constexpr bool operator==(Key l, std::size_t r) { return static_cast<std::size_t>(l.value) == r; }
+friend constexpr bool operator==(std::size_t l, Key r) { return l == static_cast<std::size_t>(r.value); }
+  
+ friend constexpr bool operator!=(Key l, Key r) { return !(l == r); }
+friend constexpr bool operator!=(Key l, char r) { return !(l == r); }
+friend constexpr bool operator!=(char l, Key r) { return !(l == r); }
+friend constexpr bool operator!=(Key l, char32_t r) { return !(l == r); }
+friend constexpr bool operator!=(char32_t l, Key r) { return !(l == r); }
+friend constexpr bool operator!=(Key l, std::int32_t r) { return !(l == r); }
+friend constexpr bool operator!=(std::int32_t l, Key r) { return !(l == r); }
+friend constexpr bool operator!=(Key l, std::size_t r) { return !(l == r); }
+friend constexpr bool operator!=(std::size_t l, Key r) { return !(l == r); }
+  
+   friend constexpr bool operator<(Key l, Key r) { return l.value < r.value; }
+friend constexpr bool operator<(Key l, char r) { return l < Key(r); }
+friend constexpr bool operator<(char l, Key r) { return Key(l) < r; }
+friend constexpr bool operator<(Key l, char32_t r) { return l < Key(r); }
+friend constexpr bool operator<(char32_t l, Key r) { return Key(l) < r; }
+friend constexpr bool operator<(Key l, std::int32_t r) { return l < Key(r); }
+friend constexpr bool operator<(std::int32_t l, Key r) { return Key(l) < r; }
+friend constexpr bool operator<(Key l, std::size_t r) { return static_cast<std::size_t>(l.value) < r; }
+friend constexpr bool operator<(std::size_t l, Key r) { return l < static_cast<std::size_t>(r.value); }
+  
+  friend constexpr bool operator>=(Key l, Key r) { return !(l < r); }
+friend constexpr bool operator>=(Key l, char r) { return !(l < r); }
+friend constexpr bool operator>=(char l, Key r) { return !(l < r); }
+friend constexpr bool operator>=(Key l, char32_t r) { return !(l < r); }
+friend constexpr bool operator>=(char32_t l, Key r) { return !(l < r); }
+friend constexpr bool operator>=(Key l, std::int32_t r) { return !(l < r); }
+friend constexpr bool operator>=(std::int32_t l, Key r) { return !(l < r); }
+friend constexpr bool operator>=(Key l, std::size_t r) { return !(l < r); }
+friend constexpr bool operator>=(std::size_t l, Key r) { return !(l < r); }
+
+
+friend constexpr bool operator>(Key l, Key r) { return r < l; }
+friend constexpr bool operator>(Key l, char r) { return r < l; }
+friend constexpr bool operator>(char l, Key r) { return r < l; }
+friend constexpr bool operator>(Key l, char32_t r) { return r < l; }
+friend constexpr bool operator>(char32_t l, Key r) { return r < l; }
+friend constexpr bool operator>(Key l, std::int32_t r) { return r < l; }
+friend constexpr bool operator>(std::int32_t l, Key r) { return r < l; }
+friend constexpr bool operator>(Key l, std::size_t r) { return r < l; }
+friend constexpr bool operator>(std::size_t l, Key r) { return r < l; }
+
+friend constexpr bool operator<=(Key l, Key r) { return !(l > r); }
+friend constexpr bool operator<=(Key l, char r) { return !(l > r); }
+friend constexpr bool operator<=(char l, Key r) { return !(l > r); }
+friend constexpr bool operator<=(Key l, char32_t r) { return !(l > r); }
+friend constexpr bool operator<=(char32_t l, Key r) { return !(l > r); }
+friend constexpr bool operator<=(Key l, std::int32_t r) { return !(l > r); }
+friend constexpr bool operator<=(std::int32_t l, Key r) { return !(l > r); }
+friend constexpr bool operator<=(Key l, std::size_t r) { return !(l > r); }
+friend constexpr bool operator<=(std::size_t l, Key r) { return !(l > r); }
+
+  constexpr bool iscntrl() const { return (*this >= Key::Null && *this <= Key::Ctrl_Underscore) || *this == Key::Del; }
+	constexpr bool isblank() const { return *this == Key::Tab || *this == Key::Space; }
+	constexpr bool isspace() const { return this->isblank() || (*this >= Key::Ctrl_J && *this <= Key::Enter); }
+	constexpr bool isupper() const { return *this >= Key::A && *this <= Key::Z; }
+	constexpr bool islower() const { return *this >= Key::a && *this <= Key::z; }
+	constexpr bool isalpha() const { return (this->isupper() || this->islower()); }
+	constexpr bool isdigit() const { return *this >= Key::Zero && *this <= Key::Nine; }
+	constexpr bool isxdigit() const { return this->isdigit() || (*this >= Key::A && *this <= Key::F) || (*this >= Key::a && *this <= Key::f); }
+	constexpr bool isalnum() const { return (this->isdigit() || this->isalpha()); }
+	constexpr bool ispunct() const { return (*this >= Key::ExclamationMark && *this <= Key::Slash) || (*this >= Key::Colon && *this <= Key::Arobase) || (*this >= Key::OpenBracket && *this <= Key::GraveAccent) || (*this >= Key::OpenBrace && *this <= Key::Tilde); }
+	constexpr bool isgraph() const { return (this->isalnum() || this->ispunct()); }
+	constexpr bool isprint() const { return (this->isgraph() || *this == Key::Space); }
+	constexpr bool isunicode() const { return *this >= Key::Null && this->value <= 0x10FFFFL; }
+	constexpr Key  tolower() const { return (this->isalpha() && this->isupper()) ? Key(this->value + 32) : *this; }
+	constexpr Key  toupper() const { return (this->isalpha() && this->islower()) ? Key(this->value - 32) : *this; }
+
+	// Detect if *this is convertible to ANSII
+	constexpr bool isASCII() const { return *this >= Key::Null && *this <= Key::Del; }
+
+	// Detect if *this is convertible to Extended ANSII
+	constexpr bool isExtendedASCII() const { return *this >= Key::Null && this->value <= 255L; }
+
+	// Detect if *this has CTRL+*
+	constexpr bool hasCtrlAll() const { return this->iscntrl() || ((this->value & static_cast<std::int32_t>(MetaKey::Value::Ctrl)) == static_cast<std::int32_t>(MetaKey::Value::Ctrl)); }
+
+	// Detect if *this has CTRL+* (excluding the CTRL+* that can be access with standard *this Tab Backspace Enter...)
+	constexpr bool hasCtrl() const
+	{
+	  // Need to suppress the TAB etc...
+	  return ((this->iscntrl() || this->hasCtrlAll()) && *this != Key::Backspace && *this != Key::Tab && *this != Key::Esc && *this != Key::Enter && *this != Key::Del);
+	}
+
+	// Detect if key has ALT+*
+	constexpr bool hasAlt() const { return (this->value & static_cast<std::int32_t>(MetaKey::Value::Alt)) == static_cast<std::int32_t>(MetaKey::Value::Alt); }
+
+	constexpr bool empty() const { return (this->value == Key::NoKey); }
+
+	void        append_name  (std::string& strOut) const;
+	void        append_str (std::string& strOut) const;
+	std::string name() const;
+	std::string str() const;
+  
 };
 
-class MetaKey
-{
-public:
-  enum class Value : std::int32_t
-  {
-    // Last utf8 codepoint is U+10FFFF (000100001111111111111111) So:
-    None = 0,
-    Alt  = (1 << 22),
-    Ctrl = (1 << 23),
-  };
 
-  constexpr MetaKey() : value(static_cast<std::int32_t>(Value::None)) {}
-  constexpr MetaKey(const MetaKey& key)         = default;
-  inline MetaKey& operator=(const MetaKey& key) = default;
+constexpr bool operator==(Key l, MetaKey r) { return static_cast<std::int32_t>(l) == static_cast<std::int32_t>(r); }
+constexpr bool operator==(MetaKey l, Key r) { return static_cast<std::int32_t>(l) == static_cast<std::int32_t>(r); }
 
-  constexpr MetaKey(const Value& v) : value(static_cast<std::int32_t>(v)) {}
-  inline MetaKey& operator=(const Value& v)
-  {
-    this->value = static_cast<std::int32_t>(v);
-    return *this;
-  }
 
-  explicit constexpr MetaKey(std::int32_t val) : value(val) {}
-  inline MetaKey& operator=(std::int32_t val)
-  {
-    this->value = val;
-    return *this;
-  }
+constexpr bool operator<(MetaKey l, Key r) { return static_cast<std::int32_t>(l) < static_cast<std::int32_t>(r); }
+constexpr bool operator<(Key l, MetaKey r) { return static_cast<std::int32_t>(l) < static_cast<std::int32_t>(r); }
 
-  std::int32_t value;
-};
 
-constexpr bool operator==(Key l, Key r) { return l.value == r.value; }
-constexpr bool operator==(MetaKey l, MetaKey r) { return l.value == r.value; }
-constexpr bool operator==(MetaKey l, MetaKey::Value r) { return l == MetaKey(r); }
-constexpr bool operator==(MetaKey::Value l, MetaKey r) { return MetaKey(l) == r; }
-constexpr bool operator==(Key l, MetaKey r) { return l.value == r.value; }
-constexpr bool operator==(MetaKey l, Key r) { return l.value == r.value; }
-constexpr bool operator==(Key l, char r) { return l == Key(r); }
-constexpr bool operator==(char l, Key r) { return Key(l) == r; }
-constexpr bool operator==(Key l, char32_t r) { return l == Key(r); }
-constexpr bool operator==(char32_t l, Key r) { return Key(l) == r; }
-constexpr bool operator==(Key l, std::int32_t r) { return l == Key(r); }
-constexpr bool operator==(std::int32_t l, Key r) { return Key(l) == r; }
-constexpr bool operator==(Key l, std::size_t r) { return static_cast<std::size_t>(l.value) == r; }
-constexpr bool operator==(std::size_t l, Key r) { return l == static_cast<std::size_t>(r.value); }
+constexpr bool operator!=(Key l, MetaKey r) { return static_cast<std::int32_t>(l) != static_cast<std::int32_t>(r); }
+constexpr bool operator!=(MetaKey l, Key r) { return static_cast<std::int32_t>(l) != static_cast<std::int32_t>(r); }
 
-constexpr bool operator<(Key l, Key r) { return l.value < r.value; }
-constexpr bool operator<(MetaKey l, MetaKey r) { return l.value < r.value; }
-constexpr bool operator<(MetaKey l, Key r) { return l.value < r.value; }
-constexpr bool operator<(Key l, MetaKey r) { return l.value < r.value; }
-constexpr bool operator<(Key l, char r) { return l < Key(r); }
-constexpr bool operator<(char l, Key r) { return Key(l) < r; }
-constexpr bool operator<(Key l, char32_t r) { return l < Key(r); }
-constexpr bool operator<(char32_t l, Key r) { return Key(l) < r; }
-constexpr bool operator<(Key l, std::int32_t r) { return l < Key(r); }
-constexpr bool operator<(std::int32_t l, Key r) { return Key(l) < r; }
-constexpr bool operator<(Key l, std::size_t r) { return static_cast<std::size_t>(l.value) < r; }
-constexpr bool operator<(std::size_t l, Key r) { return l < static_cast<std::size_t>(r.value); }
 
-constexpr bool operator!=(Key l, Key r) { return !(l == r); }
-constexpr bool operator!=(MetaKey l, MetaKey r) { return !(l == r); }
-constexpr bool operator!=(MetaKey l, MetaKey::Value r) { return !(l == r); }
-constexpr bool operator!=(MetaKey::Value l, MetaKey r) { return !(l == r); }
-constexpr bool operator!=(Key l, MetaKey r) { return !(l == r); }
-constexpr bool operator!=(MetaKey l, Key r) { return !(l == r); }
-constexpr bool operator!=(Key l, char r) { return !(l == r); }
-constexpr bool operator!=(char l, Key r) { return !(l == r); }
-constexpr bool operator!=(Key l, char32_t r) { return !(l == r); }
-constexpr bool operator!=(char32_t l, Key r) { return !(l == r); }
-constexpr bool operator!=(Key l, std::int32_t r) { return !(l == r); }
-constexpr bool operator!=(std::int32_t l, Key r) { return !(l == r); }
-constexpr bool operator!=(Key l, std::size_t r) { return !(l == r); }
-constexpr bool operator!=(std::size_t l, Key r) { return !(l == r); }
+constexpr bool operator>=(MetaKey l, Key r) { return static_cast<std::int32_t>(l) >= static_cast<std::int32_t>(r); }
+constexpr bool operator>=(Key l, MetaKey r) { return static_cast<std::int32_t>(l) >= static_cast<std::int32_t>(r); }
 
-constexpr bool operator>=(Key l, Key r) { return !(l < r); }
-constexpr bool operator>=(MetaKey l, MetaKey r) { return !(l < r); }
-constexpr bool operator>=(MetaKey l, MetaKey::Value r) { return !(l < r); }
-constexpr bool operator>=(MetaKey::Value l, MetaKey r) { return !(l < r); }
-constexpr bool operator>=(MetaKey l, Key r) { return !(l < r); }
-constexpr bool operator>=(Key l, MetaKey r) { return !(l < r); }
-constexpr bool operator>=(Key l, char r) { return !(l < r); }
-constexpr bool operator>=(char l, Key r) { return !(l < r); }
-constexpr bool operator>=(Key l, char32_t r) { return !(l < r); }
-constexpr bool operator>=(char32_t l, Key r) { return !(l < r); }
-constexpr bool operator>=(Key l, std::int32_t r) { return !(l < r); }
-constexpr bool operator>=(std::int32_t l, Key r) { return !(l < r); }
-constexpr bool operator>=(Key l, std::size_t r) { return !(l < r); }
-constexpr bool operator>=(std::size_t l, Key r) { return !(l < r); }
+constexpr bool operator>(MetaKey l, Key r) { return static_cast<std::int32_t>(l) > static_cast<std::int32_t>(r); }
+constexpr bool operator>(Key l, MetaKey r) { return static_cast<std::int32_t>(l) > static_cast<std::int32_t>(r); }
 
-constexpr bool operator>(Key l, Key r) { return r < l; }
-constexpr bool operator>(MetaKey l, MetaKey r) { return r < l; }
-constexpr bool operator>(MetaKey l, MetaKey::Value r) { return r < l; }
-constexpr bool operator>(MetaKey::Value l, MetaKey r) { return r < l; }
-constexpr bool operator>(MetaKey l, Key r) { return r < l; }
-constexpr bool operator>(Key l, MetaKey r) { return r < l; }
-constexpr bool operator>(Key l, char r) { return r < l; }
-constexpr bool operator>(char l, Key r) { return r < l; }
-constexpr bool operator>(Key l, char32_t r) { return r < l; }
-constexpr bool operator>(char32_t l, Key r) { return r < l; }
-constexpr bool operator>(Key l, std::int32_t r) { return r < l; }
-constexpr bool operator>(std::int32_t l, Key r) { return r < l; }
-constexpr bool operator>(Key l, std::size_t r) { return r < l; }
-constexpr bool operator>(std::size_t l, Key r) { return r < l; }
 
-constexpr bool operator<=(Key l, Key r) { return !(l > r); }
-constexpr bool operator<=(MetaKey l, MetaKey r) { return !(l > r); }
-constexpr bool operator<=(MetaKey l, MetaKey::Value r) { return !(l > r); }
-constexpr bool operator<=(MetaKey::Value l, MetaKey r) { return !(l > r); }
-constexpr bool operator<=(MetaKey l, Key r) { return !(l > r); }
-constexpr bool operator<=(Key l, MetaKey r) { return !(l > r); }
-constexpr bool operator<=(Key l, char r) { return !(l > r); }
-constexpr bool operator<=(char l, Key r) { return !(l > r); }
-constexpr bool operator<=(Key l, char32_t r) { return !(l > r); }
-constexpr bool operator<=(char32_t l, Key r) { return !(l > r); }
-constexpr bool operator<=(Key l, std::int32_t r) { return !(l > r); }
-constexpr bool operator<=(std::int32_t l, Key r) { return !(l > r); }
-constexpr bool operator<=(Key l, std::size_t r) { return !(l > r); }
-constexpr bool operator<=(std::size_t l, Key r) { return !(l > r); }
+constexpr bool operator<=(MetaKey l, Key r) { return static_cast<std::int32_t>(l) <= static_cast<std::int32_t>(r); }
+constexpr bool operator<=(Key l, MetaKey r) { return static_cast<std::int32_t>(l) <= static_cast<std::int32_t>(r); }
 
-constexpr bool iscntrl(Key key) { return (key >= Key::Null && key <= Key::Ctrl_Underscore) || key == Key::Del; }
-constexpr bool isblank(Key key) { return key == Key::Tab || key == Key::Space; }
-constexpr bool isspace(Key key) { return isblank(key) || (key >= Key::Ctrl_J && key <= Key::Enter); }
-constexpr bool isupper(Key key) { return key >= Key::A && key <= Key::Z; }
-constexpr bool islower(Key key) { return key >= Key::a && key <= Key::z; }
-constexpr bool isalpha(Key key) { return (isupper(key) || islower(key)); }
-constexpr bool isdigit(Key key) { return key >= Key::Zero && key <= Key::Nine; }
-constexpr bool isxdigit(Key key) { return isdigit(key) || (key >= Key::A && key <= Key::F) || (key >= Key::a && key <= Key::f); }
-constexpr bool isalnum(Key key) { return (isdigit(key) || isalpha(key)); }
-constexpr bool ispunct(Key key) { return (key >= Key::ExclamationMark && key <= Key::Slash) || (key >= Key::Colon && key <= Key::Arobase) || (key >= Key::OpenBracket && key <= Key::GraveAccent) || (key >= Key::OpenBrace && key <= Key::Tilde); }
-constexpr bool isgraph(Key key) { return (isalnum(key) || ispunct(key)); }
-constexpr bool isprint(Key key) { return (isgraph(key) || key == Key::Space); }
-constexpr bool isunicode(Key key) { return key >= Key::Null && key.value <= 0x10FFFFL; }
-constexpr Key  tolower(Key key) { return (isalpha(key) && isupper(key)) ? Key(key.value + 32) : key; }
-constexpr Key  toupper(Key key) { return (isalpha(key) && islower(key)) ? Key(key.value - 32) : key; }
 
-// Detect if key is convertible to ANSII
-constexpr bool isASCII(Key key) { return key >= Key::Null && key <= Key::Del; }
-
-// Detect if key is convertible to Extended ANSII
-constexpr bool isExtendedASCII(Key key) { return key >= Key::Null && key.value <= 255L; }
-
-// Detect if key has CTRL+*
-constexpr bool hasCtrlAll(Key key) { return iscntrl(key) || ((key.value & static_cast<std::int32_t>(MetaKey::Value::Ctrl)) == static_cast<std::int32_t>(MetaKey::Value::Ctrl)); }
-
-// Detect if key has CTRL+* (excluding the CTRL+* that can be access with standard key Tab Backspace Enter...)
-constexpr bool hasCtrl(Key key)
-{
-  // Need to suppress the TAB etc...
-  return ((iscntrl(key) || hasCtrlAll(key)) && key != Key::Backspace && key != Key::Tab && key != Key::Esc && key != Key::Enter && key != Key::Del);
-}
-
-// Detect if key has ALT+*
-constexpr bool hasAlt(Key key) { return (key.value & static_cast<std::int32_t>(MetaKey::Value::Alt)) == static_cast<std::int32_t>(MetaKey::Value::Alt); }
-
-constexpr bool empty(Key key) { return (key == Key::NoKey); }
-
-void        append_name(Key key, std::string& strOut);
-void        append_str(Key key, std::string& strOut);
-std::string name(Key key);
-std::string str(Key key);
-
-constexpr bool hasAlt(MetaKey metakey) { return (metakey.value & static_cast<std::int32_t>(MetaKey::Value::Alt)) == static_cast<std::int32_t>(MetaKey::Value::Alt); }
-constexpr bool hasCtrl(MetaKey metakey) { return (metakey.value & static_cast<std::int32_t>(MetaKey::Value::Ctrl)) == static_cast<std::int32_t>(MetaKey::Value::Ctrl); }
-
-constexpr MetaKey operator+(MetaKey l, MetaKey r) { return MetaKey(l.value | r.value); }
 constexpr Key     operator+(MetaKey metakey, Key key)
 {
-  return Key(key.value + ((metakey == MetaKey::Value::Ctrl && !hasCtrlAll(key) && !empty(key)) ? static_cast<std::int32_t>(MetaKey::Value::Ctrl) : 0)
-             + ((metakey == MetaKey::Value::Alt && !hasAlt(key) && !empty(key)) ? static_cast<std::int32_t>(MetaKey::Value::Alt) : 0));
+  return Key(key.value + ((metakey == MetaKey::Value::Ctrl && !key.hasCtrlAll() && !key.empty()) ? static_cast<std::int32_t>(MetaKey::Value::Ctrl) : 0)
+             + ((metakey == MetaKey::Value::Alt && !key.hasAlt() && !key.empty()) ? static_cast<std::int32_t>(MetaKey::Value::Alt) : 0));
 }
 constexpr Key     operator+(Key key, MetaKey meta) { return meta + key; }
 constexpr MetaKey operator+(MetaKey::Value l, MetaKey::Value r) { return MetaKey(l) + MetaKey(r); }
