@@ -39,11 +39,15 @@ void Term::Terminal::store_and_restore()
 
     if(!GetConsoleMode(Private::out.handle(), &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
     if(!GetConsoleMode(Private::in.handle(), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
+    dwOriginalInMode |= (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | ENABLE_MOUSE_INPUT);
+    dwOriginalInMode &= ~ENABLE_QUICK_EDIT_MODE;
     if(!m_terminfo.isLegacy())
     {
-      if(!SetConsoleMode(Private::out.handle(), dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
-      if(!SetConsoleMode(Private::in.handle(), dwOriginalInMode | ENABLE_VIRTUAL_TERMINAL_INPUT)) { throw Term::Exception("SetConsoleMode() failed"); }
+      dwOriginalOutMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
+      dwOriginalInMode |= ENABLE_VIRTUAL_TERMINAL_INPUT;
     }
+    if(!SetConsoleMode(Private::out.handle(), dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
+    if(!SetConsoleMode(Private::in.handle(), dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed"); }
     enabled = true;
   }
   else
@@ -68,6 +72,24 @@ void Term::Terminal::store_and_restore()
       if(tcsetattr(Private::out.fd(), TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
     enabled = false;
   }
+#endif
+}
+
+int Term::Terminal::activateFocusEvents()
+{
+#if defined(_WIN32)
+  return ENABLE_WINDOW_INPUT;
+#else
+  return Term::Private::out.write("\033[?1004h");
+#endif
+}
+
+int Term::Terminal::desactivateFocusEvents()
+{
+#if defined(_WIN32)
+  return ENABLE_WINDOW_INPUT;
+#else
+  return Term::Private::out.write("\033[?1004l");
 #endif
 }
 

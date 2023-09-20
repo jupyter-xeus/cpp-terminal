@@ -196,6 +196,7 @@ void Term::Private::Input::read_raw()
           m_events.push(Term::Event(ret));
           ret.clear();
         }
+        m_events.push(Event(Focus(static_cast<Term::Focus::Type>(events[i].Event.FocusEvent.bSetFocus))));
         break;
       }
       case MENU_EVENT:

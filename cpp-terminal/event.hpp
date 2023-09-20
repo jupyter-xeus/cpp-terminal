@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cpp-terminal/cursor.hpp"
+#include "cpp-terminal/focus.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/screen.hpp"
 
@@ -20,14 +21,16 @@ public:
     Key,
     Screen,
     Cursor,
+    Focus,
     CopyPaste,
   };
   Event();
   ~Event();
-  Event(const std::string&);
-  Event(const Term::Key&);
+  Event(const std::string& str);
+  Event(const Term::Key& key);
   Event(const Term::Screen& screen);
   Event(const Term::Cursor& cursor);
+  Event(const Term::Focus& focus);
   bool         empty() const;
   Type         type() const;
   Term::Event& operator=(const Term::Event& event);
@@ -38,6 +41,7 @@ public:
   operator Term::Key() const;
   operator Term::Screen() const;
   operator Term::Cursor() const;
+  operator Term::Focus() const;
   operator std::string() const;
 
   // getters
@@ -47,6 +51,8 @@ public:
   const Screen*     get_if_screen() const;
   Cursor*           get_if_cursor();
   const Cursor*     get_if_cursor() const;
+  Focus*            get_if_focus();
+  const Focus*      get_if_focus() const;
   std::string       get_if_copy_paste();
   const std::string get_if_copy_paste() const;
 
@@ -63,6 +69,7 @@ private:
     Term::Key               m_Key;
     Term::Cursor            m_Cursor;
     Term::Screen            m_Screen;
+    Term::Focus             m_Focus;
     std::unique_ptr<char[]> m_string{nullptr};
   };
   Type      m_Type{Type::Empty};
