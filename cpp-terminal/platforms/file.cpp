@@ -29,7 +29,7 @@ Term::Private::OutputFileHandler& out = reinterpret_cast<Term::Private::OutputFi
 
 }  // namespace Term
 
-Term::Private::FileHandler::FileHandler(const std::string& filename, const std::string& mode)
+Term::Private::FileHandler::FileHandler(std::recursive_mutex& mutex, const std::string& filename, const std::string& mode) : m_mutex(mutex)
 {
 #if defined(_WIN32)
   m_handle = {CreateFile(filename.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
@@ -83,14 +83,16 @@ int Term::Private::FileInitializer::m_counter = {0};
 
 void Term::Private::FileInitializer::init()
 {
+  // MacOS was not happy wish a static mutex in the class so we create it and pass to each class;
+  static std::recursive_mutex io_mutex;
   if(m_counter++ == 0)
   {
 #if defined(_WIN32)
-    new(&Term::Private::in) InputFileHandler("CONIN$");
-    new(&Term::Private::out) OutputFileHandler("CONOUT$");
+    new(&Term::Private::in) InputFileHandler(io_mutex, "CONIN$");
+    new(&Term::Private::out) OutputFileHandler(io_mutex, "CONOUT$");
 #else
-    new(&Term::Private::in) InputFileHandler("/dev/tty");
-    new(&Term::Private::out) OutputFileHandler("/dev/tty");
+    new(&Term::Private::in) InputFileHandler(io_mutex, "/dev/tty");
+    new(&Term::Private::out) OutputFileHandler(io_mutex, "/dev/tty");
 #endif
   }
 }
@@ -109,11 +111,12 @@ Term::Private::FileInitializer::~FileInitializer()
 int Term::Private::OutputFileHandler::write(const std::string& str)
 {
   if(str.empty()) return 0;
+    //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
   DWORD dwCount{0};
-  if(WriteConsole(handle(), &str[0], str.size(), &dwCount, nullptr) == 0) return -1;
+  if(WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &dwCount, nullptr) == 0) return -1;
   else
-    return dwCount;
+    return static_cast<int>(dwCount);
 #else
   return ::write(fd(), &str[0], str.size());
 #endif
@@ -121,11 +124,12 @@ int Term::Private::OutputFileHandler::write(const std::string& str)
 
 int Term::Private::OutputFileHandler::write(const char& ch)
 {
+  //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
   DWORD dwCount{0};
   if(WriteConsole(handle(), &ch, 1, &dwCount, nullptr) == 0) return -1;
   else
-    return dwCount;
+    return static_cast<int>(dwCount);
 #else
   return ::write(fd(), &ch, 1);
 #endif
@@ -133,11 +137,12 @@ int Term::Private::OutputFileHandler::write(const char& ch)
 
 std::string Term::Private::InputFileHandler::read()
 {
+  //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
   DWORD       nread{0};
   std::string ret(4096, '\0');
   errno = 0;
-  ReadConsole(Private::in.handle(), &ret[0], ret.size(), &nread, nullptr);
+  ReadConsole(Private::in.handle(), &ret[0], static_cast<DWORD>(ret.size()), &nread, nullptr);
   return ret.c_str();
 #else
   std::size_t nread{0};
@@ -146,11 +151,14 @@ std::string Term::Private::InputFileHandler::read()
   {
     std::string ret(nread, '\0');
     errno = 0;
-    ::ssize_t nread{::read(Private::in.fd(), &ret[0], ret.size())};
-    if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
+    ::ssize_t nnread{::read(Private::in.fd(), &ret[0], ret.size())};
+    if(nnread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
     return ret.c_str();
   }
   else
     return std::string();
 #endif
 }
+
+void Term::Private::FileHandler::lockIO() { m_mutex.lock(); }
+void Term::Private::FileHandler::unlockIO() { m_mutex.unlock(); }

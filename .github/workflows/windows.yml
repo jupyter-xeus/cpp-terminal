@@ -26,8 +26,9 @@ jobs:
         shell: msys2 {0}
 
     steps:
+      - uses: ammaraskar/gcc-problem-matcher@master
       - name: 📥 Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: ⬇️ Setup CMake
@@ -69,8 +70,9 @@ jobs:
         standard: [ 11, 14, 17, 20 ]
 
     steps:
+      - uses: ammaraskar/msvc-problem-matcher@master
       - name: 📥 Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: ⬇️ Setup CMake
@@ -106,8 +108,9 @@ jobs:
         standard: [ 11, 14, 17, 20 ]
 
     steps:
+      - uses: ammaraskar/msvc-problem-matcher@master
       - name: 📥 Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: ⬇️ Setup CMake
@@ -143,8 +146,9 @@ jobs:
         standard: [ 11, 14, 17, 20 ]
 
     steps:
+      - uses: ammaraskar/gcc-problem-matcher@master
       - name: 📥 Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: ⬇️ Setup CMake
@@ -178,8 +182,9 @@ jobs:
         standard: [ 11, 14, 17, 20 ]
 
     steps:
+      - uses: ammaraskar/msvc-problem-matcher@master
       - name: 📥 Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: ⬇️ Setup CMake

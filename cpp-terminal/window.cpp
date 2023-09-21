@@ -3,6 +3,7 @@
 #include "cpp-terminal/cursor.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/platforms/conversion.hpp"
+#include "cpp-terminal/terminal.hpp"
 
 namespace Term
 {
@@ -141,12 +142,12 @@ void Term::Window::fill_style(const std::size_t& x1, const std::size_t& y1, cons
   }
 }
 
-void Term::Window::print_border(bool unicode) { print_rect(1, 1, w, h, unicode); }
+void Term::Window::print_border() { print_rect(1, 1, w, h); }
 
-void Term::Window::print_rect(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2, bool unicode)
+void Term::Window::print_rect(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2)
 {
   std::u32string border = Private::utf8_to_utf32("│─┌┐└┘");
-  if(unicode)
+  if(Term::terminal.supportUTF8())
   {
     for(std::size_t j = y1 + 1; j <= y2 - 1; j++)
     {

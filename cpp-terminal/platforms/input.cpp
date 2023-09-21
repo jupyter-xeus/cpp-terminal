@@ -1,255 +1,271 @@
-#ifdef _WIN32
+#if defined(_WIN32)
   // clang-format off
   #include <windows.h>
   #include <stringapiset.h>
   // clang-format on
+  #include "cpp-terminal/platforms/conversion.hpp"
+
   #include <vector>
-#else
+#elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
   #include <cerrno>
   #include <csignal>
   #include <sys/ioctl.h>
+  #include <thread>
   #include <unistd.h>
+#else
+  #include <memory>
+  #include <sys/epoll.h>
 #endif
 
+#include "cpp-terminal/event.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
+#include "cpp-terminal/platforms/blocking_queue.hpp"
 #include "cpp-terminal/platforms/file.hpp"
+#include "cpp-terminal/platforms/input.hpp"
+#include "cpp-terminal/platforms/sigwinch.hpp"
 
+#include <mutex>
 #include <string>
 
-#if defined(_WIN32)
-std::string to_utf8(LPCWCH utf16Str)
+std::thread Term::Private::Input::m_thread = std::thread(Term::Private::Input::read_event);
+
+Term::Private::BlockingQueue Term::Private::Input::m_events;
+
+int Term::Private::Input::m_poll{-1};
+
+void Term::Private::Input::init_thread()
 {
-  std::string ret;
-  int         size_needed = WideCharToMultiByte(CP_UTF8, 0, utf16Str, -1, nullptr, 0, nullptr, nullptr);
-  ret.reserve(static_cast<std::size_t>(size_needed));
-  WideCharToMultiByte(CP_UTF8, 0, utf16Str, 1, &ret[0], static_cast<int>(ret.capacity()), nullptr, nullptr);
-  return ret.c_str();
-}
-#else
-namespace
-{
-volatile std::sig_atomic_t gSignalStatus;
+  Term::Private::Sigwinch::unblockSigwinch();
+#if defined(__linux__)
+  m_poll = {::epoll_create1(EPOLL_CLOEXEC)};
+  ::epoll_event signal;
+  signal.events  = {EPOLLIN};
+  signal.data.fd = {Term::Private::Sigwinch::get()};
+  ::epoll_ctl(m_poll, EPOLL_CTL_ADD, Term::Private::Sigwinch::get(), &signal);
+  ::epoll_event input;
+  input.events  = {EPOLLIN};
+  input.data.fd = {Term::Private::in.fd()};
+  ::epoll_ctl(m_poll, EPOLL_CTL_ADD, Term::Private::in.fd(), &input);
+#endif
 }
 
-static void sigwinchHandler(int sig)
+void Term::Private::Input::read_event()
 {
-  if(sig == SIGWINCH) gSignalStatus = 1;
+  init_thread();
+  while(true)
+  {
+#if defined(_WIN32)
+    WaitForSingleObject(Term::Private::in.handle(), INFINITE);
+    read_raw();
+#elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
+    if(Term::Private::Sigwinch::isSigwinch()) m_events.push(screen_size());
+    read_raw();
+#else
+    ::epoll_event ret;
+    if(epoll_wait(m_poll, &ret, 1, -1) == 1)
+    {
+      if(Term::Private::Sigwinch::isSigwinch(ret.data.fd)) m_events.push(Term::Screen(screen_size()));
+      else
+        read_raw();
+    }
+#endif
+  }
+}
+
+#if defined(_WIN32)
+void Term::Private::Input::read_windows_key(const std::uint16_t& virtual_key_code, const std::uint32_t& control_key_state, const std::size_t& occurrence)
+{
+  // First check if we have ALT etc (CTRL is already done so skip it)
+  Term::MetaKey toAdd{Term::MetaKey::Value::None};
+  if(((control_key_state & LEFT_ALT_PRESSED) == LEFT_ALT_PRESSED) || ((control_key_state & RIGHT_ALT_PRESSED) == RIGHT_ALT_PRESSED)) toAdd += std::move(Term::MetaKey::Alt);
+  if(((control_key_state & LEFT_CTRL_PRESSED) == LEFT_CTRL_PRESSED) || ((control_key_state & RIGHT_CTRL_PRESSED) == RIGHT_CTRL_PRESSED)) toAdd += std::move(Term::MetaKey::Ctrl);
+
+  switch(virtual_key_code)
+  {
+    case VK_CANCEL:  //??
+    case VK_CLEAR:   //??
+    case VK_SHIFT:
+    case VK_CONTROL:
+    case VK_MENU:
+    case VK_PAUSE:  //??
+    case VK_CAPITAL:
+    case VK_KANA:  //??
+    //case VK_HANGUL: // Same
+    case VK_JUNJA:  // ?
+    case VK_FINAL:  // ?
+    case VK_HANJA:
+    //case VK_KANJI: // Same
+    case VK_CONVERT:     // ?
+    case VK_NONCONVERT:  // ?
+    case VK_ACCEPT:      // ?
+    case VK_MODECHANGE:  // ?
+      break;
+    case VK_PRIOR: m_events.push(std::move(toAdd + Term::Key(Key::Value::PageUp)), occurrence); break;
+    case VK_NEXT: m_events.push(std::move(toAdd + Term::Key(Key::Value::PageDown)), occurrence); break;
+    case VK_END: m_events.push(std::move(toAdd + Term::Key(Key::Value::End)), occurrence); break;
+    case VK_HOME: m_events.push(std::move(toAdd + Term::Key(Key::Value::Home)), occurrence); break;
+    case VK_LEFT: m_events.push(std::move(toAdd + Term::Key(Key::Value::ArrowLeft)), occurrence); break;
+    case VK_UP: m_events.push(std::move(toAdd + Term::Key(Key::Value::ArrowUp)), occurrence); break;
+    case VK_RIGHT: m_events.push(std::move(toAdd + Term::Key(Key::Value::ArrowRight)), occurrence); break;
+    case VK_DOWN: m_events.push(std::move(toAdd + Term::Key(Key::Value::ArrowDown)), occurrence); break;
+    case VK_SELECT:   //?
+    case VK_PRINT:    //?
+    case VK_EXECUTE:  //?
+      break;
+    case VK_SNAPSHOT: m_events.push(std::move(toAdd + Term::Key(Key::Value::PrintScreen)), occurrence); break;
+    case VK_INSERT: m_events.push(std::move(toAdd + Term::Key(Key::Value::Insert)), occurrence); break;
+    case VK_DELETE: m_events.push(std::move(toAdd + Term::Key(Key::Value::Del)), occurrence); break;
+    case VK_HELP:   //?
+    case VK_LWIN:   //Maybe allow to detect Windows key Left and right
+    case VK_RWIN:   //Maybe allow to detect Windows key Left and right
+    case VK_APPS:   //?
+    case VK_SLEEP:  //?
+      break;
+    case VK_F1: m_events.push(std::move(toAdd + Term::Key(Key::Value::F1)), occurrence); break;
+    case VK_F2: m_events.push(std::move(toAdd + Term::Key(Key::Value::F2)), occurrence); break;
+    case VK_F3: m_events.push(std::move(toAdd + Term::Key(Key::Value::F3)), occurrence); break;
+    case VK_F4: m_events.push(std::move(toAdd + Term::Key(Key::Value::F4)), occurrence); break;
+    case VK_F5: m_events.push(std::move(toAdd + Term::Key(Key::Value::F5)), occurrence); break;
+    case VK_F6: m_events.push(std::move(toAdd + Term::Key(Key::Value::F6)), occurrence); break;
+    case VK_F7: m_events.push(std::move(toAdd + Term::Key(Key::Value::F7)), occurrence); break;
+    case VK_F8: m_events.push(std::move(toAdd + Term::Key(Key::Value::F8)), occurrence); break;
+    case VK_F9: m_events.push(std::move(toAdd + Term::Key(Key::Value::F9)), occurrence); break;
+    case VK_F10: m_events.push(std::move(toAdd + Term::Key(Key::Value::F10)), occurrence); break;
+    case VK_F11: m_events.push(std::move(toAdd + Term::Key(Key::Value::F11)), occurrence); break;
+    case VK_F12: m_events.push(std::move(toAdd + Term::Key(Key::Value::F12)), occurrence); break;
+    case VK_F13: m_events.push(std::move(toAdd + Term::Key(Key::Value::F13)), occurrence); break;
+    case VK_F14: m_events.push(std::move(toAdd + Term::Key(Key::Value::F14)), occurrence); break;
+    case VK_F15: m_events.push(std::move(toAdd + Term::Key(Key::Value::F15)), occurrence); break;
+    case VK_F16: m_events.push(std::move(toAdd + Term::Key(Key::Value::F16)), occurrence); break;
+    case VK_F17: m_events.push(std::move(toAdd + Term::Key(Key::Value::F17)), occurrence); break;
+    case VK_F18: m_events.push(std::move(toAdd + Term::Key(Key::Value::F18)), occurrence); break;
+    case VK_F19: m_events.push(std::move(toAdd + Term::Key(Key::Value::F19)), occurrence); break;
+    case VK_F20: m_events.push(std::move(toAdd + Term::Key(Key::Value::F20)), occurrence); break;
+    case VK_F21: m_events.push(std::move(toAdd + Term::Key(Key::Value::F21)), occurrence); break;
+    case VK_F22: m_events.push(std::move(toAdd + Term::Key(Key::Value::F22)), occurrence); break;
+    case VK_F23: m_events.push(std::move(toAdd + Term::Key(Key::Value::F23)), occurrence); break;
+    case VK_F24: m_events.push(std::move(toAdd + Term::Key(Key::Value::F24)), occurrence); break;
+    case VK_NUMLOCK:
+    case VK_SCROLL:
+    default: break;
+  }
 }
 #endif
 
-Term::Event Term::Platform::read_raw()
+void Term::Private::Input::read_raw()
 {
 #ifdef _WIN32
   DWORD to_read{0};
   GetNumberOfConsoleInputEvents(Private::in.handle(), &to_read);
-  if(to_read == 0) return Term::Event();
-  // If it's one event it's easy
-  else if(to_read == 1)
+  if(to_read == 0) return;
+  DWORD                     read{0};
+  std::vector<INPUT_RECORD> events{to_read};
+  if(!ReadConsoleInputW(Private::in.handle(), &events[0], to_read, &read) || read != to_read) Term::Exception("ReadFile() failed");
+  std::string ret;
+  bool        need_windows_size{false};
+  for(std::size_t i = 0; i != read; ++i)
   {
-    DWORD        read{0};
-    INPUT_RECORD event{};
-    if(!ReadConsoleInputW(Private::in.handle(), &event, to_read, &read) || read != to_read) Term::Exception("ReadFile() failed");
-    switch(event.EventType)
+    switch(events[i].EventType)
     {
       case KEY_EVENT:
       {
-        if(event.Event.KeyEvent.bKeyDown)
+        if(events[i].Event.KeyEvent.bKeyDown)
         {
-          // First check if we have ALT etc (CTRL is already done so skip it)
-          Term::MetaKey toAdd{Term::MetaKey::Value::None};
-          if(((event.Event.KeyEvent.dwControlKeyState & LEFT_ALT_PRESSED) == LEFT_ALT_PRESSED) || ((event.Event.KeyEvent.dwControlKeyState & RIGHT_ALT_PRESSED) == RIGHT_ALT_PRESSED)) toAdd = std::move(Term::MetaKey::Value::Alt);
-
-          if(event.Event.KeyEvent.uChar.UnicodeChar == 0)
-          {
-            switch(event.Event.KeyEvent.wVirtualKeyCode)
-            {
-              case VK_CANCEL:  //??
-              case VK_CLEAR:   //??
-              case VK_SHIFT:
-              case VK_CONTROL:
-              case VK_MENU:
-              case VK_PAUSE:  //??
-              case VK_CAPITAL:
-              case VK_KANA:  //??
-              //case VK_HANGUL: // Same
-              case VK_JUNJA:  // ?
-              case VK_FINAL:  // ?
-              case VK_HANJA:
-              //case VK_KANJI: // Same
-              case VK_CONVERT:     // ?
-              case VK_NONCONVERT:  // ?
-              case VK_ACCEPT:      // ?
-              case VK_MODECHANGE:  // ?
-                return Term::Event();
-              case VK_PRIOR: return std::move(Term::Key(Key::PageUp));
-              case VK_NEXT: return std::move(Term::Key(Key::PageDown));
-              case VK_END: return std::move(Term::Key(Key::End));
-              case VK_HOME: return std::move(Term::Key(Key::Home));
-              case VK_LEFT: return std::move(Term::Key(Key::ArrowLeft));
-              case VK_UP: return std::move(Term::Key(Key::ArrowUp));
-              case VK_RIGHT: return std::move(Term::Key(Key::ArrowRight));
-              case VK_DOWN: return std::move(Term::Key(Key::ArrowDown));
-              case VK_SELECT:   //?
-              case VK_PRINT:    //?
-              case VK_EXECUTE:  //?
-                return Term::Event();
-              case VK_SNAPSHOT: return std::move(Term::Key(Key::PrintScreen));
-              case VK_INSERT: return std::move(Term::Key(Key::Insert));
-              case VK_DELETE: return std::move(Term::Key(Key::Del));
-              case VK_HELP:   //?
-              case VK_LWIN:   //Maybe allow to detect Windows key Left and right
-              case VK_RWIN:   //Maybe allow to detect Windows key Left and right
-              case VK_APPS:   //?
-              case VK_SLEEP:  //?
-                return Term::Event();
-              case VK_F1: return std::move(Term::Key(Key::F1));
-              case VK_F2: return std::move(Term::Key(Key::F2));
-              case VK_F3: return std::move(Term::Key(Key::F3));
-              case VK_F4: return std::move(Term::Key(Key::F4));
-              case VK_F5: return std::move(Term::Key(Key::F5));
-              case VK_F6: return std::move(Term::Key(Key::F6));
-              case VK_F7: return std::move(Term::Key(Key::F7));
-              case VK_F8: return std::move(Term::Key(Key::F8));
-              case VK_F9: return std::move(Term::Key(Key::F9));
-              case VK_F10: return std::move(Term::Key(Key::F10));
-              case VK_F11: return std::move(Term::Key(Key::F11));
-              case VK_F12: return std::move(Term::Key(Key::F12));
-              case VK_F13: return std::move(Term::Key(Key::F13));
-              case VK_F14: return std::move(Term::Key(Key::F14));
-              case VK_F15: return std::move(Term::Key(Key::F15));
-              case VK_F16: return std::move(Term::Key(Key::F16));
-              case VK_F17: return std::move(Term::Key(Key::F17));
-              case VK_F18: return std::move(Term::Key(Key::F18));
-              case VK_F19: return std::move(Term::Key(Key::F19));
-              case VK_F20: return std::move(Term::Key(Key::F20));
-              case VK_F21: return std::move(Term::Key(Key::F21));
-              case VK_F22: return std::move(Term::Key(Key::F22));
-              case VK_F23: return std::move(Term::Key(Key::F23));
-              case VK_F24: return std::move(Term::Key(Key::F24));
-              case VK_NUMLOCK:
-              case VK_SCROLL:
-              default: return Term::Event();
-            }
-          }
+          if(events[i].Event.KeyEvent.uChar.UnicodeChar == 0) { read_windows_key(events[i].Event.KeyEvent.wVirtualKeyCode, events[i].Event.KeyEvent.dwControlKeyState, events[i].Event.KeyEvent.wRepeatCount); }
           else
           {
-            std::string ret{to_utf8(&event.Event.KeyEvent.uChar.UnicodeChar)};
-            if(ret.size() == 1)
+            if(events[i].Event.KeyEvent.uChar.UnicodeChar <= 127)  //MAYBE BUG in to_utf8 (me or Windaube)
             {
-              //Special case DEL should be Backspace
-              if(ret[0] == Term::Key::Del) return toAdd + Key(Term::Key::Backspace);
+              if(events[i].Event.KeyEvent.uChar.UnicodeChar == Term::Key::Del) ret.append(events[i].Event.KeyEvent.wRepeatCount, static_cast<char>(Key(Term::Key::Value::Backspace)));
               else
-                return toAdd + Key(static_cast<Term::Key>(ret[0]));
+                ret.append(events[i].Event.KeyEvent.wRepeatCount, static_cast<char>(events[i].Event.KeyEvent.uChar.UnicodeChar));
             }
             else
-              return Term::Event(ret);
+              for(std::size_t j = 0; j != events[i].Event.KeyEvent.wRepeatCount; ++j) ret.append(to_utf8(&events[i].Event.KeyEvent.uChar.UnicodeChar));
           }
+          break;
         }
         else
-          return Term::Event();
+          break;
       }
       case FOCUS_EVENT:
       {
-        return Term::Event();
+        if(!ret.empty())
+        {
+          m_events.push(Term::Event(ret));
+          ret.clear();
+        }
+        m_events.push(Event(Focus(static_cast<Term::Focus::Type>(events[i].Event.FocusEvent.bSetFocus))));
+        break;
       }
       case MENU_EVENT:
       {
-        return Term::Event();
+        if(!ret.empty())
+        {
+          m_events.push(Term::Event(ret));
+          ret.clear();
+        }
+        break;
       }
       case MOUSE_EVENT:
       {
-        return Term::Event();
+        if(!ret.empty())
+        {
+          m_events.push(Term::Event(ret));
+          ret.clear();
+        }
+        break;
       }
       case WINDOW_BUFFER_SIZE_EVENT:
       {
-        return Event(std::move(Screen(static_cast<std::size_t>(event.Event.WindowBufferSizeEvent.dwSize.Y), static_cast<std::size_t>(event.Event.WindowBufferSizeEvent.dwSize.X))));
+        need_windows_size = true;  // if we send directly it's too much generations
+        if(!ret.empty())
+        {
+          m_events.push(Term::Event(ret));
+          ret.clear();
+        }
+        break;
       }
+      default: break;
     }
   }
-  else  // Here we have big problems we need to change this function to return std::vector<Event>;
-  {
-    DWORD                     read{0};
-    std::vector<INPUT_RECORD> events{to_read};
-    if(!ReadConsoleInputW(Private::in.handle(), &events[0], to_read, &read) || read != to_read) Term::Exception("ReadFile() failed");
-    std::string ret;
-    int         processed{0};
-    for(std::size_t i = 0; i != read; ++i)
-    {
-      switch(events[i].EventType)
-      {
-        case KEY_EVENT:
-        {
-          if(events[i].Event.KeyEvent.bKeyDown)
-          {
-            if(events[i].Event.KeyEvent.uChar.UnicodeChar == 0) break;
-            else
-            {
-              std::string ch{to_utf8(&events[i].Event.KeyEvent.uChar.UnicodeChar)};
-              if(ch.size() == 1 && ch[0] == Term::Key::Del) return Key(Term::Key::Backspace);
-              else
-                ret += ch;
-              ++processed;
-            }
-          }
-          else
-            break;
-        }
-        case FOCUS_EVENT:
-        {
-          break;
-        }
-        case MENU_EVENT:
-        {
-          break;
-        }
-        case MOUSE_EVENT:
-        {
-          break;
-        }
-        case WINDOW_BUFFER_SIZE_EVENT:
-        {
-          return Event(std::move(Screen(static_cast<std::size_t>(events[i].Event.WindowBufferSizeEvent.dwSize.Y), static_cast<std::size_t>(events[i].Event.WindowBufferSizeEvent.dwSize.X))));
-        }
-      }
-    }
-    if(processed >= 1) return Event(std::move(ret));
-    else
-      return Event();
-  }
+  if(!ret.empty()) { m_events.push(Term::Event(ret.c_str())); }
+  if(need_windows_size == true) { m_events.push(screen_size()); }
 #else
+  Private::in.lockIO();
+  std::string ret = Term::Private::in.read();
+  Private::in.unlockIO();
+  if(!ret.empty()) m_events.push(Event(ret.c_str()));
+#endif
+}
+
+Term::Private::Input::Input() {}
+
+void Term::Private::Input::startReading()
+{
   static bool activated{false};
   if(!activated)
   {
-    struct sigaction sa;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags   = 0;
-    sa.sa_handler = sigwinchHandler;
-    if(sigaction(SIGWINCH, &sa, nullptr) == -1) throw Term::Exception("signal() failed");
-    else
-      activated = true;
+    m_thread.detach();
+    activated = true;
   }
+}
 
-  if(gSignalStatus == 1)
-  {
-    gSignalStatus = 0;
-    return Event(screen_size());
-  }
-  else
-  {
-    std::size_t nread{0};
-    ::ioctl(Private::in.fd(), FIONREAD, &nread);
-    if(nread != 0)
-    {
-      std::string ret(nread, '\0');
-      errno = 0;
-      ::ssize_t nread{::read(Private::in.fd(), &ret[0], ret.size())};
-      if(nread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-      return Event(ret.c_str());
-    }
-    else
-      return Event();
-  }
-#endif
-  return Event();
+Term::Event Term::Private::Input::getEvent() { return m_events.pop(); }
+
+Term::Event Term::Private::Input::getEventBlocking()
+{
+  static std::mutex                   cv_m;
+  static std::unique_lock<std::mutex> lk(cv_m);
+  m_events.wait_for_events(lk);
+  return m_events.pop();
+}
+
+static Term::Private::Input m_input;
+
+Term::Event Term::read_event()
+{
+  m_input.startReading();
+  return m_input.getEventBlocking();
 }

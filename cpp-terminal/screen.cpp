@@ -11,16 +11,14 @@ bool Term::Screen::empty() const
     return false;
 }
 
-std::pair<std::size_t, std::size_t> Term::Screen::size() const { return m_size; }
-
 std::string Term::clear_screen() { return "\x1b[2J"; }
 
 std::string Term::screen_save()
 {
-  return "\0337\033[?1049h";  // save current cursor position, save screen
+  return static_cast<std::string>("\x1b") + static_cast<std::string>("7\x1b[?1049h");  // save current cursor position, save screen FIXME
 }
 
 std::string Term::screen_load()
 {
-  return "\033[?1049l\0338";  // restores screen, restore current cursor position
+  return static_cast<std::string>("\x1b[?1049l\x1b") + static_cast<std::string>("8");  // restores screen, restore current cursor position FIXME
 }

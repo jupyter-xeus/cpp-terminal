@@ -11,7 +11,7 @@
 #include <iostream>
 
 #ifdef _WIN32
-int __stdcall WinMain(HINSTANCE hinst, HINSTANCE hprev, LPSTR cmdline, int show)
+int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #else
 int main()
 #endif
@@ -47,10 +47,9 @@ int main()
     std::cout << rgb_text << std::endl;
 
     std::cout << "\n4bits colors:\n";
-    std::cout << "*" << Term::color_bg(Term::Color::Name::Black) << " " << Term::color_bg(Term::Color::Name::Red) << " " << Term::color_bg(Term::Color::Name::Green) << " " << Term::color_bg(Term::Color::Name::Yellow) << " "
-              << Term::color_bg(Term::Color::Name::Blue) << " " << Term::color_bg(Term::Color::Name::Magenta) << " " << Term::color_bg(Term::Color::Name::Cyan) << " " << Term::color_bg(Term::Color::Name::White) << " " << Term::color_bg(Term::Color::Name::Gray)
-              << " " << Term::color_bg(Term::Color::Name::BrightRed) << " " << Term::color_bg(Term::Color::Name::BrightGreen) << " " << Term::color_bg(Term::Color::Name::BrightYellow) << " " << Term::color_bg(Term::Color::Name::BrightBlue) << " "
-              << Term::color_bg(Term::Color::Name::BrightMagenta) << " " << Term::color_bg(Term::Color::Name::BrightCyan) << " " << Term::color_bg(Term::Color::Name::BrightWhite) << " " << Term::color_bg(Term::Color::Name::Default) << "*\n";
+    std::cout << "*" << Term::color_bg(Term::Color::Name::Black) << " " << Term::color_bg(Term::Color::Name::Red) << " " << Term::color_bg(Term::Color::Name::Green) << " " << Term::color_bg(Term::Color::Name::Yellow) << " " << Term::color_bg(Term::Color::Name::Blue) << " " << Term::color_bg(Term::Color::Name::Magenta) << " " << Term::color_bg(Term::Color::Name::Cyan) << " " << Term::color_bg(Term::Color::Name::White) << " "
+              << Term::color_bg(Term::Color::Name::Gray) << " " << Term::color_bg(Term::Color::Name::BrightRed) << " " << Term::color_bg(Term::Color::Name::BrightGreen) << " " << Term::color_bg(Term::Color::Name::BrightYellow) << " " << Term::color_bg(Term::Color::Name::BrightBlue) << " " << Term::color_bg(Term::Color::Name::BrightMagenta) << " " << Term::color_bg(Term::Color::Name::BrightCyan) << " "
+              << Term::color_bg(Term::Color::Name::BrightWhite) << " " << Term::color_bg(Term::Color::Name::Default) << "*\n";
 
     std::cout << "\n8bits colors:\n";
     std::cout << "*";
@@ -116,11 +115,9 @@ int main()
     std::cout << "*\n";
 
     std::cout << "\nColor conversion (4bit)\n";
-    std::cout << "to 3bit : *" << Term::color_bg(Term::Color(Term::Color::Name::Black).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::Red).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::Green).to3bits()) << " "
-              << Term::color_bg(Term::Color(Term::Color::Name::Yellow).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::Blue).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::Magenta).to3bits()) << " "
-              << Term::color_bg(Term::Color(Term::Color::Name::Cyan).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::White).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::Gray).to3bits()) << " "
-              << Term::color_bg(Term::Color(Term::Color::Name::BrightRed).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightGreen).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightYellow).to3bits()) << " "
-              << Term::color_bg(Term::Color(Term::Color::Name::BrightBlue).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightMagenta).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightCyan).to3bits()) << " "
+    std::cout << "to 3bit : *" << Term::color_bg(Term::Color(Term::Color::Name::Black).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::Red).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::Green).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::Yellow).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::Blue).to3bits()) << " "
+              << Term::color_bg(Term::Color(Term::Color::Name::Magenta).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::Cyan).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::White).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::Gray).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightRed).to3bits()) << " "
+              << Term::color_bg(Term::Color(Term::Color::Name::BrightGreen).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightYellow).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightBlue).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightMagenta).to3bits()) << " " << Term::color_bg(Term::Color(Term::Color::Name::BrightCyan).to3bits()) << " "
               << Term::color_bg(Term::Color(Term::Color::Name::BrightWhite).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default) << " "
               << "*\n";
 

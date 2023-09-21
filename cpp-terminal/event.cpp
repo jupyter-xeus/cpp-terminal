@@ -1,8 +1,11 @@
 #include "cpp-terminal/event.hpp"
 
 #include "cpp-terminal/platforms/conversion.hpp"
+#include <cstring>
 
 Term::Event::container::container() {}
+
+Term::Event::container::~container() {}
 
 Term::Key* Term::Event::get_if_key()
 {
@@ -46,16 +49,30 @@ const Term::Cursor* Term::Event::get_if_cursor() const
     return nullptr;
 }
 
-std::string* Term::Event::get_if_copy_paste()
+std::string Term::Event::get_if_copy_paste()
 {
-  if(m_Type == Type::CopyPaste) return &m_str;
+  if(m_Type == Type::CopyPaste) return std::string(m_container.m_string.get());
   else
     return nullptr;
 }
 
-const std::string* Term::Event::get_if_copy_paste() const
+const std::string Term::Event::get_if_copy_paste() const
 {
-  if(m_Type == Type::CopyPaste) return &m_str;
+  if(m_Type == Type::CopyPaste) return std::string(m_container.m_string.get());
+  else
+    return nullptr;
+}
+
+Term::Focus* Term::Event::get_if_focus()
+{
+  if(m_Type == Type::Focus) return &m_container.m_Focus;
+  else
+    return nullptr;
+}
+
+const Term::Focus* Term::Event::get_if_focus() const
+{
+  if(m_Type == Type::Focus) return &m_container.m_Focus;
   else
     return nullptr;
 }
@@ -67,12 +84,24 @@ Term::Event& Term::Event::operator=(const Term::Event& event)
   {
     case Type::Empty: break;
     case Type::Key: m_container.m_Key = Term::Key(event.m_container.m_Key); break;
-    case Type::CopyPaste: m_str = event.m_str; break;
+    case Type::CopyPaste:
+    {
+      m_container.m_string.reset(new char[std::strlen(event.m_container.m_string.get())]);
+#if defined(_WIN32)
+      strcpy_s(m_container.m_string.get(), std::strlen(m_container.m_string.get()), event.m_container.m_string.get());
+#else
+      strcpy(m_container.m_string.get(), event.m_container.m_string.get());
+#endif
+      break;
+    }
     case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
     case Type::Screen: m_container.m_Screen = Term::Screen(event.m_container.m_Screen); break;
+    case Type::Focus: m_container.m_Focus = Term::Focus(event.m_container.m_Focus); break;
   }
   return *this;
 }
+
+Term::Event::Event(const Term::Focus& focus) : m_Type(Type::Focus) { m_container.m_Focus = focus; }
 
 Term::Event::Event(const Term::Event& event)
 {
@@ -81,9 +110,19 @@ Term::Event::Event(const Term::Event& event)
   {
     case Type::Empty: break;
     case Type::Key: m_container.m_Key = Term::Key(event.m_container.m_Key); break;
-    case Type::CopyPaste: m_str = event.m_str; break;
+    case Type::CopyPaste:
+    {
+      m_container.m_string.reset(new char[std::strlen(event.m_container.m_string.get())]);
+#if defined(_WIN32)
+      strcpy_s(m_container.m_string.get(), std::strlen(m_container.m_string.get()), event.m_container.m_string.get());
+#else
+      strcpy(m_container.m_string.get(), event.m_container.m_string.get());
+#endif
+      break;
+    }
     case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
     case Type::Screen: m_container.m_Screen = Term::Screen(event.m_container.m_Screen); break;
+    case Type::Focus: m_container.m_Focus = Term::Focus(event.m_container.m_Focus); break;
   }
 }
 
@@ -98,9 +137,14 @@ Term::Event::Event(Term::Event&& event) noexcept
   {
     case Type::Empty: break;
     case Type::Key: std::swap(m_container.m_Key, event.m_container.m_Key); break;
-    case Type::CopyPaste: std::swap(m_str, event.m_str); break;
+    case Type::CopyPaste:
+    {
+      std::swap(m_container.m_string, event.m_container.m_string);
+      break;
+    }
     case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
     case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
+    case Type::Focus: std::swap(m_container.m_Focus, event.m_container.m_Focus); break;
   }
 }
 
@@ -111,9 +155,10 @@ Term::Event& Term::Event::operator=(Term::Event&& event) noexcept
   {
     case Type::Empty: break;
     case Type::Key: std::swap(m_container.m_Key, event.m_container.m_Key); break;
-    case Type::CopyPaste: std::swap(m_str, event.m_str); break;
+    case Type::CopyPaste: std::swap(m_container.m_string, event.m_container.m_string); break;
     case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
     case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
+    case Type::Focus: std::swap(m_container.m_Focus, event.m_container.m_Focus); break;
   }
   return *this;
 }
@@ -127,7 +172,7 @@ bool Term::Event::empty() const
 
 Term::Event::operator std::string() const
 {
-  if(m_Type == Type::CopyPaste) return m_str;
+  if(m_Type == Type::CopyPaste) return m_container.m_string.get();
   else
     return std::string();
 }
@@ -157,6 +202,16 @@ void Term::Event::parse(const std::string& str)
     /* Backspace return 127 CTRL+backspace return 8 */
     if(m_container.m_Key == Term::Key::Del) m_container.m_Key = Key(Term::Key::Backspace);
   }
+  else if(str == "\033[I")
+  {
+    m_Type              = Type::Focus;
+    m_container.m_Focus = Term::Focus(Term::Focus::Type::In);
+  }
+  else if(str == "\033[O")
+  {
+    m_Type              = Type::Focus;
+    m_container.m_Focus = Term::Focus(Term::Focus::Type::Out);
+  }
   else if(str.size() == 2 && str[0] == '\033')
   {
     m_container.m_Key = Key(static_cast<Term::Key>(Term::MetaKey::Value::Alt + static_cast<Term::Key>(str[1])));
@@ -168,7 +223,7 @@ void Term::Event::parse(const std::string& str)
     if(found != std::string::npos)
     {
       m_Type               = Type::Cursor;
-      m_container.m_Cursor = Cursor(std::stoi(str.substr(2, found - 2)), std::stoi(str.substr(found + 1, str.size() - (found + 2))));
+      m_container.m_Cursor = Cursor(static_cast<std::uint16_t>(std::stoi(str.substr(2, found - 2))), static_cast<std::uint16_t>(std::stoi(str.substr(found + 1, str.size() - (found + 2)))));
     }
   }
   else if(str.size() <= 10)
@@ -307,17 +362,26 @@ void Term::Event::parse(const std::string& str)
     else if(str == "\033[34~")
       m_container.m_Key = Key(Term::Key::F20);
     else if(str == "\033[G")
-      m_container.m_Key = Key(Term::Key::Numeric5);
-    else if(str.size() == 2 && ((str[0] & 0xE0) == 0xC0) && ((str[1] & 0xC0) == 0x80)) { m_container.m_Key = Key(static_cast<Term::Key>(Term::Private::utf8_to_utf32(str)[0])); }
-    else if(str.size() == 3 && ((str[0] & 0xF0) == 0xE0) && ((str[1] & 0xC0) == 0x80) && ((str[2] & 0xC0) == 0x80)) { m_container.m_Key = Key(static_cast<Term::Key>(Term::Private::utf8_to_utf32(str)[0])); }
-    else if(str.size() == 4 && ((str[0] & 0xF8) == 0xF0) && ((str[1] & 0xC0) == 0x80) && ((str[2] & 0xC0) == 0x80) && ((str[3] & 0xC0) == 0x80)) { m_container.m_Key = Key(static_cast<Term::Key>(Term::Private::utf8_to_utf32(str)[0])); }
+      m_container.m_Key = Key(Term::Key::Value::Numeric5);
+    else if(Term::Private::is_valid_utf8_code_unit(str))
+      m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0]));
+    else
+    {
+      m_Type = Type::CopyPaste;
+      m_container.m_string.reset(new char[str.size() + 1]);
+      std::copy(str.begin(), str.end(), m_container.m_string.get());
+      m_container.m_string.get()[str.size()] = '\0';
+      return;
+    }
+    m_Type = Type::Key;
   }
   else
   {
     m_Type = Type::CopyPaste;
-    m_str  = str;
+    m_container.m_string.reset(new char[str.size() + 1]);
+    std::copy(str.begin(), str.end(), m_container.m_string.get());
+    m_container.m_string.get()[str.size()] = '\0';
   }
-  if(!m_container.empty()) { m_Type = Type::Key; }
 }
 
 Term::Event::operator Term::Key() const
@@ -332,4 +396,11 @@ Term::Event::operator Term::Cursor() const
   if(m_Type == Type::Cursor) return m_container.m_Cursor;
   else
     return Cursor();
+}
+
+Term::Event::operator Term::Focus() const
+{
+  if(m_Type == Type::Focus) return m_container.m_Focus;
+  else
+    return Focus();
 }

@@ -4,10 +4,10 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/platforms/file.hpp"
+#include "cpp-terminal/platforms/sigwinch.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 
-#include <iostream>
 #include <new>
 
 namespace Term
@@ -40,10 +40,18 @@ Term::Options Term::Terminal::getOptions() { return m_options; }
 
 Term::Terminal::Terminal()
 {
+  Term::Private::Sigwinch::blockSigwinch();
   setBadStateReturnCode();
   attachConsole();
   store_and_restore();
+  activateFocusEvents();
+  setRawMode();
+  m_terminfo.setUTF8();
+  store_and_restore();
+  store_and_restore();
 }
+
+bool Term::Terminal::supportUTF8() { return m_terminfo.hasUTF8(); }
 
 Term::Terminal::~Terminal()
 {
@@ -52,6 +60,7 @@ Term::Terminal::~Terminal()
     if(m_options.has(Option::ClearScreen)) Term::Private::out.write(clear_buffer() + style(Style::RESET) + cursor_move(1, 1) + screen_load());
     if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_on());
     store_and_restore();
+    desactivateFocusEvents();
     detachConsole();
   }
   catch(const Term::Exception& e)

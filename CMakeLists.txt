@@ -1,15 +1,5 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
-# see https://cmake.org/cmake/help/latest/policy/CMP0092.html
-set(CMAKE_CXX_FLAGS_OLD ${CMAKE_CXX_FLAGS})
-if(MSVC)
-  if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-    string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-  else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
-  endif()
-endif()
-
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 
 project(cpp-terminal
@@ -18,13 +8,29 @@ project(cpp-terminal
         HOMEPAGE_URL "https://github.com/jupyter-xeus/cpp-terminal"
         LANGUAGES CXX)
 
+# see https://cmake.org/cmake/help/latest/policy/CMP0092.html
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  set(CMAKE_CXX_FLAGS_OLD "${CMAKE_CXX_FLAGS}")
+  if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+    string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+  endif()
+  if(CMAKE_CXX_FLAGS MATCHES "/EH[ascr-]+")
+    string(REGEX REPLACE "/EH[ascr-]+" "/EHsr" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+  endif()
+endif()
+
 include(Warnings)
 
 # set the C++ standard, if not set by the top level project
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard" FORCE)
+  set(CMAKE_CXX_STANDARD 11 CACHE STRING "C++ standard" FORCE)
 endif()
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE CACHE STRING "C++ standard required" FORCE)
+set(CMAKE_CXX_EXTENSIONS FALSE CACHE STRING "C++ extensions" FORCE)
 
 option(CPPTERMINAL_BUILD_EXAMPLES "Set to ON to build examples" ON)
 option(CPPTERMINAL_ENABLE_INSTALL "Set to ON to enable install" ON)
@@ -48,6 +54,6 @@ if(CPPTERMINAL_ENABLE_DOCS)
   add_subdirectory(docs)
 endif()
 
-if(MSVC)
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_OLD})
 endif()

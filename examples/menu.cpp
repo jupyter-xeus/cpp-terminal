@@ -23,14 +23,25 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
   for(int j = 1; j <= menuy0; j++) { scr.append("\n"); }
 
   for(int j = 1; j <= menux0; j++) { scr.append(" "); }
-  scr.append("┌");
-  for(int j = 1; j <= menuwidth; j++) { scr.append("─"); }
-  scr.append("┐");
+  if(Term::terminal.supportUTF8()) scr.append("┌");
+  else
+    scr.append("+");
+  for(int j = 1; j <= menuwidth; j++)
+  {
+    if(Term::terminal.supportUTF8()) scr.append("─");
+    else
+      scr.append("-");
+  }
+  if(Term::terminal.supportUTF8()) scr.append("┐");
+  else
+    scr.append("+");
   scr.append(" \n");
   for(int i = 1; i <= menuheight; i++)
   {
     for(int j = 1; j <= menux0; j++) { scr.append(" "); }
-    scr.append("│");
+    if(Term::terminal.supportUTF8()) scr.append("│");
+    else
+      scr.append("|");
     if(i == menupos)
     {
       scr.append(Term::color_fg(Term::Color::Name::Red));
@@ -48,13 +59,24 @@ void render(int rows, int cols, int menuheight, int menuwidth, int menupos)
     scr.append(Term::color_bg(Term::Color::Name::Default));
     scr.append(Term::color_fg(Term::Color::Name::Default));
     scr.append(Term::style(Term::Style::RESET));
-    scr.append("│");
+    if(Term::terminal.supportUTF8()) scr.append("│");
+    else
+      scr.append("|");
     scr.append(" \n");
   }
   for(int j = 1; j <= menux0; j++) { scr.append(" "); }
-  scr.append("└");
-  for(int j = 1; j <= menuwidth; j++) { scr.append("─"); }
-  scr.append("┘");
+  if(Term::terminal.supportUTF8()) scr.append("└");
+  else
+    scr.append("+");
+  for(int j = 1; j <= menuwidth; j++)
+  {
+    if(Term::terminal.supportUTF8()) scr.append("─");
+    else
+      scr.append("-");
+  }
+  if(Term::terminal.supportUTF8()) scr.append("┘");
+  else
+    scr.append("+");
   scr.append(" \n");
 
   scr.append(Term::cursor_move(menuy0 + menuheight + 5, 1));
@@ -79,11 +101,11 @@ int main()
     bool         on = true;
     while(on)
     {
-      render(term_size.rows(), term_size.columns(), h, w, pos);
-      Term::Event event = Term::read_event();
+      Term::Event event{Term::read_event()};
       switch(event.type())
       {
         case Term::Event::Type::Key:
+        {
           switch(Term::Key(event))
           {
             case Term::Key::ArrowLeft:
@@ -102,15 +124,19 @@ int main()
             case Term::Key::End: pos = h; break;
             case Term::Key::q:
             case Term::Key::Esc:
-            case Term::Key::Ctrl_C: on = false; break;
+            case Term::Key::Ctrl_C: on = false;
             default: break;
           }
+          render(term_size.rows(), term_size.columns(), h, w, pos);
           break;
+        }
         case Term::Event::Type::Screen:
+        {
           term_size = Term::Screen(event);
           Term::cout << Term::clear_screen() << std::flush;
           render(term_size.rows(), term_size.columns(), h, w, pos);
           break;
+        }
         default: break;
       }
     }

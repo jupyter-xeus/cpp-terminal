@@ -1,10 +1,10 @@
 #ifdef _WIN32
-  #include "cpp-terminal/platforms/file.hpp"
-
   #include <windows.h>
 #endif
 
+#include "cpp-terminal/cursor.hpp"
 #include "cpp-terminal/platforms/env.hpp"
+#include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
 #include <string>
@@ -15,10 +15,16 @@ bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& 
   #if defined(_MSC_VER)
     #pragma warning(push)
     #pragma warning(disable : 4191)
+  #else
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wcast-function-type"
   #endif
-  NTSTATUS(WINAPI * getVersion)(PRTL_OSVERSIONINFOW) = (reinterpret_cast<NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW)>(GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "RtlGetVersion")));
+  NTSTATUS(WINAPI * getVersion)
+  (PRTL_OSVERSIONINFOW) = (reinterpret_cast<NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW)>(GetProcAddress(GetModuleHandle(TEXT("ntdll.dll")), "RtlGetVersion")));
   #if defined(_MSC_VER)
     #pragma warning(pop)
+  #else
+    #pragma GCC diagnostic pop
   #endif
   if(getVersion != nullptr)
   {
@@ -114,3 +120,17 @@ void Term::Terminfo::setANSIEscapeCode()
   m_ANSIEscapeCode = true;
 #endif
 }
+
+void Term::Terminfo::setUTF8()
+{
+  Term::Cursor cursor_before{Term::cursor_position()};
+  Term::Private::out.write("\xe2\x82\xac");  // € 3bits in utf8 one character
+  Term::Cursor cursor_after{Term::cursor_position()};
+  std::size_t  moved{cursor_after.column() - cursor_before.column()};
+  if(moved == 1) m_UTF8 = true;
+  else
+    m_UTF8 = false;
+  for(std::size_t i = 0; i != moved; ++i) Term::Private::out.write("\b \b");
+}
+
+bool Term::Terminfo::hasUTF8() { return m_UTF8; }

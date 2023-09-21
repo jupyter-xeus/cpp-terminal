@@ -1,0 +1,4 @@
+---
+Checks: 'abseil-*,altera-*,android-*,boost-*,bugprone-*,cert-*,clang-analyzer-*,concurrency-*,cppcoreguidelines-*,darwin-*,fuchsia-*,google-*,hicpp-*,linuxkernel-*,llvm-*,misc-*,modernize-*,mpi-*,openmp-*,performance-*,portability-*,readability-*,zircon-*'
+WarningsAsErrors: false
+...

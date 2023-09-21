@@ -14,21 +14,19 @@ public:
   Cursor(const std::uint16_t&, const std::uint16_t&);
   std::size_t row() const;
   std::size_t column() const;
-  void        setRow(const std::size_t&);
-  void        setColum(const std::size_t&);
+  void        setRow(const std::uint16_t&);
+  void        setColum(const std::uint16_t&);
   bool        empty() const;
 
 private:
   std::pair<std::uint16_t, std::uint16_t> m_position;
-  //std::size_t m_rows{0};
-  //std::size_t m_columns{0};
 };
 
 // returns the current cursor position (row, column) (Y, X)
 Term::Cursor cursor_position();
 
 // move the cursor to the given (row, column) / (Y, X)
-std::string cursor_move(std::size_t row, std::size_t column);
+std::string cursor_move(std::uint16_t row, std::uint16_t column);
 // move the cursor the given rows up
 std::string cursor_up(std::size_t rows);
 // move the cursor the given rows down

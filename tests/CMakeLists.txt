@@ -40,6 +40,14 @@ add_executable(Key key.test.cpp)
 target_link_libraries(Key PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
 doctest_discover_tests(Key)
 
+add_executable(Screen screen.test.cpp)
+target_link_libraries(Screen PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
+doctest_discover_tests(Screen)
+
+add_executable(Events events.test.cpp)
+target_link_libraries(Events PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
+doctest_discover_tests(Events)
+
 add_executable(IOStream iostream.test.cpp)
 target_link_libraries(IOStream PRIVATE cpp-terminal::cpp-terminal)
 
