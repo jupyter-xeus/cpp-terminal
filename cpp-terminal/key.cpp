@@ -6,31 +6,32 @@
 
 void Term::Key::append_name(std::string& strOut) const
 {
-  if(*this == Term::Key::NoKey) return;
-  if(this->hasAlt())
+	Term::Key key = *this;
+  if(key == Term::Key::NoKey) return;
+  if(key.hasAlt())
   {
     strOut += "Alt+";
-    *this = static_cast<Term::Key>(this->value - static_cast<std::int32_t>(Term::MetaKey::Value::Alt));
+    key = static_cast<Term::Key>(key.value - static_cast<std::int32_t>(Term::MetaKey::Value::Alt));
   }
   if(key.hasCtrl())
   {
     strOut += "Ctrl+";
-    if(!Term::iscntrl(key)) *this = static_cast<Term::Key>(this->value - static_cast<std::int32_t>(Term::MetaKey::Value::Ctrl));
+    if(!key.iscntrl()) key = static_cast<Term::Key>(key.value - static_cast<std::int32_t>(Term::MetaKey::Value::Ctrl));
   }
-  if(*this == Term::Key::Tab) strOut += "Tab";
-  else if(*this == Term::Key::Enter)
+  if(key == Term::Key::Tab) strOut += "Tab";
+  else if(key == Term::Key::Enter)
     strOut += "Enter";
-  else if(*this == Term::Key::Esc)
+  else if(key == Term::Key::Esc)
     strOut += "Esc";
-  else if(*this == Term::Key::Backspace)
+  else if(key == Term::Key::Backspace)
     strOut += "Backspace";
-  else if(*this == Term::Key::Del)
+  else if(key == Term::Key::Del)
     strOut += "Del";
-  else if(Term::iscntrl(key))
-    strOut += static_cast<char>(this->value + 64);
-  else if(*this == Term::Key::Space)
+  else if(key.iscntrl())
+    strOut += static_cast<char>(key.value + 64);
+  else if(key == Term::Key::Space)
     strOut += "Space";
-  else if(key.isunicode()) { append_str(key, strOut); }
+  else if(key.isunicode()) { key.append_str(strOut); }
   else
   {
     switch(key)
@@ -78,19 +79,19 @@ void Term::Key::append_name(std::string& strOut) const
 
 void Term::Key::append_str(std::string& strOut) const
 {
-  if(!(this->value >= 0x10FFFFL)) { Term::Private::codepoint_to_utf8(strOut, static_cast<char32_t>(key)); }
+  if(!(this->value >= 0x10FFFFL)) { Term::Private::codepoint_to_utf8(strOut, this->value); }
 }
 
-std::string Term::name() const
+std::string Term::Key::name() const
 {
   std::string str;
-  Term::append_name(key, str);
+  this->append_name(str);
   return str;
 }
 
-std::string Term::str() const
+std::string Term::Key::str() const
 {
   std::string str;
-  Term::append_str(key, str);
+  this->append_str(str);
   return str;
 }

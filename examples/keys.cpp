@@ -34,7 +34,7 @@ int main()
           if(key == Term::Key::q) quit++;
           else
             quit = 0;
-          Term::cout << "Key: " << Term::name(key) << " (" << static_cast<std::int32_t>(key) << ")" << std::endl;
+          Term::cout << "Key: " << key.name() << " (" << static_cast<std::int32_t>(key) << ")" << std::endl;
           break;
         }
         case Term::Event::Type::CopyPaste:

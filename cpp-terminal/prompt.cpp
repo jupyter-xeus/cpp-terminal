@@ -73,8 +73,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
       else if(key >= 'A' && key <= 'Z')
       {
         std::cout << (char)key << std::flush;
-        length++;
-        input.push_back(static_cast<char>(Term::tolower(key)));  // convert upper case to lowercase
+        input.push_back(static_cast<char>(key.tolower()));  // convert upper case to lowercase
       }
       else if(key == Term::Key::Ctrl_C || key == Term::Key::Ctrl_D)
       {
@@ -225,7 +224,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
   {
     key = Term::read_event();
     if(key == Term::Key::NoKey) continue;
-    if(Term::isprint(key))
+    if(key.isprint())
     {
       std::string before = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
       std::string newchar;

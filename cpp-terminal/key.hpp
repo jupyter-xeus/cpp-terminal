@@ -43,6 +43,12 @@ constexpr bool hasAlt() const { return (this->value & static_cast<std::int32_t>(
 constexpr bool hasCtrl() const { return (this->value & static_cast<std::int32_t>(MetaKey::Value::Ctrl)) == static_cast<std::int32_t>(MetaKey::Value::Ctrl); }
 
 friend constexpr MetaKey operator+(MetaKey l, MetaKey r) { return MetaKey(l.value | r.value); }
+friend constexpr MetaKey operator+(MetaKey::Value l, MetaKey::Value r) { return MetaKey(l) + MetaKey(r); }
+friend constexpr MetaKey operator+(MetaKey l, MetaKey::Value r){ return l + MetaKey(r); }
+friend constexpr MetaKey operator+(MetaKey::Value l, MetaKey r){ return MetaKey(l) + r; }
+
+MetaKey& operator+=(MetaKey r){return *this = *this + r;}
+MetaKey& operator+=(MetaKey::Value r){return *this = *this + r;}
   
   friend constexpr bool operator==(MetaKey l, MetaKey r) { return l.value == r.value; }
 friend constexpr bool operator==(MetaKey l, MetaKey::Value r) { return l == MetaKey(r); }
@@ -261,11 +267,6 @@ public:
     Menu              = 0x10FFFF + 36,
   };
 
-  // member variable value
-  // cannot be Key::Value and has to be std::int32_t because it can also have numbers
-  // that are not named within the enum. Otherwise it would be undefined behaviour
-  std::int32_t value;
-
   constexpr Key() : value(NoKey) {}
   constexpr Key(const Key& key)         = default;
   inline Key& operator=(const Key& key) = default;
@@ -410,6 +411,10 @@ friend constexpr bool operator<=(std::size_t l, Key r) { return !(l > r); }
 	std::string name() const;
 	std::string str() const;
   
+  // member variable value
+  // cannot be Key::Value and has to be std::int32_t because it can also have numbers
+  // that are not named within the enum. Otherwise it would be undefined behaviour
+  std::int32_t value;
 };
 
 
@@ -442,7 +447,7 @@ constexpr Key     operator+(MetaKey metakey, Key key)
              + ((metakey == MetaKey::Value::Alt && !key.hasAlt() && !key.empty()) ? static_cast<std::int32_t>(MetaKey::Value::Alt) : 0));
 }
 constexpr Key     operator+(Key key, MetaKey meta) { return meta + key; }
-constexpr MetaKey operator+(MetaKey::Value l, MetaKey::Value r) { return MetaKey(l) + MetaKey(r); }
+
 constexpr Key     operator+(MetaKey::Value l, Key r) { return MetaKey(l) + r; }
 constexpr Key     operator+(Key l, MetaKey::Value r) { return l + MetaKey(r); }
 constexpr Key     operator+(MetaKey::Value l, Key::value_type r) { return MetaKey(l) + Key(r); }
