@@ -766,7 +766,7 @@ char* editorPrompt(const char* prompt, void (*callback)(char*, Term::Key))
 
     Term::Key c = Term::read_event();
 
-    if(Term::empty(c)) continue;
+    if(c.empty()) continue;
     else if(c == Term::Key::Del || c == Term::Key::Ctrl_H || c == Term::Key::Backspace)
     {
       if(buflen != 0) buf[--buflen] = '\0';
@@ -787,7 +787,7 @@ char* editorPrompt(const char* prompt, void (*callback)(char*, Term::Key))
         return buf;
       }
     }
-    else if(!Term::iscntrl(c) && Term::isASCII(c))
+    else if(!c.iscntrl() && c.isASCII())
     {
       if(buflen == bufsize - 1)
       {
@@ -843,7 +843,7 @@ bool editorProcessKeypress()
   static int quit_times = KILO_QUIT_TIMES;
 
   Term::Key c = Term::Key::NoKey;
-  while(Term::empty(c))
+  while(c.empty())
   {  //NEEDED for windows (FIXME ?)
     c = Term::read_event();
   }

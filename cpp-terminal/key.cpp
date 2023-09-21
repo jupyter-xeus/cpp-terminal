@@ -7,12 +7,12 @@
 void Term::Key::append_name(std::string& strOut) const
 {
   if(*this == Term::Key::NoKey) return;
-  if(Term::hasAlt(key))
+  if(this->hasAlt())
   {
     strOut += "Alt+";
     *this = static_cast<Term::Key>(this->value - static_cast<std::int32_t>(Term::MetaKey::Value::Alt));
   }
-  if(Term::hasCtrl(key))
+  if(key.hasCtrl())
   {
     strOut += "Ctrl+";
     if(!Term::iscntrl(key)) *this = static_cast<Term::Key>(this->value - static_cast<std::int32_t>(Term::MetaKey::Value::Ctrl));
@@ -30,7 +30,7 @@ void Term::Key::append_name(std::string& strOut) const
     strOut += static_cast<char>(this->value + 64);
   else if(*this == Term::Key::Space)
     strOut += "Space";
-  else if(Term::isunicode(key)) { append_str(key, strOut); }
+  else if(key.isunicode()) { append_str(key, strOut); }
   else
   {
     switch(key)

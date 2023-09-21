@@ -317,7 +317,7 @@ void Term::Event::parse(const std::string& str)
     m_Type = Type::CopyPaste;
     m_str  = str;
   }
-  if(!Term::empty(m_container.m_Key)) { m_Type = Type::Key; }
+  if(!m_container.empty()) { m_Type = Type::Key; }
 }
 
 Term::Event::operator Term::Key() const

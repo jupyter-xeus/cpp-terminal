@@ -27,7 +27,7 @@ int main()
         case Term::Event::Type::Key:
         {
           Term::Key keyEvent = event;
-          Term::cout << "Event: Key (" << Term::name(keyEvent) << ")" << std::endl;
+          Term::cout << "Event: Key (" << keyEvent.name() << ")" << std::endl;
           if(keyEvent == Term::Key::Ctrl_Q) main_loop_continue = false;
           break;
         }

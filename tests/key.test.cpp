@@ -114,7 +114,7 @@ TEST_CASE("test Ctrl+Key arithmetic with CTRL_*")
   {
     Term::Key key(i);
     CHECK(Term::iscntrl(key) == true);  // Take care here we need iscntrl not isCTRL
-    CHECK(Term::hasAlt(key) == false);
+    CHECK(key.hasAlt() == false);
     CHECK(Term::iscntrl((Term::MetaKey::Value::Ctrl + key)) == true);
     CHECK(Term::iscntrl((Term::MetaKey::Value::Ctrl + Term::MetaKey::Value::Ctrl + key)) == true);
     CHECK(Term::hasCtrlAll((Term::MetaKey::Value::Ctrl + Term::MetaKey::Value::Ctrl + key)) == true);
