@@ -1,6 +1,7 @@
 #include "cpp-terminal/event.hpp"
 
 #include "cpp-terminal/platforms/conversion.hpp"
+
 #include <cstring>
 
 Term::Event::container::container() {}

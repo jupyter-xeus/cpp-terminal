@@ -6,7 +6,7 @@
 
 void Term::Key::append_name(std::string& strOut) const
 {
-	Term::Key key = *this;
+  Term::Key key = *this;
   if(key == Term::Key::NoKey) return;
   if(key.hasAlt())
   {
