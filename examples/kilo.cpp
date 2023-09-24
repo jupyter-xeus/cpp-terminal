@@ -89,7 +89,7 @@ struct editorSyntax HLDB[] = {
 
 /*** prototypes ***/
 
-char* editorPrompt(const char* prompt, void (*callback)(char*, int));
+char* editorPrompt(const char* prompt, void (*callback)(char*, Term::Key));
 
 /*** syntax highlighting ***/
 
@@ -97,8 +97,9 @@ int is_separator(int c) { return isspace(c) || c == '\0' || strchr(",.()+-/*=~%<
 
 void editorUpdateSyntax(erow* row)
 {
-  row->hl = (unsigned char*)realloc(row->hl, row->rsize);
-  memset(row->hl, HL_NORMAL, row->rsize);
+  row->hl = reinterpret_cast<unsigned char*>(realloc(row->hl, static_cast<size_t>(row->rsize)));
+  if(row->hl == nullptr) { exit(-1); /*TODO: better handler*/ }
+  memset(row->hl, HL_NORMAL, static_cast<size_t>(row->rsize));
 
   if(E.syntax == nullptr) return;
 
@@ -108,19 +109,19 @@ void editorUpdateSyntax(erow* row)
   const char* mcs = E.syntax->multiline_comment_start;
   const char* mce = E.syntax->multiline_comment_end;
 
-  int scs_len = scs ? strlen(scs) : 0;
-  int mcs_len = mcs ? strlen(mcs) : 0;
-  int mce_len = mce ? strlen(mce) : 0;
+  const size_t scs_len = scs ? strlen(scs) : 0;
+  const size_t mcs_len = mcs ? strlen(mcs) : 0;
+  const size_t mce_len = mce ? strlen(mce) : 0;
 
   int prev_sep   = 1;
   int in_string  = 0;
-  int in_comment = (row->idx > 0 && E.row[row->idx - 1].hl_open_comment);
+  int in_comment = (row->idx > 0) && (E.row[row->idx - 1].hl_open_comment != 0);
 
-  int i = 0;
-  while(i < row->rsize)
+  size_t i = 0;
+  while(i < static_cast<size_t>(row->rsize))
   {
     char          c       = row->render[i];
-    unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : (char)HL_NORMAL;
+    unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : static_cast<unsigned char>(HL_NORMAL);
 
     if(scs_len && !in_string && !in_comment)
     {
@@ -164,7 +165,7 @@ void editorUpdateSyntax(erow* row)
       if(in_string)
       {
         row->hl[i] = HL_STRING;
-        if(c == '\\' && i + 1 < row->rsize)
+        if(c == '\\' && i + 1 < static_cast<size_t>(row->rsize))
         {
           row->hl[i + 1] = HL_STRING;
           i += 2;
@@ -203,13 +204,13 @@ void editorUpdateSyntax(erow* row)
       int j;
       for(j = 0; keywords[j]; j++)
       {
-        int klen = strlen(keywords[j]);
+        int klen = static_cast<int>(strlen(keywords[j]));
         int kw2  = keywords[j][klen - 1] == '|';
         if(kw2) klen--;
 
         if(!strncmp(&row->render[i], keywords[j], klen) && is_separator(row->render[i + klen]))
         {
-          memset(&row->hl[i], kw2 ? HL_KEYWORD2 : HL_KEYWORD1, klen);
+          memset(&row->hl[i], kw2 ? HL_KEYWORD2 : HL_KEYWORD1, static_cast<size_t>(klen));
           i += klen;
           break;
         }
@@ -307,7 +308,8 @@ void editorUpdateRow(erow* row)
     if(row->chars[j] == '\t') tabs++;
 
   free(row->render);
-  row->render = (char*)malloc(row->size + tabs * (KILO_TAB_STOP - 1) + 1);
+  row->render = reinterpret_cast<char*>(malloc(static_cast<size_t>(row->size + tabs * (KILO_TAB_STOP - 1) + 1)));
+  if(row->render == nullptr) { exit(-1); /*TODO: create better check*/ }
 
   int idx = 0;
   for(int j = 0; j < row->size; j++)
@@ -329,14 +331,20 @@ void editorInsertRow(int at, const char* s, std::size_t len)
 {
   if(at < 0 || at > E.numrows) return;
 
-  E.row = (erow*)realloc(E.row, sizeof(erow) * (E.numrows + 1));
-  memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (E.numrows - at));
+  E.row = reinterpret_cast<erow*>(realloc(E.row, sizeof(erow) * (static_cast<size_t>(E.numrows) + 1)));
+  if(E.row == nullptr) { exit(-1); /*TODO: create better check*/ }
+  memmove(&E.row[at + 1], &E.row[at], sizeof(erow) * (static_cast<size_t>(E.numrows) - at));
   for(int j = at + 1; j <= E.numrows; j++) E.row[j].idx++;
 
   E.row[at].idx = at;
 
-  E.row[at].size  = len;
+  E.row[at].size  = static_cast<int>(len);
   E.row[at].chars = (char*)malloc(len + 1);
+  if(E.row[at].chars == nullptr)
+  {
+    // allocation could fail and return nullptr
+    exit(-1);  // insert better error handling if needed
+  }
   memcpy(E.row[at].chars, s, len);
   E.row[at].chars[len] = '\0';
 
@@ -361,7 +369,7 @@ void editorDelRow(int at)
 {
   if(at < 0 || at >= E.numrows) return;
   editorFreeRow(&E.row[at]);
-  memmove(&E.row[at], &E.row[at + 1], sizeof(erow) * (E.numrows - at - 1));
+  memmove(&E.row[at], &E.row[at + 1], sizeof(erow) * (static_cast<size_t>(E.numrows) - at - 1));
   for(int j = at; j < E.numrows - 1; j++) E.row[j].idx--;
   E.numrows--;
   E.dirty++;
@@ -370,19 +378,21 @@ void editorDelRow(int at)
 void editorRowInsertChar(erow* row, int at, int c)
 {
   if(at < 0 || at > row->size) at = row->size;
-  row->chars = (char*)realloc(row->chars, row->size + 2);
-  memmove(&row->chars[at + 1], &row->chars[at], row->size - at + 1);
+  row->chars = reinterpret_cast<char*>(realloc(row->chars, static_cast<size_t>(row->size) + 2));
+  if(row->chars == nullptr) { exit(-1); /*TODO: create better check*/ }
+  memmove(&row->chars[at + 1], &row->chars[at], static_cast<size_t>(row->size) - at + 1);
   row->size++;
-  row->chars[at] = c;
+  row->chars[at] = static_cast<char>(c);
   editorUpdateRow(row);
   E.dirty++;
 }
 
 void editorRowAppendString(erow* row, char* s, std::size_t len)
 {
-  row->chars = (char*)realloc(row->chars, row->size + len + 1);
+  row->chars = reinterpret_cast<char*>(realloc(row->chars, static_cast<size_t>(row->size) + len + 1));
+  if(row->chars == nullptr) { exit(-1); /*TODO: create better check*/ }
   memcpy(&row->chars[row->size], s, len);
-  row->size += len;
+  row->size += static_cast<int>(len);
   row->chars[row->size] = '\0';
   editorUpdateRow(row);
   E.dirty++;
@@ -391,7 +401,7 @@ void editorRowAppendString(erow* row, char* s, std::size_t len)
 void editorRowDelChar(erow* row, int at)
 {
   if(at < 0 || at >= row->size) return;
-  memmove(&row->chars[at], &row->chars[at + 1], row->size - at);
+  memmove(&row->chars[at], &row->chars[at + 1], static_cast<size_t>(row->size) - at);
   row->size--;
   editorUpdateRow(row);
   E.dirty++;
@@ -412,7 +422,7 @@ void editorInsertNewline()
   else
   {
     erow* row = &E.row[E.cy];
-    editorInsertRow(E.cy + 1, &row->chars[E.cx], row->size - E.cx);
+    editorInsertRow(E.cy + 1, &row->chars[E.cx], static_cast<size_t>(row->size - E.cx));
     row                   = &E.row[E.cy];
     row->size             = E.cx;
     row->chars[row->size] = '\0';
@@ -436,7 +446,7 @@ void editorDelChar()
   else
   {
     E.cx = E.row[E.cy - 1].size;
-    editorRowAppendString(&E.row[E.cy - 1], row->chars, row->size);
+    editorRowAppendString(&E.row[E.cy - 1], row->chars, static_cast<size_t>(row->size));
     editorDelRow(E.cy);
     E.cy--;
   }
@@ -450,11 +460,12 @@ char* editorRowsToString(int* buflen)
   for(int j = 0; j < E.numrows; j++) totlen += E.row[j].size + 1;
   *buflen = totlen;
 
-  char* buf = (char*)malloc(totlen);
-  char* p   = buf;
+  char* buf = reinterpret_cast<char*>(malloc(static_cast<size_t>(totlen)));
+  if(buf == nullptr) { exit(-1); /*TODO: better error handler*/ }
+  char* p = buf;
   for(int j = 0; j < E.numrows; j++)
   {
-    memcpy(p, E.row[j].chars, E.row[j].size);
+    memcpy(p, E.row[j].chars, static_cast<size_t>(E.row[j].size));
     p += E.row[j].size;
     *p = '\n';
     p++;
@@ -479,8 +490,8 @@ void editorOpen(char* filename)
   std::getline(f, line);
   while(f.rdstate() == std::ios_base::goodbit)
   {
-    int linelen = line.size();
-    while(linelen > 0 && (line[linelen - 1] == '\n' || line[linelen - 1] == '\r')) linelen--;
+    long linelen = static_cast<long>(line.size());
+    while(linelen > 0 && (line[static_cast<size_t>(linelen - 1)] == '\n' || line[static_cast<size_t>(linelen - 1)] == '\r')) linelen--;
     editorInsertRow(E.numrows, line.c_str(), linelen);
     std::getline(f, line);
   }
@@ -511,7 +522,7 @@ void editorSave()
 
   int         len;
   char*       buf = editorRowsToString(&len);
-  std::string s   = std::string(buf, len);
+  std::string s   = std::string(buf, static_cast<size_t>(len));
   free(buf);
 
   std::ofstream out;
@@ -524,7 +535,7 @@ void editorSave()
 
 /*** find ***/
 
-void editorFindCallback(char* query, int key)
+void editorFindCallback(char* query, Term::Key key)
 {
   static int last_match = -1;
   static int direction  = 1;
@@ -534,7 +545,7 @@ void editorFindCallback(char* query, int key)
 
   if(saved_hl)
   {
-    memcpy(E.row[saved_hl_line].hl, saved_hl, E.row[saved_hl_line].rsize);
+    memcpy(E.row[saved_hl_line].hl, saved_hl, static_cast<size_t>(E.row[saved_hl_line].rsize));
     free(saved_hl);
     saved_hl = nullptr;
   }
@@ -568,11 +579,12 @@ void editorFindCallback(char* query, int key)
     {
       last_match = current;
       E.cy       = current;
-      E.cx       = editorRowRxToCx(row, match - row->render);
+      E.cx       = editorRowRxToCx(row, static_cast<int>(match - row->render));
       E.rowoff   = E.numrows;
 
       saved_hl_line = current;
-      saved_hl      = (char*)malloc(row->rsize);
+      saved_hl      = reinterpret_cast<char*>(malloc(static_cast<size_t>(row->rsize)));
+      if(saved_hl == nullptr) { exit(-1); /*TODO: better handler*/ }
       memcpy(saved_hl, row->hl, row->rsize);
       memset(&row->hl[match - row->render], HL_MATCH, strlen(query));
       break;
@@ -710,7 +722,7 @@ void editorDrawStatusBar(std::string& ab)
 void editorDrawMessageBar(std::string& ab)
 {
   ab.append(Term::clear_eol());
-  int msglen = strlen(E.statusmsg);
+  int msglen = static_cast<int>(strlen(E.statusmsg));
   if(msglen > E.screencols) msglen = E.screencols;
   if(msglen && time(nullptr) - E.statusmsg_time < 5) ab.append(std::string(E.statusmsg, msglen));
 }
@@ -720,7 +732,7 @@ void editorRefreshScreen()
   editorScroll();
 
   std::string ab;
-  ab.reserve(16 * 1024);
+  ab.reserve(static_cast<size_t>(16 * 1024));
 
   ab.append(Term::cursor_off());
   ab.append(Term::cursor_move(1, 1));
@@ -729,7 +741,7 @@ void editorRefreshScreen()
   editorDrawStatusBar(ab);
   editorDrawMessageBar(ab);
 
-  ab.append(Term::cursor_move((E.cy - E.rowoff) + 1, (E.rx - E.coloff) + 1));
+  ab.append(Term::cursor_move(static_cast<size_t>((E.cy - E.rowoff) + 1), static_cast<size_t>((E.rx - E.coloff) + 1)));
 
   ab.append(Term::cursor_on());
 
@@ -738,10 +750,11 @@ void editorRefreshScreen()
 
 /*** input ***/
 
-char* editorPrompt(const char* prompt, void (*callback)(char*, int))
+char* editorPrompt(const char* prompt, void (*callback)(char*, Term::Key))
 {
   std::size_t bufsize = 128;
-  char*       buf     = (char*)malloc(bufsize);
+  char*       buf     = reinterpret_cast<char*>(malloc(bufsize));
+  if(buf == nullptr) { exit(-1); /*TODO: create better check*/ }
 
   std::size_t buflen = 0;
   buf[0]             = '\0';
@@ -753,8 +766,8 @@ char* editorPrompt(const char* prompt, void (*callback)(char*, int))
 
     Term::Key c = Term::read_event();
 
-    if(c) continue;
-    if(c == Term::Key::Del || c == Term::Key::Ctrl_H || c == Term::Key::Backspace)
+    if(c.empty()) continue;
+    else if(c == Term::Key::Del || c == Term::Key::Ctrl_H || c == Term::Key::Backspace)
     {
       if(buflen != 0) buf[--buflen] = '\0';
     }
@@ -774,14 +787,14 @@ char* editorPrompt(const char* prompt, void (*callback)(char*, int))
         return buf;
       }
     }
-    else if(!iscntrl(c) && c < 128)
+    else if(!c.iscntrl() && c.isASCII())
     {
       if(buflen == bufsize - 1)
       {
         bufsize *= 2;
-        buf = (char*)realloc(buf, bufsize);
+        buf = reinterpret_cast<char*>(realloc(buf, bufsize));
       }
-      buf[buflen++] = c;
+      buf[buflen++] = static_cast<char>(c);
       buf[buflen]   = '\0';
     }
 
@@ -789,7 +802,7 @@ char* editorPrompt(const char* prompt, void (*callback)(char*, int))
   }
 }
 
-void editorMoveCursor(int key)
+void editorMoveCursor(Term::Key key)
 {
   erow* row = (E.cy >= E.numrows) ? nullptr : &E.row[E.cy];
 
@@ -817,6 +830,7 @@ void editorMoveCursor(int key)
     case Term::Key::ArrowDown:
       if(E.cy < E.numrows) { E.cy++; }
       break;
+    default: return;
   }
 
   row        = (E.cy >= E.numrows) ? nullptr : &E.row[E.cy];
@@ -828,8 +842,11 @@ bool editorProcessKeypress()
 {
   static int quit_times = KILO_QUIT_TIMES;
 
-  Term::Key c;
-  while((c = Term::read_event()).empty()) continue;  //NEEDED for windows (FIXME ?)
+  Term::Key c = Term::Key::NoKey;
+  while(c.empty())
+  {  //NEEDED for windows (FIXME ?)
+    c = Term::read_event();
+  }
   switch(c)
   {
     case Term::Key::Enter: editorInsertNewline(); break;
@@ -885,7 +902,7 @@ bool editorProcessKeypress()
 
     case Term::Key::Tab: editorInsertChar('\t'); break;
 
-    default: editorInsertChar(c); break;
+    default: editorInsertChar(static_cast<int>(c)); break;
   }
 
   quit_times = KILO_QUIT_TIMES;
@@ -909,8 +926,8 @@ void initEditor()
   E.statusmsg_time    = 0;
   E.syntax            = nullptr;
   Term::Screen screen = Term::screen_size();
-  E.screenrows        = screen.rows();
-  E.screencols        = screen.columns();
+  E.screenrows        = static_cast<int>(screen.rows());
+  E.screencols        = static_cast<int>(screen.columns());
   E.screenrows -= 2;
 }
 

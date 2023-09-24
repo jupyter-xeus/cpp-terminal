@@ -112,4 +112,5 @@ bool is_valid_utf8_code_unit(const std::string& s)
 }
 
 }  // namespace Private
+
 }  // namespace Term

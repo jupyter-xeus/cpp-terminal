@@ -73,7 +73,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
       else if(key >= 'A' && key <= 'Z')
       {
         std::cout << (char)key << std::flush;
-        input.push_back(static_cast<char>(key + 32));  // convert upper case to lowercase
+        input.push_back(static_cast<char>(key.tolower()));  // convert upper case to lowercase
       }
       else if(key == Term::Key::Ctrl_C || key == Term::Key::Ctrl_D)
       {
@@ -237,7 +237,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     {
       if(m.lines.size() == 1 && m.lines[m.cursor_row - 1].empty())
       {
-        m.lines[m.cursor_row - 1].push_back(Key::Ctrl_D);
+        m.lines[m.cursor_row - 1].push_back(static_cast<char>(Key::Ctrl_D));
         std::cout << "\n" << std::flush;
         m_history.push_back(m.lines[0]);
         return m.lines[0];
@@ -249,7 +249,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
       {
         case Key::Enter:
           not_complete = !iscomplete(concat(m.lines));
-          if(not_complete) key = Key(static_cast<Term::Key::Value>(MetaKey::Value::Alt + Key::Enter));
+          if(not_complete) key = Key(static_cast<Term::Key>(Term::MetaKey::Value::Alt + Term::Key::Enter));
           else
             break;
           CPP_TERMINAL_FALLTHROUGH;
@@ -265,7 +265,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
           {
             m.cursor_col = m.lines[m.cursor_row - 2].size() + 1;
             m.lines[m.cursor_row - 2] += m.lines[m.cursor_row - 1];
-            m.lines.erase(m.lines.begin() + static_cast<int>(m.cursor_row - 1));
+            m.lines.erase(m.lines.begin() + static_cast<long>(m.cursor_row) - 1);
             m.cursor_row--;
           }
           break;
@@ -331,7 +331,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
           if(m.cursor_row < m.lines.size())
           {
             // Not at the bottom row, can't push back
-            m.lines.insert(m.lines.begin() + static_cast<int>(m.cursor_row), after);
+            m.lines.insert(m.lines.begin() + static_cast<long>(m.cursor_row), after);
           }
           else { m.lines.push_back(after); }
           m.cursor_col = 1;
@@ -346,7 +346,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
     if(cursor.row() + (int)scr.get_h() - 1 > screen.rows())
     {
-      cursor.setRow(screen.rows() - ((int)scr.get_h() - 1));
+      cursor.setRow(static_cast<size_t>(static_cast<long>(screen.rows()) - (static_cast<long>(scr.get_h()) - 1)));
       std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
     }
   }

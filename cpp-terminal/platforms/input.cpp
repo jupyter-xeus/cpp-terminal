@@ -78,8 +78,8 @@ void Term::Private::Input::read_windows_key(const std::uint16_t& virtual_key_cod
 {
   // First check if we have ALT etc (CTRL is already done so skip it)
   Term::MetaKey toAdd{Term::MetaKey::Value::None};
-  if(((control_key_state & LEFT_ALT_PRESSED) == LEFT_ALT_PRESSED) || ((control_key_state & RIGHT_ALT_PRESSED) == RIGHT_ALT_PRESSED)) toAdd += std::move(Term::MetaKey::Alt);
-  if(((control_key_state & LEFT_CTRL_PRESSED) == LEFT_CTRL_PRESSED) || ((control_key_state & RIGHT_CTRL_PRESSED) == RIGHT_CTRL_PRESSED)) toAdd += std::move(Term::MetaKey::Ctrl);
+  if(((control_key_state & LEFT_ALT_PRESSED) == LEFT_ALT_PRESSED) || ((control_key_state & RIGHT_ALT_PRESSED) == RIGHT_ALT_PRESSED)) toAdd += Term::MetaKey::Value::Alt;
+  if(((control_key_state & LEFT_CTRL_PRESSED) == LEFT_CTRL_PRESSED) || ((control_key_state & RIGHT_CTRL_PRESSED) == RIGHT_CTRL_PRESSED)) toAdd += Term::MetaKey::Value::Ctrl;
 
   switch(virtual_key_code)
   {

@@ -199,9 +199,9 @@ void Term::Event::parse(const std::string& str)
   else if(str.size() == 1)
   {
     m_Type            = Type::Key;
-    m_container.m_Key = Key(static_cast<Term::Key::Value>(str[0]));
+    m_container.m_Key = Key(static_cast<Term::Key>(str[0]));
     /* Backspace return 127 CTRL+backspace return 8 */
-    if(m_container.m_Key == Term::Key::Value::Del) m_container.m_Key = Key(Term::Key::Value::Backspace);
+    if(m_container.m_Key == Term::Key::Del) m_container.m_Key = Key(Term::Key::Backspace);
   }
   else if(str == "\033[I")
   {
@@ -215,7 +215,7 @@ void Term::Event::parse(const std::string& str)
   }
   else if(str.size() == 2 && str[0] == '\033')
   {
-    m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::MetaKey::Value::Alt + static_cast<Term::Key::Value>(str[1])));
+    m_container.m_Key = Key(static_cast<Term::Key>(Term::MetaKey::Value::Alt + static_cast<Term::Key>(str[1])));
     m_Type            = Type::Key;
   }
   else if(str[0] == '\033' && str[1] == '[' && str[str.size() - 1] == 'R')
@@ -247,13 +247,13 @@ void Term::Event::parse(const std::string& str)
      * Cursor Left  | ESC D
      * -------------+--------------------
     */
-    if(str == "\033OA" || str == "\033[A" || str == "\033A") m_container.m_Key = Key(Term::Key::Value::ArrowUp);
+    if(str == "\033OA" || str == "\033[A" || str == "\033A") m_container.m_Key = Key(Term::Key::ArrowUp);
     else if(str == "\033OB" || str == "\033[B" || str == "\033B")
-      m_container.m_Key = Key(Term::Key::Value::ArrowDown);
+      m_container.m_Key = Key(Term::Key::ArrowDown);
     else if(str == "\033OC" || str == "\033[C" || str == "\033C")
-      m_container.m_Key = Key(Term::Key::Value::ArrowRight);
+      m_container.m_Key = Key(Term::Key::ArrowRight);
     else if(str == "\033OD" || str == "\033[D" || str == "\033D")
-      m_container.m_Key = Key(Term::Key::Value::ArrowLeft);
+      m_container.m_Key = Key(Term::Key::ArrowLeft);
     /*
      * Key        Normal     Application
      * ---------+----------+-------------
@@ -262,9 +262,9 @@ void Term::Event::parse(const std::string& str)
      * ---------+----------+-------------
     */
     else if(str == "\033OH" || str == "\033[H")
-      m_container.m_Key = Key(Term::Key::Value::Home);
+      m_container.m_Key = Key(Term::Key::Home);
     else if(str == "\033OF" || str == "\033[F")
-      m_container.m_Key = Key(Term::Key::Value::End);
+      m_container.m_Key = Key(Term::Key::End);
     /*
      * Key        Escape Sequence
      * ---------+-----------------
@@ -287,29 +287,29 @@ void Term::Event::parse(const std::string& str)
      * ---------+-----------------
     */
     else if(str == "\033OP" || str == "\033[11~")
-      m_container.m_Key = Key(Term::Key::Value::F1);
+      m_container.m_Key = Key(Term::Key::F1);
     else if(str == "\033OQ" || str == "\033[12~")
-      m_container.m_Key = Key(Term::Key::Value::F2);
+      m_container.m_Key = Key(Term::Key::F2);
     else if(str == "\033OR" || str == "\033[13~")
-      m_container.m_Key = Key(Term::Key::Value::F3);
+      m_container.m_Key = Key(Term::Key::F3);
     else if(str == "\033OS" || str == "\033[14~")
-      m_container.m_Key = Key(Term::Key::Value::F4);
+      m_container.m_Key = Key(Term::Key::F4);
     else if(str == "\033[15~")
-      m_container.m_Key = Key(Term::Key::Value::F5);
+      m_container.m_Key = Key(Term::Key::F5);
     else if(str == "\033[17~")
-      m_container.m_Key = Key(Term::Key::Value::F6);
+      m_container.m_Key = Key(Term::Key::F6);
     else if(str == "\033[18~")
-      m_container.m_Key = Key(Term::Key::Value::F7);
+      m_container.m_Key = Key(Term::Key::F7);
     else if(str == "\033[19~")
-      m_container.m_Key = Key(Term::Key::Value::F8);
+      m_container.m_Key = Key(Term::Key::F8);
     else if(str == "\033[20~")
-      m_container.m_Key = Key(Term::Key::Value::F9);
+      m_container.m_Key = Key(Term::Key::F9);
     else if(str == "\033[21~")
-      m_container.m_Key = Key(Term::Key::Value::F10);
+      m_container.m_Key = Key(Term::Key::F10);
     else if(str == "\033[23~")
-      m_container.m_Key = Key(Term::Key::Value::F11);
+      m_container.m_Key = Key(Term::Key::F11);
     else if(str == "\033[24~")
-      m_container.m_Key = Key(Term::Key::Value::F12);
+      m_container.m_Key = Key(Term::Key::F12);
     /*
      * Key        Normal     Application
      * ---------+----------+-------------
@@ -322,17 +322,17 @@ void Term::Event::parse(const std::string& str)
      * ---------+----------+-------------
     */
     else if(str == "\033[2~")
-      m_container.m_Key = Key(Term::Key::Value::Insert);
+      m_container.m_Key = Key(Term::Key::Insert);
     else if(str == "\033[3~")
-      m_container.m_Key = Key(Term::Key::Value::Del);
+      m_container.m_Key = Key(Term::Key::Del);
     else if(str == "\033[1~")
-      m_container.m_Key = Key(Term::Key::Value::Home);
+      m_container.m_Key = Key(Term::Key::Home);
     else if(str == "\033[4~")
-      m_container.m_Key = Key(Term::Key::Value::End);
+      m_container.m_Key = Key(Term::Key::End);
     else if(str == "\033[5~")
-      m_container.m_Key = Key(Term::Key::Value::PageUp);
+      m_container.m_Key = Key(Term::Key::PageUp);
     else if(str == "\033[6~")
-      m_container.m_Key = Key(Term::Key::Value::PageDown);
+      m_container.m_Key = Key(Term::Key::PageDown);
     /*
      * Key        Escape Sequence
      * ---------+-----------------
@@ -347,21 +347,21 @@ void Term::Event::parse(const std::string& str)
      * ---------+-----------------
     */
     else if(str == "\033[25~")
-      m_container.m_Key = Key(Term::Key::Value::F13);
+      m_container.m_Key = Key(Term::Key::F13);
     else if(str == "\033[26~")
-      m_container.m_Key = Key(Term::Key::Value::F14);
+      m_container.m_Key = Key(Term::Key::F14);
     else if(str == "\033[28~")
-      m_container.m_Key = Key(Term::Key::Value::F15);
+      m_container.m_Key = Key(Term::Key::F15);
     else if(str == "\033[29~")
-      m_container.m_Key = Key(Term::Key::Value::F16);
+      m_container.m_Key = Key(Term::Key::F16);
     else if(str == "\033[31~")
-      m_container.m_Key = Key(Term::Key::Value::F17);
+      m_container.m_Key = Key(Term::Key::F17);
     else if(str == "\033[32~")
-      m_container.m_Key = Key(Term::Key::Value::F18);
+      m_container.m_Key = Key(Term::Key::F18);
     else if(str == "\033[33~")
-      m_container.m_Key = Key(Term::Key::Value::F19);
+      m_container.m_Key = Key(Term::Key::F19);
     else if(str == "\033[34~")
-      m_container.m_Key = Key(Term::Key::Value::F20);
+      m_container.m_Key = Key(Term::Key::F20);
     else if(str == "\033[G")
       m_container.m_Key = Key(Term::Key::Value::Numeric5);
     else if(Term::Private::is_valid_utf8_code_unit(str))
