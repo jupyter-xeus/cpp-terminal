@@ -121,7 +121,7 @@ public:
     Space             = 32,
     ExclamationMark   = 33,
     Quote             = 34,
-    Hah               = 35,
+    Hash              = 35,
     Dollar            = 36,
     Percent           = 37,
     Ampersand         = 38,
