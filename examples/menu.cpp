@@ -96,9 +96,9 @@ int main()
     if(!Term::is_stdin_a_tty()) throw Term::Exception("The terminal is not attached to a TTY and therefore can't catch user input. Exiting...");
     Term::Screen term_size = Term::screen_size();
     std::size_t  pos{5};
-    std::size_t      h{10};
-    std::size_t w{10};
-    bool        on{true};
+    std::size_t  h{10};
+    std::size_t  w{10};
+    bool         on{true};
     while(on)
     {
       Term::Event event{Term::read_event()};
