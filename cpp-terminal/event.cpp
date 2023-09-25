@@ -38,6 +38,20 @@ Term::Screen* Term::Event::get_if_screen()
     return nullptr;
 }
 
+Term::Mouse*            Term::Event::get_if_mouse()
+{
+  if(m_Type == Type::Mouse) return &m_container.m_Mouse;
+  else
+    return nullptr;
+}
+
+const Term::Mouse*      Term::Event::get_if_mouse() const
+{
+  if(m_Type == Type::Mouse) return &m_container.m_Mouse;
+  else
+    return nullptr;
+}
+
 const Term::Screen* Term::Event::get_if_screen() const
 {
   if(m_Type == Type::Screen) return &m_container.m_Screen;
