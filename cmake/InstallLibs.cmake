@@ -1,4 +1,4 @@
-if(WIN32 AND NOT MSVC)
+if (WIN32 AND NOT MSVC AND NOT NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "Clang")
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
   find_library(LIBGCC NAMES libgcc_s_seh-1)
   if (LIBGCC)
