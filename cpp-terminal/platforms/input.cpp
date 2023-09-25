@@ -255,35 +255,36 @@ void Term::Private::Input::read_raw()
           m_events.push(Term::Event(ret));
           ret.clear();
         }
-        static std::int32_t old_state{0};
+        static MOUSE_EVENT_RECORD old_state;
+        if(old_state.dwButtonState==events[i].Event.MouseEvent.dwButtonState && old_state.dwMousePosition.X==events[i].Event.MouseEvent.dwMousePosition.X && old_state.dwMousePosition.Y==events[i].Event.MouseEvent.dwMousePosition.Y && old_state.dwEventFlags==events[i].Event.MouseEvent.dwEventFlags) break;
         std::int32_t state{static_cast<std::int32_t>(events[i].Event.MouseEvent.dwButtonState)};
         std::array<Term::Button, 11> buttons;
         switch(events[i].Event.MouseEvent.dwEventFlags)
         {
           case 0:
           {
-            setButton(buttons,old_state,state,0);
+            setButton(buttons,old_state.dwButtonState,state,0);
             break;
           }
           case MOUSE_MOVED:
           {
-            setButton(buttons,old_state,state,MOUSE_MOVED);
+            setButton(buttons,old_state.dwButtonState,state,MOUSE_MOVED);
             break;
           }
           case DOUBLE_CLICK:
           {
-            setButton(buttons,old_state,state,DOUBLE_CLICK);
+            setButton(buttons,old_state.dwButtonState,state,DOUBLE_CLICK);
             break;
           }
           case MOUSE_WHEELED:
           {
-            setButton(buttons,old_state,state,MOUSE_WHEELED);
+            setButton(buttons,old_state.dwButtonState,state,MOUSE_WHEELED);
             if(state>0) buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)]=Button(Term::Button::Type::Wheel,Term::Button::Action::RolledUp);
             else buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)]=Button(Term::Button::Type::Wheel,Term::Button::Action::RolledDown);break;
           }
           case MOUSE_HWHEELED:
           {
-            setButton(buttons,old_state,state,MOUSE_HWHEELED);
+            setButton(buttons,old_state.dwButtonState,state,MOUSE_HWHEELED);
             if(state>0) buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)]=Button(Term::Button::Type::Wheel,Term::Button::Action::ToRight);
             else buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)]=Button(Term::Button::Type::Wheel,Term::Button::Action::ToLeft);
             break;
@@ -291,7 +292,7 @@ void Term::Private::Input::read_raw()
           default : break;
         }
         m_events.push(Term::Mouse(buttons,static_cast<std::uint16_t >(events[i].Event.MouseEvent.dwMousePosition.Y),static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.X)));
-        old_state=state;
+        old_state=events[i].Event.MouseEvent;
         break;
       }
       case WINDOW_BUFFER_SIZE_EVENT:
