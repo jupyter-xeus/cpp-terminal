@@ -95,10 +95,11 @@ int main()
     Term::terminal.setOptions(Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw);
     if(!Term::is_stdin_a_tty()) throw Term::Exception("The terminal is not attached to a TTY and therefore can't catch user input. Exiting...");
     Term::Screen term_size = Term::screen_size();
-    std::size_t          pos{5};
-    std:size_t           h{10};
-    std::size_t  w{10};
-    bool         on{true};
+    std::size_t  pos{5};
+  std:
+    size_t      h{10};
+    std::size_t w{10};
+    bool        on{true};
     while(on)
     {
       Term::Event event{Term::read_event()};
@@ -139,13 +140,13 @@ int main()
         }
         case Term::Event::Type::Mouse:
         {
-          if(Term::Mouse(event).has(Term::Button::Type::Wheel,Term::Button::Action::RolledUp))
+          if(Term::Mouse(event).has(Term::Button::Type::Wheel, Term::Button::Action::RolledUp))
           {
             if(pos > 1) pos--;
             render(term_size.rows(), term_size.columns(), h, w, pos);
             break;
           }
-          else if(Term::Mouse(event).has(Term::Button::Type::Wheel,Term::Button::Action::RolledDown))
+          else if(Term::Mouse(event).has(Term::Button::Type::Wheel, Term::Button::Action::RolledDown))
           {
             if(pos < h) pos++;
             render(term_size.rows(), term_size.columns(), h, w, pos);

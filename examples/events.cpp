@@ -86,9 +86,9 @@ int main()
         {
           Term::Mouse mouse(event);
           std::string buttons;
-          for(std::size_t i=0;i!=11;++i)
+          for(std::size_t i = 0; i != 11; ++i)
           {
-            if(mouse.getButtons()[i].action()==Term::Button::Action::None) continue;
+            if(mouse.getButtons()[i].action() == Term::Button::Action::None) continue;
             switch(mouse.getButtons()[i].type())
             {
               case Term::Button::Type::Left:
@@ -185,10 +185,10 @@ int main()
                 buttons += "Action (released) ";
                 break;
               }
-              default:break;
+              default: break;
             }
           }
-          Term::cout << "Event: Mouse Position(" <<mouse.row()<<";"<<mouse.column()<<") "<<buttons<< std::endl;
+          Term::cout << "Event: Mouse Position(" << mouse.row() << ";" << mouse.column() << ") " << buttons << std::endl;
           break;
         }
         default:

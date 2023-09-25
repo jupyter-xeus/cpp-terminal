@@ -6,15 +6,15 @@
 
 #if defined(_MSC_VER)
   // Disable stupid warnings on Windows
-  #pragma warning( push )
-  #pragma warning( disable : 4582 )
-  #pragma warning( disable : 4583 )
+  #pragma warning(push)
+  #pragma warning(disable : 4582)
+  #pragma warning(disable : 4583)
 #endif
 Term::Event::container::container() {}
 
 Term::Event::container::~container() {}
 #if defined(_MSC_VER)
-  #pragma warning( pop )
+  #pragma warning(pop)
 #endif
 
 Term::Key* Term::Event::get_if_key()
@@ -38,14 +38,14 @@ Term::Screen* Term::Event::get_if_screen()
     return nullptr;
 }
 
-Term::Mouse*            Term::Event::get_if_mouse()
+Term::Mouse* Term::Event::get_if_mouse()
 {
   if(m_Type == Type::Mouse) return &m_container.m_Mouse;
   else
     return nullptr;
 }
 
-const Term::Mouse*      Term::Event::get_if_mouse() const
+const Term::Mouse* Term::Event::get_if_mouse() const
 {
   if(m_Type == Type::Mouse) return &m_container.m_Mouse;
   else
@@ -191,7 +191,7 @@ Term::Event& Term::Event::operator=(Term::Event&& event) noexcept
   return *this;
 }
 
-Term::Event::Event(const Term::Mouse& mouse) : m_Type(Type::Mouse) {m_container.m_Mouse=mouse;}
+Term::Event::Event(const Term::Mouse& mouse) : m_Type(Type::Mouse) { m_container.m_Mouse = mouse; }
 
 bool Term::Event::empty() const
 {
