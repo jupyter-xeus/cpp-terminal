@@ -23,7 +23,6 @@ if(CPPTERMINAL_ENABLE_INSTALL)
   install_libs(bin/examples)
 endif()
 
-
 cppterminal_example(args)
 cppterminal_example(cin_cooked)
 cppterminal_example(cin_raw)

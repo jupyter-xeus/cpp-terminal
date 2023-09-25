@@ -37,7 +37,7 @@ public:
     ToLeft,
   };
   Button() = default;
-  Button(const Term::Button::Type& type, const Term::Button::Action& action): m_type(type), m_action(action){}
+  Button(const Term::Button::Type& type, const Term::Button::Action& action) : m_type(type), m_action(action) {}
   Term::Button::Action action();
   Term::Button::Type   type();
 
@@ -50,7 +50,7 @@ class Mouse
 {
 public:
   Mouse() = default;
-  Mouse(const std::array<Term::Button, 11>& buttons, const std::uint16_t& row, const std::uint16_t& column): m_buttons(buttons), m_row(row), m_column(column) {}
+  Mouse(const std::array<Term::Button, 11>& buttons, const std::uint16_t& row, const std::uint16_t& column) : m_buttons(buttons), m_row(row), m_column(column) {}
   std::size_t                  row();
   std::size_t                  column();
   std::array<Term::Button, 11> getButtons() const;
