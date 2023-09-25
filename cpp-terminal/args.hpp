@@ -24,8 +24,8 @@ class Argc
 {
 public:
   Argc();
-  operator long unsigned int();
-  operator long unsigned int() const;
+  operator unsigned int();
+  operator unsigned int() const;
 };
 
 static const Arguments argv;

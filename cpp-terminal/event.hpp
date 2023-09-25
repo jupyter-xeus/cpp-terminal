@@ -4,6 +4,7 @@
 #include "cpp-terminal/focus.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/screen.hpp"
+#include "cpp-terminal/mouse.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -22,6 +23,7 @@ public:
     Screen,
     Cursor,
     Focus,
+    Mouse,
     CopyPaste,
   };
   Event();
@@ -31,6 +33,7 @@ public:
   Event(const Term::Screen& screen);
   Event(const Term::Cursor& cursor);
   Event(const Term::Focus& focus);
+  Event(const Term::Mouse& mouse);
   bool         empty() const;
   Type         type() const;
   Term::Event& operator=(const Term::Event& event);
@@ -42,6 +45,7 @@ public:
   operator Term::Screen() const;
   operator Term::Cursor() const;
   operator Term::Focus() const;
+  operator Term::Mouse() const;
   operator std::string() const;
 
   // getters
@@ -70,7 +74,8 @@ private:
     Term::Cursor            m_Cursor;
     Term::Screen            m_Screen;
     Term::Focus             m_Focus;
-    std::unique_ptr<char[]> m_string{nullptr};
+    Term::Mouse             m_Mouse;
+    std::unique_ptr<char[]> m_string;
   };
   Type      m_Type{Type::Empty};
   container m_container;

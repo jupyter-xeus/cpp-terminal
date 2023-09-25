@@ -11,13 +11,13 @@ class Screen
 {
 public:
   Screen() = default;
-  Screen(const std::uint16_t& rows, const std::uint16_t& columns) { m_size = {rows, columns}; }
+  Screen(const std::size_t& rows, const std::size_t& columns) { m_size = {rows, columns}; }
   std::size_t rows() const;
   std::size_t columns() const;
   bool        empty() const;
 
 private:
-  std::pair<std::uint16_t, std::uint16_t> m_size;
+  std::pair<std::size_t, std::size_t> m_size;
 };
 
 // clear the screen

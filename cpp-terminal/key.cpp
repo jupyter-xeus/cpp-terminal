@@ -79,7 +79,7 @@ void Term::Key::append_name(std::string& strOut) const
 
 void Term::Key::append_str(std::string& strOut) const
 {
-  if(!(this->value >= 0x10FFFFL)) { Term::Private::codepoint_to_utf8(strOut, this->value); }
+  if(!(this->value >= 0x10FFFFL)) { Term::Private::codepoint_to_utf8(strOut, static_cast<char32_t >(this->value)); }
 }
 
 std::string Term::Key::name() const
