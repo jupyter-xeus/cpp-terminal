@@ -1,5 +1,3 @@
-include(InstallLibs)
-
 # Suppress useless warnings in examples but useful in cpp-terminal
 add_library(ExamplesWarnings INTERFACE)
 target_compile_options(
@@ -18,10 +16,6 @@ function(cppterminal_example SOURCE)
     install(TARGETS ${SOURCE} RUNTIME DESTINATION bin/examples)
   endif()
 endfunction()
-
-if(CPPTERMINAL_ENABLE_INSTALL)
-  install_libs(bin/examples)
-endif()
 
 cppterminal_example(args)
 cppterminal_example(cin_cooked)
