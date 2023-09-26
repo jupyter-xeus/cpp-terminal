@@ -43,7 +43,7 @@ std::uint8_t utf8_decode_step(std::uint8_t state, std::uint8_t octet, std::uint3
   return (reject ? 0xf : (0xf & (utf8StateTab[class_] >> (4 * (state & 7)))));
 }
 
-void codepoint_to_utf8(std::string& s, char32_t c)
+void codepoint_to_utf8(std::string& s, const char32_t& c)
 {
   if(c > 0x0010FFFF) { throw Term::Exception("Invalid UTF32 codepoint."); }
   char        bytes[4];

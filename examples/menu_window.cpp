@@ -54,8 +54,8 @@ int main()
     }
     Term::terminal.setOptions(Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw);
     Term::Screen term_size = Term::screen_size();
-    int          pos       = 5;
-    int          h         = 10;
+    std::size_t  pos{5};
+    std::size_t  h{10};
     std::size_t  w{10};
     bool         on = true;
     Term::Window scr(term_size.columns(), term_size.rows());

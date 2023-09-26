@@ -1,6 +1,6 @@
 #include "cpp-terminal/cursor.hpp"
 
-Term::Cursor::Cursor(const std::uint16_t& row, const std::uint16_t& column) : m_position({row, column}) {}
+Term::Cursor::Cursor(const std::size_t& row, const std::size_t& column) : m_position({row, column}) {}
 
 std::size_t Term::Cursor::row() const { return m_position.first; }
 
@@ -13,15 +13,15 @@ bool Term::Cursor::empty() const
     return false;
 }
 
-void Term::Cursor::setRow(const std::uint16_t& row) { m_position.first = row; }
+void Term::Cursor::setRow(const std::size_t& row) { m_position.first = row; }
 
-void Term::Cursor::setColum(const std::uint16_t& column) { m_position.second = column; }
+void Term::Cursor::setColum(const std::size_t& column) { m_position.second = column; }
 
 std::string Term::cursor_off() { return "\x1b[?25l"; }
 
 std::string Term::cursor_on() { return "\x1b[?25h"; }
 
-std::string Term::cursor_move(std::uint16_t row, std::uint16_t column) { return "\x1b[" + std::to_string(row) + ';' + std::to_string(column) + 'H'; }
+std::string Term::cursor_move(std::size_t row, std::size_t column) { return "\x1b[" + std::to_string(row) + ';' + std::to_string(column) + 'H'; }
 
 std::string Term::cursor_up(std::size_t rows) { return "\x1b[" + std::to_string(rows) + 'A'; }
 

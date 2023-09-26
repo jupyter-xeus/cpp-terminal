@@ -4,9 +4,18 @@
 
 #include <cstring>
 
+#if defined(_MSC_VER)
+  // Disable stupid warnings on Windows
+  #pragma warning(push)
+  #pragma warning(disable : 4582)
+  #pragma warning(disable : 4583)
+#endif
 Term::Event::container::container() {}
 
 Term::Event::container::~container() {}
+#if defined(_MSC_VER)
+  #pragma warning(pop)
+#endif
 
 Term::Key* Term::Event::get_if_key()
 {
@@ -25,6 +34,20 @@ const Term::Key* Term::Event::get_if_key() const
 Term::Screen* Term::Event::get_if_screen()
 {
   if(m_Type == Type::Screen) return &m_container.m_Screen;
+  else
+    return nullptr;
+}
+
+Term::Mouse* Term::Event::get_if_mouse()
+{
+  if(m_Type == Type::Mouse) return &m_container.m_Mouse;
+  else
+    return nullptr;
+}
+
+const Term::Mouse* Term::Event::get_if_mouse() const
+{
+  if(m_Type == Type::Mouse) return &m_container.m_Mouse;
   else
     return nullptr;
 }
@@ -98,6 +121,7 @@ Term::Event& Term::Event::operator=(const Term::Event& event)
     case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
     case Type::Screen: m_container.m_Screen = Term::Screen(event.m_container.m_Screen); break;
     case Type::Focus: m_container.m_Focus = Term::Focus(event.m_container.m_Focus); break;
+    case Type::Mouse: m_container.m_Mouse = Term::Mouse(event.m_container.m_Mouse); break;
   }
   return *this;
 }
@@ -124,6 +148,7 @@ Term::Event::Event(const Term::Event& event)
     case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
     case Type::Screen: m_container.m_Screen = Term::Screen(event.m_container.m_Screen); break;
     case Type::Focus: m_container.m_Focus = Term::Focus(event.m_container.m_Focus); break;
+    case Type::Mouse: m_container.m_Mouse = Term::Mouse(event.m_container.m_Mouse); break;
   }
 }
 
@@ -146,6 +171,7 @@ Term::Event::Event(Term::Event&& event) noexcept
     case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
     case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
     case Type::Focus: std::swap(m_container.m_Focus, event.m_container.m_Focus); break;
+    case Type::Mouse: std::swap(m_container.m_Mouse, event.m_container.m_Mouse); break;
   }
 }
 
@@ -160,15 +186,25 @@ Term::Event& Term::Event::operator=(Term::Event&& event) noexcept
     case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
     case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
     case Type::Focus: std::swap(m_container.m_Focus, event.m_container.m_Focus); break;
+    case Type::Mouse: std::swap(m_container.m_Mouse, event.m_container.m_Mouse); break;
   }
   return *this;
 }
+
+Term::Event::Event(const Term::Mouse& mouse) : m_Type(Type::Mouse) { m_container.m_Mouse = mouse; }
 
 bool Term::Event::empty() const
 {
   if(m_Type == Type::Empty) return true;
   else
     return false;
+}
+
+Term::Event::operator Term::Mouse() const
+{
+  if(m_Type == Type::Mouse) return m_container.m_Mouse;
+  else
+    return Mouse();
 }
 
 Term::Event::operator std::string() const
