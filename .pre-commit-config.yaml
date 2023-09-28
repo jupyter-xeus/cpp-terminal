@@ -69,3 +69,6 @@ repos:
       - id: remove-tabs
         name: tabs remover
         args: [ --whitespaces-count, '2' ]
+      - id: insert-license
+        files: \.(h(pp)|h(pp.in)|c(pp)|h(pp.in)?)$
+        args: [ --license-filepath, .LICENSE, --comment-style, /*|*|*/, --use-current-year, --allow-past-years, --fuzzy-match-generates-todo, --fuzzy-ratio-cut-off, '85', --fuzzy-match-todo-instructions, ' TODO: Delete the inconsistent license and above line and rerun pre-commit to insert a good license. If this is the desired behavior add "//  insert-license=off" at the beginning to the file.', --skip-license-insertion-comment, '//  insert-license=off' ]

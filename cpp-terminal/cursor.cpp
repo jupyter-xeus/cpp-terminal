@@ -1,3 +1,12 @@
+/*
+* cpp-terminal
+* C++ library for writing multiplatform terminal applications.
+*
+* SPDX-FileCopyrightText: 2019-2023 Ondřej Čertík
+*
+* SPDX-License-Identifier: MIT
+*/
+
 #include "cpp-terminal/cursor.hpp"
 
 Term::Cursor::Cursor(const std::size_t& row, const std::size_t& column) : m_position({row, column}) {}

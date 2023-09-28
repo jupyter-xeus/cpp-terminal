@@ -1,3 +1,12 @@
+/*
+* cpp-terminal
+* C++ library for writing multiplatform terminal applications.
+*
+* SPDX-FileCopyrightText: 2019-2023 Ondřej Čertík
+*
+* SPDX-License-Identifier: MIT
+*/
+
 #include "cpp-terminal/platforms/env.hpp"
 
 std::pair<bool, std::string> Term::Private::getenv(const std::string& env)

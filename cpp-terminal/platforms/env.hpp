@@ -1,3 +1,12 @@
+/*
+* cpp-terminal
+* C++ library for writing multiplatform terminal applications.
+*
+* SPDX-FileCopyrightText: 2019-2023 Ondřej Čertík
+*
+* SPDX-License-Identifier: MIT
+*/
+
 // This header should be used only in files contained inside platforms folder !!!
 #pragma once
 

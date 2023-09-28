@@ -1,3 +1,12 @@
+/*
+* cpp-terminal
+* C++ library for writing multiplatform terminal applications.
+*
+* SPDX-FileCopyrightText: 2019-2023 Ondřej Čertík
+*
+* SPDX-License-Identifier: MIT
+*/
+
 // Open file for stdin, stdout, stderr without redirection. A kind of FILE class for consoles
 // PRIVATE !!!
 #pragma once

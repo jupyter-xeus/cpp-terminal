@@ -1,3 +1,12 @@
+/*
+* cpp-terminal
+* C++ library for writing multiplatform terminal applications.
+*
+* SPDX-FileCopyrightText: 2019-2023 Ondřej Čertík
+*
+* SPDX-License-Identifier: MIT
+*/
+
 #if defined(_WIN32)
   // clang-format off
   #include <windows.h>

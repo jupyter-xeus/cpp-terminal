@@ -1,3 +1,12 @@
+/*
+* cpp-terminal
+* C++ library for writing multiplatform terminal applications.
+*
+* SPDX-FileCopyrightText: 2019-2023 Ondřej Čertík
+*
+* SPDX-License-Identifier: MIT
+*/
+
 #include "cpp-terminal/stream.hpp"
 
 Term::TIstream::TIstream(const Term::Buffer::Type& type, const std::streamsize& size) : m_buffer(type, size), m_stream(&m_buffer) {}
