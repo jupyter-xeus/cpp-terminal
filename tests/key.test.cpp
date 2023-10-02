@@ -1,3 +1,12 @@
+/*
+* cpp-terminal
+* C++ library for writing multiplatform terminal applications.
+*
+* SPDX-FileCopyrightText: 2019-2023 cpp-terminal
+*
+* SPDX-License-Identifier: MIT
+*/
+
 #include <cctype>
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "cpp-terminal/key.hpp"

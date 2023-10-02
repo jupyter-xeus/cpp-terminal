@@ -1,3 +1,12 @@
+/*
+* cpp-terminal
+* C++ library for writing multiplatform terminal applications.
+*
+* SPDX-FileCopyrightText: 2019-2023 cpp-terminal
+*
+* SPDX-License-Identifier: MIT
+*/
+
 #if !defined(_GLIBCXX_USE_NANOSLEEP)
   #define _GLIBCXX_USE_NANOSLEEP
 #endif
