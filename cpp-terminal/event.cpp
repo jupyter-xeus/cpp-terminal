@@ -9,7 +9,7 @@
 
 #include "cpp-terminal/event.hpp"
 
-#include "cpp-terminal/platforms/conversion.hpp"
+#include "cpp-terminal/platforms/unicode.hpp"
 
 #include <cstring>
 

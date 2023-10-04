@@ -11,7 +11,7 @@
 
 #include "cpp-terminal/cursor.hpp"
 #include "cpp-terminal/exception.hpp"
-#include "cpp-terminal/platforms/conversion.hpp"
+#include "cpp-terminal/platforms/unicode.hpp"
 #include "cpp-terminal/terminal.hpp"
 
 namespace Term
@@ -290,7 +290,7 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
         Term::Color color_tmp = get_bg(i, j);
         out.append(color_bg(color_tmp));
       }
-      Private::codepoint_to_utf8(out, get_char(i, j));
+      out.append(Term::Private::utf32_to_utf8(get_char(i, j)));
     }
     if(j < h) out.append("\n");
   }

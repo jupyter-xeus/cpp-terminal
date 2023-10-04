@@ -33,6 +33,12 @@ std::wstring utf8_to_wide(const std::string& utf8);
 std::string wide_to_utf8(const std::wstring& utf16);
 #endif
 
+std::u32string utf8_to_utf32(const std::string& s);
+
+std::string utf32_to_utf8(const char32_t& c);
+
+bool is_valid_utf8_code_unit(const std::string& s);
+
 }  // namespace Private
 
 }  // namespace Term
