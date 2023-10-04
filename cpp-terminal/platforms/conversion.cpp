@@ -96,13 +96,6 @@ std::u32string utf8_to_utf32(const std::string& s)
   return r;
 }
 
-std::string utf32_to_utf8(const std::u32string& s)
-{
-  std::string r;
-  for(char32_t i: s) { codepoint_to_utf8(r, i); }
-  return r;
-}
-
 bool is_valid_utf8_code_unit(const std::string& s)
 {
   static const constexpr int b1OOOOOOO{128};
