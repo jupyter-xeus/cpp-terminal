@@ -8,9 +8,10 @@
 */
 
 #if defined(_WIN32)
-  #include <windows.h>
   #include "cpp-terminal/platforms/unicode.hpp"
+
   #include <vector>
+  #include <windows.h>
 #elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
   #include <cerrno>
   #include <csignal>
@@ -18,7 +19,6 @@
   #include <thread>
   #include <unistd.h>
 #else
-  #include <memory>
   #include <sys/epoll.h>
 #endif
 
