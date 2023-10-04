@@ -42,7 +42,7 @@ int main()
 }
 ```
 
-On wndows you can simply create or attach a console through a GUI application by doing:
+On windows you can simply create or attach a console through a GUI application by doing:
 
 ```cpp
 #include "cpp-terminal/io.hpp"
