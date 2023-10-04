@@ -8,12 +8,8 @@
 */
 
 #if defined(_WIN32)
-  // clang-format off
   #include <windows.h>
-  #include <stringapiset.h>
-  // clang-format on
-  #include "cpp-terminal/platforms/conversion.hpp"
-
+  #include "cpp-terminal/platforms/unicode.hpp"
   #include <vector>
 #elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
   #include <cerrno>
@@ -232,7 +228,7 @@ void Term::Private::Input::read_raw()
                 ret.append(events[i].Event.KeyEvent.wRepeatCount, static_cast<char>(events[i].Event.KeyEvent.uChar.UnicodeChar));
             }
             else
-              for(std::size_t j = 0; j != events[i].Event.KeyEvent.wRepeatCount; ++j) ret.append(to_utf8(&events[i].Event.KeyEvent.uChar.UnicodeChar));
+              for(std::size_t j = 0; j != events[i].Event.KeyEvent.wRepeatCount; ++j) ret.append(Private::wide_to_utf8(&events[i].Event.KeyEvent.uChar.UnicodeChar));
           }
           break;
         }

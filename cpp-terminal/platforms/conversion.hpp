@@ -18,10 +18,6 @@ namespace Term
 namespace Private
 {
 
-#if defined(_WIN32)
-std::string to_utf8(const wchar_t* utf16Str);
-#endif
-
 std::uint8_t utf8_decode_step(std::uint8_t state, std::uint8_t octet, std::uint32_t* cpp);
 
 void codepoint_to_utf8(std::string& s, const char32_t& c);
