@@ -11,8 +11,6 @@
 
 #include "cpp-terminal/platforms/conversion.hpp"
 
-#include <cstring>
-
 #if defined(_MSC_VER)
   // Disable stupid warnings on Windows
   #pragma warning(push)
@@ -84,14 +82,14 @@ const Term::Cursor* Term::Event::get_if_cursor() const
 
 std::string Term::Event::get_if_copy_paste()
 {
-  if(m_Type == Type::CopyPaste) return std::string(m_container.m_string.get());
+  if(m_Type == Type::CopyPaste) return std::string(m_container.m_string);
   else
     return nullptr;
 }
 
 const std::string Term::Event::get_if_copy_paste() const
 {
-  if(m_Type == Type::CopyPaste) return std::string(m_container.m_string.get());
+  if(m_Type == Type::CopyPaste) return std::string(m_container.m_string);
   else
     return nullptr;
 }
@@ -116,21 +114,12 @@ Term::Event& Term::Event::operator=(const Term::Event& event)
   switch(m_Type)
   {
     case Type::Empty: break;
-    case Type::Key: m_container.m_Key = Term::Key(event.m_container.m_Key); break;
-    case Type::CopyPaste:
-    {
-      m_container.m_string.reset(new char[std::strlen(event.m_container.m_string.get())]);
-#if defined(_WIN32)
-      strcpy_s(m_container.m_string.get(), std::strlen(m_container.m_string.get()), event.m_container.m_string.get());
-#else
-      strcpy(m_container.m_string.get(), event.m_container.m_string.get());
-#endif
-      break;
-    }
-    case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
-    case Type::Screen: m_container.m_Screen = Term::Screen(event.m_container.m_Screen); break;
-    case Type::Focus: m_container.m_Focus = Term::Focus(event.m_container.m_Focus); break;
-    case Type::Mouse: m_container.m_Mouse = Term::Mouse(event.m_container.m_Mouse); break;
+    case Type::Key: m_container.m_Key = event.m_container.m_Key; break;
+    case Type::CopyPaste: m_container.m_string = event.m_container.m_string; break;
+    case Type::Cursor: m_container.m_Cursor = event.m_container.m_Cursor; break;
+    case Type::Screen: m_container.m_Screen = event.m_container.m_Screen; break;
+    case Type::Focus: m_container.m_Focus = event.m_container.m_Focus; break;
+    case Type::Mouse: m_container.m_Mouse = event.m_container.m_Mouse; break;
   }
   return *this;
 }
@@ -143,21 +132,12 @@ Term::Event::Event(const Term::Event& event)
   switch(m_Type)
   {
     case Type::Empty: break;
-    case Type::Key: m_container.m_Key = Term::Key(event.m_container.m_Key); break;
-    case Type::CopyPaste:
-    {
-      m_container.m_string.reset(new char[std::strlen(event.m_container.m_string.get())]);
-#if defined(_WIN32)
-      strcpy_s(m_container.m_string.get(), std::strlen(m_container.m_string.get()), event.m_container.m_string.get());
-#else
-      strcpy(m_container.m_string.get(), event.m_container.m_string.get());
-#endif
-      break;
-    }
-    case Type::Cursor: m_container.m_Cursor = Term::Cursor(event.m_container.m_Cursor); break;
-    case Type::Screen: m_container.m_Screen = Term::Screen(event.m_container.m_Screen); break;
-    case Type::Focus: m_container.m_Focus = Term::Focus(event.m_container.m_Focus); break;
-    case Type::Mouse: m_container.m_Mouse = Term::Mouse(event.m_container.m_Mouse); break;
+    case Type::Key: m_container.m_Key = event.m_container.m_Key; break;
+    case Type::CopyPaste: m_container.m_string = event.m_container.m_string; break;
+    case Type::Cursor: m_container.m_Cursor = event.m_container.m_Cursor; break;
+    case Type::Screen: m_container.m_Screen = event.m_container.m_Screen; break;
+    case Type::Focus: m_container.m_Focus = event.m_container.m_Focus; break;
+    case Type::Mouse: m_container.m_Mouse = event.m_container.m_Mouse; break;
   }
 }
 
@@ -172,11 +152,7 @@ Term::Event::Event(Term::Event&& event) noexcept
   {
     case Type::Empty: break;
     case Type::Key: std::swap(m_container.m_Key, event.m_container.m_Key); break;
-    case Type::CopyPaste:
-    {
-      std::swap(m_container.m_string, event.m_container.m_string);
-      break;
-    }
+    case Type::CopyPaste: std::swap(m_container.m_string, event.m_container.m_string); break;
     case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
     case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
     case Type::Focus: std::swap(m_container.m_Focus, event.m_container.m_Focus); break;
@@ -218,7 +194,7 @@ Term::Event::operator Term::Mouse() const
 
 Term::Event::operator std::string() const
 {
-  if(m_Type == Type::CopyPaste) return m_container.m_string.get();
+  if(m_Type == Type::CopyPaste) return m_container.m_string;
   else
     return std::string();
 }
@@ -240,7 +216,7 @@ Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste) { parse(str
 
 void Term::Event::parse(const std::string& str)
 {
-  if(str.empty()) { m_Type = Type::Empty; }
+  if(str.empty()) m_Type = Type::Empty;
   else if(str.size() == 1)
   {
     m_Type            = Type::Key;
@@ -413,20 +389,16 @@ void Term::Event::parse(const std::string& str)
       m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0]));
     else
     {
-      m_Type = Type::CopyPaste;
-      m_container.m_string.reset(new char[str.size() + 1]);
-      std::copy(str.begin(), str.end(), m_container.m_string.get());
-      m_container.m_string.get()[str.size()] = '\0';
+      m_Type               = Type::CopyPaste;
+      m_container.m_string = str;
       return;
     }
     m_Type = Type::Key;
   }
   else
   {
-    m_Type = Type::CopyPaste;
-    m_container.m_string.reset(new char[str.size() + 1]);
-    std::copy(str.begin(), str.end(), m_container.m_string.get());
-    m_container.m_string.get()[str.size()] = '\0';
+    m_Type               = Type::CopyPaste;
+    m_container.m_string = str;
   }
 }
 
