@@ -216,7 +216,7 @@ Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste) { parse(str
 
 void Term::Event::parse(const std::string& str)
 {
-  if(str.empty()) { m_Type = Type::Empty; }
+  if(str.empty()) m_Type = Type::Empty;
   else if(str.size() == 1)
   {
     m_Type            = Type::Key;
