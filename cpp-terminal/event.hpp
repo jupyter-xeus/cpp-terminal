@@ -77,16 +77,16 @@ private:
   {
     container();
     ~container();
-    container(const container&)                         = delete;
-    container(container&&)                              = delete;
-    container&              operator=(const container&) = delete;
-    container&              operator=(container&&)      = delete;
-    Term::Key               m_Key;
-    Term::Cursor            m_Cursor;
-    Term::Screen            m_Screen;
-    Term::Focus             m_Focus;
-    Term::Mouse             m_Mouse;
-    std::unique_ptr<char[]> m_string;
+    container(const container&)              = delete;
+    container(container&&)                   = delete;
+    container&   operator=(const container&) = delete;
+    container&   operator=(container&&)      = delete;
+    Term::Key    m_Key;
+    Term::Cursor m_Cursor;
+    Term::Screen m_Screen;
+    Term::Focus  m_Focus;
+    Term::Mouse  m_Mouse;
+    std::string  m_string;
   };
   Type      m_Type{Type::Empty};
   container m_container;
