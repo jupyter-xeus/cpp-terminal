@@ -82,14 +82,14 @@ const Term::Cursor* Term::Event::get_if_cursor() const
 
 std::string Term::Event::get_if_copy_paste()
 {
-  if(m_Type == Type::CopyPaste) return std::string(m_container.m_string);
+  if(m_Type == Type::CopyPaste) return m_container.m_string;
   else
     return nullptr;
 }
 
 const std::string Term::Event::get_if_copy_paste() const
 {
-  if(m_Type == Type::CopyPaste) return std::string(m_container.m_string);
+  if(m_Type == Type::CopyPaste) return m_container.m_string;
   else
     return nullptr;
 }
@@ -115,7 +115,7 @@ Term::Event& Term::Event::operator=(const Term::Event& event)
   {
     case Type::Empty: break;
     case Type::Key: m_container.m_Key = event.m_container.m_Key; break;
-    case Type::CopyPaste: m_container.m_string = event.m_container.m_string; break;
+    case Type::CopyPaste: new(&this->m_container.m_string) std::string(event.m_container.m_string); break;
     case Type::Cursor: m_container.m_Cursor = event.m_container.m_Cursor; break;
     case Type::Screen: m_container.m_Screen = event.m_container.m_Screen; break;
     case Type::Focus: m_container.m_Focus = event.m_container.m_Focus; break;
@@ -133,7 +133,7 @@ Term::Event::Event(const Term::Event& event)
   {
     case Type::Empty: break;
     case Type::Key: m_container.m_Key = event.m_container.m_Key; break;
-    case Type::CopyPaste: m_container.m_string = event.m_container.m_string; break;
+    case Type::CopyPaste: new(&this->m_container.m_string) std::string(event.m_container.m_string); break;
     case Type::Cursor: m_container.m_Cursor = event.m_container.m_Cursor; break;
     case Type::Screen: m_container.m_Screen = event.m_container.m_Screen; break;
     case Type::Focus: m_container.m_Focus = event.m_container.m_Focus; break;
@@ -141,7 +141,11 @@ Term::Event::Event(const Term::Event& event)
   }
 }
 
-Term::Event::~Event() {}
+Term::Event::~Event()
+{
+  using std::string;
+  if(m_Type == Type::CopyPaste) m_container.m_string.~string();
+}
 
 Term::Event::Event() : m_Type(Type::Empty) {}
 
@@ -212,7 +216,7 @@ Term::Event::Event(const Term::Key& key) : m_Type(Type::Key) { m_container.m_Key
 
 Term::Event::Type Term::Event::type() const { return m_Type; }
 
-Term::Event::Event(const std::string& str) : m_Type(Type::CopyPaste) { parse(str); }
+Term::Event::Event(const std::string& str) : m_Type(Type::Empty) { parse(str); }
 
 void Term::Event::parse(const std::string& str)
 {
@@ -389,16 +393,16 @@ void Term::Event::parse(const std::string& str)
       m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0]));
     else
     {
-      m_Type               = Type::CopyPaste;
-      m_container.m_string = str;
+      m_Type = Type::CopyPaste;
+      new(&this->m_container.m_string) std::string(str);
       return;
     }
     m_Type = Type::Key;
   }
   else
   {
-    m_Type               = Type::CopyPaste;
-    m_container.m_string = str;
+    m_Type = Type::CopyPaste;
+    new(&this->m_container.m_string) std::string(str);
   }
 }
 
