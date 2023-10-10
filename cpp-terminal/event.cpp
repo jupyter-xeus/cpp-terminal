@@ -134,6 +134,7 @@ Term::Event::Event(const Term::Event& event)
     case Type::Empty: break;
     case Type::Key: m_container.m_Key = event.m_container.m_Key; break;
     case Type::CopyPaste: new(&this->m_container.m_string) std::string(event.m_container.m_string); break;
+    case Type::CopyPaste: m_container.m_string = event.m_container.m_string; break;
     case Type::Cursor: m_container.m_Cursor = event.m_container.m_Cursor; break;
     case Type::Screen: m_container.m_Screen = event.m_container.m_Screen; break;
     case Type::Focus: m_container.m_Focus = event.m_container.m_Focus; break;
