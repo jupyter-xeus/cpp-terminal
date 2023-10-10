@@ -152,11 +152,7 @@ Term::Event::Event(Term::Event&& event) noexcept
   {
     case Type::Empty: break;
     case Type::Key: std::swap(m_container.m_Key, event.m_container.m_Key); break;
-    case Type::CopyPaste:
-    {
-      std::swap(m_container.m_string, event.m_container.m_string);
-      break;
-    }
+    case Type::CopyPaste: std::swap(m_container.m_string, event.m_container.m_string); break;
     case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
     case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
     case Type::Focus: std::swap(m_container.m_Focus, event.m_container.m_Focus); break;
