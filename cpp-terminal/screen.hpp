@@ -24,6 +24,8 @@ public:
   std::size_t rows() const;
   std::size_t columns() const;
   bool        empty() const;
+  bool        operator==(const Term::Screen& screen) const;
+  bool        operator!=(const Term::Screen& screen) const;
 
 private:
   std::pair<std::size_t, std::size_t> m_size;

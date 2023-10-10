@@ -26,6 +26,14 @@ void Term::Cursor::setRow(const std::size_t& row) { m_position.first = row; }
 
 void Term::Cursor::setColum(const std::size_t& column) { m_position.second = column; }
 
+bool Term::Cursor::operator==(const Term::Cursor& cursor) const
+{
+  if(this->row() == cursor.row() && this->column() == cursor.column()) return true;
+  return false;
+}
+
+bool Term::Cursor::operator!=(const Term::Cursor& cursor) const { return !(*this == cursor); }
+
 std::string Term::cursor_off() { return "\x1b[?25l"; }
 
 std::string Term::cursor_on() { return "\x1b[?25h"; }
