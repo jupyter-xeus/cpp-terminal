@@ -80,19 +80,19 @@ const Term::Cursor* Term::Event::get_if_cursor() const
     return nullptr;
 }
 
-std::string Term::Event::get_if_copy_paste()
+std::string* Term::Event::get_if_copy_paste()
 {
-  if(m_Type == Type::CopyPaste) return m_container.m_string;
-  else
-    return nullptr;
+  if(m_Type == Type::CopyPaste) return &m_container.m_string;
+  return nullptr;
 }
 
-const std::string Term::Event::get_if_copy_paste() const
+const std::string* Term::Event::get_if_copy_paste() const
 {
-  if(m_Type == Type::CopyPaste) return m_container.m_string;
-  else
-    return nullptr;
+  if(m_Type == Type::CopyPaste) return &m_container.m_string;
+  return nullptr;
 }
+
+Term::Event::Event(const Term::Cursor& cursor) : m_Type(Type::Cursor) { m_container.m_Cursor = cursor; }
 
 Term::Focus* Term::Event::get_if_focus()
 {

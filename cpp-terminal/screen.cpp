@@ -31,3 +31,12 @@ std::string Term::screen_load()
 {
   return static_cast<std::string>("\x1b[?1049l\x1b") + static_cast<std::string>("8");  // restores screen, restore current cursor position FIXME
 }
+
+bool Term::Screen::operator==(const Term::Screen& screen) const
+{
+  if(this->rows() == screen.rows() && this->columns() == screen.columns()) return true;
+  else
+    return false;
+}
+
+bool Term::Screen::operator!=(const Term::Screen& screen) const { return !(*this == screen); }
