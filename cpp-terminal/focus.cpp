@@ -30,4 +30,13 @@ bool Focus::isOut()
     return false;
 }
 
+bool Term::Focus::operator==(const Term::Focus& focus) const
+{
+  if(m_focus == focus.m_focus) return true;
+  else
+    return false;
+}
+
+bool Term::Focus::operator!=(const Term::Focus& focus) const { return !(*this == focus); }
+
 }  // namespace Term

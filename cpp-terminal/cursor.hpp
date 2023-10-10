@@ -26,6 +26,8 @@ public:
   void        setRow(const std::size_t&);
   void        setColum(const std::size_t&);
   bool        empty() const;
+  bool        operator==(const Term::Cursor& cursor) const;
+  bool        operator!=(const Term::Cursor& cursor) const;
 
 private:
   std::pair<std::size_t, std::size_t> m_position;

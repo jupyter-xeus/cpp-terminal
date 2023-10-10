@@ -58,18 +58,18 @@ public:
   operator std::string() const;
 
   // getters
-  Key*              get_if_key();
-  const Key*        get_if_key() const;
-  Screen*           get_if_screen();
-  const Screen*     get_if_screen() const;
-  Cursor*           get_if_cursor();
-  const Cursor*     get_if_cursor() const;
-  Focus*            get_if_focus();
-  const Focus*      get_if_focus() const;
-  Mouse*            get_if_mouse();
-  const Mouse*      get_if_mouse() const;
-  std::string       get_if_copy_paste();
-  const std::string get_if_copy_paste() const;
+  Key*               get_if_key();
+  const Key*         get_if_key() const;
+  Screen*            get_if_screen();
+  const Screen*      get_if_screen() const;
+  Cursor*            get_if_cursor();
+  const Cursor*      get_if_cursor() const;
+  Focus*             get_if_focus();
+  const Focus*       get_if_focus() const;
+  Mouse*             get_if_mouse();
+  const Mouse*       get_if_mouse() const;
+  std::string*       get_if_copy_paste();
+  const std::string* get_if_copy_paste() const;
 
 private:
   void parse(const std::string&);

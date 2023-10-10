@@ -28,6 +28,8 @@ public:
   Term::Focus::Type type();
   bool              isIn();
   bool              isOut();
+  bool              operator==(const Term::Focus& focus) const;
+  bool              operator!=(const Term::Focus& focus) const;
 
 private:
   Term::Focus::Type m_focus{Term::Focus::Type::Unknown};

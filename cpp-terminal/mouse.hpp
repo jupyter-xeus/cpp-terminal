@@ -49,6 +49,8 @@ public:
   Button(const Term::Button::Type& type, const Term::Button::Action& action) : m_type(type), m_action(action) {}
   Term::Button::Action action();
   Term::Button::Type   type();
+  bool                 operator==(const Term::Button& button) const;
+  bool                 operator!=(const Term::Button& button) const;
 
 private:
   Term::Button::Type   m_type{Term::Button::Type::None};
@@ -65,6 +67,8 @@ public:
   std::array<Term::Button, 11> getButtons() const;
   bool                         has(const Term::Button::Type& type, const Term::Button::Action& action);
   bool                         has(const Term::Button::Type& type);
+  bool                         operator==(const Term::Mouse&) const;
+  bool                         operator!=(const Term::Mouse&) const;
 
 private:
   std::array<Term::Button, 11> m_buttons;
