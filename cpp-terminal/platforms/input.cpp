@@ -209,7 +209,7 @@ void Term::Private::Input::read_raw()
   std::vector<INPUT_RECORD> events{to_read};
   if(!ReadConsoleInputW(Private::in.handle(), &events[0], to_read, &read) || read != to_read) Term::Exception("ReadFile() failed");
   std::wstring ret;
-  bool        need_windows_size{false};
+  bool         need_windows_size{false};
   for(std::size_t i = 0; i != read; ++i)
   {
     switch(events[i].EventType)
@@ -219,8 +219,10 @@ void Term::Private::Input::read_raw()
         if(events[i].Event.KeyEvent.bKeyDown)
         {
           if(events[i].Event.KeyEvent.uChar.UnicodeChar == 0) read_windows_key(events[i].Event.KeyEvent.wVirtualKeyCode, events[i].Event.KeyEvent.dwControlKeyState, events[i].Event.KeyEvent.wRepeatCount);
-          else if(events[i].Event.KeyEvent.uChar.UnicodeChar == Term::Key::Del) ret.append(events[i].Event.KeyEvent.wRepeatCount, static_cast<wchar_t>(Key(Term::Key::Value::Backspace)));
-          else ret.append(events[i].Event.KeyEvent.wRepeatCount, events[i].Event.KeyEvent.uChar.UnicodeChar);
+          else if(events[i].Event.KeyEvent.uChar.UnicodeChar == Term::Key::Del)
+            ret.append(events[i].Event.KeyEvent.wRepeatCount, static_cast<wchar_t>(Key(Term::Key::Value::Backspace)));
+          else
+            ret.append(events[i].Event.KeyEvent.wRepeatCount, events[i].Event.KeyEvent.uChar.UnicodeChar);
         }
         break;
       }
@@ -251,8 +253,10 @@ void Term::Private::Input::read_raw()
           ret.clear();
         }
         static MOUSE_EVENT_RECORD old_state;
-        if(events[i].Event.MouseEvent.dwEventFlags == MOUSE_WHEELED || events[i].Event.MouseEvent.dwEventFlags == MOUSE_HWHEELED);
-        else if(old_state.dwButtonState == events[i].Event.MouseEvent.dwButtonState && old_state.dwMousePosition.X == events[i].Event.MouseEvent.dwMousePosition.X && old_state.dwMousePosition.Y == events[i].Event.MouseEvent.dwMousePosition.Y && old_state.dwEventFlags == events[i].Event.MouseEvent.dwEventFlags) break;
+        if(events[i].Event.MouseEvent.dwEventFlags == MOUSE_WHEELED || events[i].Event.MouseEvent.dwEventFlags == MOUSE_HWHEELED)
+          ;
+        else if(old_state.dwButtonState == events[i].Event.MouseEvent.dwButtonState && old_state.dwMousePosition.X == events[i].Event.MouseEvent.dwMousePosition.X && old_state.dwMousePosition.Y == events[i].Event.MouseEvent.dwMousePosition.Y && old_state.dwEventFlags == events[i].Event.MouseEvent.dwEventFlags)
+          break;
         std::int32_t                 state{static_cast<std::int32_t>(events[i].Event.MouseEvent.dwButtonState)};
         std::array<Term::Button, 11> buttons;
         switch(events[i].Event.MouseEvent.dwEventFlags)
