@@ -273,22 +273,22 @@ void Term::Private::Input::read_raw()
         {
           case 0:
           {
-            setButton(buttons, old_state.dwButtonState, state, 0);
+            setButton(buttons, static_cast<std::int32_t>(old_state.dwButtonState), state, 0);
             break;
           }
           case MOUSE_MOVED:
           {
-            setButton(buttons, old_state.dwButtonState, state, MOUSE_MOVED);
+            setButton(buttons, static_cast<std::int32_t>(old_state.dwButtonState), state, MOUSE_MOVED);
             break;
           }
           case DOUBLE_CLICK:
           {
-            setButton(buttons, old_state.dwButtonState, state, DOUBLE_CLICK);
+            setButton(buttons, static_cast<std::int32_t>(old_state.dwButtonState), state, DOUBLE_CLICK);
             break;
           }
           case MOUSE_WHEELED:
           {
-            setButton(buttons, old_state.dwButtonState, state, MOUSE_WHEELED);
+            setButton(buttons, static_cast<std::int32_t>(old_state.dwButtonState), state, MOUSE_WHEELED);
             if(state > 0) buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)] = Button(Term::Button::Type::Wheel, Term::Button::Action::RolledUp);
             else
               buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)] = Button(Term::Button::Type::Wheel, Term::Button::Action::RolledDown);
@@ -296,7 +296,7 @@ void Term::Private::Input::read_raw()
           }
           case MOUSE_HWHEELED:
           {
-            setButton(buttons, old_state.dwButtonState, state, MOUSE_HWHEELED);
+            setButton(buttons, static_cast<std::int32_t>(old_state.dwButtonState), state, MOUSE_HWHEELED);
             if(state > 0) buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)] = Button(Term::Button::Type::Wheel, Term::Button::Action::ToRight);
             else
               buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)] = Button(Term::Button::Type::Wheel, Term::Button::Action::ToLeft);
