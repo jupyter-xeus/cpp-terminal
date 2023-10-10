@@ -9,8 +9,6 @@
 
 #include "cpp-terminal/args.hpp"
 
-#include "cpp-terminal/platforms/conversion.hpp"
-
 #if defined(_WIN32)
   #include <memory>
 // clang-format off
