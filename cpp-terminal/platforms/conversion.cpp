@@ -110,10 +110,7 @@ bool is_valid_utf8_code_unit(const std::string& s)
   static constexpr const int b111OOOOO{224};
   static constexpr const int b1111OOOO{240};
   static constexpr const int b11111OOO{248};
-  return ((s[0] & b1OOOOOOO) == 0)
-		|| (((s[0] & b111OOOOO) == b11OOOOOO) && ((s[1] & b11OOOOOO) == b1OOOOOOO))
-		|| (((s[0] & b1111OOOO) == b111OOOOO) && ((s[1] & b11OOOOOO) == b1OOOOOOO) && ((s[2] & b11OOOOOO) == b1OOOOOOO))
-		|| (((s[0] & b11111OOO) == b1111OOOO) && ((s[1] & b11OOOOOO) == b1OOOOOOO) && ((s[2] & b11OOOOOO) == b1OOOOOOO) && ((s[3] & b11OOOOOO) == b1OOOOOOO));
+  return ((s[0] & b1OOOOOOO) == 0) || (((s[0] & b111OOOOO) == b11OOOOOO) && ((s[1] & b11OOOOOO) == b1OOOOOOO)) || (((s[0] & b1111OOOO) == b111OOOOO) && ((s[1] & b11OOOOOO) == b1OOOOOOO) && ((s[2] & b11OOOOOO) == b1OOOOOOO)) || (((s[0] & b11111OOO) == b1111OOOO) && ((s[1] & b11OOOOOO) == b1OOOOOOO) && ((s[2] & b11OOOOOO) == b1OOOOOOO) && ((s[3] & b11OOOOOO) == b1OOOOOOO));
 }
 
 }  // namespace Private
