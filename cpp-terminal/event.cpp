@@ -25,7 +25,6 @@ Term::Event::container::~container() {}
 #endif
 
 #include <chrono>
-#include <iostream>
 
 Term::Key* Term::Event::get_if_key()
 {
