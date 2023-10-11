@@ -87,6 +87,7 @@ void Term::Terminal::store_and_restore()
 int Term::Terminal::activateMouseEvents()
 {
 #if defined(_WIN32)
+  return 0; //FIXME
 #else
   return Term::Private::out.write("\033[?1002h\033[?1003h\033[?1006h");
 #endif
@@ -95,6 +96,7 @@ int Term::Terminal::activateMouseEvents()
 int Term::Terminal::desactivateMouseEvents()
 {
 #if defined(_WIN32)
+  return 0; //FIXME
 #else
   return Term::Private::out.write("\033[?1003l\033[?1006l");
 #endif
