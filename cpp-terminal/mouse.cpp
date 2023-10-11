@@ -17,11 +17,11 @@ bool Term::Button::operator==(const Term::Button& button) const { return m_actio
 
 bool Term::Button::operator!=(const Term::Button& button) const { return !(*this == button); }
 
-bool Term::Mouse::has(const Term::Button::Type& type, const Term::Button::Action& action) { return m_buttons[static_cast<std::size_t>(type)].action() == action; }
+bool Term::Mouse::is(const Term::Button::Type& type, const Term::Button::Action& action) { return m_buttons.type() == type && m_buttons.action() == action; }
 
-std::array<Term::Button, 11> Term::Mouse::getButtons() const { return m_buttons; }
+bool Term::Mouse::is(const Term::Button::Type& type) { return m_buttons.type() == type; }
 
-bool Term::Mouse::has(const Term::Button::Type& type) { return m_buttons[static_cast<std::size_t>(type)].action() != Term::Button::Action::None; }
+Term::Button Term::Mouse::getButton() { return m_buttons; }
 
 std::size_t Term::Mouse::row() { return static_cast<std::size_t>(m_row); }
 

@@ -149,7 +149,7 @@ TEST_CASE("Event with Key")
 
 TEST_CASE("Event with Mouse")
 {
-  Term::Mouse mouse(std::array<Term::Button, 11>{Term::Button{Term::Button::Type::Left, Term::Button::Action::Pressed}}, 1, 5);
+  Term::Mouse mouse(Term::Button{Term::Button{Term::Button::Type::Left, Term::Button::Action::Pressed}}, 1, 5);
   Term::Event event(mouse);
   CHECK(event.empty() == false);
   CHECK(event.get_if_screen() == nullptr);
