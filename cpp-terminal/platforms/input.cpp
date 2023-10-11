@@ -304,7 +304,7 @@ void Term::Private::Input::read_raw()
       default: break;
     }
   }
-  if(!ret.empty()) sendString(m_events, ret);
+  sendString(m_events, ret);
   if(need_windows_size == true) { m_events.push(screen_size()); }
 #else
   Private::in.lockIO();
