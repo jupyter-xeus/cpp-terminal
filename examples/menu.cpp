@@ -108,6 +108,7 @@ int main()
     std::size_t  h{10};
     std::size_t  w{10};
     bool         on{true};
+    render(term_size.rows(), term_size.columns(), h, w, pos);
     while(on)
     {
       Term::Event event{Term::read_event()};
