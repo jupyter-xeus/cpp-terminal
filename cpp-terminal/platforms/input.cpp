@@ -8,10 +8,10 @@
 */
 
 #if defined(_WIN32)
-  #include <windows.h>
   #include "cpp-terminal/platforms/conversion.hpp"
 
   #include <vector>
+  #include <windows.h>
 #elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
   #include <cerrno>
   #include <csignal>
@@ -74,7 +74,7 @@ void setButton(std::array<Term::Button, 11>& buttons, const std::int32_t& old_st
   buttons[static_cast<std::size_t>(Term::Button::Type::Button8)] = Term::Button(Term::Button::Type::Button8, Term::Button::Action::None);
 }
 
-void sendString(Term::Private::BlockingQueue& events,std::wstring& str)
+void sendString(Term::Private::BlockingQueue& events, std::wstring& str)
 {
   if(!str.empty())
   {
@@ -220,7 +220,7 @@ void Term::Private::Input::read_raw()
   std::vector<INPUT_RECORD> events{to_read};
   if(!ReadConsoleInputW(Private::in.handle(), &events[0], to_read, &read) || read != to_read) Term::Exception("ReadFile() failed");
   std::wstring ret;
-  bool        need_windows_size{false};
+  bool         need_windows_size{false};
   for(std::size_t i = 0; i != read; ++i)
   {
     switch(events[i].EventType)
@@ -230,27 +230,30 @@ void Term::Private::Input::read_raw()
         if(events[i].Event.KeyEvent.bKeyDown)
         {
           if(events[i].Event.KeyEvent.uChar.UnicodeChar == 0) read_windows_key(events[i].Event.KeyEvent.wVirtualKeyCode, events[i].Event.KeyEvent.dwControlKeyState, events[i].Event.KeyEvent.wRepeatCount);
-          else ret.append(events[i].Event.KeyEvent.wRepeatCount,events[i].Event.KeyEvent.uChar.UnicodeChar == Term::Key::Del ? static_cast<wchar_t >(Key(Term::Key::Value::Backspace)) :  static_cast<wchar_t>(events[i].Event.KeyEvent.uChar.UnicodeChar));
+          else
+            ret.append(events[i].Event.KeyEvent.wRepeatCount, events[i].Event.KeyEvent.uChar.UnicodeChar == Term::Key::Del ? static_cast<wchar_t>(Key(Term::Key::Value::Backspace)) : static_cast<wchar_t>(events[i].Event.KeyEvent.uChar.UnicodeChar));
         }
         break;
       }
       case FOCUS_EVENT:
       {
-        sendString(m_events,ret);
+        sendString(m_events, ret);
         m_events.push(Event(Focus(static_cast<Term::Focus::Type>(events[i].Event.FocusEvent.bSetFocus))));
         break;
       }
       case MENU_EVENT:
       {
-        sendString(m_events,ret);
+        sendString(m_events, ret);
         break;
       }
       case MOUSE_EVENT:
       {
-        sendString(m_events,ret);
+        sendString(m_events, ret);
         static MOUSE_EVENT_RECORD old_state;
-        if(events[i].Event.MouseEvent.dwEventFlags==MOUSE_WHEELED || events[i].Event.MouseEvent.dwEventFlags==MOUSE_HWHEELED);
-        else if(old_state.dwButtonState == events[i].Event.MouseEvent.dwButtonState && old_state.dwMousePosition.X == events[i].Event.MouseEvent.dwMousePosition.X && old_state.dwMousePosition.Y == events[i].Event.MouseEvent.dwMousePosition.Y && old_state.dwEventFlags == events[i].Event.MouseEvent.dwEventFlags) break;
+        if(events[i].Event.MouseEvent.dwEventFlags == MOUSE_WHEELED || events[i].Event.MouseEvent.dwEventFlags == MOUSE_HWHEELED)
+          ;
+        else if(old_state.dwButtonState == events[i].Event.MouseEvent.dwButtonState && old_state.dwMousePosition.X == events[i].Event.MouseEvent.dwMousePosition.X && old_state.dwMousePosition.Y == events[i].Event.MouseEvent.dwMousePosition.Y && old_state.dwEventFlags == events[i].Event.MouseEvent.dwEventFlags)
+          break;
         std::int32_t                 state{static_cast<std::int32_t>(events[i].Event.MouseEvent.dwButtonState)};
         std::array<Term::Button, 11> buttons;
         switch(events[i].Event.MouseEvent.dwEventFlags)
@@ -295,13 +298,13 @@ void Term::Private::Input::read_raw()
       case WINDOW_BUFFER_SIZE_EVENT:
       {
         need_windows_size = true;  // if we send directly it's too much generations
-        sendString(m_events,ret);
+        sendString(m_events, ret);
         break;
       }
       default: break;
     }
   }
-  if(!ret.empty()) sendString(m_events,ret);
+  if(!ret.empty()) sendString(m_events, ret);
   if(need_windows_size == true) { m_events.push(screen_size()); }
 #else
   Private::in.lockIO();
