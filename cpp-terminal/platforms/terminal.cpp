@@ -13,6 +13,8 @@
 #include "cpp-terminal/platforms/env.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 
+#include <iostream>
+
 #ifdef _WIN32
   #include <io.h>
   #include <windows.h>
@@ -29,13 +31,12 @@
   #include <termios.h>
 #endif
 
-
 void Term::Terminal::set_unset_utf8()
 {
   static bool enabled{false};
 #if defined(_WIN32)
-  static UINT  out_code_page{0};
-  static UINT  in_code_page{0};
+  static UINT out_code_page{0};
+  static UINT in_code_page{0};
   if(!enabled)
   {
     out_code_page = GetConsoleOutputCP();
@@ -44,7 +45,7 @@ void Term::Terminal::set_unset_utf8()
     in_code_page = GetConsoleCP();
     if(out_code_page == 0) throw Term::Exception("GetConsoleCP() failed");
     if(!SetConsoleCP(CP_UTF8)) throw Term::Exception("SetConsoleCP(CP_UTF8) failed");
-    enabled=true;
+    enabled = true;
   }
   else
   {
@@ -55,12 +56,15 @@ void Term::Terminal::set_unset_utf8()
   if(!enabled)
   {
     Term::Private::out.write("\033%G");
-    enabled=true;
+    enabled = true;
   }
-  else Term::Private::out.write("\033%@");
+  else
+  {
+    // Does not return the original charset but, the default defined by standard ISO 8859-1 (ISO 2022);
+    Term::Private::out.write("\033%@");
+  }
 #endif
 }
-
 
 void Term::Terminal::store_and_restore()
 {
