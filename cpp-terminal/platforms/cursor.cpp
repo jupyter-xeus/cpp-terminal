@@ -34,7 +34,7 @@ Term::Cursor Term::cursor_position()
   ::termios actual;
   if(!Private::out.null())
     if(tcgetattr(Private::out.fd(), &actual) == -1) return Term::Cursor();
-  ::termios raw{actual};
+  ::termios raw=actual;
   // Put terminal in raw mode
   raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
   // This disables output post-processing, requiring explicit \r\n. We
