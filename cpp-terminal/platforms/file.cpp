@@ -53,7 +53,7 @@ Term::Private::FileHandler::FileHandler(std::recursive_mutex& mutex, const std::
     m_file = _fdopen(m_fd, mode.c_str());
   }
 #else
-  std::size_t flag{O_ASYNC | O_DSYNC | O_NOCTTY | O_SYNC};
+  std::size_t flag{O_ASYNC | O_DSYNC | O_NOCTTY | O_SYNC | O_NDELAY};
   if(mode.find('r') != std::string::npos) flag |= O_RDONLY;
   else if(mode.find('w') != std::string::npos)
     flag |= O_WRONLY;

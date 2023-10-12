@@ -134,6 +134,7 @@ void Term::Terminfo::setUTF8()
 {
   Term::Cursor cursor_before{Term::cursor_position()};
   Term::Private::out.write("\xe2\x82\xac");  // € 3bits in utf8 one character
+  std::string  read{Term::Private::in.read()};
   Term::Cursor cursor_after{Term::cursor_position()};
   std::size_t  moved{cursor_after.column() - cursor_before.column()};
   if(moved == 1) m_UTF8 = true;

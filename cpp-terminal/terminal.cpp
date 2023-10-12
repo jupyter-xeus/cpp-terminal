@@ -56,10 +56,7 @@ Term::Terminal::Terminal()
   store_and_restore();
   activateMouseEvents();
   activateFocusEvents();
-  setRawMode();
   m_terminfo.setUTF8();
-  store_and_restore();
-  store_and_restore();
 }
 
 bool Term::Terminal::supportUTF8() { return m_terminfo.hasUTF8(); }

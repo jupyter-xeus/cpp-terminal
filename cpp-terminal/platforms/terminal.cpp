@@ -74,8 +74,8 @@ void Term::Terminal::store_and_restore()
   {
     if(!GetConsoleMode(Private::out.handle(), &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
     if(!GetConsoleMode(Private::in.handle(), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
-    DWORD in {(dwOriginalInMode &~ENABLE_QUICK_EDIT_MODE) | (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | activateMouseEvents())};
-    DWORD out {dwOriginalOutMode};
+    DWORD in{(dwOriginalInMode & ~ENABLE_QUICK_EDIT_MODE) | (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | activateMouseEvents())};
+    DWORD out{dwOriginalOutMode};
     if(!m_terminfo.isLegacy())
     {
       out |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
@@ -97,6 +97,12 @@ void Term::Terminal::store_and_restore()
   {
     if(!Private::out.null())
       if(tcgetattr(Private::out.fd(), &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
+    termios term{orig_termios};
+    term.c_cflag &= ~PARENB;  // Clear parity bit, disabling parity (most common)
+    term.c_cflag &= ~CSTOPB;  // Clear stop field, only one stop bit used in communication (most common)
+    term.c_cflag &= ~CSIZE;   // Clear all the size bits, then use one of the statements below
+    term.c_cflag |= CS8;      // 8 bits per byte (most common)
+    if(tcsetattr(Private::out.fd(), TCSAFLUSH, &term) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
     enabled = true;
   }
   else
@@ -176,7 +182,6 @@ void Term::Terminal::setRawMode()
     // keep it enabled, so that in C++, one can still just use std::endl
     // for EOL instead of "\r\n".
     // raw.c_oflag &= ~(OPOST);
-    raw.c_cflag |= CS8;
     raw.c_lflag &= ~(ECHO | ICANON | IEXTEN);
     if(m_options.has(Option::NoSignalKeys)) { raw.c_lflag &= ~ISIG; }
     raw.c_cc[VMIN]  = 1;
