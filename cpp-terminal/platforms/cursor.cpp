@@ -32,7 +32,8 @@ Term::Cursor Term::cursor_position()
   Term::Private::in.lockIO();
   // Hack to be sure we can do this all the time "Cooked" or "Raw" mode
   ::termios actual;
-  if(tcgetattr(Private::out.fd(), &actual) == -1) Term::Cursor();
+  if(!Private::out.null())
+    if(tcgetattr(Private::out.fd(), &actual) == -1) return Term::Cursor();
   ::termios raw{actual};
   // Put terminal in raw mode
   raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
@@ -44,7 +45,7 @@ Term::Cursor Term::cursor_position()
   raw.c_lflag &= ~ISIG;
   raw.c_cc[VMIN]  = 1;
   raw.c_cc[VTIME] = 0;
-  tcsetattr(Private::out.fd(), TCSAFLUSH, &raw);
+  if(!Private::out.null()) tcsetattr(Private::out.fd(), TCSAFLUSH, &raw);
   Term::Private::out.write(Term::cursor_position_report());
   while(nread == 0) { ::ioctl(Private::in.fd(), FIONREAD, &nread); }
   ret = Term::Private::in.read();

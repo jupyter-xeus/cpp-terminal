@@ -103,7 +103,8 @@ void Term::Terminal::store_and_restore()
     term.c_cflag &= ~CSTOPB;  // Clear stop field, only one stop bit used in communication (most common)
     term.c_cflag &= ~CSIZE;   // Clear all the size bits, then use one of the statements below
     term.c_cflag |= CS8;      // 8 bits per byte (most common)
-    if(tcsetattr(Private::out.fd(), TCSAFLUSH, &term) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
+    if(!Private::out.null())
+      if(tcsetattr(Private::out.fd(), TCSAFLUSH, &term) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
     enabled = true;
   }
   else
