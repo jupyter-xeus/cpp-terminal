@@ -98,7 +98,7 @@ void Term::Terminal::store_and_restore()
   {
     if(!Private::out.null())
       if(tcgetattr(Private::out.fd(), &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
-    termios term=orig_termios;
+    termios term = orig_termios;
     term.c_cflag &= ~PARENB;  // Clear parity bit, disabling parity (most common)
     term.c_cflag &= ~CSTOPB;  // Clear stop field, only one stop bit used in communication (most common)
     term.c_cflag &= ~CSIZE;   // Clear all the size bits, then use one of the statements below
