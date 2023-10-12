@@ -52,6 +52,7 @@ Term::Terminal::Terminal()
   Term::Private::Sigwinch::blockSigwinch();
   setBadStateReturnCode();
   attachConsole();
+  set_unset_utf8();
   store_and_restore();
   activateMouseEvents();
   activateFocusEvents();
@@ -72,6 +73,7 @@ Term::Terminal::~Terminal()
     store_and_restore();
     desactivateFocusEvents();
     desactivateMouseEvents();
+    set_unset_utf8();
     detachConsole();
   }
   catch(const Term::Exception& e)

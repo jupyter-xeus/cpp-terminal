@@ -29,23 +29,47 @@
   #include <termios.h>
 #endif
 
-void Term::Terminal::store_and_restore()
+
+void Term::Terminal::set_unset_utf8()
 {
   static bool enabled{false};
-#ifdef _WIN32
+#if defined(_WIN32)
   static UINT  out_code_page{0};
   static UINT  in_code_page{0};
-  static DWORD dwOriginalOutMode{0};
-  static DWORD dwOriginalInMode{0};
   if(!enabled)
   {
     out_code_page = GetConsoleOutputCP();
     if(out_code_page == 0) throw Term::Exception("GetConsoleOutputCP() failed");
+    if(!SetConsoleOutputCP(CP_UTF8)) throw Term::Exception("SetConsoleOutputCP(CP_UTF8) failed");
     in_code_page = GetConsoleCP();
     if(out_code_page == 0) throw Term::Exception("GetConsoleCP() failed");
-    if(!SetConsoleOutputCP(CP_UTF8)) throw Term::Exception("SetConsoleOutputCP(CP_UTF8) failed");
     if(!SetConsoleCP(CP_UTF8)) throw Term::Exception("SetConsoleCP(CP_UTF8) failed");
+    enabled=true;
+  }
+  else
+  {
+    if(!SetConsoleOutputCP(out_code_page)) throw Term::Exception("SetConsoleOutputCP(out_code_page) failed");
+    if(!SetConsoleCP(in_code_page)) throw Term::Exception("SetConsoleCP(in_code_page) failed");
+  }
+#else
+  if(!enabled)
+  {
+    Term::Private::out.write("\033%G");
+    enabled=true;
+  }
+  else Term::Private::out.write("\033%@");
+#endif
+}
 
+
+void Term::Terminal::store_and_restore()
+{
+  static bool enabled{false};
+#ifdef _WIN32
+  static DWORD dwOriginalOutMode{0};
+  static DWORD dwOriginalInMode{0};
+  if(!enabled)
+  {
     if(!GetConsoleMode(Private::out.handle(), &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
     if(!GetConsoleMode(Private::in.handle(), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
     dwOriginalInMode |= (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | ENABLE_MOUSE_INPUT);
@@ -63,8 +87,6 @@ void Term::Terminal::store_and_restore()
   {
     if(!SetConsoleMode(Private::out.handle(), dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
     if(!SetConsoleMode(Private::in.handle(), dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
-    if(!SetConsoleOutputCP(out_code_page)) throw Term::Exception("SetConsoleOutputCP(out_code_page) failed");
-    if(!SetConsoleCP(in_code_page)) throw Term::Exception("SetConsoleCP(in_code_page) failed");
     enabled = false;
   }
 #else
