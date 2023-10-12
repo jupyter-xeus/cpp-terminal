@@ -12,6 +12,7 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/platforms/env.hpp"
 #include "cpp-terminal/platforms/file.hpp"
+#include "cpp-terminal/iostream.hpp"
 
 #ifdef _WIN32
   #include <io.h>

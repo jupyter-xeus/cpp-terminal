@@ -169,5 +169,10 @@ std::string Term::Private::InputFileHandler::read()
 #endif
 }
 
+void   Term::Private::FileHandler::flush()
+{
+  std::fflush(m_file);
+}
+
 void Term::Private::FileHandler::lockIO() { m_mutex.lock(); }
 void Term::Private::FileHandler::unlockIO() { m_mutex.unlock(); }

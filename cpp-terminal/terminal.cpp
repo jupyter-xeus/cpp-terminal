@@ -56,7 +56,7 @@ Term::Terminal::Terminal()
   store_and_restore();
   activateMouseEvents();
   activateFocusEvents();
-  m_terminfo.setUTF8();
+  m_terminfo.checkUTF8();
 }
 
 bool Term::Terminal::supportUTF8() { return m_terminfo.hasUTF8(); }
@@ -65,12 +65,16 @@ Term::Terminal::~Terminal()
 {
   try
   {
+    // For windows
+    Term::cerr<<std::flush;
+    Term::clog<<std::flush;
+    Term::cout<<std::flush;
     if(m_options.has(Option::ClearScreen)) Term::Private::out.write(clear_buffer() + style(Style::RESET) + cursor_move(1, 1) + screen_load());
     if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_on());
     set_unset_utf8();
-    store_and_restore();
     desactivateFocusEvents();
     desactivateMouseEvents();
+    store_and_restore();
     detachConsole();
   }
   catch(const Term::Exception& e)
