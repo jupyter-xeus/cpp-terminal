@@ -13,8 +13,6 @@
 #include "cpp-terminal/platforms/env.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 
-#include <iostream>
-
 #ifdef _WIN32
   #include <io.h>
   #include <windows.h>

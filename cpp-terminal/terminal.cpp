@@ -17,7 +17,6 @@
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 
-#include <iostream>
 #include <new>
 
 namespace Term
@@ -69,7 +68,6 @@ Term::Terminal::~Terminal()
 {
   try
   {
-    std::cout << "here" << std::endl;
     if(m_options.has(Option::ClearScreen)) Term::Private::out.write(clear_buffer() + style(Style::RESET) + cursor_move(1, 1) + screen_load());
     if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_on());
     set_unset_utf8();
