@@ -130,11 +130,10 @@ void Term::Terminfo::setANSIEscapeCode()
 #endif
 }
 
-// Verify the utf8 is activated on Windo
 void Term::Terminfo::checkUTF8()
 {
 #if defined(_WIN32)
-  (GetConsoleOutputCP()==CP_UTF8 && GetConsoleCP()==CP_UTF8) ? m_UTF8=true : m_UTF8=false;
+  (GetConsoleOutputCP() == CP_UTF8 && GetConsoleCP() == CP_UTF8) ? m_UTF8 = true : m_UTF8 = false;
 #else
   Term::Cursor cursor_before{Term::cursor_position()};
   Term::Private::out.write("\xe2\x82\xac");  // € 3bits in utf8 one character
