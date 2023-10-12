@@ -38,7 +38,7 @@ public:
   bool             hasANSIEscapeCode() const;
   bool             isLegacy() const;
   bool             hasUTF8();
-  void             setUTF8();
+  void             checkUTF8();
 
 private:
   void             setANSIEscapeCode();

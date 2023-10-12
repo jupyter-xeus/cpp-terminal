@@ -49,6 +49,7 @@ public:
   int    fd() const;
   void   lockIO();
   void   unlockIO();
+  void   flush();
   FileHandler(const FileHandler&)            = delete;
   FileHandler& operator=(const FileHandler&) = delete;
   FileHandler(FileHandler&&)                 = delete;

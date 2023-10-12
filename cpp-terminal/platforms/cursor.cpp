@@ -13,11 +13,10 @@
   #include <windows.h>
 #else
   #include <sys/ioctl.h>
+  #include <termios.h>
 #endif
 
 #include "cpp-terminal/platforms/file.hpp"
-
-#include <iostream>
 
 Term::Cursor Term::cursor_position()
 {
@@ -31,9 +30,26 @@ Term::Cursor Term::cursor_position()
   std::string ret;
   std::size_t nread{0};
   Term::Private::in.lockIO();
+  // Hack to be sure we can do this all the time "Cooked" or "Raw" mode
+  ::termios actual;
+  if(!Private::out.null())
+    if(tcgetattr(Private::out.fd(), &actual) == -1) return Term::Cursor();
+  ::termios raw = actual;
+  // Put terminal in raw mode
+  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+  // This disables output post-processing, requiring explicit \r\n. We
+  // keep it enabled, so that in C++, one can still just use std::endl
+  // for EOL instead of "\r\n".
+  // raw.c_oflag &= ~(OPOST);
+  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN);
+  raw.c_lflag &= ~ISIG;
+  raw.c_cc[VMIN]  = 1;
+  raw.c_cc[VTIME] = 0;
+  if(!Private::out.null()) tcsetattr(Private::out.fd(), TCSAFLUSH, &raw);
   Term::Private::out.write(Term::cursor_position_report());
-  while(nread == 0) ::ioctl(Private::in.fd(), FIONREAD, &nread);
+  while(nread == 0) { ::ioctl(Private::in.fd(), FIONREAD, &nread); }
   ret = Term::Private::in.read();
+  tcsetattr(Private::out.fd(), TCSAFLUSH, &actual);
   Term::Private::in.unlockIO();
   try
   {

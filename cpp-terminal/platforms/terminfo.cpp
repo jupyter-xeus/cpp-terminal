@@ -130,16 +130,21 @@ void Term::Terminfo::setANSIEscapeCode()
 #endif
 }
 
-void Term::Terminfo::setUTF8()
+void Term::Terminfo::checkUTF8()
 {
+#if defined(_WIN32)
+  (GetConsoleOutputCP() == CP_UTF8 && GetConsoleCP() == CP_UTF8) ? m_UTF8 = true : m_UTF8 = false;
+#else
   Term::Cursor cursor_before{Term::cursor_position()};
   Term::Private::out.write("\xe2\x82\xac");  // € 3bits in utf8 one character
+  std::string  read{Term::Private::in.read()};
   Term::Cursor cursor_after{Term::cursor_position()};
   std::size_t  moved{cursor_after.column() - cursor_before.column()};
   if(moved == 1) m_UTF8 = true;
   else
     m_UTF8 = false;
   for(std::size_t i = 0; i != moved; ++i) Term::Private::out.write("\b \b");
+#endif
 }
 
 bool Term::Terminfo::hasUTF8() { return m_UTF8; }
