@@ -74,15 +74,15 @@ void Term::Terminal::store_and_restore()
   {
     if(!GetConsoleMode(Private::out.handle(), &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
     if(!GetConsoleMode(Private::in.handle(), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
-    dwOriginalInMode |= (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | ENABLE_MOUSE_INPUT);
-    dwOriginalInMode &= ~ENABLE_QUICK_EDIT_MODE;
+    DWORD in {(dwOriginalInMode &~ENABLE_QUICK_EDIT_MODE) | (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | activateMouseEvents())};
+    DWORD out {dwOriginalOutMode};
     if(!m_terminfo.isLegacy())
     {
-      dwOriginalOutMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
-      dwOriginalInMode |= ENABLE_VIRTUAL_TERMINAL_INPUT;
+      out |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
+      in |= ENABLE_VIRTUAL_TERMINAL_INPUT;
     }
-    if(!SetConsoleMode(Private::out.handle(), dwOriginalOutMode)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
-    if(!SetConsoleMode(Private::in.handle(), dwOriginalInMode)) { throw Term::Exception("SetConsoleMode() failed"); }
+    if(!SetConsoleMode(Private::out.handle(), out)) { throw Term::Exception("SetConsoleMode() failed in destructor"); }
+    if(!SetConsoleMode(Private::in.handle(), in)) { throw Term::Exception("SetConsoleMode() failed"); }
     enabled = true;
   }
   else
@@ -111,7 +111,7 @@ void Term::Terminal::store_and_restore()
 int Term::Terminal::activateMouseEvents()
 {
 #if defined(_WIN32)
-  return 0;  //FIXME
+  return ENABLE_MOUSE_INPUT;
 #else
   return Term::Private::out.write("\033[?1002h\033[?1003h\033[?1006h");
 #endif
@@ -120,7 +120,7 @@ int Term::Terminal::activateMouseEvents()
 int Term::Terminal::desactivateMouseEvents()
 {
 #if defined(_WIN32)
-  return 0;  //FIXME
+  return ENABLE_MOUSE_INPUT;
 #else
   return Term::Private::out.write("\033[?1003l\033[?1006l");
 #endif
@@ -159,8 +159,8 @@ void Term::Terminal::setBadStateReturnCode()
 
 void Term::Terminal::setRawMode()
 {
-#ifdef _WIN32
-  DWORD flags = {0};
+#if defined(_WIN32)
+  DWORD flags{0};
   if(!GetConsoleMode(Private::in.handle(), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
   if(m_options.has(Option::NoSignalKeys)) { flags &= ~ENABLE_PROCESSED_INPUT; }
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
