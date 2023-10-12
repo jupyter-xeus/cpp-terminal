@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include <array>
 #include <cstddef>
 #include <cstdint>
 
@@ -61,19 +60,19 @@ class Mouse
 {
 public:
   Mouse() = default;
-  Mouse(const std::array<Term::Button, 11>& buttons, const std::uint16_t& row, const std::uint16_t& column) : m_buttons(buttons), m_row(row), m_column(column) {}
-  std::size_t                  row();
-  std::size_t                  column();
-  std::array<Term::Button, 11> getButtons() const;
-  bool                         has(const Term::Button::Type& type, const Term::Button::Action& action);
-  bool                         has(const Term::Button::Type& type);
-  bool                         operator==(const Term::Mouse&) const;
-  bool                         operator!=(const Term::Mouse&) const;
+  Mouse(const Term::Button& buttons, const std::uint16_t& row, const std::uint16_t& column) : m_buttons(buttons), m_row(row), m_column(column) {}
+  std::size_t  row();
+  std::size_t  column();
+  Term::Button getButton();
+  bool         is(const Term::Button::Type& type, const Term::Button::Action& action);
+  bool         is(const Term::Button::Type& type);
+  bool         operator==(const Term::Mouse&) const;
+  bool         operator!=(const Term::Mouse&) const;
 
 private:
-  std::array<Term::Button, 11> m_buttons;
-  std::uint16_t                m_row{0};
-  std::uint16_t                m_column{0};
+  Term::Button  m_buttons;
+  std::uint16_t m_row{0};
+  std::uint16_t m_column{0};
 };
 
 }  // namespace Term

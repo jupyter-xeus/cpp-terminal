@@ -53,6 +53,7 @@ Term::Terminal::Terminal()
   setBadStateReturnCode();
   attachConsole();
   store_and_restore();
+  activateMouseEvents();
   activateFocusEvents();
   setRawMode();
   m_terminfo.setUTF8();
@@ -70,6 +71,7 @@ Term::Terminal::~Terminal()
     if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_on());
     store_and_restore();
     desactivateFocusEvents();
+    desactivateMouseEvents();
     detachConsole();
   }
   catch(const Term::Exception& e)

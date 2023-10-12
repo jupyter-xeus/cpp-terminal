@@ -95,107 +95,103 @@ int main()
         {
           Term::Mouse mouse(event);
           std::string buttons;
-          for(std::size_t i = 0; i != 11; ++i)
+          switch(mouse.getButton().type())
           {
-            if(mouse.getButtons()[i].action() == Term::Button::Action::None) continue;
-            switch(mouse.getButtons()[i].type())
+            case Term::Button::Type::Left:
             {
-              case Term::Button::Type::Left:
-              {
-                buttons += "Type (left) ";
-                break;
-              }
-              case Term::Button::Type::Wheel:
-              {
-                buttons += "Type (wheel) ";
-                break;
-              }
-              case Term::Button::Type::Right:
-              {
-                buttons += "Type (right) ";
-                break;
-              }
-              case Term::Button::Type::Button1:
-              {
-                buttons += "Type (button1) ";
-                break;
-              }
-              case Term::Button::Type::Button2:
-              {
-                buttons += "Type (button2) ";
-                break;
-              }
-              case Term::Button::Type::Button3:
-              {
-                buttons += "Type (button3) ";
-                break;
-              }
-              case Term::Button::Type::Button4:
-              {
-                buttons += "Type (button4) ";
-                break;
-              }
-              case Term::Button::Type::Button5:
-              {
-                buttons += "Type (button5) ";
-                break;
-              }
-              case Term::Button::Type::Button6:
-              {
-                buttons += "Type (button6) ";
-                break;
-              }
-              case Term::Button::Type::Button7:
-              {
-                buttons += "Type (button7) ";
-                break;
-              }
-              case Term::Button::Type::Button8:
-              {
-                buttons += "Type (button8) ";
-                break;
-              }
-              default: break;
+              buttons += "Type (left) ";
+              break;
             }
-            switch(mouse.getButtons()[i].action())
+            case Term::Button::Type::Wheel:
             {
-              case Term::Button::Action::ToLeft:
-              {
-                buttons += "Action (to left) ";
-                break;
-              }
-              case Term::Button::Action::ToRight:
-              {
-                buttons += "Action (to right) ";
-                break;
-              }
-              case Term::Button::Action::RolledUp:
-              {
-                buttons += "Action (rolled up) ";
-                break;
-              }
-              case Term::Button::Action::RolledDown:
-              {
-                buttons += "Action (rolled down) ";
-                break;
-              }
-              case Term::Button::Action::DoubleClicked:
-              {
-                buttons += "Action (double clicked) ";
-                break;
-              }
-              case Term::Button::Action::Pressed:
-              {
-                buttons += "Action (pressed) ";
-                break;
-              }
-              case Term::Button::Action::Released:
-              {
-                buttons += "Action (released) ";
-                break;
-              }
-              default: break;
+              buttons += "Type (wheel) ";
+              break;
             }
+            case Term::Button::Type::Right:
+            {
+              buttons += "Type (right) ";
+              break;
+            }
+            case Term::Button::Type::Button1:
+            {
+              buttons += "Type (button1) ";
+              break;
+            }
+            case Term::Button::Type::Button2:
+            {
+              buttons += "Type (button2) ";
+              break;
+            }
+            case Term::Button::Type::Button3:
+            {
+              buttons += "Type (button3) ";
+              break;
+            }
+            case Term::Button::Type::Button4:
+            {
+              buttons += "Type (button4) ";
+              break;
+            }
+            case Term::Button::Type::Button5:
+            {
+              buttons += "Type (button5) ";
+              break;
+            }
+            case Term::Button::Type::Button6:
+            {
+              buttons += "Type (button6) ";
+              break;
+            }
+            case Term::Button::Type::Button7:
+            {
+              buttons += "Type (button7) ";
+              break;
+            }
+            case Term::Button::Type::Button8:
+            {
+              buttons += "Type (button8) ";
+              break;
+            }
+            default: break;
+          }
+          switch(mouse.getButton().action())
+          {
+            case Term::Button::Action::ToLeft:
+            {
+              buttons += "Action (to left) ";
+              break;
+            }
+            case Term::Button::Action::ToRight:
+            {
+              buttons += "Action (to right) ";
+              break;
+            }
+            case Term::Button::Action::RolledUp:
+            {
+              buttons += "Action (rolled up) ";
+              break;
+            }
+            case Term::Button::Action::RolledDown:
+            {
+              buttons += "Action (rolled down) ";
+              break;
+            }
+            case Term::Button::Action::DoubleClicked:
+            {
+              buttons += "Action (double clicked) ";
+              break;
+            }
+            case Term::Button::Action::Pressed:
+            {
+              buttons += "Action (pressed) ";
+              break;
+            }
+            case Term::Button::Action::Released:
+            {
+              buttons += "Action (released) ";
+              break;
+            }
+            default: break;
           }
           Term::cout << "Event: Mouse Position(" << mouse.row() << ";" << mouse.column() << ") " << buttons << std::endl;
           break;

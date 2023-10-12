@@ -108,6 +108,7 @@ int main()
     std::size_t  h{10};
     std::size_t  w{10};
     bool         on{true};
+    render(term_size.rows(), term_size.columns(), h, w, pos);
     while(on)
     {
       Term::Event event{Term::read_event()};
@@ -148,13 +149,13 @@ int main()
         }
         case Term::Event::Type::Mouse:
         {
-          if(Term::Mouse(event).has(Term::Button::Type::Wheel, Term::Button::Action::RolledUp))
+          if(Term::Mouse(event).is(Term::Button::Type::Wheel, Term::Button::Action::RolledUp))
           {
             if(pos > 1) pos--;
             render(term_size.rows(), term_size.columns(), h, w, pos);
             break;
           }
-          else if(Term::Mouse(event).has(Term::Button::Type::Wheel, Term::Button::Action::RolledDown))
+          else if(Term::Mouse(event).is(Term::Button::Type::Wheel, Term::Button::Action::RolledDown))
           {
             if(pos < h) pos++;
             render(term_size.rows(), term_size.columns(), h, w, pos);

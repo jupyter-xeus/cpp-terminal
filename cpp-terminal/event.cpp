@@ -24,6 +24,8 @@ Term::Event::container::~container() {}
   #pragma warning(pop)
 #endif
 
+#include <chrono>
+
 Term::Key* Term::Event::get_if_key()
 {
   if(m_Type == Type::Key) return &m_container.m_Key;
@@ -251,6 +253,72 @@ void Term::Event::parse(const std::string& str)
       m_Type               = Type::Cursor;
       m_container.m_Cursor = Cursor(static_cast<std::uint16_t>(std::stoi(str.substr(2, found - 2))), static_cast<std::uint16_t>(std::stoi(str.substr(found + 1, str.size() - (found + 2)))));
     }
+  }
+  else if(str[0] == '\033' && str[1] == '[' && str[2] == '<')
+  {
+    static std::chrono::time_point<std::chrono::system_clock> old;
+    bool                                                      not_too_long{false};
+    if(std::chrono::system_clock::now() - old <= std::chrono::milliseconds{120}) not_too_long = true;
+    m_Type = Type::Mouse;
+    std::size_t              pos{3};
+    std::size_t              pos2{3};
+    std::vector<std::size_t> values;
+    while((pos = str.find(';', pos)) != std::string::npos)
+    {
+      values.push_back(std::stoull(str.substr(pos2, pos - pos2)));
+      pos++;
+      pos2 = pos;
+    }
+    values.push_back(std::stoull(str.substr(pos2, str.size() - pos2 - 1)));
+    static Term::Mouse   first;
+    static Term::Mouse   second;
+    Term::Button::Action action;
+    if(str[str.size() - 1] == 'm') action = Term::Button::Action::Released;
+    else
+      action = Term::Button::Action::Pressed;
+    Term::Button::Type type;
+    switch(values[0])
+    {
+      case 0:
+      {
+        type = Term::Button::Type::Right;
+        break;
+      }
+      case 1:
+      {
+        type = Term::Button::Type::Wheel;
+        break;
+      }
+      case 2:
+      {
+        type = Term::Button::Type::Left;
+        break;
+      }
+      case 35:
+      {
+        type   = Term::Button::Type::None;
+        action = Term::Button::Action::None;
+        break;
+      }
+      case 64:
+      {
+        type   = Term::Button::Type::Wheel;
+        action = Term::Button::Action::RolledUp;
+        break;
+      }
+      case 65:
+      {
+        type   = Term::Button::Type::Wheel;
+        action = Term::Button::Action::RolledDown;
+        break;
+      }
+      default: break;
+    }
+    if(not_too_long && first.row() == second.row() && second.row() == values[1] && first.column() == second.column() && second.column() == values[2] && first.getButton().type() == second.getButton().type() && second.getButton().type() == type && first.getButton().action() == Button::Action::Released && second.getButton().action() == Button::Action::Pressed && action == Button::Action::Pressed) action = Term::Button::Action::DoubleClicked;
+    second              = first;
+    first               = Term::Mouse(Term::Button(type, action), values[1], values[2]);
+    m_container.m_Mouse = first;
+    old                 = std::chrono::system_clock::now();
   }
   else if(str.size() <= 10)
   {

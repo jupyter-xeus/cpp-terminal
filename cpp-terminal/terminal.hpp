@@ -43,6 +43,8 @@ private:
   void           setRawMode();
   void           attachConsole();
   void           detachConsole();
+  int            activateMouseEvents();
+  int            desactivateMouseEvents();
   int            activateFocusEvents();
   int            desactivateFocusEvents();
   bool           has_allocated_console{false};

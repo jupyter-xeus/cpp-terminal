@@ -43,35 +43,25 @@ Term::Button::Action getAction(const std::int32_t& old_state, const std::int32_t
   else
     return Term::Button::Action::None;
 }
-void setButton(std::array<Term::Button, 11>& buttons, const std::int32_t& old_state, const std::int32_t& state, const std::int32_t& type)
+Term::Button setButton(const std::int32_t& old_state, const std::int32_t& state)
 {
   Term::Button::Action action;
   action = getAction(old_state, state, FROM_LEFT_1ST_BUTTON_PRESSED);
-  if(action == Term::Button::Action::Pressed && type == DOUBLE_CLICK) action = Term::Button::Action::DoubleClicked;
-  buttons[static_cast<std::size_t>(Term::Button::Type::Left)] = Term::Button(Term::Button::Type::Left, action);
+  if(action != Term::Button::Action::None) return Term::Button(Term::Button::Type::Left, action);
 
   action = getAction(old_state, state, FROM_LEFT_2ND_BUTTON_PRESSED);
-  if(action == Term::Button::Action::Pressed && type == DOUBLE_CLICK) action = Term::Button::Action::DoubleClicked;
-  buttons[static_cast<std::size_t>(Term::Button::Type::Button1)] = Term::Button(Term::Button::Type::Button1, action);
+  if(action != Term::Button::Action::None) return Term::Button(Term::Button::Type::Button1, action);
 
   action = getAction(old_state, state, FROM_LEFT_3RD_BUTTON_PRESSED);
-  if(action == Term::Button::Action::Pressed && type == DOUBLE_CLICK) action = Term::Button::Action::DoubleClicked;
-  buttons[static_cast<std::size_t>(Term::Button::Type::Button2)] = Term::Button(Term::Button::Type::Button2, action);
+  if(action != Term::Button::Action::None) return Term::Button(Term::Button::Type::Button2, action);
 
   action = getAction(old_state, state, FROM_LEFT_4TH_BUTTON_PRESSED);
-  if(action == Term::Button::Action::Pressed && type == DOUBLE_CLICK) action = Term::Button::Action::DoubleClicked;
-  buttons[static_cast<std::size_t>(Term::Button::Type::Button3)] = Term::Button(Term::Button::Type::Button3, action);
+  if(action != Term::Button::Action::None) return Term::Button(Term::Button::Type::Button3, action);
 
   action = getAction(old_state, state, RIGHTMOST_BUTTON_PRESSED);
-  if(action == Term::Button::Action::Pressed && type == DOUBLE_CLICK) action = Term::Button::Action::DoubleClicked;
-  buttons[static_cast<std::size_t>(Term::Button::Type::Right)] = Term::Button(Term::Button::Type::Right, action);
+  if(action != Term::Button::Action::None) return Term::Button(Term::Button::Type::Right, action);
 
-  buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)]   = Term::Button(Term::Button::Type::Wheel, Term::Button::Action::None);
-  buttons[static_cast<std::size_t>(Term::Button::Type::Button4)] = Term::Button(Term::Button::Type::Button4, Term::Button::Action::None);
-  buttons[static_cast<std::size_t>(Term::Button::Type::Button5)] = Term::Button(Term::Button::Type::Button5, Term::Button::Action::None);
-  buttons[static_cast<std::size_t>(Term::Button::Type::Button6)] = Term::Button(Term::Button::Type::Button6, Term::Button::Action::None);
-  buttons[static_cast<std::size_t>(Term::Button::Type::Button7)] = Term::Button(Term::Button::Type::Button7, Term::Button::Action::None);
-  buttons[static_cast<std::size_t>(Term::Button::Type::Button8)] = Term::Button(Term::Button::Type::Button8, Term::Button::Action::None);
+  return Term::Button(Term::Button::Type::None, Term::Button::Action::None);
 }
 
 void sendString(Term::Private::BlockingQueue& events, std::wstring& str)
@@ -254,44 +244,42 @@ void Term::Private::Input::read_raw()
           ;
         else if(old_state.dwButtonState == events[i].Event.MouseEvent.dwButtonState && old_state.dwMousePosition.X == events[i].Event.MouseEvent.dwMousePosition.X && old_state.dwMousePosition.Y == events[i].Event.MouseEvent.dwMousePosition.Y && old_state.dwEventFlags == events[i].Event.MouseEvent.dwEventFlags)
           break;
-        std::int32_t                 state{static_cast<std::int32_t>(events[i].Event.MouseEvent.dwButtonState)};
-        std::array<Term::Button, 11> buttons;
+        std::int32_t state{static_cast<std::int32_t>(events[i].Event.MouseEvent.dwButtonState)};
         switch(events[i].Event.MouseEvent.dwEventFlags)
         {
           case 0:
           {
-            setButton(buttons, static_cast<std::int32_t>(old_state.dwButtonState), state, 0);
+            m_events.push(Term::Mouse(setButton(static_cast<std::int32_t>(old_state.dwButtonState), state), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.Y), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.X)));
+            ;
             break;
           }
           case MOUSE_MOVED:
           {
-            setButton(buttons, static_cast<std::int32_t>(old_state.dwButtonState), state, MOUSE_MOVED);
+            m_events.push(Term::Mouse(setButton(static_cast<std::int32_t>(old_state.dwButtonState), state), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.Y), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.X)));
+            ;
             break;
           }
           case DOUBLE_CLICK:
           {
-            setButton(buttons, static_cast<std::int32_t>(old_state.dwButtonState), state, DOUBLE_CLICK);
+            m_events.push(Term::Mouse(Term::Button(setButton(static_cast<std::int32_t>(old_state.dwButtonState), state).type(), Term::Button::Action::DoubleClicked), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.Y), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.X)));
             break;
           }
           case MOUSE_WHEELED:
           {
-            setButton(buttons, static_cast<std::int32_t>(old_state.dwButtonState), state, MOUSE_WHEELED);
-            if(state > 0) buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)] = Button(Term::Button::Type::Wheel, Term::Button::Action::RolledUp);
+            if(state > 0) m_events.push(Term::Mouse(Button(Term::Button::Type::Wheel, Term::Button::Action::RolledUp), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.Y), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.X)));
             else
-              buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)] = Button(Term::Button::Type::Wheel, Term::Button::Action::RolledDown);
+              m_events.push(Term::Mouse(Button(Term::Button::Type::Wheel, Term::Button::Action::RolledDown), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.Y), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.X)));
             break;
           }
           case MOUSE_HWHEELED:
           {
-            setButton(buttons, static_cast<std::int32_t>(old_state.dwButtonState), state, MOUSE_HWHEELED);
-            if(state > 0) buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)] = Button(Term::Button::Type::Wheel, Term::Button::Action::ToRight);
+            if(state > 0) m_events.push(Term::Mouse(Button(Term::Button::Type::Wheel, Term::Button::Action::ToRight), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.Y), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.X)));
             else
-              buttons[static_cast<std::size_t>(Term::Button::Type::Wheel)] = Button(Term::Button::Type::Wheel, Term::Button::Action::ToLeft);
+              m_events.push(Term::Mouse(Button(Term::Button::Type::Wheel, Term::Button::Action::ToLeft), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.Y), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.X)));
             break;
           }
           default: break;
         }
-        m_events.push(Term::Mouse(buttons, static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.Y), static_cast<std::uint16_t>(events[i].Event.MouseEvent.dwMousePosition.X)));
         old_state = events[i].Event.MouseEvent;
         break;
       }
