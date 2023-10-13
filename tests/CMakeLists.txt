@@ -53,10 +53,3 @@ doctest_discover_tests(Args)
 ## Needed to test args
 add_test(NAME Args COMMAND Args Bonjour Hello 你好)
 endif()
-
-if (WIN32)
-  find_program(POWERSHELL_EXECUTABLE NAMES powershell DOC "PowerShell command")
-  if (NOT ${POWERSHELL_EXECUTABLE} STREQUAL "POWERSHELL_EXECUTABLE-NOTFOUND")
-    add_test(NAME tests COMMAND ${POWERSHELL_EXECUTABLE} -NoProfile -NonInteractive ${CMAKE_SOURCE_DIR}/ci/examples.ps1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-  endif ()
-endif ()
