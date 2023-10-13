@@ -15,14 +15,12 @@
   #include <io.h>
   #include <windows.h>
 #else
-  #include <cstdio>
   #include <sys/ioctl.h>
   #include <unistd.h>
 #endif
 
 #include "cpp-terminal/exception.hpp"
 
-#include <cerrno>
 #include <fcntl.h>
 
 namespace Term
@@ -122,7 +120,6 @@ void Term::Private::FileInitializer::detachConsole()
 
 bool Term::Private::FileInitializer::hadToAttachConsole = {false};
 
-
 void Term::Private::FileInitializer::init()
 {
   // MacOS was not happy wish a static mutex in the class so we create it and pass to each class;
@@ -140,10 +137,7 @@ void Term::Private::FileInitializer::init()
   }
 }
 
-Term::Private::FileInitializer::FileInitializer()
-{ 
-  init();
-}
+Term::Private::FileInitializer::FileInitializer() { init(); }
 
 Term::Private::FileInitializer::~FileInitializer()
 {

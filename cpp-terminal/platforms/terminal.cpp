@@ -10,7 +10,6 @@
 #include "cpp-terminal/terminal.hpp"
 
 #include "cpp-terminal/exception.hpp"
-#include "cpp-terminal/iostream.hpp"
 #include "cpp-terminal/platforms/env.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 
@@ -73,8 +72,8 @@ void Term::Terminal::store_and_restore()
   static DWORD dwOriginalInMode{0};
   if(!enabled)
   {
-    if(GetConsoleMode(Private::out.handle(), &dwOriginalOutMode)==0) { throw Term::Exception("GetConsoleMode() failed"); }
-    if(GetConsoleMode(Private::in.handle(), &dwOriginalInMode)==0) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(GetConsoleMode(Private::out.handle(), &dwOriginalOutMode) == 0) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(GetConsoleMode(Private::in.handle(), &dwOriginalInMode) == 0) { throw Term::Exception("GetConsoleMode() failed"); }
     DWORD in{(dwOriginalInMode & ~ENABLE_QUICK_EDIT_MODE) | (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | activateMouseEvents())};
     DWORD out{dwOriginalOutMode};
     if(!m_terminfo.isLegacy())

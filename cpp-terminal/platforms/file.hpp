@@ -28,10 +28,10 @@ public:
   ~FileInitializer();
 
 private:
-  static void       attachConsole();
-  static void       detachConsole();
-  static bool       hadToAttachConsole;
-  static int m_counter;
+  static void attachConsole();
+  static void detachConsole();
+  static bool hadToAttachConsole;
+  static int  m_counter;
 };
 
 static FileInitializer m_fileInitializer;
