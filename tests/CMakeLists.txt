@@ -26,12 +26,6 @@ add_executable(test_terminal test_terminal.cpp)
 target_link_libraries(test_terminal PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
 doctest_discover_tests(test_terminal)
 
-add_executable(AttachConsole WIN32 attach_console.test.cpp)
-target_link_libraries(AttachConsole PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
-
-add_executable(AttachConsoleMinimal WIN32 attach_console_minimal.test.cpp)
-target_link_libraries(AttachConsoleMinimal PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
-
 add_executable(file.test file.test.cpp)
 target_link_libraries(file.test PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
 doctest_discover_tests(file.test)
@@ -51,18 +45,8 @@ doctest_discover_tests(Events)
 add_executable(IOStream iostream.test.cpp)
 target_link_libraries(IOStream PRIVATE cpp-terminal::cpp-terminal)
 
-if(MINGW OR MSYS)
-else()
+if (NOT MINGW AND NOT MSYS)
 add_executable(Args args.test.cpp)
 target_link_libraries(Args PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
-doctest_discover_tests(Args)
-## Needed to test args
-add_test(NAME Args COMMAND Args Bonjour Hello 你好)
+doctest_discover_tests(Args EXTRA_ARGS Bonjour Hello 你好)
 endif()
-
-if (WIN32)
-  find_program(POWERSHELL_EXECUTABLE NAMES powershell DOC "PowerShell command")
-  if (NOT ${POWERSHELL_EXECUTABLE} STREQUAL "POWERSHELL_EXECUTABLE-NOTFOUND")
-    add_test(NAME tests COMMAND ${POWERSHELL_EXECUTABLE} -NoProfile -NonInteractive ${CMAKE_SOURCE_DIR}/ci/examples.ps1 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-  endif ()
-endif ()

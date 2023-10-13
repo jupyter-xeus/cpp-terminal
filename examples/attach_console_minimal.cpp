@@ -13,12 +13,15 @@
 #include <iostream>
 
 #ifdef _WIN32
-  #include <windows.h>
+  #include <Windows.h>
 int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #else
 int main()
 #endif
 {
   std::cout << Term::color_fg(Term::Color::Name::Red) << "Hello world !" << color_fg(Term::Color::Name::Default) << std::endl;
+#ifdef _WIN32
+  MessageBox(NULL, "Hello, world", "caption", 0);
+#endif
   return 0;
 }
