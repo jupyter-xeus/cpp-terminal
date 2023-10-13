@@ -3,8 +3,8 @@ add_library(ExamplesWarnings INTERFACE)
 target_compile_options(
         ExamplesWarnings
         INTERFACE
-        $<$<C_COMPILER_ID:MSVC>:/wd4061>
-        $<$<CXX_COMPILER_ID:MSVC>:/wd4061>
+        $<$<C_COMPILER_ID:MSVC>:/wd4061 /utf-8>
+        $<$<CXX_COMPILER_ID:MSVC>:/wd4061 /utf-8>
 )
 add_library(Warnings::Examples ALIAS ExamplesWarnings)
 
