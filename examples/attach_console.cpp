@@ -10,11 +10,10 @@
 #include "cpp-terminal/color.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/style.hpp"
-#include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/version.hpp"
 
 #ifdef _WIN32
-  #include <windows.h>
+  #include <Windows.h>
 #endif
 
 #include <iostream>
@@ -28,9 +27,6 @@ int main()
   std::cout << "Running cpp-terminal version: " << Term::Version << " website : " << Term::Homepage << std::endl << std::endl;
   try
   {
-    if(Term::is_stdout_a_tty()) { std::cout << "Standard output is attached to a terminal." << std::endl << std::endl; }
-    else { std::cout << "Standard output is not attached to a terminal." << std::endl << std::endl; }
-
     std::string mode;
     if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit24) mode = "24bit";
     else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit8)
@@ -131,11 +127,8 @@ int main()
               << "*\n";
 
 #ifdef _WIN32
-    MessageBox(NULL, "hello, world", "caption", 0);
+    MessageBox(NULL, "Hello, world", "caption", 0);
 #endif
-
-    std::cout << "Press any key to quit" << std::endl;
-    if(Term::is_stdin_a_tty()) std::cin.get();
   }
   catch(const Term::Exception& re)
   {
