@@ -39,6 +39,7 @@ public:
   bool             isLegacy() const;
   bool             hasUTF8();
   void             checkUTF8();
+  std::string      getName();
 
 private:
   void             setANSIEscapeCode();
