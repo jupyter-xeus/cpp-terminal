@@ -45,11 +45,8 @@ doctest_discover_tests(Events)
 add_executable(IOStream iostream.test.cpp)
 target_link_libraries(IOStream PRIVATE cpp-terminal::cpp-terminal)
 
-if(MINGW OR MSYS)
-else()
+if (NOT MINGW AND NOT MSYS)
 add_executable(Args args.test.cpp)
 target_link_libraries(Args PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
-doctest_discover_tests(Args)
-## Needed to test args
-add_test(NAME Args COMMAND Args Bonjour Hello 你好)
+doctest_discover_tests(Args EXTRA_ARGS Bonjour Hello 你好)
 endif()
