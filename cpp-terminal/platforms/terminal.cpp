@@ -53,13 +53,13 @@ void Term::Terminal::set_unset_utf8()
 #else
   if(!enabled)
   {
-    Term::Private::out.write("\033%G");
+    if(m_terminfo.getName() != "Apple_Terminal") Term::Private::out.write("\033%G");
     enabled = true;
   }
   else
   {
     // Does not return the original charset but, the default defined by standard ISO 8859-1 (ISO 2022);
-    Term::Private::out.write("\033%@");
+    if(m_terminfo.getName() != "Apple_Terminal") Term::Private::out.write("\033%@");
   }
 #endif
 }

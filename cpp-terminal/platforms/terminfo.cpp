@@ -92,6 +92,8 @@ Term::Terminfo::Terminfo()
   setColorMode();
 }
 
+std::string Term::Terminfo::getName() { return m_terminalName; }
+
 bool Term::Terminfo::hasANSIEscapeCode() const { return m_ANSIEscapeCode; }
 
 void Term::Terminfo::setColorMode()
