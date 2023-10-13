@@ -73,8 +73,8 @@ void Term::Terminal::store_and_restore()
   static DWORD dwOriginalInMode{0};
   if(!enabled)
   {
-    if(!GetConsoleMode(Private::out.handle(), &dwOriginalOutMode)) { throw Term::Exception("GetConsoleMode() failed"); }
-    if(!GetConsoleMode(Private::in.handle(), &dwOriginalInMode)) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(GetConsoleMode(Private::out.handle(), &dwOriginalOutMode)==0) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(GetConsoleMode(Private::in.handle(), &dwOriginalInMode)==0) { throw Term::Exception("GetConsoleMode() failed"); }
     DWORD in{(dwOriginalInMode & ~ENABLE_QUICK_EDIT_MODE) | (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | activateMouseEvents())};
     DWORD out{dwOriginalOutMode};
     if(!m_terminfo.isLegacy())
@@ -190,41 +190,5 @@ void Term::Terminal::setRawMode()
     raw.c_cc[VTIME] = 0;
     if(tcsetattr(Private::out.fd(), TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
   }
-#endif
-}
-
-void Term::Terminal::attachConsole()
-{
-#ifdef _WIN32
-  FILE* dump{nullptr};
-  if(!AttachConsole(ATTACH_PARENT_PROCESS))
-  {
-    if(AllocConsole())
-    {
-      AttachConsole(GetCurrentProcessId());
-      freopen_s(&dump, "CONOUT$", "w", stdout);
-      freopen_s(&dump, "CONOUT$", "w", stderr);
-      freopen_s(&dump, "CONIN$", "r", stdin);
-      has_allocated_console = true;
-    }
-  }
-  else
-  {
-    if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) freopen_s(&dump, "CONOUT$", "w", stdout);
-    if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) freopen_s(&dump, "CONOUT$", "w", stderr);
-    if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&dump, "CONIN$", "r", stdin);
-  }
-#endif
-  setvbuf(stdin, nullptr, _IOLBF, 4096);
-  setvbuf(stdout, nullptr, _IOLBF, 4096);
-  setvbuf(stderr, nullptr, _IOLBF, 4096);
-  Term::Private::m_fileInitializer.init();
-}
-
-void Term::Terminal::detachConsole()
-{
-#ifdef _WIN32
-  if(has_allocated_console) FreeConsole();
-#else
 #endif
 }

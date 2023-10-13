@@ -41,10 +41,10 @@ Term::Private::OutputFileHandler& out = reinterpret_cast<Term::Private::OutputFi
 Term::Private::FileHandler::FileHandler(std::recursive_mutex& mutex, const std::string& filename, const std::string& mode) : m_mutex(mutex)
 {
 #if defined(_WIN32)
-  m_handle = {CreateFile(filename.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
+  m_handle = CreateFile(filename.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
   if(m_handle == INVALID_HANDLE_VALUE)
   {
-    m_handle = {CreateFile("NUL", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
+    m_handle = CreateFile("NUL", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
     if(m_handle != INVALID_HANDLE_VALUE) m_null = true;
   }
   if(m_handle != INVALID_HANDLE_VALUE)
@@ -90,12 +90,46 @@ Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() { return
 
 int Term::Private::FileInitializer::m_counter = {0};
 
+void Term::Private::FileInitializer::attachConsole()
+{
+#if defined(_WIN32)
+  BOOL attached{AttachConsole(ATTACH_PARENT_PROCESS)};
+  // Iw we don't have console try to create one
+  if(GetLastError() == ERROR_INVALID_HANDLE && !attached)
+  {
+    if(AllocConsole())
+    {
+      hadToAttachConsole = true;
+      AttachConsole(GetCurrentProcessId());
+    }
+  }
+  FILE* fDummy{nullptr};
+  if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) freopen_s(&fDummy, "CONOUT$", "w", stdout);
+  if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) freopen_s(&fDummy, "CONOUT$", "w", stderr);
+  if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&fDummy, "CONIN$", "r", stdin);
+#endif
+  setvbuf(stdin, nullptr, _IOLBF, 4096);
+  setvbuf(stdout, nullptr, _IOLBF, 4096);
+  setvbuf(stderr, nullptr, _IOLBF, 4096);
+}
+
+void Term::Private::FileInitializer::detachConsole()
+{
+#if defined(_WIN32)
+  if(hadToAttachConsole) FreeConsole();
+#endif
+}
+
+bool Term::Private::FileInitializer::hadToAttachConsole = {false};
+
+
 void Term::Private::FileInitializer::init()
 {
   // MacOS was not happy wish a static mutex in the class so we create it and pass to each class;
   static std::recursive_mutex io_mutex;
   if(m_counter++ == 0)
   {
+    attachConsole();
 #if defined(_WIN32)
     new(&Term::Private::in) InputFileHandler(io_mutex, "CONIN$");
     new(&Term::Private::out) OutputFileHandler(io_mutex, "CONOUT$");
@@ -106,7 +140,10 @@ void Term::Private::FileInitializer::init()
   }
 }
 
-Term::Private::FileInitializer::FileInitializer() { init(); }
+Term::Private::FileInitializer::FileInitializer()
+{ 
+  init();
+}
 
 Term::Private::FileInitializer::~FileInitializer()
 {
@@ -114,6 +151,7 @@ Term::Private::FileInitializer::~FileInitializer()
   {
     (&Term::Private::in)->~InputFileHandler();
     (&Term::Private::out)->~OutputFileHandler();
+    detachConsole();
   }
 }
 

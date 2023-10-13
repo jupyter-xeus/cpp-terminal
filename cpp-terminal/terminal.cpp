@@ -51,9 +51,9 @@ Term::Terminal::Terminal()
 {
   Term::Private::Sigwinch::blockSigwinch();
   setBadStateReturnCode();
-  attachConsole();
-  set_unset_utf8();
+  Term::Private::m_fileInitializer.init();
   store_and_restore();
+  set_unset_utf8();
   activateMouseEvents();
   activateFocusEvents();
   m_terminfo.checkUTF8();
@@ -65,17 +65,12 @@ Term::Terminal::~Terminal()
 {
   try
   {
-    // For windows
-    Term::cerr << std::flush;
-    Term::clog << std::flush;
-    Term::cout << std::flush;
     if(m_options.has(Option::ClearScreen)) Term::Private::out.write(clear_buffer() + style(Style::RESET) + cursor_move(1, 1) + screen_load());
     if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_on());
     set_unset_utf8();
     desactivateFocusEvents();
     desactivateMouseEvents();
     store_and_restore();
-    detachConsole();
   }
   catch(const Term::Exception& e)
   {
