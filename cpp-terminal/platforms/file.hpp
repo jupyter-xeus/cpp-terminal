@@ -26,6 +26,10 @@ public:
   FileInitializer();
   static void init();
   ~FileInitializer();
+  FileInitializer(const FileInitializer&)            = delete;
+  FileInitializer(FileInitializer&&)                 = delete;
+  FileInitializer& operator=(const FileInitializer&) = delete;
+  FileInitializer& operator=(FileInitializer&&)      = delete;
 
 private:
   static void attachConsole();
@@ -45,7 +49,11 @@ public:
   using Handle = FILE*;
 #endif
   FileHandler(std::recursive_mutex& mutex, const std::string&, const std::string&);
-  ~FileHandler();
+  FileHandler(const FileHandler&)            = delete;
+  FileHandler(FileHandler&&)                 = delete;
+  FileHandler& operator=(const FileHandler&) = delete;
+  FileHandler& operator=(FileHandler&&)      = delete;
+  virtual ~FileHandler();
   Handle handle();
   bool   null() const;
   FILE*  file();
@@ -53,10 +61,6 @@ public:
   void   lockIO();
   void   unlockIO();
   void   flush();
-  FileHandler(const FileHandler&)            = delete;
-  FileHandler& operator=(const FileHandler&) = delete;
-  FileHandler(FileHandler&&)                 = delete;
-  FileHandler& operator=(FileHandler&&)      = delete;
 
 private:
   std::recursive_mutex& m_mutex;  // should be static but MacOS don't want it (crash at runtime)
@@ -76,6 +80,7 @@ public:
   OutputFileHandler& operator=(const OutputFileHandler& rhs) = delete;
   OutputFileHandler(OutputFileHandler&& other)               = delete;
   OutputFileHandler& operator=(OutputFileHandler&& rhs)      = delete;
+  virtual ~OutputFileHandler()                               = default;
 };
 
 class InputFileHandler : public FileHandler
@@ -87,6 +92,7 @@ public:
   InputFileHandler& operator=(const InputFileHandler&) = delete;
   InputFileHandler(InputFileHandler&&)                 = delete;
   InputFileHandler& operator=(InputFileHandler&&)      = delete;
+  virtual ~InputFileHandler()                          = default;
 };
 
 extern InputFileHandler&  in;
