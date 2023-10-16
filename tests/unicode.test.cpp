@@ -19,7 +19,7 @@ TEST_CASE("to_narrow")
 {
   std::wstring in(L"Hello World; 你好; おはようございます; בוקר טוב");
   std::string  out{Term::Private::to_narrow(in)};
-  CHECK(out == u8"Hello World; 你好; おはようございます; בוקר טוב");
+  CHECK(out == std::string(u8"Hello World; 你好; おはようございます; בוקר טוב"));
 }
 #endif
 

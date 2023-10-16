@@ -21,6 +21,6 @@ TEST_CASE("WindowsError")
   Term::Private::WindowsError error(1);
   std::string                 ret{error.what()};
   CHECK(error.code() == 1);
-  CHECK(std::string(error.what()) == u8"Incorrect function.");
+  CHECK(std::string(error.what()) == std::string(u8"Incorrect function."));
 }
 #endif
