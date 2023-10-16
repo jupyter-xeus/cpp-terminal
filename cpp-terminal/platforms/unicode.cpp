@@ -12,6 +12,7 @@
 #include "cpp-terminal/platforms/exception.hpp"
 
 #if defined(_WIN32)
+  #include <limits>
   #include <windows.h>
 #endif
 
