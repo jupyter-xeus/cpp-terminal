@@ -70,7 +70,7 @@ void Term::Terminfo::setLegacy()
     }
   }
 #else
-  m_legacy         = false;
+  m_legacy = false;
 #endif
 }
 
