@@ -8,7 +8,7 @@
 */
 
 #if defined(_WIN32)
-  #include "cpp-terminal/platforms/conversion.hpp"
+  #include "cpp-terminal/platforms/unicode.hpp"
 
   #include <vector>
   #include <windows.h>
@@ -68,7 +68,7 @@ void sendString(Term::Private::BlockingQueue& events, std::wstring& str)
 {
   if(!str.empty())
   {
-    events.push(Term::Event(Term::Private::to_utf8(str.c_str())));
+    events.push(Term::Event(Term::Private::to_narrow(str.c_str())));
     str.clear();
   }
 }

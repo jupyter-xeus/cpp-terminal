@@ -43,5 +43,4 @@ std::wstring Term::Private::to_wide(const std::string& in)
   if(ret_error == 0) throw Term::Private::WindowsError(::GetLastError());
   return ret;
 }
-
 #endif
