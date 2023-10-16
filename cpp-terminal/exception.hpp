@@ -9,10 +9,10 @@
 
 #pragma once
 
+#include <cstdint>
 #include <exception>
 #include <stdexcept>
 #include <string>
-#include <cstdint>
 
 namespace Term
 {
@@ -27,7 +27,7 @@ public:
   virtual ~Exception() = default;
 
 protected:
-  std::string m_what;
+  std::string  m_what;
   std::int64_t m_code{0};
 };
 
