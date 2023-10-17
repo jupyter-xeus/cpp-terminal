@@ -54,8 +54,6 @@ Term::Terminal::Terminal()
   Term::Private::m_fileInitializer.init();
   store_and_restore();
   set_unset_utf8();
-  activateMouseEvents();
-  activateFocusEvents();
   m_terminfo.checkUTF8();
 }
 
