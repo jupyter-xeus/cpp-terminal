@@ -188,6 +188,8 @@ void Term::Terminal::setRawMode()
     raw.c_cc[VMIN]  = 1;
     raw.c_cc[VTIME] = 0;
     if(tcsetattr(Private::out.fd(), TCSAFLUSH, &raw) == -1) { throw Term::Exception("tcsetattr() failed"); }
+    activateMouseEvents();
+    activateFocusEvents();
   }
 #endif
 }
