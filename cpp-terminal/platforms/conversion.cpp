@@ -11,24 +11,10 @@
 
 #include "cpp-terminal/exception.hpp"
 
-#if defined(_WIN32)
-  #include <windows.h>
-#endif
-
 namespace Term
 {
 namespace Private
 {
-
-#if defined(_WIN32)
-std::string to_utf8(LPCWCH utf16Str)
-{
-  int         size_needed{WideCharToMultiByte(CP_UTF8, 0, utf16Str, -1, nullptr, 0, nullptr, nullptr)};
-  std::string ret(static_cast<std::size_t>(size_needed), '\0');
-  WideCharToMultiByte(CP_UTF8, 0, utf16Str, static_cast<int>(wcslen(utf16Str)), &ret[0], size_needed, nullptr, nullptr);
-  return ret.c_str();
-}
-#endif
 
 static constexpr std::uint8_t UTF8_ACCEPT{0};
 static constexpr std::uint8_t UTF8_REJECT{0xf};

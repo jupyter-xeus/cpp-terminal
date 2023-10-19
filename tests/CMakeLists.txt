@@ -50,3 +50,11 @@ add_executable(Args args.test.cpp)
 target_link_libraries(Args PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
 doctest_discover_tests(Args EXTRA_ARGS Bonjour Hello 你好)
 endif()
+
+add_executable(exception exception.test.cpp)
+target_link_libraries(exception PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
+doctest_discover_tests(exception)
+
+add_executable(unicode unicode.test.cpp)
+target_link_libraries(unicode PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
+doctest_discover_tests(unicode)
