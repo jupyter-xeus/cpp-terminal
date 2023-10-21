@@ -14,7 +14,7 @@
 
 int main()
 {
-  Term::cout << "Running cpp-terminal version: " << Term::Version << std::endl;
+  Term::cout << "Running cpp-terminal version: " << Term::Version::string << std::endl;
   try
   {
     Term::cout << "CPP-Terminal basic prompt example: \n\n";

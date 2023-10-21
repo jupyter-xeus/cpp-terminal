@@ -53,7 +53,7 @@ int main()
           {
             Term::cout << "You discovered a key combination not yet managed by cpp-terminal (";
             for(std::size_t i = 0; i != key_str.size(); ++i) Term::cout << static_cast<std::int32_t>(key_str[i]) << " ";
-            Term::cout << ").\nPlease report key combination pressed to " << Term::Homepage << std::endl;
+            Term::cout << ").\nPlease report key combination pressed to " << Term::homepage << std::endl;
           }
         }
         default: break;
