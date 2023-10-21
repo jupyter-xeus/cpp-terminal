@@ -16,20 +16,11 @@ Focus::Focus(const Term::Focus::Type& type) { m_focus = type; }
 
 Term::Focus::Type Focus::type() const { return m_focus; }
 
-bool Focus::isIn() const
-{
-  return m_focus == Term::Focus::Type::In;
-}
+bool Focus::isIn() const { return m_focus == Term::Focus::Type::In; }
 
-bool Focus::isOut() const
-{
-  return m_focus == Term::Focus::Type::Out;
-}
+bool Focus::isOut() const { return m_focus == Term::Focus::Type::Out; }
 
-bool Term::Focus::operator==(const Term::Focus& focus) const
-{
-  return m_focus == focus.m_focus;
-}
+bool Term::Focus::operator==(const Term::Focus& focus) const { return m_focus == focus.m_focus; }
 
 bool Term::Focus::operator!=(const Term::Focus& focus) const { return !(*this == focus); }
 

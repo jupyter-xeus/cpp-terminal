@@ -12,11 +12,28 @@
 namespace Term
 {
 
-// Returns true if the standard input is attached to a terminal
+/**
+ * @brief Check if \b stdin is a \b tty.
+ *
+ * @return true : \b stdin is a \b tty.
+ * @return false : \b stdin is not a \b tty.
+ */
 bool is_stdin_a_tty();
-// Returns true if the standard output is attached to a terminal
+
+/**
+ * @brief Check if \b stdout is a \b tty.
+ *
+ * @return true : \b stdout is a \b tty.
+ * @return false : \b stdout is not a \b tty.
+ */
 bool is_stdout_a_tty();
-// Returns true if the standard error is attached to a terminal
+
+/**
+ * @brief Check if \b stderr is a \b tty.
+ *
+ * @return true : \b stderr is a \b tty.
+ * @return false : \b stderr is not a \b tty.
+ */
 bool is_stderr_a_tty();
 
 }  // namespace Term
