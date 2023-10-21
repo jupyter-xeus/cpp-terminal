@@ -14,27 +14,21 @@ namespace Term
 
 Focus::Focus(const Term::Focus::Type& type) { m_focus = type; }
 
-Term::Focus::Type Focus::type() { return m_focus; }
+Term::Focus::Type Focus::type() const { return m_focus; }
 
-bool Focus::isIn()
+bool Focus::isIn() const
 {
-  if(m_focus == Term::Focus::Type::In) return true;
-  else
-    return false;
+  return m_focus == Term::Focus::Type::In;
 }
 
-bool Focus::isOut()
+bool Focus::isOut() const
 {
-  if(m_focus == Term::Focus::Type::Out) return true;
-  else
-    return false;
+  return m_focus == Term::Focus::Type::Out;
 }
 
 bool Term::Focus::operator==(const Term::Focus& focus) const
 {
-  if(m_focus == focus.m_focus) return true;
-  else
-    return false;
+  return m_focus == focus.m_focus;
 }
 
 bool Term::Focus::operator!=(const Term::Focus& focus) const { return !(*this == focus); }

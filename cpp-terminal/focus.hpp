@@ -25,9 +25,9 @@ public:
   };
   Focus() = default;
   explicit Focus(const Term::Focus::Type& type);
-  Term::Focus::Type type();
-  bool              isIn();
-  bool              isOut();
+  Term::Focus::Type type() const;
+  bool              isIn() const;
+  bool              isOut() const;
   bool              operator==(const Term::Focus& focus) const;
   bool              operator!=(const Term::Focus& focus) const;
 
