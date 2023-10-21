@@ -26,16 +26,16 @@ public:
     FullBuffered
   };
   explicit Buffer(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::streamsize& size = BUFSIZ);
-  virtual ~Buffer() final;
+  ~Buffer() final;
   Buffer(const Buffer&)            = delete;
   Buffer& operator=(const Buffer&) = delete;
   Buffer(Buffer&&)                 = delete;
   Buffer& operator=(Buffer&&)      = delete;
 
 protected:
-  virtual int_type underflow() final;
-  virtual int_type overflow(int c = std::char_traits<Term::Buffer::char_type>::eof()) final;
-  virtual int      sync() final;
+  int_type underflow() final;
+  int_type overflow(int c = std::char_traits<Term::Buffer::char_type>::eof()) final;
+  int      sync() final;
 
 private:
   void               setType(const Term::Buffer::Type& type);

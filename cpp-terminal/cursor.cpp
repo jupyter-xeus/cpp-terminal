@@ -15,22 +15,13 @@ std::size_t Term::Cursor::row() const { return m_position.first; }
 
 std::size_t Term::Cursor::column() const { return m_position.second; }
 
-bool Term::Cursor::empty() const
-{
-  if(m_position.first == 0 && m_position.second == 0) return true;
-  else
-    return false;
-}
+bool Term::Cursor::empty() const { return (m_position.first == 0) && (m_position.second == 0); }
 
 void Term::Cursor::setRow(const std::size_t& row) { m_position.first = row; }
 
 void Term::Cursor::setColum(const std::size_t& column) { m_position.second = column; }
 
-bool Term::Cursor::operator==(const Term::Cursor& cursor) const
-{
-  if(this->row() == cursor.row() && this->column() == cursor.column()) return true;
-  return false;
-}
+bool Term::Cursor::operator==(const Term::Cursor& cursor) const { return this->row() == cursor.row() && this->column() == cursor.column(); }
 
 bool Term::Cursor::operator!=(const Term::Cursor& cursor) const { return !(*this == cursor); }
 

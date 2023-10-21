@@ -184,32 +184,24 @@ Term::Event& Term::Event::operator=(Term::Event&& event) noexcept
 
 Term::Event::Event(const Term::Mouse& mouse) : m_Type(Type::Mouse) { m_container.m_Mouse = mouse; }
 
-bool Term::Event::empty() const
-{
-  if(m_Type == Type::Empty) return true;
-  else
-    return false;
-}
+bool Term::Event::empty() const { return m_Type == Type::Empty; }
 
 Term::Event::operator Term::Mouse() const
 {
   if(m_Type == Type::Mouse) return m_container.m_Mouse;
-  else
-    return Mouse();
+  return {};
 }
 
 Term::Event::operator std::string() const
 {
   if(m_Type == Type::CopyPaste) return m_container.m_string;
-  else
-    return std::string();
+  return {};
 }
 
 Term::Event::operator Term::Screen() const
 {
   if(m_Type == Type::Screen) return m_container.m_Screen;
-  else
-    return Term::Screen();
+  return {};
 }
 
 Term::Event::Event(const Term::Screen& screen) : m_Type(Type::Screen) { m_container.m_Screen = screen; }
@@ -477,20 +469,17 @@ void Term::Event::parse(const std::string& str)
 Term::Event::operator Term::Key() const
 {
   if(m_Type == Type::Key) return m_container.m_Key;
-  else
-    return Key();
+  return {};
 }
 
 Term::Event::operator Term::Cursor() const
 {
   if(m_Type == Type::Cursor) return m_container.m_Cursor;
-  else
-    return Cursor();
+  return {};
 }
 
 Term::Event::operator Term::Focus() const
 {
   if(m_Type == Type::Focus) return m_container.m_Focus;
-  else
-    return Focus();
+  return {};
 }

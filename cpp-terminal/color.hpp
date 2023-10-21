@@ -94,14 +94,14 @@ private:
   };
 };
 
-std::string color_bg(const Term::Color::Name&);
-std::string color_bg(const std::uint8_t&);
+std::string color_bg(const Term::Color::Name& name);
+std::string color_bg(const std::uint8_t& value);
 std::string color_bg(const std::uint8_t&, const std::uint8_t&, const std::uint8_t&);
-std::string color_bg(const Color&);
+std::string color_bg(const Color& color);
 
-std::string color_fg(const Term::Color::Name&);
-std::string color_fg(const std::uint8_t&);
+std::string color_fg(const Term::Color::Name& name);
+std::string color_fg(const std::uint8_t& value);
 std::string color_fg(const std::uint8_t&, const std::uint8_t&, const std::uint8_t&);
-std::string color_fg(const Color&);
+std::string color_fg(const Color& color);
 
 }  // namespace Term

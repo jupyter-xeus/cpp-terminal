@@ -33,8 +33,8 @@ class Options
 {
 public:
   Options() = default;
-  bool has(const Option&);
-  void set(const Option&);
+  bool has(const Option& option);
+  void set(const Option& option);
 
 private:
   std::vector<Option> m_Options;
