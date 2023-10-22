@@ -21,17 +21,16 @@ namespace Term
  */
 enum class Option : std::int16_t
 {
-  Default       = 0, ///< Default state set up by cpp-terminal.
-  Raw           = 1, ///< Set terminal in \b raw mode.
-  Cooked        = -1, ///< Set terminal in \b cooked mode.
-  ClearScreen   = 2, ///< Clear the screen (and restore its states when the program stops).
-  NoClearScreen = -2, ///< Doesn't clear the screen.
-  SignalKeys    = 3, ///< Enable the signal keys (Ctrl+C, etc...), if activated these keys will have their default OS behaviour.
-  NoSignalKeys  = -3, ///< Disable the signal keys (Ctrl+C, etc...) will not be processed by the OS and will appears has standard combination keys.
-  Cursor        = 4, ///< Show the cursor.
-  NoCursor      = -4 ///< Hide the cursor (and restore its states when the program stops).
+  Default       = 0,   ///< Default state set up by cpp-terminal.
+  Raw           = 1,   ///< Set terminal in \b raw mode.
+  Cooked        = -1,  ///< Set terminal in \b cooked mode.
+  ClearScreen   = 2,   ///< Clear the screen (and restore its states when the program stops).
+  NoClearScreen = -2,  ///< Doesn't clear the screen.
+  SignalKeys    = 3,   ///< Enable the signal keys (Ctrl+C, etc...), if activated these keys will have their default OS behaviour.
+  NoSignalKeys  = -3,  ///< Disable the signal keys (Ctrl+C, etc...) will not be processed by the OS and will appears has standard combination keys.
+  Cursor        = 4,   ///< Show the cursor.
+  NoCursor      = -4   ///< Hide the cursor (and restore its states when the program stops).
 };
-
 
 class Options
 {

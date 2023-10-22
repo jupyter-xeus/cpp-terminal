@@ -45,7 +45,7 @@ public:
    * @return true : The terminal has focus \b in.
    * @return false : The terminal has focus \b out.
    */
-  bool              in() const;
+  bool in() const;
 
   /**
    * @brief Check is the focus is \b out.
@@ -53,14 +53,13 @@ public:
    * @return true : The terminal has focus \b out.
    * @return false : The terminal has focus \b in.
    */
-  bool              out() const;
+  bool out() const;
 
-  bool              operator==(const Term::Focus& focus) const;
-  bool              operator!=(const Term::Focus& focus) const;
+  bool operator==(const Term::Focus& focus) const;
+  bool operator!=(const Term::Focus& focus) const;
 
 private:
   Term::Focus::Type m_focus{Term::Focus::Type::Unknown};
 };
 
 }  // namespace Term
-
