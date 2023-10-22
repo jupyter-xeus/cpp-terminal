@@ -1,6 +1,6 @@
 /*
 * cpp-terminal
-* C++ library for writing multiplatform terminal applications.
+* C++ library for writing multi-platform terminal applications.
 *
 * SPDX-FileCopyrightText: 2019-2023 cpp-terminal
 *
@@ -14,15 +14,15 @@
 
 int main()
 {
-  Term::cout << "Running cpp-terminal version: " << Term::Version << std::endl;
+  Term::cout << "Running cpp-terminal version: " << Term::Version::string << std::endl;
   try
   {
     Term::cout << "CPP-Terminal basic prompt example: \n\n";
     switch(Term::prompt_simple("Proceed?"))
     {
-      case Term::Result_simple::YES: Term::cout << "Proceeding...\n"; break;
-      case Term::Result_simple::NO: Term::cout << "Stopping...\n"; break;
-      case Term::Result_simple::ABORT: Term::cout << "Exit signal received, exiting now...\n"; break;
+      case Term::Result_simple::Yes: Term::cout << "Proceeding...\n"; break;
+      case Term::Result_simple::No: Term::cout << "Stopping...\n"; break;
+      case Term::Result_simple::Abort: Term::cout << "Exit signal received, exiting now...\n"; break;
     }
   }
   catch(const Term::Exception& re)

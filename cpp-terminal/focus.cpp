@@ -1,6 +1,6 @@
 /*
 * cpp-terminal
-* C++ library for writing multiplatform terminal applications.
+* C++ library for writing multi-platform terminal applications.
 *
 * SPDX-FileCopyrightText: 2019-2023 cpp-terminal
 *
@@ -14,28 +14,13 @@ namespace Term
 
 Focus::Focus(const Term::Focus::Type& type) { m_focus = type; }
 
-Term::Focus::Type Focus::type() { return m_focus; }
+Term::Focus::Type Focus::type() const { return m_focus; }
 
-bool Focus::isIn()
-{
-  if(m_focus == Term::Focus::Type::In) return true;
-  else
-    return false;
-}
+bool Focus::in() const { return m_focus == Term::Focus::Type::In; }
 
-bool Focus::isOut()
-{
-  if(m_focus == Term::Focus::Type::Out) return true;
-  else
-    return false;
-}
+bool Focus::out() const { return m_focus == Term::Focus::Type::Out; }
 
-bool Term::Focus::operator==(const Term::Focus& focus) const
-{
-  if(m_focus == focus.m_focus) return true;
-  else
-    return false;
-}
+bool Term::Focus::operator==(const Term::Focus& focus) const { return m_focus == focus.m_focus; }
 
 bool Term::Focus::operator!=(const Term::Focus& focus) const { return !(*this == focus); }
 

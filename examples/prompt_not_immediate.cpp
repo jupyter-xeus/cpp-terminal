@@ -1,6 +1,6 @@
 /*
 * cpp-terminal
-* C++ library for writing multiplatform terminal applications.
+* C++ library for writing multi-platform terminal applications.
 *
 * SPDX-FileCopyrightText: 2019-2023 cpp-terminal
 *
@@ -15,20 +15,20 @@
 
 int main()
 {
-  std::cout << "Running cpp-terminal version: " << Term::Version << std::endl;
+  std::cout << "Running cpp-terminal version: " << Term::Version::string << std::endl;
   try
   {
     std::cout << "CPP-Terminal basic prompt example: \n\n";
     switch(Term::prompt("Proceed?", "Y", "n", ":", false))
     {
-      case Term::Result::NONE:  // no input was given
+      case Term::Result::None:  // no input was given
         std::cout << "No input given, proceeding anyway...\n";
         break;
-      case Term::Result::INVALID: std::cout << "Invalid input given, proceeding anyway\n"; break;
-      case Term::Result::YES: std::cout << "Proceeding...\n"; break;
-      case Term::Result::NO: std::cout << "Stopping...\n"; break;
-      case Term::Result::ABORT: std::cout << "Exit signal received, exiting now...\n"; break;
-      case Term::Result::ERROR:
+      case Term::Result::Invalid: std::cout << "Invalid input given, proceeding anyway\n"; break;
+      case Term::Result::Yes: std::cout << "Proceeding...\n"; break;
+      case Term::Result::No: std::cout << "Stopping...\n"; break;
+      case Term::Result::Abort: std::cout << "Exit signal received, exiting now...\n"; break;
+      case Term::Result::Error:
         std::cout << "Error while capturing input, is your terminal attached to a TTY?\n";
         std::cout << "Aborting...\n";
         break;

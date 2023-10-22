@@ -1,8 +1,8 @@
 /*
 * cpp-terminal
-* C++ library for writing multiplatform terminal applications.
+* C++ library for writing multi-platform terminal applications.
 *
-* SPDX-FileCopyrightText: 2019-2023 Ondřej Čertík
+* SPDX-FileCopyrightText: 2019-2023 cpp-terminal
 *
 * SPDX-License-Identifier: MIT
 */
@@ -10,9 +10,9 @@
 #include "cpp-terminal/version.hpp"
 
 // clang-format off
-const int Term::VersionMajor{@cpp-terminal_VERSION_MAJOR@};
-const int Term::VersionMinor{@cpp-terminal_VERSION_MINOR@};
-const int Term::VersionPatch{@cpp-terminal_VERSION_PATCH@};
-const char* Term::Version{"@cpp-terminal_VERSION_MAJOR@.@cpp-terminal_VERSION_MINOR@.@cpp-terminal_VERSION_PATCH@"};
-const char* Term::Homepage{"@cpp-terminal_HOMEPAGE_URL@"};
+const std::uint16_t Term::Version::major{@cpp-terminal_VERSION_MAJOR@};
+const std::uint16_t Term::Version::minor{@cpp-terminal_VERSION_MINOR@};
+const std::uint16_t Term::Version::patch{@cpp-terminal_VERSION_PATCH@};
+const std::string Term::Version::string{"@cpp-terminal_VERSION_MAJOR@.@cpp-terminal_VERSION_MINOR@.@cpp-terminal_VERSION_PATCH@"};
+const std::string Term::homepage{"@cpp-terminal_HOMEPAGE_URL@"};
 // clang-format on

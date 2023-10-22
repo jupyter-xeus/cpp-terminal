@@ -1,6 +1,6 @@
 /*
 * cpp-terminal
-* C++ library for writing multiplatform terminal applications.
+* C++ library for writing multi-platform terminal applications.
 *
 * SPDX-FileCopyrightText: 2019-2023 cpp-terminal
 *
@@ -82,7 +82,7 @@ void Term::Window::set_h(const std::size_t& new_h)
     m_bg_reset.insert(m_bg_reset.end(), dc, true);
     m_fg.insert(m_fg.end(), dc, {0, 0, 0});
     m_bg.insert(m_bg.end(), dc, {0, 0, 0});
-    m_style.insert(m_style.end(), dc, Style::RESET);
+    m_style.insert(m_style.end(), dc, Style::Reset);
     h = new_h;
   }
   else { throw Term::Exception("Shrinking height not supported."); }
@@ -201,7 +201,7 @@ void Term::Window::clear()
       set_char(i, j, ' ');
       set_fg_reset(i, j);
       set_bg_reset(i, j);
-      set_style(i, j, Style::RESET);
+      set_style(i, j, Style::Reset);
     }
   }
 }
@@ -214,7 +214,7 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
   Color current_bg       = {255, 255, 255};
   bool  current_fg_reset = true;
   bool  current_bg_reset = true;
-  Style current_style    = Style::RESET;
+  Style current_style    = Style::Reset;
   for(std::size_t j = 1; j <= h; j++)
   {
     if(term) { out.append(cursor_move(y0 + j - 1, x0)); }
@@ -266,7 +266,7 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
       {
         current_style = get_style(i, j);
         update_style  = true;
-        if(current_style == Style::RESET)
+        if(current_style == Style::Reset)
         {
           // style::reset: reset fg and bg colors too, we have to
           // set them again if they are non-default, but if fg or
@@ -296,7 +296,7 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
   }
   if(!current_fg_reset) out.append(color_fg(Term::Color::Name::Default));
   if(!current_bg_reset) out.append(color_bg(Term::Color::Name::Default));
-  if(current_style != Style::RESET) out.append(style(Style::RESET));
+  if(current_style != Style::Reset) out.append(style(Style::Reset));
   if(term)
   {
     out.append(cursor_move(y0 + cursor_y - 1, x0 + cursor_x - 1));

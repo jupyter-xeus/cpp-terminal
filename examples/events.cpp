@@ -1,6 +1,6 @@
 /*
 * cpp-terminal
-* C++ library for writing multiplatform terminal applications.
+* C++ library for writing multi-platform terminal applications.
 *
 * SPDX-FileCopyrightText: 2019-2023 cpp-terminal
 *
@@ -59,7 +59,7 @@ int main()
         }
         case Term::Event::Type::Focus:
         {
-          if(static_cast<Term::Focus>(event).isIn()) Term::cout << "Event: Focus (In)" << std::endl;
+          if(static_cast<Term::Focus>(event).in()) Term::cout << "Event: Focus (In)" << std::endl;
           else
             Term::cout << "Event: Focus (Out)" << std::endl;
           break;

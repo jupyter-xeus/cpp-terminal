@@ -1,6 +1,6 @@
 /*
 * cpp-terminal
-* C++ library for writing multiplatform terminal applications.
+* C++ library for writing multi-platform terminal applications.
 *
 * SPDX-FileCopyrightText: 2019-2023 cpp-terminal
 *
@@ -55,7 +55,7 @@ void render(const std::size_t& rows, const std::size_t& cols, const std::size_t&
     {
       scr.append(Term::color_fg(Term::Color::Name::Red));
       scr.append(Term::color_bg(Term::Color::Name::Gray));
-      scr.append(Term::style(Term::Style::BOLD));
+      scr.append(Term::style(Term::Style::Bold));
     }
     else
     {
@@ -67,7 +67,7 @@ void render(const std::size_t& rows, const std::size_t& cols, const std::size_t&
     for(std::size_t j = 1; j <= menuwidth - s.size(); j++) { scr.append(" "); }
     scr.append(Term::color_bg(Term::Color::Name::Default));
     scr.append(Term::color_fg(Term::Color::Name::Default));
-    scr.append(Term::style(Term::Style::RESET));
+    scr.append(Term::style(Term::Style::Reset));
     if(Term::terminal.supportUTF8()) scr.append("│");
     else
       scr.append("|");

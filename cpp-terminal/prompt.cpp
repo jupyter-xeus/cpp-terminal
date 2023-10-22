@@ -1,6 +1,6 @@
 /*
 * cpp-terminal
-* C++ library for writing multiplatform terminal applications.
+* C++ library for writing multi-platform terminal applications.
 *
 * SPDX-FileCopyrightText: 2019-2023 cpp-terminal
 *
@@ -13,6 +13,7 @@
 #include "cpp-terminal/event.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
+#include "cpp-terminal/iostream.hpp"
 #include "cpp-terminal/key.hpp"
 #include "cpp-terminal/platforms/conversion.hpp"
 #include "cpp-terminal/screen.hpp"
@@ -29,7 +30,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
   if(!Term::is_stdin_a_tty())
   {
     std::cout << '\n' << std::flush;
-    return Result::ERROR;
+    return Result::Error;
   }
 
   Term::Key key;
@@ -43,27 +44,27 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
       if(key == Term::Key::y || key == Term::Key::Y)
       {
         std::cout << '\n' << std::flush;
-        return Result::YES;
+        return Result::Yes;
       }
       else if(key == Term::Key::n || key == Term::Key::N)
       {
         std::cout << '\n' << std::flush;
-        return Result::NO;
+        return Result::No;
       }
       else if(key == Term::Key::Ctrl_C || key == Term::Key::Ctrl_D)
       {
         std::cout << '\n' << std::flush;
-        return Result::ABORT;
+        return Result::Abort;
       }
       else if(key == Term::Key::Enter)
       {
         std::cout << '\n' << std::flush;
-        return Result::NONE;
+        return Result::None;
       }
       else
       {
         std::cout << '\n' << std::flush;
-        return Result::INVALID;
+        return Result::Invalid;
       }
     }
   }
@@ -87,7 +88,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
       else if(key == Term::Key::Ctrl_C || key == Term::Key::Ctrl_D)
       {
         std::cout << '\n';
-        return Result::ABORT;
+        return Result::Abort;
       }
       else if(key == Term::Key::Backspace)
       {
@@ -102,22 +103,22 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
         if(input == "y" || input == "yes")
         {
           std::cout << '\n' << std::flush;
-          return Result::YES;
+          return Result::Yes;
         }
         else if(input == "n" || input == "no")
         {
           std::cout << '\n' << std::flush;
-          return Result::NO;
+          return Result::No;
         }
         else if(input.empty())
         {
           std::cout << '\n' << std::flush;
-          return Result::NONE;
+          return Result::None;
         }
         else
         {
           std::cout << '\n' << std::flush;
-          return Result::INVALID;
+          return Result::Invalid;
         }
       }
     }
@@ -128,13 +129,13 @@ Term::Result_simple Term::prompt_simple(const std::string& message)
 {
   switch(prompt(message, "y", "N", ":", false))
   {
-    case Result::YES: return Result_simple::YES;
-    case Result::ABORT: return Result_simple::ABORT;
-    case Result::NO:     // falls through
-    case Result::ERROR:  // falls through
-    case Result::NONE:   // falls through
-    case Result::INVALID:
-    default: return Result_simple::NO;
+    case Result::Yes: return Result_simple::Yes;
+    case Result::Abort: return Result_simple::Abort;
+    case Result::No:     // falls through
+    case Result::Error:  // falls through
+    case Result::None:   // falls through
+    case Result::Invalid:
+    default: return Result_simple::No;
   }
 }
 
@@ -192,7 +193,7 @@ void Term::render(Term::Window& scr, const Model& m, const std::size_t& cols)
     if(j == 0)
     {
       scr.fill_fg(1, j + 1, m.prompt_string.size(), m.lines.size(), Term::Color::Name::Green);
-      scr.fill_style(1, j + 1, m.prompt_string.size(), m.lines.size(), Term::Style::BOLD);
+      scr.fill_style(1, j + 1, m.prompt_string.size(), m.lines.size(), Term::Style::Bold);
       scr.print_str(1, j + 1, m.prompt_string);
     }
     else

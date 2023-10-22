@@ -1,6 +1,6 @@
 /*
 * cpp-terminal
-* C++ library for writing multiplatform terminal applications.
+* C++ library for writing multi-platform terminal applications.
 *
 * SPDX-FileCopyrightText: 2019-2023 cpp-terminal
 *
@@ -24,7 +24,7 @@ int __stdcall WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 int main()
 #endif
 {
-  std::cout << "Running cpp-terminal version: " << Term::Version << " website : " << Term::Homepage << std::endl << std::endl;
+  std::cout << "Running cpp-terminal version: " << Term::Version::string << " website : " << Term::homepage << std::endl << std::endl;
   try
   {
     std::string mode;
@@ -43,7 +43,7 @@ int main()
     std::cout << "Terminal has " << mode << " color support" << std::endl << std::endl;
 
     std::string text = "Some text with " + Term::color_fg(Term::Color::Name::Red) + color_bg(Term::Color::Name::Green) + "red on green" + color_bg(Term::Color::Name::Default) + color_fg(Term::Color::Name::Default);
-    text += " and some " + style(Term::Style::BOLD) + "bold text" + style(Term::Style::RESET) + ".\n";
+    text += " and some " + style(Term::Style::Bold) + "bold text" + style(Term::Style::Reset) + ".\n";
     text += "Unicode works too: originally written by Ondřej Čertík.";
     std::cout << text << std::endl;
 

@@ -1,6 +1,6 @@
 /*
 * cpp-terminal
-* C++ library for writing multiplatform terminal applications.
+* C++ library for writing multi-platform terminal applications.
 *
 * SPDX-FileCopyrightText: 2019-2023 cpp-terminal
 *
@@ -51,7 +51,7 @@ private:
   Term::Style get_style(const std::size_t&, const std::size_t&);
 
 public:
-  Window(const std::size_t& w, const std::size_t& h) : w{w}, h{h}, chars(w * h, ' '), m_fg(w * h, {0, 0, 0}), m_bg(w * h, {0, 0, 0}), m_fg_reset(w * h, true), m_bg_reset(w * h, true), m_style(w * h, Style::RESET){};
+  Window(const std::size_t& w, const std::size_t& h) : w{w}, h{h}, chars(w * h, ' '), m_fg(w * h, {0, 0, 0}), m_bg(w * h, {0, 0, 0}), m_fg_reset(w * h, true), m_bg_reset(w * h, true), m_style(w * h, Style::Reset){};
 
   CPP_TERMINAL_NODISCARD std::size_t get_w() const;
 
