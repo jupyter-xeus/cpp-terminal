@@ -20,14 +20,14 @@ int main()
     Term::cout << "CPP-Terminal basic prompt example: \n\n";
     switch(Term::prompt("Proceed?", "Y", "n", ":", true))
     {
-      case Term::Result::NONE:  // no input was given
+      case Term::Result::None:  // no input was given
         Term::cout << "No input given, proceeding anyway...\n";
         break;
-      case Term::Result::INVALID: Term::cout << "Invalid input given, proceeding anyway\n"; break;
-      case Term::Result::YES: Term::cout << "Proceeding...\n"; break;
-      case Term::Result::NO: Term::cout << "Stopping...\n"; break;
-      case Term::Result::ABORT: Term::cout << "Exit signal received, exiting now...\n"; break;
-      case Term::Result::ERROR:
+      case Term::Result::Invalid: Term::cout << "Invalid input given, proceeding anyway\n"; break;
+      case Term::Result::Yes: Term::cout << "Proceeding...\n"; break;
+      case Term::Result::No: Term::cout << "Stopping...\n"; break;
+      case Term::Result::Abort: Term::cout << "Exit signal received, exiting now...\n"; break;
+      case Term::Result::Error:
         Term::cout << "Error while capturing input, is your terminal attached to a TTY?\n";
         Term::cout << "Aborting...\n";
         break;

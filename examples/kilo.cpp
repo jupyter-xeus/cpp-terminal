@@ -670,9 +670,9 @@ void editorDrawRows(std::string& ab)
         if(iscntrl(c[j]))
         {
           char sym = (c[j] <= 26) ? '@' + c[j] : '?';
-          ab.append(style(Term::Style::REVERSED));
+          ab.append(style(Term::Style::Reversed));
           ab.append(std::string(&sym, 1));
-          ab.append(style(Term::Style::RESET));
+          ab.append(style(Term::Style::Reset));
           if(current_color != Term::Color::Name::Default) { ab.append(color_fg(current_color)); }
         }
         else if(hl[j] == HL_NORMAL)
@@ -705,7 +705,7 @@ void editorDrawRows(std::string& ab)
 
 void editorDrawStatusBar(std::string& ab)
 {
-  ab.append(style(Term::Style::REVERSED));
+  ab.append(style(Term::Style::Reversed));
   char status[80], rstatus[80];
   int  len  = snprintf(status, sizeof(status), "%.20s - %d lines %s", E.filename ? E.filename : "[No Name]", E.numrows, E.dirty ? "(modified)" : "");
   int  rlen = snprintf(rstatus, sizeof(rstatus), "%s | %d/%d", E.syntax ? E.syntax->filetype : "no ft", E.cy + 1, E.numrows);
@@ -724,7 +724,7 @@ void editorDrawStatusBar(std::string& ab)
       len++;
     }
   }
-  ab.append(style(Term::Style::RESET));
+  ab.append(style(Term::Style::Reset));
   ab.append("\r\n");
 }
 

@@ -16,46 +16,46 @@
 
 namespace Term
 {
-/* Basic prompt */
 
 // indicates the results of prompt_blocking() and prompt_non_blocking
 enum class Result
 {
-  // returned if the user chose yes
-  YES,
-  // returned if the user chose no
-  NO,
-  // returned of no terminal is attached to the program
-  ERROR,
-  // returned of the enter key was pressed without additional input
-  NONE,
-  // returned if CTRL+C was pressed
-  ABORT,
-  // returned if the given input did not match the case 'yes' of 'no'
-  INVALID
+  Yes,     ///< Returned if the user chose \b yes.
+  No,      ///< Returned if the user chose \b no.
+  Error,   ///< Returned if no terminal is attached to the program.
+  None,    ///< Returned if the enter key was pressed without additional input.
+  Abort,   ///< Returned if CTRL+C was pressed.
+  Invalid  ///< Returned if the given input did not match the case \b yes of \b no
 };
+
+/**
+ * @brief A simple yes/no prompt, requires the user to press the ENTER key to continue. The arguments are used like this: 1 [2/3]4 <user Input>.
+ * The immediate switch indicates toggles whether pressing enter for confirming the input is required or not.
+ *
+ * @param message
+ * @param first_option
+ * @param second_option
+ * @param prompt_indicator
+ * @return Result
+ */
+Result prompt(const std::string& message, const std::string& first_option, const std::string& second_option, const std::string& prompt_indicator, bool);
+
 // indicates the results of prompt_simple()
 enum class Result_simple
 {
-  // returned if the user chose yes
-  YES,
-  // returned if the user chose no or invalid / no input or if no terminal is
-  // attached
-  NO,
-  // returned if CTRL+C was pressed
-  ABORT
+
+  Yes,   ///< Returned if the user chose \b yes.
+  No,    ///< Returned if the user chose no or invalid / no input or if no terminal is attached.
+  Abort  ///< Returned if CTRL+C was pressed.
 };
 
-// A simple yes/no prompt, requires the user to press the ENTER key to continue
-// The arguments are used like this: 1 [2/3]4 <user Input>
-// the immediate switch indicates toggles whether pressing enter for
-// confirming the input is required or not
-Result prompt(const std::string& message, const std::string& first_option, const std::string& second_option, const std::string& prompt_indicator, bool);
-
-// The most simple prompt possible, requires the user to press enter to continue
-// The arguments are used like this: 1 [y/N]:
-// Invalid input, errors (like no attached terminal) all result in 'no' as
-// default
+/**
+ * @brief The most simple prompt possible, requires the user to press enter to continue. The arguments are used like this: 1 [y/N]:
+ * Invalid input, errors (like no attached terminal) all result in \b no as default.
+ *
+ * @param message
+ * @return Result_simple
+ */
 Result_simple prompt_simple(const std::string& message);
 
 /* Multiline prompt */

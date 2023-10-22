@@ -20,9 +20,9 @@ int main()
     Term::cout << "CPP-Terminal basic prompt example: \n\n";
     switch(Term::prompt_simple("Proceed?"))
     {
-      case Term::Result_simple::YES: Term::cout << "Proceeding...\n"; break;
-      case Term::Result_simple::NO: Term::cout << "Stopping...\n"; break;
-      case Term::Result_simple::ABORT: Term::cout << "Exit signal received, exiting now...\n"; break;
+      case Term::Result_simple::Yes: Term::cout << "Proceeding...\n"; break;
+      case Term::Result_simple::No: Term::cout << "Stopping...\n"; break;
+      case Term::Result_simple::Abort: Term::cout << "Exit signal received, exiting now...\n"; break;
     }
   }
   catch(const Term::Exception& re)
