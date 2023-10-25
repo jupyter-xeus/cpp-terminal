@@ -11,12 +11,25 @@
 
 #include <algorithm>
 
-void Term::Options::set(const Term::Option& option) { m_Options.push_back(option); }
+Term::Options::Options(const std::initializer_list<Term::Option>& option) : m_Options(option) { clean(); }
 
-// Return true is the option is set and not its opposite (* + No* = false)
-bool Term::Options::has(const Option& option)
+bool Term::Options::operator==(const Options& options) { return m_Options == options.m_Options; }
+bool Term::Options::operator!=(const Options& options) { return !(m_Options == options.m_Options); }
+
+void Term::Options::clean()
 {
-  if(std::find(m_Options.begin(), m_Options.end(), option) != m_Options.end() && std::find(m_Options.begin(), m_Options.end(), static_cast<Option>(-1 * static_cast<std::int16_t>(option))) == m_Options.end()) return true;
-  else
-    return false;
+  std::vector<Term::Option> cleaned;
+  std::sort(m_Options.begin(), m_Options.end());
+  while(!m_Options.empty())
+  {
+    std::size_t count      = std::count(m_Options.begin(), m_Options.end(), m_Options[0]);
+    std::size_t anti_count = std::count(m_Options.begin(), m_Options.end(), static_cast<Term::Option>(-1 * static_cast<std::int16_t>(m_Options[0])));
+    if(count > anti_count) { cleaned.emplace_back(m_Options[0]); }
+    else if(count < anti_count) { cleaned.emplace_back(static_cast<Term::Option>(-1 * static_cast<std::int16_t>(m_Options[0]))); }
+    m_Options.erase(std::remove(m_Options.begin(), m_Options.end(), static_cast<Term::Option>(-1 * static_cast<std::int16_t>(m_Options[0]))), m_Options.end());
+    m_Options.erase(std::remove(m_Options.begin(), m_Options.end(), m_Options[0]), m_Options.end());
+  }
+  m_Options = cleaned;
 }
+
+bool Term::Options::has(const Option& option) { return std::find(m_Options.begin(), m_Options.end(), option) != m_Options.end(); }

@@ -39,12 +39,6 @@ Term::TerminalInitializer::~TerminalInitializer()
   if(--m_counter == 0) { (&Term::terminal)->~Terminal(); }
 }
 
-void Term::Terminal::setOptions(const Term::Options& options)
-{
-  m_options = options;
-  applyOptions();
-}
-
 Term::Options Term::Terminal::getOptions() { return m_options; }
 
 Term::Terminal::Terminal()
@@ -86,8 +80,6 @@ Term::Terminal::~Terminal()
     std::exit(m_badReturnCode);
   }
 }
-
-void Term::Terminal::setOptions() { applyOptions(); }
 
 void Term::Terminal::applyOptions()
 {
