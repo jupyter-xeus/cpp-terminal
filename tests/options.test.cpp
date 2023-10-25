@@ -21,7 +21,7 @@ TEST_CASE("Options commutativity")
   CHECK(options == options_swaped);
 }
 
-TEST_CASE("Options : supress redendancy")
+TEST_CASE("Options : suppress redendancy")
 {
   Term::Options options         = {Term::Option::Raw, Term::Option::Cursor, Term::Option::Cursor, Term::Option::Cursor, Term::Option::Raw, Term::Option::Cursor, Term::Option::Raw};
   Term::Options options2        = {Term::Option::Cursor, Term::Option::Cursor, Term::Option::Cursor, Term::Option::Raw, Term::Option::Cursor, Term::Option::Raw};
@@ -30,7 +30,7 @@ TEST_CASE("Options : supress redendancy")
   CHECK(options2 == options_cleaned);
 }
 
-TEST_CASE("Options : supress */anti*")
+TEST_CASE("Options : suppress */anti*")
 {
   Term::Options options1 = {Term::Option::Raw, Term::Option::Cooked, Term::Option::Cursor};
   Term::Options options2 = {Term::Option::Cursor, Term::Option::Cooked, Term::Option::Raw};
