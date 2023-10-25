@@ -21,7 +21,7 @@ TEST_CASE("Options commutativity")
   CHECK(options == options_swaped);
 }
 
-TEST_CASE("Options : suppress redendancy")
+TEST_CASE("Options : suppress redundancy")
 {
   Term::Options options         = {Term::Option::Raw, Term::Option::Cursor, Term::Option::Cursor, Term::Option::Cursor, Term::Option::Raw, Term::Option::Cursor, Term::Option::Raw};
   Term::Options options2        = {Term::Option::Cursor, Term::Option::Cursor, Term::Option::Cursor, Term::Option::Raw, Term::Option::Cursor, Term::Option::Raw};
