@@ -171,10 +171,12 @@ void Term::Terminal::setRawMode()
 {
 #if defined(_WIN32)
   DWORD flags{0};
-  if(!GetConsoleMode(Private::in.handle(), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
+  if(!Private::out.null())
+    if(!GetConsoleMode(Private::in.handle(), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
   if(m_options.has(Option::NoSignalKeys)) { flags &= ~ENABLE_PROCESSED_INPUT; }
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
-  if(!SetConsoleMode(Private::in.handle(), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
+  if(!Private::out.null())
+    if(!SetConsoleMode(Private::in.handle(), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
 #else
   if(!Private::out.null())
   {
