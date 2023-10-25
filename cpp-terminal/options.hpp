@@ -16,10 +16,9 @@
 namespace Term
 {
 
-/**
- * @brief Option to set-up the terminal.
- *
- */
+///
+/// @brief Option to set-up the terminal.
+///
 enum class Option : std::int16_t
 {
   Raw           = 1,   ///< Set terminal in \b raw mode.
