@@ -176,19 +176,14 @@ void Term::Terminal::setMode()
   {
     if(!Private::out.null())
       if(!GetConsoleMode(Private::in.handle(), &flags)) { throw Term::WindowsError(GetLastError()); }
-    activated=true;
+    activated = true;
   }
-  DWORD send=flags;
-  if(m_options.has(Option::Raw))
-  {
-    send &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
-  }
-  else if(m_options.has(Option::Cooked))
-  {
-    send |= (ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
-  }
+  DWORD send = flags;
+  if(m_options.has(Option::Raw)) { send &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT); }
+  else if(m_options.has(Option::Cooked)) { send |= (ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT); }
   if(m_options.has(Option::NoSignalKeys)) { send &= ~ENABLE_PROCESSED_INPUT; }
-  else(m_options.has(Option::SignalKeys)) { send |= ENABLE_PROCESSED_INPUT; }
+  else
+    (m_options.has(Option::SignalKeys)) { send |= ENABLE_PROCESSED_INPUT; }
   if(!Private::out.null())
     if(!SetConsoleMode(Private::in.handle(), send)) { throw Term::WindowsError(GetLastError()); }
 #else
@@ -198,9 +193,9 @@ void Term::Terminal::setMode()
     if(!activated)
     {
       if(tcgetattr(Private::out.fd(), &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
-      activated=true;
+      activated = true;
     }
-    ::termios send=raw;
+    ::termios send = raw;
     if(m_options.has(Option::Raw))
     {
       // Put terminal in raw mode
@@ -217,11 +212,11 @@ void Term::Terminal::setMode()
     }
     else if(m_options.has(Option::Cooked))
     {
-      send=raw;
+      send = raw;
       desactivateMouseEvents();
       desactivateFocusEvents();
     }
-    if(m_options.has(Option::NoSignalKeys)) { send.c_lflag &= ~ISIG; } //FIXME need others flags !
+    if(m_options.has(Option::NoSignalKeys)) { send.c_lflag &= ~ISIG; }  //FIXME need others flags !
     else if(m_options.has(Option::NoSignalKeys)) { send.c_lflag |= ISIG; }
     if(tcsetattr(Private::out.fd(), TCSAFLUSH, &send) == -1) { throw Term::Exception("tcsetattr() failed"); }
   }
