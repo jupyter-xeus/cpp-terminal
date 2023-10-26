@@ -16,25 +16,6 @@ namespace Term
 
 class Terminal
 {
-public:
-  Terminal();
-  ~Terminal();
-  template<typename Arg1 = Term::Option, typename... Args> void setOptions(Arg1 arg1, Args... args)
-  {
-    m_options.set(arg1);
-    setOptions(args...);
-  }
-
-  void setOptions(const Term::Options& options);
-
-  Term::Options getOptions();
-
-  Terminal(const Terminal&)            = delete;
-  Terminal& operator=(const Terminal&) = delete;
-  Terminal(Terminal&&)                 = delete;
-  Terminal& operator=(Terminal&&)      = delete;
-  bool      supportUTF8();
-
 private:
   void           store_and_restore();
   void           setBadStateReturnCode();
@@ -49,6 +30,23 @@ private:
   Term::Terminfo m_terminfo;
   Term::Options  m_options;
   std::uint8_t   m_badReturnCode{EXIT_FAILURE};
+
+public:
+  Terminal();
+  ~Terminal();
+  template<typename... Args> void setOptions(const Args&&... args)
+  {
+    m_options = {args...};
+    applyOptions();
+  }
+
+  Term::Options getOptions();
+
+  Terminal(const Terminal&)            = delete;
+  Terminal& operator=(const Terminal&) = delete;
+  Terminal(Terminal&&)                 = delete;
+  Terminal& operator=(Terminal&&)      = delete;
+  bool      supportUTF8();
 };
 
 class TerminalInitializer

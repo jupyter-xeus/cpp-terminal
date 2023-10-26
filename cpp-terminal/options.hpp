@@ -10,18 +10,17 @@
 #pragma once
 
 #include <cstdint>
+#include <initializer_list>
 #include <vector>
 
 namespace Term
 {
 
-/**
- * @brief Option to set-up the terminal.
- *
- */
+///
+/// @brief Option to set-up the terminal.
+///
 enum class Option : std::int16_t
 {
-  Default       = 0,   ///< Default state set up by cpp-terminal.
   Raw           = 1,   ///< Set terminal in \b raw mode.
   Cooked        = -1,  ///< Set terminal in \b cooked mode.
   ClearScreen   = 2,   ///< Clear the screen (and restore its states when the program stops).
@@ -36,11 +35,17 @@ class Options
 {
 public:
   Options() = default;
+  Options(const std::initializer_list<Term::Option>& option);
+  template<typename... Args> explicit Options(const Args&&... args) : m_Options(std::initializer_list<Term::Option>{args...}) { clean(); }
+
+  bool operator==(const Options& options);
+  bool operator!=(const Options& options);
+
   bool has(const Option& option);
-  void set(const Option& option);
 
 private:
-  std::vector<Option> m_Options;
+  void                      clean();
+  std::vector<Term::Option> m_Options;
 };
 
 }  // namespace Term
