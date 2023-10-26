@@ -1,4 +1,4 @@
 ---
-Checks: 'abseil-*,altera-*,android-*,boost-*,bugprone-*,cert-*,clang-analyzer-*,concurrency-*,cppcoreguidelines-*,darwin-*,fuchsia-*,google-*,hicpp-*,linuxkernel-*,llvm-*,misc-*,modernize-*,mpi-*,openmp-*,performance-*,portability-*,readability-*,zircon-*,-modernize-use-trailing-return-type;-fuchsia-overloaded-operator'
+Checks: 'abseil-*,altera-*,android-*,boost-*,bugprone-*,cert-*,clang-analyzer-*,concurrency-*,cppcoreguidelines-*,darwin-*,fuchsia-*,google-*,hicpp-*,linuxkernel-*,llvm-*,misc-*,modernize-*,mpi-*,openmp-*,performance-*,portability-*,readability-*,zircon-*,-modernize-use-trailing-return-type,-fuchsia-overloaded-operator,-fuchsia-default-arguments-calls,-altera-unroll-loops'
 WarningsAsErrors: false
 ...

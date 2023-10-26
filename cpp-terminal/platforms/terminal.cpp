@@ -72,8 +72,11 @@ void Term::Terminal::store_and_restore()
   static DWORD dwOriginalInMode{0};
   if(!enabled)
   {
-    if(GetConsoleMode(Private::out.handle(), &dwOriginalOutMode) == 0) { throw Term::Exception("GetConsoleMode() failed"); }
-    if(GetConsoleMode(Private::in.handle(), &dwOriginalInMode) == 0) { throw Term::Exception("GetConsoleMode() failed"); }
+    if(!Private::out.null())
+    {
+      if(GetConsoleMode(Private::out.handle(), &dwOriginalOutMode) == 0) { throw Term::Exception("GetConsoleMode() failed"); }
+      if(GetConsoleMode(Private::in.handle(), &dwOriginalInMode) == 0) { throw Term::Exception("GetConsoleMode() failed"); }
+    }
     DWORD in{(dwOriginalInMode & ~ENABLE_QUICK_EDIT_MODE) | (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | activateMouseEvents())};
     DWORD out{dwOriginalOutMode};
     if(!m_terminfo.isLegacy())
@@ -168,10 +171,12 @@ void Term::Terminal::setRawMode()
 {
 #if defined(_WIN32)
   DWORD flags{0};
-  if(!GetConsoleMode(Private::in.handle(), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
+  if(!Private::out.null())
+    if(!GetConsoleMode(Private::in.handle(), &flags)) { throw Term::Exception("GetConsoleMode() failed"); }
   if(m_options.has(Option::NoSignalKeys)) { flags &= ~ENABLE_PROCESSED_INPUT; }
   flags &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
-  if(!SetConsoleMode(Private::in.handle(), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
+  if(!Private::out.null())
+    if(!SetConsoleMode(Private::in.handle(), flags)) { throw Term::Exception("SetConsoleMode() failed"); }
 #else
   if(!Private::out.null())
   {
