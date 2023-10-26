@@ -9,18 +9,9 @@
 
 #include "cpp-terminal/buffer.hpp"
 
-#include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 #include "cpp-terminal/terminal.hpp"
-
-#if defined(_WIN32)
-  #include <io.h>
-  #include <windows.h>
-#else
-  #include <sys/ioctl.h>
-  #include <unistd.h>
-#endif
 
 static std::string replace(const Term::Buffer::int_type& c)
 {
@@ -37,39 +28,6 @@ static std::string replace(const Term::Buffer::int_type& c)
 #endif
 }
 
-std::string Term::Buffer::read()
-{
-  switch(m_streamType)
-  {
-    case Term::Buffer::StreamType::Cin:
-    {
-#if defined(_WIN32)
-      DWORD       nread{0};
-      std::string ret(4096, '\0');
-      errno = 0;
-      _read(0, &ret[0], static_cast<DWORD>(ret.size()));
-      return ret.c_str();
-#else
-      std::size_t nread{0};
-      ::ioctl(0, FIONREAD, &nread);
-      if(nread != 0)
-      {
-        std::string ret(nread, '\0');
-        errno = 0;
-        ::ssize_t nnread{::read(0, &ret[0], ret.size())};
-        if(nnread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-        return ret.c_str();
-      }
-      return {};
-#endif
-    }
-    case Term::Buffer::StreamType::Terminal: return Term::Private::in.read();
-    case Term::Buffer::StreamType::Cout:  //What are you doing dude !
-    case Term::Buffer::StreamType::Clog:
-    default: return {};
-  }
-}
-
 static bool newline_sequence(const std::string& str)  //https://en.wikipedia.org/wiki/Newline
 {
   if(str.back() == '\n' || str.back() == '\r' || str.back() == '\036' || str.back() == '\036' || str.back() == '\025') return true;
@@ -84,7 +42,7 @@ int Term::Buffer::sync()
   return ret;
 }
 
-Term::Buffer::Buffer(const Term::Buffer::Type& type, const std::streamsize& size, const Term::Buffer::StreamType stream_type) : m_streamType(stream_type)
+Term::Buffer::Buffer(const Term::Buffer::Type& type, const std::streamsize& size)
 {
   setType(type);
   switch(m_type)
@@ -112,7 +70,7 @@ Term::Buffer::int_type Term::Buffer::underflow()
     if(terminal.getOptions().has(Option::Raw))
     {
       do {
-        std::string ret{read()};
+        std::string ret{Term::Private::in.read()};
         if(!ret.empty())
         {
           if(ret[0] == '\x7f' || ret[0] == '\b')
@@ -137,7 +95,7 @@ Term::Buffer::int_type Term::Buffer::underflow()
     else
     {
       do {
-        std::string ret{read()};
+        std::string ret{Term::Private::in.read()};
         m_buffer += ret;
       } while(m_buffer.empty());
     }
