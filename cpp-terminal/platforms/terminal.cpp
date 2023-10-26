@@ -37,11 +37,9 @@ void Term::Terminal::set_unset_utf8()
   static UINT in_code_page{0};
   if(!enabled)
   {
-    out_code_page = GetConsoleOutputCP();
-    if(out_code_page == 0) throw Term::Private::WindowsError(GetLastError());
+    if((out_code_page = GetConsoleOutputCP()) == 0) throw Term::Private::WindowsError(GetLastError());
     if(!SetConsoleOutputCP(CP_UTF8)) throw Term::Private::WindowsError(GetLastError());
-    in_code_page = GetConsoleCP();
-    if(out_code_page == 0) throw Term::Private::WindowsError(GetLastError());
+    if((in_code_page = GetConsoleCP()) == 0) throw Term::Private::WindowsError(GetLastError());
     if(!SetConsoleCP(CP_UTF8)) throw Term::Private::WindowsError(GetLastError());
     enabled = true;
   }
