@@ -175,7 +175,7 @@ void Term::Terminal::setMode()
   if(!activated)
   {
     if(!Private::out.null())
-      if(!GetConsoleMode(Private::in.handle(), &flags)) { throw Term::WindowsError(GetLastError()); }
+      if(!GetConsoleMode(Private::in.handle(), &flags)) { throw Term::Private::WindowsError(GetLastError()); }
     activated = true;
   }
   DWORD send = flags;
@@ -185,7 +185,7 @@ void Term::Terminal::setMode()
   else
     (m_options.has(Option::SignalKeys)) { send |= ENABLE_PROCESSED_INPUT; }
   if(!Private::out.null())
-    if(!SetConsoleMode(Private::in.handle(), send)) { throw Term::WindowsError(GetLastError()); }
+    if(!SetConsoleMode(Private::in.handle(), send)) { throw Term::Private::WindowsError(GetLastError()); }
 #else
   if(!Private::out.null())
   {
