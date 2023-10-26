@@ -182,8 +182,7 @@ void Term::Terminal::setMode()
   if(m_options.has(Option::Raw)) { send &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT); }
   else if(m_options.has(Option::Cooked)) { send |= (ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT); }
   if(m_options.has(Option::NoSignalKeys)) { send &= ~ENABLE_PROCESSED_INPUT; }
-  else
-    (m_options.has(Option::SignalKeys)) { send |= ENABLE_PROCESSED_INPUT; }
+  else if(m_options.has(Option::SignalKeys)) { send |= ENABLE_PROCESSED_INPUT; }
   if(!Private::out.null())
     if(!SetConsoleMode(Private::in.handle(), send)) { throw Term::Private::WindowsError(GetLastError()); }
 #else
