@@ -47,6 +47,7 @@ Term::Terminal::Terminal()
   setBadStateReturnCode();
   Term::Private::m_fileInitializer.init();
   store_and_restore();
+  setMode();  //Save the default cpp-terminal mode done in store_and_restore();
   set_unset_utf8();
   m_terminfo.checkUTF8();
 }
@@ -85,7 +86,7 @@ void Term::Terminal::applyOptions()
 {
   if(m_options.has(Option::ClearScreen)) Term::Private::out.write(screen_save() + clear_buffer() + style(Style::Reset) + cursor_move(1, 1));
   if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_off());
-  if(m_options.has(Option::Raw)) setRawMode();
+  setMode();
 }
 
 std::string Term::terminal_title(const std::string& title) { return "\033]0;" + title + '\a'; }
