@@ -9,6 +9,8 @@
 
 #include "cpp-terminal/iostream.hpp"
 
+#include "cpp-terminal/buffer.hpp"
+
 #include <iostream>
 #include <new>
 

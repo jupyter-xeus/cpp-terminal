@@ -21,7 +21,7 @@ private:
   void           setBadStateReturnCode();
   void           setOptions();
   void           applyOptions();
-  void           setRawMode();
+  void           setMode();
   int            activateMouseEvents();
   int            desactivateMouseEvents();
   int            activateFocusEvents();
