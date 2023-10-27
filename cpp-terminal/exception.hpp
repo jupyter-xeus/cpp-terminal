@@ -20,15 +20,21 @@ namespace Term
 class Exception : public std::exception
 {
 public:
-  Exception(const std::string& what) : m_what(what) {}
-  Exception(const std::int64_t& code, const std::string& what) : m_what(what), m_code(code) {}
-  virtual const char* what() const noexcept override { return m_what.c_str(); }
-  std::int64_t        code() const noexcept { return m_code; }
-  virtual ~Exception() = default;
+  explicit Exception(const std::string& message);
+  Exception(const std::int64_t& code, const std::string& message);
+  const char*  what() const noexcept override;
+  std::int64_t code() const noexcept;
+  std::string  message() const noexcept;
+  std::string  context() const noexcept;
+  ~Exception() override;
 
 protected:
-  std::string  m_what;
+  explicit Exception(const std::int64_t& code);
+  virtual void build_what();
   std::int64_t m_code{0};
+  std::string  m_message;
+  std::string  m_context;
+  std::string  m_what;
 };
 
 }  // namespace Term
