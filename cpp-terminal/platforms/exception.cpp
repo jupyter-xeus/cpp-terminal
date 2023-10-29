@@ -93,7 +93,7 @@ Term::Private::ErrnoException::ErrnoException(const int& error, const std::strin
 #if defined(_WIN32)
   std::wstring mess;
   mess.assign(256, L'\0');
-  _wcserror_s(&mess[0],mess.size(),static_cast<int>(error));
+  _wcserror_s(&mess[0], mess.size(), static_cast<int>(error));
   m_message = Term::Private::to_narrow(mess.c_str());
 #else
   m_message.assign(256, '\0');

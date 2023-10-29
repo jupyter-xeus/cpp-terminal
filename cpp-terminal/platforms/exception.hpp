@@ -41,8 +41,8 @@ public:
   void         throw_exception(const std::string& str = std::string());
 
 private:
-  int          m_errno{0};
-  bool         m_check_value{false};
+  int  m_errno{0};
+  bool m_check_value{false};
 };
 
 class ErrnoException : public Term::Exception
