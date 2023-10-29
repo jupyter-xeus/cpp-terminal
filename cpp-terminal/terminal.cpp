@@ -41,7 +41,7 @@ Term::TerminalInitializer::~TerminalInitializer()
 
 Term::Options Term::Terminal::getOptions() { return m_options; }
 
-Term::Terminal::Terminal()
+Term::Terminal::Terminal() try
 {
   Term::Private::Sigwinch::blockSigwinch();
   setBadStateReturnCode();
@@ -50,6 +50,10 @@ Term::Terminal::Terminal()
   setMode();  //Save the default cpp-terminal mode done in store_and_restore();
   set_unset_utf8();
   m_terminfo.checkUTF8();
+}
+catch(const Term::Exception& exception)
+{
+  Term::cout << "OOOO"<< exception.what() << std::endl;
 }
 
 bool Term::Terminal::supportUTF8() { return m_terminfo.hasUTF8(); }

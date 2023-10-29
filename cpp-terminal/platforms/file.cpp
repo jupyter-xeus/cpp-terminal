@@ -19,7 +19,9 @@
   #include <unistd.h>
 #endif
 
-#include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/platforms/exception.hpp"
+#include "cpp-terminal/platforms/unicode.hpp"
+#include "cpp-terminal/version.hpp"
 
 #include <fcntl.h>
 
@@ -88,27 +90,39 @@ Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() { return
 
 int Term::Private::FileInitializer::m_counter = {0};
 
-void Term::Private::FileInitializer::attachConsole()
+void Term::Private::FileInitializer::attachConsole() try
 {
 #if defined(_WIN32)
-  BOOL attached{AttachConsole(ATTACH_PARENT_PROCESS)};
-  // Iw we don't have console try to create one
-  if(GetLastError() == ERROR_INVALID_HANDLE && !attached)
+  // If something happen here we still don't have a console so we can only use a MessageBox to warn the users something is very bad and that they should contact us.
+  Term::Private::WindowsError error{Term::Private::WindowsError().check_if(AttachConsole(ATTACH_PARENT_PROCESS) == 0)};
+  bool                        need_allocation{false};
+  switch(error.error())
   {
-    if(AllocConsole())
-    {
-      hadToAttachConsole = true;
-      AttachConsole(GetCurrentProcessId());
-    }
+    case ERROR_SUCCESS: break;                                                                      // Has been attached
+    case ERROR_ACCESS_DENIED: need_allocation = false; break;                                       // Already attached that's good !
+    case ERROR_INVALID_PARAMETER: error.throw_exception("The specified process does not exist !");  // Should never happen !
+    case ERROR_INVALID_HANDLE: need_allocation = true; break;                                       // Need to allocate th console !
+  }
+  if(need_allocation)
+  {
+    Term::Private::WindowsError().check_if(AllocConsole() == 0).throw_exception("AllocConsole()");
+    hadToAttachConsole = true;
   }
   FILE* fDummy{nullptr};
-  if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) freopen_s(&fDummy, "CONOUT$", "w", stdout);
-  if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) freopen_s(&fDummy, "CONOUT$", "w", stderr);
-  if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&fDummy, "CONIN$", "r", stdin);
+  if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) Term::Private::WindowsError().check_if(freopen_s(&fDummy, "CONOUT$", "w", stdout) != 0).throw_exception("freopen_s(&fDummy, \"CONOUT$\", \"w\", stdout)");
+  if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) Term::Private::WindowsError().check_if(freopen_s(&fDummy, "CONOUT$", "w", stderr) != 0).throw_exception("freopen_s(&fDummy, \"CONOUT$\", \"w\", stderr)");
+  if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) Term::Private::WindowsError().check_if(freopen_s(&fDummy, "CONIN$", "r", stdin) != 0).throw_exception("freopen_s(&fDummy, \"CONIN$\", \"r\", stdin)");
 #endif
   setvbuf(stdin, nullptr, _IOLBF, 4096);
   setvbuf(stdout, nullptr, _IOLBF, 4096);
   setvbuf(stderr, nullptr, _IOLBF, 4096);
+}
+catch (const Term::Exception& exception)
+{
+#if defined(_WIN32)
+  MessageBoxW(nullptr, Term::Private::to_wide(std::string(exception.what()) + "\nPlease contact : " + Term::homepage()).c_str(), Term::Private::to_wide(std::string("cpp-terminal ") + Term::Version::string()).c_str(), MB_OK | MB_ICONERROR | MB_DEFBUTTON1);
+#endif
+  std::exit(1);
 }
 
 void Term::Private::FileInitializer::detachConsole()

@@ -73,8 +73,8 @@ void Term::Terminal::store_and_restore()
   static DWORD originalIn{0};
   if(!enabled)
   {
-    if(GetConsoleMode(Private::out.handle(), &originalOut) == 0) { throw Term::Private::WindowsException(GetLastError(), "GetConsoleMode(Private::out.handle(), &originalOut)"); }
-    if(GetConsoleMode(Private::in.handle(), &originalIn) == 0) { throw Term::Private::WindowsException(GetLastError(), "GetConsoleMode(Private::in.handle(), &originalIn)"); }
+    Term::Private::WindowsError().check_if(GetConsoleMode(Private::out.handle(), &originalOut) == 0).throw_exception("GetConsoleMode(Private::out.handle(), &originalOut)");
+    Term::Private::WindowsError().check_if(GetConsoleMode(Private::in.handle(), &originalIn) == 0).throw_exception("GetConsoleMode(Private::in.handle(), &originalIn)");
     DWORD in{(originalIn & ~ENABLE_QUICK_EDIT_MODE) | (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | activateMouseEvents())};
     DWORD out{originalOut};
     if(!m_terminfo.isLegacy())
