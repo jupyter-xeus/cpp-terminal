@@ -75,7 +75,7 @@ void Term::Terminal::store_and_restore()
   {
     Term::Private::WindowsError().check_if(GetConsoleMode(Private::out.handle(), &originalOut) == 0).throw_exception("GetConsoleMode(Private::out.handle(), &originalOut)");
     Term::Private::WindowsError().check_if(GetConsoleMode(Private::in.handle(), &originalIn) == 0).throw_exception("GetConsoleMode(Private::in.handle(), &originalIn)");
-    DWORD in{(originalIn & ~ENABLE_QUICK_EDIT_MODE) | (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | activateMouseEvents())};
+    DWORD in{(originalIn & ~(ENABLE_QUICK_EDIT_MODE | activateFocusEvents() | activateMouseEvents()) | ENABLE_EXTENDED_FLAGS)};
     DWORD out{originalOut};
     if(!m_terminfo.isLegacy())
     {
@@ -172,8 +172,16 @@ void Term::Terminal::setMode()
     activated = true;
   }
   DWORD send = flags;
-  if(m_options.has(Option::Raw)) { send &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT); }
-  else if(m_options.has(Option::Cooked)) { send |= (ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT); }
+  if(m_options.has(Option::Raw))
+  {
+    send &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
+    send |= activateFocusEvents() | activateMouseEvents();
+  }
+  else if(m_options.has(Option::Cooked))
+  {
+    send |= (ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
+    send &= ~(activateFocusEvents() | activateMouseEvents());
+  }
   if(m_options.has(Option::NoSignalKeys)) { send &= ~ENABLE_PROCESSED_INPUT; }
   else if(m_options.has(Option::SignalKeys)) { send |= ENABLE_PROCESSED_INPUT; }
   if(!Private::out.null())
