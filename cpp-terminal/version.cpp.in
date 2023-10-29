@@ -12,8 +12,8 @@
 // clang-format off
 std::uint16_t Term::Version::major()
 {
- static std::uint16_t ret{@cpp-terminal_VERSION_MAJOR@};
- return ret;
+  static std::uint16_t ret{@cpp-terminal_VERSION_MAJOR@};
+  return ret;
 }
 std::uint16_t Term::Version::minor()
 {

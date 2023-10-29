@@ -38,10 +38,7 @@ Term::Private::WindowsError& Term::Private::WindowsError::check_if(const bool& r
 
 void Term::Private::WindowsError::throw_exception(const std::string& str)
 {
-  if(m_check_value)
-  {
-    throw Term::Private::WindowsException(m_error, str);
-  }
+  if(m_check_value) { throw Term::Private::WindowsException(m_error, str); }
 }
 
 Term::Private::WindowsException::WindowsException(const unsigned long& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))

@@ -41,7 +41,8 @@ Term::TerminalInitializer::~TerminalInitializer()
 
 Term::Options Term::Terminal::getOptions() { return m_options; }
 
-Term::Terminal::Terminal() try
+Term::Terminal::Terminal()
+try
 {
   Term::Private::Sigwinch::blockSigwinch();
   setBadStateReturnCode();
@@ -53,7 +54,7 @@ Term::Terminal::Terminal() try
 }
 catch(const Term::Exception& exception)
 {
-  Term::cout << "OOOO"<< exception.what() << std::endl;
+  Term::cout << "OOOO" << exception.what() << std::endl;
 }
 
 bool Term::Terminal::supportUTF8() { return m_terminfo.hasUTF8(); }

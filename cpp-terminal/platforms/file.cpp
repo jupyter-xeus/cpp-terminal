@@ -9,6 +9,7 @@
 
 #include "cpp-terminal/platforms/file.hpp"
 
+#include <cstdio>
 #include <new>
 
 #if defined(_WIN32)
@@ -24,6 +25,7 @@
 #include "cpp-terminal/version.hpp"
 
 #include <fcntl.h>
+#include <iostream>
 
 namespace Term
 {
@@ -90,7 +92,8 @@ Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() { return
 
 int Term::Private::FileInitializer::m_counter = {0};
 
-void Term::Private::FileInitializer::attachConsole() try
+void Term::Private::FileInitializer::attachConsole()
+try
 {
 #if defined(_WIN32)
   // If something happen here we still don't have a console so we can only use a MessageBox to warn the users something is very bad and that they should contact us.
@@ -117,7 +120,7 @@ void Term::Private::FileInitializer::attachConsole() try
   setvbuf(stdout, nullptr, _IOLBF, 4096);
   setvbuf(stderr, nullptr, _IOLBF, 4096);
 }
-catch (const Term::Exception& exception)
+catch(const Term::Exception& exception)
 {
 #if defined(_WIN32)
   MessageBoxW(nullptr, Term::Private::to_wide(std::string(exception.what()) + "\nPlease contact : " + Term::homepage()).c_str(), Term::Private::to_wide(std::string("cpp-terminal ") + Term::Version::string()).c_str(), MB_OK | MB_ICONERROR | MB_DEFBUTTON1);
