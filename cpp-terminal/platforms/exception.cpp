@@ -134,15 +134,14 @@ Term::Exception::Exception(const std::int64_t& code, const std::string& message)
 
 Term::Exception::Exception(const std::int64_t& code) : m_code(code) {}
 
-Term::Exception::~Exception(){};
+Term::Exception::~Exception() = default;
 
 const char* Term::Exception::what() const noexcept { return m_what.c_str(); }
 
 void Term::Exception::build_what()
 {
   if(m_code == 0) { m_what = m_message; }
-  else
-    m_what = "error " + std::to_string(m_code) + ": " + m_message;
+  else { m_what = "error " + std::to_string(m_code) + ": " + m_message; }
 }
 
 std::int64_t Term::Exception::code() const noexcept { return m_code; }
