@@ -22,6 +22,7 @@ class Exception : public std::exception
 public:
   explicit Exception(const std::string& message);
   Exception(const std::int64_t& code, const std::string& message);
+  Exception(const Exception& exception) = default;
   const char*  what() const noexcept override;
   std::int64_t code() const noexcept;
   std::string  message() const noexcept;

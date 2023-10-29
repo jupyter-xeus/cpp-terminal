@@ -19,7 +19,7 @@
 #endif
 
 #if defined(_WIN32)
-Term::Private::WindowsError::WindowsError(const unsigned long& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
+Term::Private::WindowsException::WindowsException(const unsigned long& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
 {
   m_context = context;
   wchar_t*    ptr{nullptr};
@@ -39,7 +39,7 @@ Term::Private::WindowsError::WindowsError(const unsigned long& error, const std:
   else { throw Term::Exception(::GetLastError(), "Error in FormatMessageW"); }
 }
 
-void Term::Private::WindowsError::build_what()
+void Term::Private::WindowsException::build_what()
 {
   m_what = "windows error " + std::to_string(m_code) + ": " + m_message;
   if(!m_context.empty()) m_what += +" [" + m_context + "]";
@@ -50,7 +50,6 @@ void Term::Private::WindowsError::build_what()
 Term::Private::Errno::Errno()
 {
 #if defined(_WIN32)
-  _set_doserrno(0);
   _set_errno(0);
 #else
   errno = 0;
@@ -74,7 +73,7 @@ Term::Private::Errno::~Errno()
 Term::Private::Errno& Term::Private::Errno::check_if(const bool& ret)
 {
 #if defined(_WIN32)
-  m_errno = _get_errno();
+  _get_errno(&m_errno);
 #else
   m_errno = errno;
 #endif
@@ -88,11 +87,14 @@ std::int32_t Term::Private::Errno::error() const { return m_errno; }
 
 Term::Private::ErrnoException::~ErrnoException() = default;
 
-Term::Private::ErrnoException::ErrnoException(const std::int32_t& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
+Term::Private::ErrnoException::ErrnoException(const int& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
 {
   m_context = context;
 #if defined(_WIN32)
-  _wcserror_s 
+  std::wstring mess;
+  mess.assign(256, L'\0');
+  _wcserror_s(&mess[0],mess.size(),static_cast<int>(error));
+  m_message = Term::Private::to_narrow(mess.c_str());
 #else
   m_message.assign(256, '\0');
   m_message = ::strerror_r(error, &m_message[0], m_message.size());
