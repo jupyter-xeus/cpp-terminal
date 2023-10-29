@@ -13,7 +13,7 @@
 #include "cpp-terminal/platforms/exception.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 
-#ifdef _WIN32
+#if defined(_WIN32)
   #include <io.h>
   #include <windows.h>
   #if !defined(ENABLE_VIRTUAL_TERMINAL_PROCESSING)
@@ -37,16 +37,16 @@ void Term::Terminal::set_unset_utf8()
   static UINT in_code_page{0};
   if(!enabled)
   {
-    if((out_code_page = GetConsoleOutputCP()) == 0) throw Term::Private::WindowsException(GetLastError());
-    if(!SetConsoleOutputCP(CP_UTF8)) throw Term::Private::WindowsException(GetLastError());
-    if((in_code_page = GetConsoleCP()) == 0) throw Term::Private::WindowsException(GetLastError());
-    if(!SetConsoleCP(CP_UTF8)) throw Term::Private::WindowsException(GetLastError());
+    if((out_code_page = GetConsoleOutputCP()) == 0) throw Term::Private::WindowsException(GetLastError(), "GetConsoleOutputCP()");
+    if(!SetConsoleOutputCP(CP_UTF8)) throw Term::Private::WindowsException(GetLastError(), "SetConsoleOutputCP(CP_UTF8)");
+    if((in_code_page = GetConsoleCP()) == 0) throw Term::Private::WindowsException(GetLastError(), "GetConsoleCP()");
+    if(!SetConsoleCP(CP_UTF8)) throw Term::Private::WindowsException(GetLastError(), "SetConsoleCP(CP_UTF8)");
     enabled = true;
   }
   else
   {
-    if(!SetConsoleOutputCP(out_code_page)) throw Term::Private::WindowsException(GetLastError());
-    if(!SetConsoleCP(in_code_page)) throw Term::Private::WindowsException(GetLastError());
+    if(!SetConsoleOutputCP(out_code_page)) throw Term::Private::WindowsException(GetLastError(), "SetConsoleOutputCP(out_code_page)");
+    if(!SetConsoleCP(in_code_page)) throw Term::Private::WindowsException(GetLastError(), "SetConsoleCP(in_code_page)");
   }
 #else
   if(!enabled)
@@ -73,8 +73,8 @@ void Term::Terminal::store_and_restore()
   static DWORD originalIn{0};
   if(!enabled)
   {
-    if(GetConsoleMode(Private::out.handle(), &originalOut) == 0) { throw Term::Private::WindowsException(GetLastError()); }
-    if(GetConsoleMode(Private::in.handle(), &originalIn) == 0) { throw Term::Private::WindowsException(GetLastError()); }
+    if(GetConsoleMode(Private::out.handle(), &originalOut) == 0) { throw Term::Private::WindowsException(GetLastError(), "GetConsoleMode(Private::out.handle(), &originalOut)"); }
+    if(GetConsoleMode(Private::in.handle(), &originalIn) == 0) { throw Term::Private::WindowsException(GetLastError(), "GetConsoleMode(Private::in.handle(), &originalIn)"); }
     DWORD in{(originalIn & ~ENABLE_QUICK_EDIT_MODE) | (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | activateMouseEvents())};
     DWORD out{originalOut};
     if(!m_terminfo.isLegacy())
@@ -82,32 +82,27 @@ void Term::Terminal::store_and_restore()
       out |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
       in |= ENABLE_VIRTUAL_TERMINAL_INPUT;
     }
-    if(!SetConsoleMode(Private::out.handle(), out)) { throw Term::Private::WindowsException(GetLastError()); }
-    if(!SetConsoleMode(Private::in.handle(), in)) { throw Term::Private::WindowsException(GetLastError()); }
+    if(!SetConsoleMode(Private::out.handle(), out)) { throw Term::Private::WindowsException(GetLastError(), "SetConsoleMode(Private::out.handle()"); }
+    if(!SetConsoleMode(Private::in.handle(), in)) { throw Term::Private::WindowsException(GetLastError(), "SetConsoleMode(Private::in.handle(), in)"); }
     enabled = true;
   }
   else
   {
-    if(!SetConsoleMode(Private::out.handle(), originalOut)) { throw Term::Private::WindowsException(GetLastError()); }
-    if(!SetConsoleMode(Private::in.handle(), originalIn)) { throw Term::Private::WindowsException(GetLastError()); }
+    if(!SetConsoleMode(Private::out.handle(), originalOut)) { throw Term::Private::WindowsException(GetLastError(), "SetConsoleMode(Private::out.handle(), originalOut)"); }
+    if(!SetConsoleMode(Private::in.handle(), originalIn)) { throw Term::Private::WindowsException(GetLastError(), "SetConsoleMode(Private::in.handle(), originalIn)"); }
   }
 #else
   static termios orig_termios;
   if(!enabled)
   {
-    if(!Private::out.null())
-      if(tcgetattr(Private::out.fd(), &orig_termios) == -1) { throw Term::Exception("tcgetattr() failed"); }
-    termios term = orig_termios;
-    if(!Private::out.null())
-      if(tcsetattr(Private::out.fd(), TCSAFLUSH, &term) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
+    if(!Private::out.null()) { Term::Private::Errno().check_if(tcgetattr(Private::out.fd(), &orig_termios) == -1).throw_exception("tcgetattr() failed"); }
     enabled = true;
   }
   else
   {
     desactivateMouseEvents();
     desactivateFocusEvents();
-    if(!Private::out.null())
-      if(tcsetattr(Private::out.fd(), TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
+    if(!Private::out.null()) { Term::Private::Errno().check_if(tcsetattr(Private::out.fd(), TCSAFLUSH, &orig_termios) == -1).throw_exception("tcsetattr() failed in destructor"); }
   }
 #endif
 }

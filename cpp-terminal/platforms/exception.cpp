@@ -19,6 +19,26 @@
 #endif
 
 #if defined(_WIN32)
+Term::Private::WindowsError::WindowsError() = default;
+
+Term::Private::WindowsError::~WindowsError() = default;
+
+std::int32_t Term::Private::WindowsError::error() const { return m_error; }
+
+bool Term::Private::WindowsError::check_value() const { return m_check_value; }
+
+Term::Private::WindowsError& Term::Private::WindowsError::check_if(const bool& ret)
+{
+  m_error       = GetLastError();
+  m_check_value = ret;
+  return *this;
+}
+
+void Term::Private::WindowsError::throw_exception(const std::string& str = std::string())
+{
+  if(m_check_value) throw Term::Private::WindowsException(m_error, str);
+}
+
 Term::Private::WindowsException::WindowsException(const unsigned long& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
 {
   m_context = context;

@@ -28,6 +28,21 @@ public:
 private:
   void build_what() override;
 };
+
+class WindowsError
+{
+public:
+  WindowsError();
+  ~WindowsError();
+  std::int32_t  error() const;
+  bool          check_value() const;
+  WindowsError& check_if(const bool& ret);
+  void          throw_exception(const std::string& str = std::string());
+
+private:
+  int  m_error{0};
+  bool m_check_value{false};
+};
 #endif
 
 class Errno
