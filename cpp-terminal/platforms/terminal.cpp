@@ -13,7 +13,7 @@
 #include "cpp-terminal/platforms/exception.hpp"
 #include "cpp-terminal/platforms/file.hpp"
 
-#ifdef _WIN32
+#if defined(_WIN32)
   #include <io.h>
   #include <windows.h>
   #if !defined(ENABLE_VIRTUAL_TERMINAL_PROCESSING)
@@ -75,7 +75,7 @@ void Term::Terminal::store_and_restore()
   {
     if(GetConsoleMode(Private::out.handle(), &originalOut) == 0) { throw Term::Private::WindowsError(GetLastError()); }
     if(GetConsoleMode(Private::in.handle(), &originalIn) == 0) { throw Term::Private::WindowsError(GetLastError()); }
-    DWORD in{(originalIn & ~ENABLE_QUICK_EDIT_MODE) | (ENABLE_EXTENDED_FLAGS | activateFocusEvents() | activateMouseEvents())};
+    DWORD in{(originalIn & ~(ENABLE_QUICK_EDIT_MODE | setFocusEvents() | setMouseEvents())) | (ENABLE_EXTENDED_FLAGS)};
     DWORD out{originalOut};
     if(!m_terminfo.isLegacy())
     {
@@ -104,15 +104,15 @@ void Term::Terminal::store_and_restore()
   }
   else
   {
-    desactivateMouseEvents();
-    desactivateFocusEvents();
+    unsetMouseEvents();
+    unsetFocusEvents();
     if(!Private::out.null())
       if(tcsetattr(Private::out.fd(), TCSAFLUSH, &orig_termios) == -1) { throw Term::Exception("tcsetattr() failed in destructor"); }
   }
 #endif
 }
 
-int Term::Terminal::activateMouseEvents()
+std::int16_t Term::Terminal::setMouseEvents()
 {
 #if defined(_WIN32)
   return ENABLE_MOUSE_INPUT;
@@ -121,7 +121,7 @@ int Term::Terminal::activateMouseEvents()
 #endif
 }
 
-int Term::Terminal::desactivateMouseEvents()
+std::int16_t Term::Terminal::unsetMouseEvents()
 {
 #if defined(_WIN32)
   return ENABLE_MOUSE_INPUT;
@@ -130,7 +130,7 @@ int Term::Terminal::desactivateMouseEvents()
 #endif
 }
 
-int Term::Terminal::activateFocusEvents()
+std::int16_t Term::Terminal::setFocusEvents()
 {
 #if defined(_WIN32)
   return ENABLE_WINDOW_INPUT;
@@ -139,7 +139,7 @@ int Term::Terminal::activateFocusEvents()
 #endif
 }
 
-int Term::Terminal::desactivateFocusEvents()
+std::int16_t Term::Terminal::unsetFocusEvents()
 {
 #if defined(_WIN32)
   return ENABLE_WINDOW_INPUT;
@@ -177,8 +177,16 @@ void Term::Terminal::setMode()
     activated = true;
   }
   DWORD send = flags;
-  if(m_options.has(Option::Raw)) { send &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT); }
-  else if(m_options.has(Option::Cooked)) { send |= (ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT); }
+  if(m_options.has(Option::Raw))
+  {
+    send &= ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
+    send |= (setFocusEvents() | setMouseEvents());
+  }
+  else if(m_options.has(Option::Cooked))
+  {
+    send |= (ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT | ENABLE_PROCESSED_INPUT);
+    send &= ~(setFocusEvents() | setMouseEvents());
+  }
   if(m_options.has(Option::NoSignalKeys)) { send &= ~ENABLE_PROCESSED_INPUT; }
   else if(m_options.has(Option::SignalKeys)) { send |= ENABLE_PROCESSED_INPUT; }
   if(!Private::out.null())
@@ -204,14 +212,14 @@ void Term::Terminal::setMode()
       send.c_lflag &= ~(ECHO | ICANON | IEXTEN);
       send.c_cc[VMIN]  = 1;
       send.c_cc[VTIME] = 0;
-      activateMouseEvents();
-      activateFocusEvents();
+      setMouseEvents();
+      setFocusEvents();
     }
     else if(m_options.has(Option::Cooked))
     {
       send = raw;
-      desactivateMouseEvents();
-      desactivateFocusEvents();
+      unsetMouseEvents();
+      unsetFocusEvents();
     }
     if(m_options.has(Option::NoSignalKeys)) { send.c_lflag &= ~ISIG; }  //FIXME need others flags !
     else if(m_options.has(Option::NoSignalKeys)) { send.c_lflag |= ISIG; }

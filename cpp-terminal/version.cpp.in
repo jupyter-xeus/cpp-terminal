@@ -10,9 +10,33 @@
 #include "cpp-terminal/version.hpp"
 
 // clang-format off
-const std::uint16_t Term::Version::major{@cpp-terminal_VERSION_MAJOR@};
-const std::uint16_t Term::Version::minor{@cpp-terminal_VERSION_MINOR@};
-const std::uint16_t Term::Version::patch{@cpp-terminal_VERSION_PATCH@};
-const std::string Term::Version::string{"@cpp-terminal_VERSION_MAJOR@.@cpp-terminal_VERSION_MINOR@.@cpp-terminal_VERSION_PATCH@"};
-const std::string Term::homepage{"@cpp-terminal_HOMEPAGE_URL@"};
+std::uint16_t Term::Version::major()
+{
+  static std::uint16_t ret{@cpp-terminal_VERSION_MAJOR@};
+  return ret;
+}
+
+std::uint16_t Term::Version::minor()
+{
+  static std::uint16_t ret{@cpp-terminal_VERSION_MINOR@};
+  return ret;
+}
+
+std::uint16_t Term::Version::patch()
+{
+  static std::uint16_t ret{@cpp-terminal_VERSION_PATCH@};
+  return ret;
+}
+
+std::string Term::Version::string()
+{
+  static std::string ret{"@cpp-terminal_VERSION_MAJOR@.@cpp-terminal_VERSION_MINOR@.@cpp-terminal_VERSION_PATCH@"};
+  return ret;
+}
+
+std::string Term::homepage()
+{
+  static std::string ret{"@cpp-terminal_HOMEPAGE_URL@"};
+  return ret;
+}
 // clang-format on
