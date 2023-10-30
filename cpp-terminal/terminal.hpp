@@ -11,6 +11,8 @@
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
+#include <cstdint>
+
 namespace Term
 {
 
@@ -22,10 +24,10 @@ private:
   void           setOptions();
   void           applyOptions();
   void           setMode();
-  int            activateMouseEvents();
-  int            desactivateMouseEvents();
-  int            activateFocusEvents();
-  int            desactivateFocusEvents();
+  std::int16_t   setMouseEvents();
+  std::int16_t   unsetMouseEvents();
+  std::int16_t   setFocusEvents();
+  std::int16_t   unsetFocusEvents();
   void           set_unset_utf8();
   Term::Terminfo m_terminfo;
   Term::Options  m_options;
