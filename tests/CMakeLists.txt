@@ -27,7 +27,7 @@ function(cppterminal_test )
   cmake_parse_arguments(ARG "" "SOURCE" "" ${ARGN})
   add_executable("${ARG_SOURCE}.test" "${ARG_SOURCE}.test.cpp")
   target_link_libraries("${ARG_SOURCE}.test" PRIVATE doctest::doctest cpp-terminal::cpp-terminal)
-  doctest_discover_tests("${ARG_SOURCE}.test" EXTRA_ARGS "1;2;3")
+  doctest_discover_tests("${ARG_SOURCE}.test")
 endfunction()
 
 cppterminal_test(SOURCE test_terminal)
