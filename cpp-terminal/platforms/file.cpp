@@ -17,6 +17,7 @@
   #include <windows.h>
 #else
   #include <sys/ioctl.h>
+  #include <sys/stat.h>
   #include <unistd.h>
 #endif
 
@@ -115,17 +116,24 @@ try
   if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) Term::Private::WindowsError().check_if(freopen_s(&fDummy, "CONOUT$", "w", stdout) != 0).throw_exception("freopen_s(&fDummy, \"CONOUT$\", \"w\", stdout)");
   if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) Term::Private::WindowsError().check_if(freopen_s(&fDummy, "CONOUT$", "w", stderr) != 0).throw_exception("freopen_s(&fDummy, \"CONOUT$\", \"w\", stderr)");
   if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) Term::Private::WindowsError().check_if(freopen_s(&fDummy, "CONIN$", "r", stdin) != 0).throw_exception("freopen_s(&fDummy, \"CONIN$\", \"r\", stdin)");
+  const std::size_t bestSize{BUFSIZ > 4096 ? BUFSIZ : 4096};
+#else
+  const struct stat stats
+  {
+  };
+  const std::size_t bestSize{static_cast<size_t>(stats.st_blksize)};
 #endif
-  setvbuf(stdin, nullptr, _IOLBF, 4096);
-  setvbuf(stdout, nullptr, _IOLBF, 4096);
-  setvbuf(stderr, nullptr, _IOLBF, 4096);
+  Term::Private::Errno().check_if(std::setvbuf(stdin, nullptr, _IOLBF, bestSize) != 0).throw_exception("std::setvbuf(stdin, nullptr, _IOLBF, bestSize)");
+  Term::Private::Errno().check_if(std::setvbuf(stdout, nullptr, _IOLBF, bestSize) != 0).throw_exception("std::setvbuf(stdout, nullptr, _IOLBF, bestSize)");
+  Term::Private::Errno().check_if(std::setvbuf(stderr, nullptr, _IOLBF, bestSize) != 0).throw_exception("std::setvbuf(stderr, nullptr, _IOLBF, bestSize)");
 }
 catch(const Term::Exception& exception)
 {
+  detachConsole();
 #if defined(_WIN32)
   MessageBoxW(nullptr, Term::Private::to_wide(std::string(exception.what()) + "\nPlease contact : " + Term::homepage()).c_str(), Term::Private::to_wide(std::string("cpp-terminal ") + Term::Version::string()).c_str(), MB_OK | MB_ICONERROR | MB_DEFBUTTON1);
 #endif
-  std::exit(1);
+  throw;
 }
 
 void Term::Private::FileInitializer::detachConsole()
