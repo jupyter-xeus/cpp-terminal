@@ -15,24 +15,28 @@ std::uint16_t Term::Version::major()
   static std::uint16_t ret{@cpp-terminal_VERSION_MAJOR@};
   return ret;
 }
+
 std::uint16_t Term::Version::minor()
 {
   static std::uint16_t ret{@cpp-terminal_VERSION_MINOR@};
   return ret;
 }
+
 std::uint16_t Term::Version::patch()
 {
   static std::uint16_t ret{@cpp-terminal_VERSION_PATCH@};
   return ret;
 }
+
 std::string Term::Version::string()
 {
-  std::string ret{"@cpp-terminal_VERSION_MAJOR@.@cpp-terminal_VERSION_MINOR@.@cpp-terminal_VERSION_PATCH@"};
+  static std::string ret{"@cpp-terminal_VERSION_MAJOR@.@cpp-terminal_VERSION_MINOR@.@cpp-terminal_VERSION_PATCH@"};
   return ret;
 }
+
 std::string Term::homepage()
 {
-  std::string ret{"@cpp-terminal_HOMEPAGE_URL@"};
+  static std::string ret{"@cpp-terminal_HOMEPAGE_URL@"};
   return ret;
 }
 // clang-format on
