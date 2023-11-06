@@ -41,8 +41,8 @@ public:
   void          throw_exception(const std::string& str = std::string());
 
 private:
-  std::int64_t  m_error{0};
-  bool m_check_value{false};
+  std::int64_t m_error{0};
+  bool         m_check_value{false};
 };
 #endif
 
@@ -53,16 +53,16 @@ public:
   Errno(Errno&&) noexcept      = default;
   Errno() noexcept;
   ~Errno() noexcept;
-  Errno&        operator=(Errno&&) noexcept      = default;
-  Errno&        operator=(const Errno&) noexcept = default;
-  std::int64_t  error() const noexcept;
-  bool          check_value() const noexcept;
-  Errno&        check_if(const bool& ret) noexcept;
-  void          throw_exception(const std::string& str = std::string()) const;
+  Errno&       operator=(Errno&&) noexcept      = default;
+  Errno&       operator=(const Errno&) noexcept = default;
+  std::int64_t error() const noexcept;
+  bool         check_value() const noexcept;
+  Errno&       check_if(const bool& ret) noexcept;
+  void         throw_exception(const std::string& str = std::string()) const;
 
 private:
-  std::int64_t  m_errno{0};
-  bool          m_check_value{false};
+  std::int64_t m_errno{0};
+  bool         m_check_value{false};
 };
 
 class ErrnoException : public Term::Exception

@@ -38,7 +38,7 @@ std::string Term::Exception::context() const noexcept { return m_context; }
 
 Term::Exception::Exception(const std::int64_t& code) noexcept : m_code(code) {}
 
-void Term::Exception::build_what()  const noexcept
+void Term::Exception::build_what() const noexcept
 {
   if(0 == m_code) { m_what = m_message; }
   else { m_what = "error " + std::to_string(m_code) + ": " + m_message; }
