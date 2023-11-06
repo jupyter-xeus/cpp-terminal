@@ -18,8 +18,8 @@
   #include <cstring>
 #endif
 
-#include <string>
 #include <cerrno>
+#include <string>
 
 Term::Exception::Exception(const std::string& message) noexcept : m_message(message) {}
 
