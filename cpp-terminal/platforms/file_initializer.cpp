@@ -17,6 +17,9 @@
 #include <ostream>
 
 #if defined(_WIN32)
+  #include <windows.h>
+  #include <io.h>
+  #include "cpp-terminal/platforms/unicode.hpp"
 #else
   #include <sys/stat.h>
 #endif

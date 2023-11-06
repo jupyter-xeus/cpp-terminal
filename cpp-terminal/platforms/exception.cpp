@@ -18,6 +18,8 @@
   #include <cstring>
 #endif
 
+#include <string>
+
 Term::Exception::Exception(const std::string& message) noexcept : m_message(message) {}
 
 Term::Exception::Exception(const std::int64_t& code, const std::string& message) noexcept : m_code(code), m_message(message) {}
@@ -36,7 +38,7 @@ std::string Term::Exception::context() const noexcept { return m_context; }
 
 Term::Exception::Exception(const std::int64_t& code) noexcept : m_code(code) {}
 
-void Term::Exception::build_what() const noexcept
+void Term::Exception::build_what()  const noexcept
 {
   if(0 == m_code) { m_what = m_message; }
   else { m_what = "error " + std::to_string(m_code) + ": " + m_message; }
@@ -53,13 +55,13 @@ Term::Private::WindowsError::WindowsError() = default;
 
 Term::Private::WindowsError::~WindowsError() = default;
 
-std::int32_t Term::Private::WindowsError::error() const { return m_error; }
+std::int64_t Term::Private::WindowsError::error() const { return m_error; }
 
 bool Term::Private::WindowsError::check_value() const { return m_check_value; }
 
 Term::Private::WindowsError& Term::Private::WindowsError::check_if(const bool& ret)
 {
-  m_error       = GetLastError();
+  m_error       = static_cast<std::int64_t>(GetLastError());
   m_check_value = ret;
   return *this;
 }
@@ -69,11 +71,11 @@ void Term::Private::WindowsError::throw_exception(const std::string& str)
   if(m_check_value) { throw Term::Private::WindowsException(m_error, str); }
 }
 
-Term::Private::WindowsException::WindowsException(const unsigned long& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
+Term::Private::WindowsException::WindowsException(const std::int64_t& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
 {
-  m_context = context;
+  setContext(context);
   wchar_t*    ptr{nullptr};
-  const DWORD cchMsg{FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_ALLOCATE_BUFFER, nullptr, static_cast<uint32_t>(m_code), 0, reinterpret_cast<wchar_t*>(&ptr), 0, nullptr)};
+  const DWORD cchMsg{FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_ALLOCATE_BUFFER, nullptr, static_cast<uint32_t>(code()), 0, reinterpret_cast<wchar_t*>(&ptr), 0, nullptr)};
   if(cchMsg > 0)
   {
     auto deleter = [](void* p)
@@ -83,15 +85,15 @@ Term::Private::WindowsException::WindowsException(const unsigned long& error, co
     std::unique_ptr<wchar_t, decltype(deleter)> ptrBuffer(ptr, deleter);
     std::string                                 ret{Term::Private::to_narrow(ptrBuffer.get())};
     if(ret.size() >= 2 && ret[ret.size() - 1] == '\n' && ret[ret.size() - 2] == '\r') ret.erase(ret.size() - 2);
-    m_message = ret;
+    setMessage(ret);
   }
   else { throw Term::Exception(::GetLastError(), "Error in FormatMessageW"); }
 }
 
-void Term::Private::WindowsException::build_what()
+void Term::Private::WindowsException::build_what() const noexcept
 {
-  m_what = "windows error " + std::to_string(m_code) + ": " + m_message;
-  if(!m_context.empty()) m_what += +" [" + m_context + "]";
+  std::string what{"windows error " + std::to_string(code()) + ": " + message()};
+  if(!context().empty()) what += " [" + context() + "]";
 }
 
 #endif
@@ -122,7 +124,7 @@ Term::Private::Errno::~Errno() noexcept
 Term::Private::Errno& Term::Private::Errno::check_if(const bool& ret) noexcept
 {
 #if defined(_WIN32)
-  _get_errno(&m_errno);
+  _get_errno(&static_cast<int>(m_errno));
 #else
   m_errno = static_cast<std::uint32_t>(*::__errno_location());
 #endif
@@ -132,11 +134,11 @@ Term::Private::Errno& Term::Private::Errno::check_if(const bool& ret) noexcept
 
 bool Term::Private::Errno::check_value() const noexcept { return m_check_value; }
 
-std::uint32_t Term::Private::Errno::error() const noexcept { return m_errno; }
+std::int64_t Term::Private::Errno::error() const noexcept { return m_errno; }
 
 Term::Private::ErrnoException::~ErrnoException() = default;
 
-Term::Private::ErrnoException::ErrnoException(const std::uint32_t& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
+Term::Private::ErrnoException::ErrnoException(const std::int64_t& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
 {
   setContext(context);
 #if defined(_WIN32)
