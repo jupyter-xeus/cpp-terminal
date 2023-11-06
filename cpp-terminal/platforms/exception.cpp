@@ -149,7 +149,8 @@ Term::Private::ErrnoException::ErrnoException(const std::int64_t& error, const s
   setMessage(Term::Private::to_narrow(message.c_str()));
 #else
   std::string message(m_maxSize, '\0');
-  setMessage(::strerror_r(static_cast<std::int32_t>(error), &message[0], message.size()));  // NOLINT(readability-container-data-pointer)
+  ::strerror_r(static_cast<std::int32_t>(error), &message[0], message.size());  // NOLINT(readability-container-data-pointer)
+  setMessage(message);
 #endif
 }
 
