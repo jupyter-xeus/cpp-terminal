@@ -74,9 +74,9 @@ public:
   ErrnoException(const ErrnoException&) = default;
   ErrnoException(ErrnoException&&)      = default;
   explicit ErrnoException(const std::int64_t& error, const std::string& context = std::string());
-  ~ErrnoException() override                                = default;
-  ErrnoException& operator=(ErrnoException&&) noexcept      = default;
-  ErrnoException& operator=(const ErrnoException&) noexcept = default;
+  ~ErrnoException() override                       = default;
+  ErrnoException& operator=(ErrnoException&&)      = default;
+  ErrnoException& operator=(const ErrnoException&) = default;
 
 private:
   void build_what() const noexcept final;
