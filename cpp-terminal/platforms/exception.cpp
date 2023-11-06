@@ -101,7 +101,7 @@ Term::Private::Errno::Errno() noexcept
 #if defined(_WIN32)
   _set_errno(0);
 #else
-  errno = {0};
+  errno = {0};  //NOSONAR
 #endif
 }
 
@@ -110,7 +110,7 @@ Term::Private::Errno::~Errno() noexcept
 #if defined(_WIN32)
   _set_errno(0);
 #else
-  errno = {0};
+  errno = {0};  //NOSONAR
 #endif
 }
 
@@ -124,7 +124,7 @@ Term::Private::Errno& Term::Private::Errno::check_if(const bool& ret) noexcept
   int err{static_cast<int>(m_errno)};
   _get_errno(&err);
 #else
-  m_errno = static_cast<std::uint32_t>(errno);
+  m_errno = static_cast<std::uint32_t>(errno);  //NOSONAR
 #endif
   m_check_value = {ret};
   return *this;
@@ -135,7 +135,7 @@ void Term::Private::Errno::throw_exception(const std::string& str) const
   if(m_check_value) { throw Term::Private::ErrnoException(m_errno, str); }
 }
 
-Term::Private::ErrnoException::ErrnoException(const std::int64_t& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
+Term::Private::ErrnoException::ErrnoException(const std::int64_t& error, const std::string& context) : Term::Exception(error)
 {
   setContext(context);
 #if defined(_WIN32)
