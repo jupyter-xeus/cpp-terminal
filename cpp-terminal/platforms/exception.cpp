@@ -124,7 +124,8 @@ Term::Private::Errno::~Errno() noexcept
 Term::Private::Errno& Term::Private::Errno::check_if(const bool& ret) noexcept
 {
 #if defined(_WIN32)
-  _get_errno(&static_cast<int>(m_errno));
+  int err{static_cast<int>(m_errno)};
+  _get_errno(&err);
 #else
   m_errno = static_cast<std::uint32_t>(errno);
 #endif
