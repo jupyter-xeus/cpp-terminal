@@ -22,8 +22,8 @@ namespace Private
 class WindowsError
 {
 public:
-  WindowsError(const WindowsError&) noexcept            = default;
-  WindowsError(WindowsError&&) noexcept                 = default;
+  WindowsError(const WindowsError&)                     = default;
+  WindowsError(WindowsError&&)                          = default;
   WindowsError() noexcept                               = default;
   virtual ~WindowsError() noexcept                      = default;
   WindowsError& operator=(WindowsError&&) noexcept      = default;
@@ -71,8 +71,8 @@ private:
 class ErrnoException : public Term::Exception
 {
 public:
-  ErrnoException(const ErrnoException&) noexcept = default;
-  ErrnoException(ErrnoException&&) noexcept      = default;
+  ErrnoException(const ErrnoException&) = default;
+  ErrnoException(ErrnoException&&)      = default;
   explicit ErrnoException(const std::int64_t& error, const std::string& context = std::string());
   ~ErrnoException() override                                = default;
   ErrnoException& operator=(ErrnoException&&) noexcept      = default;
