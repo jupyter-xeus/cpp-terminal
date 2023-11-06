@@ -11,7 +11,6 @@
 
 #include <cstdint>
 #include <exception>
-#include <stdexcept>
 #include <string>
 
 namespace Term
@@ -20,15 +19,32 @@ namespace Term
 class Exception : public std::exception
 {
 public:
-  Exception(const std::string& what) : m_what(what) {}
-  Exception(const std::int64_t& code, const std::string& what) : m_what(what), m_code(code) {}
-  virtual const char* what() const noexcept override { return m_what.c_str(); }
-  std::int64_t        code() const noexcept { return m_code; }
-  virtual ~Exception() = default;
+  explicit Exception(const std::string& message) noexcept;
+  Exception(const std::int64_t& code, const std::string& message) noexcept;
+  Exception(const Exception&)            = default;
+  Exception(Exception&&)                 = default;
+  Exception& operator=(Exception&&)      = default;
+  Exception& operator=(const Exception&) = default;
+
+  const char*  what() const noexcept override;
+  std::int64_t code() const noexcept;
+  std::string  message() const noexcept;
+  std::string  context() const noexcept;
+  ~Exception() noexcept override = default;
 
 protected:
-  std::string  m_what;
-  std::int64_t m_code{0};
+  explicit Exception(const std::int64_t& code) noexcept;
+  virtual void                       build_what() const noexcept;
+  void                               setMessage(const std::string& message) noexcept;
+  void                               setContext(const std::string& context) noexcept;
+  void                               setWhat(const std::string& what) noexcept;
+  static const constexpr std::size_t m_maxSize{256};
+
+private:
+  std::int64_t        m_code{0};
+  std::string         m_message;
+  std::string         m_context;
+  mutable std::string m_what;
 };
 
 }  // namespace Term

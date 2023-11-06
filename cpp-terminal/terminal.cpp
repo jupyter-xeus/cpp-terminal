@@ -13,6 +13,8 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/platforms/file.hpp"
+#include "cpp-terminal/platforms/file_initializer.hpp"
+#include "cpp-terminal/platforms/return_code.hpp"
 #include "cpp-terminal/platforms/sigwinch.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
@@ -44,7 +46,6 @@ Term::Options Term::Terminal::getOptions() { return m_options; }
 Term::Terminal::Terminal()
 {
   Term::Private::Sigwinch::blockSigwinch();
-  setBadStateReturnCode();
   Term::Private::m_fileInitializer.init();
   store_and_restore();
   setMode();  //Save the default cpp-terminal mode done in store_and_restore();
@@ -68,17 +69,17 @@ Term::Terminal::~Terminal()
   catch(const Term::Exception& e)
   {
     Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\r\nreason : " + std::string(e.what()) + "\r\n");
-    std::exit(m_badReturnCode);
+    std::exit(Term::returnCode());
   }
   catch(const std::exception& e)
   {
     Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\r\nreason : " + std::string(e.what()) + "\r\n");
-    std::exit(m_badReturnCode);
+    std::exit(Term::returnCode());
   }
   catch(...)
   {
     Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\r\n");
-    std::exit(m_badReturnCode);
+    std::exit(Term::returnCode());
   }
 }
 

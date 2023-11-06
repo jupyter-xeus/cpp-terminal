@@ -24,10 +24,10 @@ std::string Term::Private::to_narrow(const std::wstring& in)
   std::size_t            in_size{in.size()};
   if(in_size > static_cast<size_t>((std::numeric_limits<int>::max)())) throw Term::Exception("String size is to big " + std::to_string(in_size) + "/" + std::to_string((std::numeric_limits<int>::max)()));
   const int ret_size{::WideCharToMultiByte(CP_UTF8, flag, in.data(), static_cast<int>(in_size), nullptr, 0, nullptr, nullptr)};
-  if(ret_size == 0) throw Term::Private::WindowsError(::GetLastError());
+  if(ret_size == 0) throw Term::Private::WindowsException(::GetLastError());
   std::string ret(static_cast<std::size_t>(ret_size), '\0');
   int         ret_error{::WideCharToMultiByte(CP_UTF8, flag, in.data(), static_cast<int>(in_size), &ret[0], ret_size, nullptr, nullptr)};
-  if(ret_error == 0) throw Term::Private::WindowsError(::GetLastError());
+  if(ret_error == 0) throw Term::Private::WindowsException(::GetLastError());
   return ret;
 }
 
@@ -38,10 +38,10 @@ std::wstring Term::Private::to_wide(const std::string& in)
   std::size_t            in_size{in.size()};
   if(in_size > static_cast<size_t>((std::numeric_limits<int>::max)())) throw Term::Exception("String size is to big " + std::to_string(in_size) + "/" + std::to_string((std::numeric_limits<int>::max)()));
   const int ret_size{::MultiByteToWideChar(CP_UTF8, flag, in.data(), static_cast<int>(in_size), nullptr, 0)};
-  if(ret_size == 0) throw Term::Private::WindowsError(::GetLastError());
+  if(ret_size == 0) throw Term::Private::WindowsException(::GetLastError());
   std::wstring ret(static_cast<std::size_t>(ret_size), '\0');
   int          ret_error{::MultiByteToWideChar(CP_UTF8, flag, in.data(), static_cast<int>(in_size), &ret[0], ret_size)};
-  if(ret_error == 0) throw Term::Private::WindowsError(::GetLastError());
+  if(ret_error == 0) throw Term::Private::WindowsException(::GetLastError());
   return ret;
 }
 #endif

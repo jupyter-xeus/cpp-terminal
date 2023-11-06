@@ -9,6 +9,7 @@
 
 #include "cpp-terminal/platforms/file.hpp"
 
+#include <cstdio>
 #include <new>
 
 #if defined(_WIN32)
@@ -19,9 +20,11 @@
   #include <unistd.h>
 #endif
 
-#include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/platforms/exception.hpp"
+#include "cpp-terminal/platforms/unicode.hpp"
 
 #include <fcntl.h>
+#include <iostream>
 
 namespace Term
 {
@@ -82,72 +85,9 @@ bool Term::Private::FileHandler::null() const { return m_null; }
 
 FILE* Term::Private::FileHandler::file() { return m_file; }
 
-int Term::Private::FileHandler::fd() const { return m_fd; }
+std::int32_t Term::Private::FileHandler::fd() const { return m_fd; }
 
 Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() { return m_handle; }
-
-int Term::Private::FileInitializer::m_counter = {0};
-
-void Term::Private::FileInitializer::attachConsole()
-{
-#if defined(_WIN32)
-  BOOL attached{AttachConsole(ATTACH_PARENT_PROCESS)};
-  // Iw we don't have console try to create one
-  if(GetLastError() == ERROR_INVALID_HANDLE && !attached)
-  {
-    if(AllocConsole())
-    {
-      hadToAttachConsole = true;
-      AttachConsole(GetCurrentProcessId());
-    }
-  }
-  FILE* fDummy{nullptr};
-  if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) freopen_s(&fDummy, "CONOUT$", "w", stdout);
-  if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) freopen_s(&fDummy, "CONOUT$", "w", stderr);
-  if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) freopen_s(&fDummy, "CONIN$", "r", stdin);
-#endif
-  setvbuf(stdin, nullptr, _IOLBF, 4096);
-  setvbuf(stdout, nullptr, _IOLBF, 4096);
-  setvbuf(stderr, nullptr, _IOLBF, 4096);
-}
-
-void Term::Private::FileInitializer::detachConsole()
-{
-#if defined(_WIN32)
-  if(hadToAttachConsole) FreeConsole();
-#endif
-}
-
-bool Term::Private::FileInitializer::hadToAttachConsole = {false};
-
-void Term::Private::FileInitializer::init()
-{
-  // MacOS was not happy wish a static mutex in the class so we create it and pass to each class;
-  static std::recursive_mutex io_mutex;
-  if(m_counter++ == 0)
-  {
-    attachConsole();
-#if defined(_WIN32)
-    new(&Term::Private::in) InputFileHandler(io_mutex, "CONIN$");
-    new(&Term::Private::out) OutputFileHandler(io_mutex, "CONOUT$");
-#else
-    new(&Term::Private::in) InputFileHandler(io_mutex, "/dev/tty");
-    new(&Term::Private::out) OutputFileHandler(io_mutex, "/dev/tty");
-#endif
-  }
-}
-
-Term::Private::FileInitializer::FileInitializer() { init(); }
-
-Term::Private::FileInitializer::~FileInitializer()
-{
-  if(--m_counter == 0)
-  {
-    (&Term::Private::in)->~InputFileHandler();
-    (&Term::Private::out)->~OutputFileHandler();
-    detachConsole();
-  }
-}
 
 int Term::Private::OutputFileHandler::write(const std::string& str)
 {
