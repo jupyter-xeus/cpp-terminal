@@ -21,10 +21,10 @@ class Exception : public std::exception
 public:
   explicit Exception(const std::string& message) noexcept;
   Exception(const std::int64_t& code, const std::string& message) noexcept;
-  Exception(const Exception&)                     = default;
-  Exception(Exception&&)                          = default;
-  Exception& operator=(Exception&&)               = default;
-  Exception& operator=(const Exception&)          = default;
+  Exception(const Exception&)            = default;
+  Exception(Exception&&)                 = default;
+  Exception& operator=(Exception&&)      = default;
+  Exception& operator=(const Exception&) = default;
 
   const char*  what() const noexcept override;
   std::int64_t code() const noexcept;
