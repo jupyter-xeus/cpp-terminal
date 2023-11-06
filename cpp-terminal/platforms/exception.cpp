@@ -19,6 +19,7 @@
 #endif
 
 #include <string>
+#include <cerrno>
 
 Term::Exception::Exception(const std::string& message) noexcept : m_message(message) {}
 
