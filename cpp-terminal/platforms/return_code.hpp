@@ -16,4 +16,4 @@ namespace Term
 
 std::uint16_t returnCode() noexcept;
 
-}
+}  // namespace Term
