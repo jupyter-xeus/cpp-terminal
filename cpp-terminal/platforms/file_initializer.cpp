@@ -70,10 +70,10 @@ try
   bool                        need_allocation{false};
   switch(error.error())
   {
-    case ERROR_SUCCESS: break;                                                                      // Has been attached
-    case ERROR_ACCESS_DENIED: need_allocation = false; break;                                       // Already attached that's good !
-    case ERROR_INVALID_PARAMETER: error.throw_exception("The specified process does not exist !");  // Should never happen !
-    case ERROR_INVALID_HANDLE: need_allocation = true; break;                                       // Need to allocate th console !
+    case ERROR_SUCCESS: break;                                                                             // Has been attached
+    case ERROR_ACCESS_DENIED: need_allocation = false; break;                                              // Already attached that's good !
+    case ERROR_INVALID_PARAMETER: error.throw_exception("The specified process does not exist !"); break;  // Should never happen !
+    case ERROR_INVALID_HANDLE: need_allocation = true; break;                                              // Need to allocate th console !
   }
   if(need_allocation)
   {
