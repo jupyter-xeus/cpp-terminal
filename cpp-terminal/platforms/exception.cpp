@@ -105,11 +105,6 @@ Term::Private::Errno::Errno() noexcept
 #endif
 }
 
-void Term::Private::Errno::throw_exception(const std::string& str) const
-{
-  if(m_check_value) { throw Term::Private::ErrnoException(m_errno, str); }
-}
-
 Term::Private::Errno::~Errno() noexcept
 {
 #if defined(_WIN32)
@@ -118,6 +113,10 @@ Term::Private::Errno::~Errno() noexcept
   errno = {0};
 #endif
 }
+
+std::int64_t Term::Private::Errno::error() const noexcept { return m_errno; }
+
+bool Term::Private::Errno::check_value() const noexcept { return m_check_value; }
 
 Term::Private::Errno& Term::Private::Errno::check_if(const bool& ret) noexcept
 {
@@ -131,11 +130,10 @@ Term::Private::Errno& Term::Private::Errno::check_if(const bool& ret) noexcept
   return *this;
 }
 
-bool Term::Private::Errno::check_value() const noexcept { return m_check_value; }
-
-std::int64_t Term::Private::Errno::error() const noexcept { return m_errno; }
-
-Term::Private::ErrnoException::~ErrnoException() = default;
+void Term::Private::Errno::throw_exception(const std::string& str) const
+{
+  if(m_check_value) { throw Term::Private::ErrnoException(m_errno, str); }
+}
 
 Term::Private::ErrnoException::ErrnoException(const std::int64_t& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
 {

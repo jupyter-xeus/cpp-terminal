@@ -18,25 +18,14 @@ namespace Term
 namespace Private
 {
 
-// Helper for windows errors
 #if defined(_WIN32)
-class WindowsException : public Term::Exception
-{
-public:
-  WindowsException(const std::int64_t& error, const std::string& context = std::string());
-  virtual ~WindowsException() = default;
-
-private:
-  void build_what() const noexcept;
-};
-
 class WindowsError
 {
 public:
-  WindowsError(const WindowsError&) noexcept = default;
-  WindowsError(WindowsError&&) noexcept      = default;
-  WindowsError() noexcept;
-  virtual ~WindowsError() noexcept;
+  WindowsError(const WindowsError&) noexcept            = default;
+  WindowsError(WindowsError&&) noexcept                 = default;
+  WindowsError() noexcept                               = default;
+  virtual ~WindowsError() noexcept                      = default;
   WindowsError& operator=(WindowsError&&) noexcept      = default;
   WindowsError& operator=(const WindowsError&) noexcept = default;
   std::int64_t  error() const noexcept;
@@ -47,6 +36,16 @@ public:
 private:
   std::int64_t m_error{0};
   bool         m_check_value{false};
+};
+
+class WindowsException : public Term::Exception
+{
+public:
+  WindowsException(const std::int64_t& error, const std::string& context = std::string());
+  ~WindowsException() override = default;
+
+private:
+  void build_what() const noexcept final;
 };
 #endif
 
@@ -72,11 +71,15 @@ private:
 class ErrnoException : public Term::Exception
 {
 public:
+  ErrnoException(const ErrnoException&) noexcept = default;
+  ErrnoException(ErrnoException&&) noexcept      = default;
   explicit ErrnoException(const std::int64_t& error, const std::string& context = std::string());
-  virtual ~ErrnoException();
+  ~ErrnoException() override                                = default;
+  ErrnoException& operator=(ErrnoException&&) noexcept      = default;
+  ErrnoException& operator=(const ErrnoException&) noexcept = default;
 
 private:
-  void build_what() const noexcept;
+  void build_what() const noexcept final;
 };
 
 }  // namespace Private
