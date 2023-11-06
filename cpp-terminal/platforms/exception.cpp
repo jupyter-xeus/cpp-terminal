@@ -103,7 +103,7 @@ Term::Private::Errno::Errno() noexcept
 #if defined(_WIN32)
   _set_errno(0);
 #else
-  *::__errno_location() = {0};
+  errno = {0};
 #endif
 }
 
@@ -117,7 +117,7 @@ Term::Private::Errno::~Errno() noexcept
 #if defined(_WIN32)
   _set_errno(0);
 #else
-  *::__errno_location() = {0};
+  errno = {0};
 #endif
 }
 
@@ -126,7 +126,7 @@ Term::Private::Errno& Term::Private::Errno::check_if(const bool& ret) noexcept
 #if defined(_WIN32)
   _get_errno(&static_cast<int>(m_errno));
 #else
-  m_errno = static_cast<std::uint32_t>(*::__errno_location());
+  m_errno = static_cast<std::uint32_t>(errno);
 #endif
   m_check_value = {ret};
   return *this;
