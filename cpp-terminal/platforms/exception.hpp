@@ -33,12 +33,16 @@ private:
 class WindowsError
 {
 public:
-  WindowsError();
-  virtual ~WindowsError();
-  std::int64_t  error() const;
-  bool          check_value() const;
-  WindowsError& check_if(const bool& ret);
-  void          throw_exception(const std::string& str = std::string());
+  WindowsError(const WindowsError&) noexcept = default;
+  WindowsError(WindowsError&&) noexcept      = default;
+  WindowsError() noexcept;
+  virtual ~WindowsError() noexcept;
+  WindowsError& operator=(WindowsError&&) noexcept      = default;
+  WindowsError& operator=(const WindowsError&) noexcept = default;
+  std::int64_t  error() const noexcept;
+  bool          check_value() const noexcept;
+  WindowsError& check_if(const bool& ret) noexcept;
+  void          throw_exception(const std::string& str = std::string()) const;
 
 private:
   std::int64_t m_error{0};
@@ -52,7 +56,7 @@ public:
   Errno(const Errno&) noexcept = default;
   Errno(Errno&&) noexcept      = default;
   Errno() noexcept;
-  ~Errno() noexcept;
+  virtual ~Errno() noexcept;
   Errno&       operator=(Errno&&) noexcept      = default;
   Errno&       operator=(const Errno&) noexcept = default;
   std::int64_t error() const noexcept;

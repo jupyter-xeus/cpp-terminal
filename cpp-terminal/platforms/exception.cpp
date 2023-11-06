@@ -52,22 +52,19 @@ void Term::Exception::setContext(const std::string& context) noexcept { m_contex
 void Term::Exception::setWhat(const std::string& what) noexcept { m_what = what; }
 
 #if defined(_WIN32)
-Term::Private::WindowsError::WindowsError() = default;
 
-Term::Private::WindowsError::~WindowsError() = default;
+std::int64_t Term::Private::WindowsError::error() const noexcept { return m_error; }
 
-std::int64_t Term::Private::WindowsError::error() const { return m_error; }
+bool Term::Private::WindowsError::check_value() const noexcept { return m_check_value; }
 
-bool Term::Private::WindowsError::check_value() const { return m_check_value; }
-
-Term::Private::WindowsError& Term::Private::WindowsError::check_if(const bool& ret)
+Term::Private::WindowsError& Term::Private::WindowsError::check_if(const bool& ret) noexcept
 {
   m_error       = static_cast<std::int64_t>(GetLastError());
   m_check_value = ret;
   return *this;
 }
 
-void Term::Private::WindowsError::throw_exception(const std::string& str)
+void Term::Private::WindowsError::throw_exception(const std::string& str) const
 {
   if(m_check_value) { throw Term::Private::WindowsException(m_error, str); }
 }
