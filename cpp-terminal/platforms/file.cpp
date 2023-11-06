@@ -93,6 +93,12 @@ Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() { return
 
 int Term::Private::FileInitializer::m_counter = {0};
 
+///
+///@brief Attach the console
+///
+/// Check if a console is attached to the process. If not, try to attach to the console. If there is no console, then create one. \b stdin, \b stdout, \b stderr are check and opened if necessary.
+/// On error, on window, a message box is raised.
+///
 void Term::Private::FileInitializer::attachConsole()
 try
 {
@@ -131,7 +137,8 @@ catch(const Term::Exception& exception)
 {
   detachConsole();
 #if defined(_WIN32)
-  MessageBoxW(nullptr, Term::Private::to_wide(std::string(exception.what()) + "\nPlease contact : " + Term::homepage()).c_str(), Term::Private::to_wide(std::string("cpp-terminal ") + Term::Version::string()).c_str(), MB_OK | MB_ICONERROR | MB_DEFBUTTON1);
+  MessageBoxW(nullptr, Term::Private::to_wide(exception.what()).c_str(), Term::Private::to_wide("cpp-terminal").c_str(), MB_OK | MB_ICONERROR | MB_DEFBUTTON1);
+  std::exit(exception.code());
 #endif
   throw;
 }
