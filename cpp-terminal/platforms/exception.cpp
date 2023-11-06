@@ -9,16 +9,44 @@
 
 #include "cpp-terminal/platforms/exception.hpp"
 
-#include "cpp-terminal/platforms/unicode.hpp"
-
 #if defined(_WIN32)
+  #include "cpp-terminal/platforms/unicode.hpp"
+
   #include <memory>
   #include <windows.h>
 #else
   #include <cstring>
 #endif
 
-#include <iostream>
+Term::Exception::Exception(const std::string& message) noexcept : m_message(message) {}
+
+Term::Exception::Exception(const std::int64_t& code, const std::string& message) noexcept : m_code(code), m_message(message) {}
+
+const char* Term::Exception::what() const noexcept
+{
+  build_what();
+  return m_what.c_str();
+}
+
+std::int64_t Term::Exception::code() const noexcept { return m_code; }
+
+std::string Term::Exception::message() const noexcept { return m_message; }
+
+std::string Term::Exception::context() const noexcept { return m_context; }
+
+Term::Exception::Exception(const std::int64_t& code) noexcept : m_code(code) {}
+
+void Term::Exception::build_what() const noexcept
+{
+  if(0 == m_code) { m_what = m_message; }
+  else { m_what = "error " + std::to_string(m_code) + ": " + m_message; }
+}
+
+void Term::Exception::setMessage(const std::string& message) noexcept { m_message = message; }
+
+void Term::Exception::setContext(const std::string& context) noexcept { m_context = context; }
+
+void Term::Exception::setWhat(const std::string& what) noexcept { m_what = what; }
 
 #if defined(_WIN32)
 Term::Private::WindowsError::WindowsError() = default;
@@ -56,7 +84,6 @@ Term::Private::WindowsException::WindowsException(const unsigned long& error, co
     std::string                                 ret{Term::Private::to_narrow(ptrBuffer.get())};
     if(ret.size() >= 2 && ret[ret.size() - 1] == '\n' && ret[ret.size() - 2] == '\r') ret.erase(ret.size() - 2);
     m_message = ret;
-    build_what();
   }
   else { throw Term::Exception(::GetLastError(), "Error in FormatMessageW"); }
 }
@@ -69,85 +96,61 @@ void Term::Private::WindowsException::build_what()
 
 #endif
 
-Term::Private::Errno::Errno()
+Term::Private::Errno::Errno() noexcept
 {
 #if defined(_WIN32)
   _set_errno(0);
 #else
-  errno = 0;
+  *::__errno_location() = {0};
 #endif
 }
 
-void Term::Private::Errno::throw_exception(const std::string& str)
+void Term::Private::Errno::throw_exception(const std::string& str) const
 {
-  if(m_check_value) throw Term::Private::ErrnoException(m_errno, str);
+  if(m_check_value) { throw Term::Private::ErrnoException(m_errno, str); }
 }
 
-Term::Private::Errno::~Errno()
+Term::Private::Errno::~Errno() noexcept
 {
 #if defined(_WIN32)
   _set_errno(0);
 #else
-  errno = 0;
+  *::__errno_location() = {0};
 #endif
 }
 
-Term::Private::Errno& Term::Private::Errno::check_if(const bool& ret)
+Term::Private::Errno& Term::Private::Errno::check_if(const bool& ret) noexcept
 {
 #if defined(_WIN32)
   _get_errno(&m_errno);
 #else
-  m_errno = errno;
+  m_errno = static_cast<std::uint32_t>(*::__errno_location());
 #endif
-  m_check_value = ret;
+  m_check_value = {ret};
   return *this;
 }
 
-bool Term::Private::Errno::check_value() const { return m_check_value; }
+bool Term::Private::Errno::check_value() const noexcept { return m_check_value; }
 
-std::int32_t Term::Private::Errno::error() const { return m_errno; }
+std::uint32_t Term::Private::Errno::error() const noexcept { return m_errno; }
 
 Term::Private::ErrnoException::~ErrnoException() = default;
 
-Term::Private::ErrnoException::ErrnoException(const int& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
+Term::Private::ErrnoException::ErrnoException(const std::uint32_t& error, const std::string& context) : Term::Exception(static_cast<std::int64_t>(error))
 {
-  m_context = context;
+  setContext(context);
 #if defined(_WIN32)
-  std::wstring mess;
-  mess.assign(256, L'\0');
-  _wcserror_s(&mess[0], mess.size(), static_cast<int>(error));
-  m_message = Term::Private::to_narrow(mess.c_str());
+  std::wstring message(m_maxSize, L'\0');
+  _wcserror_s(&message[0], message.size(), static_cast<int>(error));
+  setMessage(Term::Private::to_narrow(message.c_str()));
 #else
-  m_message.assign(256, '\0');
-  m_message = ::strerror_r(error, &m_message[0], m_message.size());
+  std::string message(m_maxSize, '\0');
+  setMessage(::strerror_r(static_cast<std::int32_t>(error), &message[0], message.size()));  // NOLINT(readability-container-data-pointer)
 #endif
-  build_what();
 }
 
-void Term::Private::ErrnoException::build_what()
+void Term::Private::ErrnoException::build_what() const noexcept
 {
-  m_what = "errno " + std::to_string(m_code) + ": " + m_message;
-  if(!m_context.empty()) m_what += +" [" + m_context + "]";
+  std::string what{"errno " + std::to_string(code()) + ": " + message()};
+  if(!context().empty()) { what += +" [" + context() + "]"; }
 }
-
-Term::Exception::Exception(const std::string& message) : m_message(message) { build_what(); }
-
-Term::Exception::Exception(const std::int64_t& code, const std::string& message) : m_code(code), m_message(message) { build_what(); }
-
-Term::Exception::Exception(const std::int64_t& code) : m_code(code) {}
-
-Term::Exception::~Exception() = default;
-
-const char* Term::Exception::what() const noexcept { return m_what.c_str(); }
-
-void Term::Exception::build_what()
-{
-  if(m_code == 0) { m_what = m_message; }
-  else { m_what = "error " + std::to_string(m_code) + ": " + m_message; }
-}
-
-std::int64_t Term::Exception::code() const noexcept { return m_code; }
-
-std::string Term::Exception::message() const noexcept { return m_message; }
-
-std::string Term::Exception::context() const noexcept { return m_context; }

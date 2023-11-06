@@ -17,13 +17,11 @@
   #include <windows.h>
 #else
   #include <sys/ioctl.h>
-  #include <sys/stat.h>
   #include <unistd.h>
 #endif
 
 #include "cpp-terminal/platforms/exception.hpp"
 #include "cpp-terminal/platforms/unicode.hpp"
-#include "cpp-terminal/version.hpp"
 
 #include <fcntl.h>
 #include <iostream>
@@ -87,99 +85,9 @@ bool Term::Private::FileHandler::null() const { return m_null; }
 
 FILE* Term::Private::FileHandler::file() { return m_file; }
 
-int Term::Private::FileHandler::fd() const { return m_fd; }
+std::int32_t Term::Private::FileHandler::fd() const { return m_fd; }
 
 Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() { return m_handle; }
-
-int Term::Private::FileInitializer::m_counter = {0};
-
-///
-///@brief Attach the console
-///
-/// Check if a console is attached to the process. If not, try to attach to the console. If there is no console, then create one. \b stdin, \b stdout, \b stderr are check and opened if necessary.
-/// On error, on window, a message box is raised.
-///
-void Term::Private::FileInitializer::attachConsole()
-try
-{
-#if defined(_WIN32)
-  // If something happen here we still don't have a console so we can only use a MessageBox to warn the users something is very bad and that they should contact us.
-  Term::Private::WindowsError error{Term::Private::WindowsError().check_if(AttachConsole(ATTACH_PARENT_PROCESS) == 0)};
-  bool                        need_allocation{false};
-  switch(error.error())
-  {
-    case ERROR_SUCCESS: break;                                                                      // Has been attached
-    case ERROR_ACCESS_DENIED: need_allocation = false; break;                                       // Already attached that's good !
-    case ERROR_INVALID_PARAMETER: error.throw_exception("The specified process does not exist !");  // Should never happen !
-    case ERROR_INVALID_HANDLE: need_allocation = true; break;                                       // Need to allocate th console !
-  }
-  if(need_allocation)
-  {
-    Term::Private::WindowsError().check_if(AllocConsole() == 0).throw_exception("AllocConsole()");
-    hadToAttachConsole = true;
-  }
-  FILE* fDummy{nullptr};
-  if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) Term::Private::WindowsError().check_if(freopen_s(&fDummy, "CONOUT$", "w", stdout) != 0).throw_exception("freopen_s(&fDummy, \"CONOUT$\", \"w\", stdout)");
-  if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) Term::Private::WindowsError().check_if(freopen_s(&fDummy, "CONOUT$", "w", stderr) != 0).throw_exception("freopen_s(&fDummy, \"CONOUT$\", \"w\", stderr)");
-  if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) Term::Private::WindowsError().check_if(freopen_s(&fDummy, "CONIN$", "r", stdin) != 0).throw_exception("freopen_s(&fDummy, \"CONIN$\", \"r\", stdin)");
-  const std::size_t bestSize{BUFSIZ > 4096 ? BUFSIZ : 4096};
-#else
-  const struct stat stats
-  {
-  };
-  const std::size_t bestSize{static_cast<size_t>(stats.st_blksize)};
-#endif
-  Term::Private::Errno().check_if(std::setvbuf(stdin, nullptr, _IOLBF, bestSize) != 0).throw_exception("std::setvbuf(stdin, nullptr, _IOLBF, bestSize)");
-  Term::Private::Errno().check_if(std::setvbuf(stdout, nullptr, _IOLBF, bestSize) != 0).throw_exception("std::setvbuf(stdout, nullptr, _IOLBF, bestSize)");
-  Term::Private::Errno().check_if(std::setvbuf(stderr, nullptr, _IOLBF, bestSize) != 0).throw_exception("std::setvbuf(stderr, nullptr, _IOLBF, bestSize)");
-}
-catch(const Term::Exception& exception)
-{
-  detachConsole();
-#if defined(_WIN32)
-  MessageBoxW(nullptr, Term::Private::to_wide(exception.what()).c_str(), Term::Private::to_wide("cpp-terminal").c_str(), MB_OK | MB_ICONERROR | MB_DEFBUTTON1);
-  std::exit(exception.code());
-#endif
-  throw;
-}
-
-void Term::Private::FileInitializer::detachConsole()
-{
-#if defined(_WIN32)
-  if(hadToAttachConsole) FreeConsole();
-#endif
-}
-
-bool Term::Private::FileInitializer::hadToAttachConsole = {false};
-
-void Term::Private::FileInitializer::init()
-{
-  // MacOS was not happy wish a static mutex in the class so we create it and pass to each class;
-  static std::recursive_mutex io_mutex;
-  if(m_counter++ == 0)
-  {
-    attachConsole();
-#if defined(_WIN32)
-    new(&Term::Private::in) InputFileHandler(io_mutex, "CONIN$");
-    new(&Term::Private::out) OutputFileHandler(io_mutex, "CONOUT$");
-#else
-    new(&Term::Private::in) InputFileHandler(io_mutex, "/dev/tty");
-    new(&Term::Private::out) OutputFileHandler(io_mutex, "/dev/tty");
-#endif
-  }
-}
-
-Term::Private::FileInitializer::FileInitializer() { init(); }
-
-Term::Private::FileInitializer::~FileInitializer()
-{
-  if(--m_counter == 0)
-  {
-    (&Term::Private::in)->~InputFileHandler();
-    (&Term::Private::out)->~OutputFileHandler();
-    detachConsole();
-  }
-}
 
 int Term::Private::OutputFileHandler::write(const std::string& str)
 {

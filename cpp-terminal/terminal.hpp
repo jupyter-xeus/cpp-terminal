@@ -20,7 +20,6 @@ class Terminal
 {
 private:
   void           store_and_restore();
-  void           setBadStateReturnCode();
   void           setOptions();
   void           applyOptions();
   void           setMode();
@@ -31,7 +30,6 @@ private:
   void           set_unset_utf8();
   Term::Terminfo m_terminfo;
   Term::Options  m_options;
-  std::uint8_t   m_badReturnCode{EXIT_FAILURE};
 
 public:
   Terminal();

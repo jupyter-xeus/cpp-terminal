@@ -143,19 +143,6 @@ std::int16_t Term::Terminal::unsetFocusEvents()
 #endif
 }
 
-void Term::Terminal::setBadStateReturnCode()
-{
-  std::pair<bool, std::string> returnCode{Private::getenv("CPP_TERMINAL_BADSTATE")};
-  try
-  {
-    if(returnCode.first && stoi(returnCode.second) != EXIT_SUCCESS) m_badReturnCode = static_cast<std::uint8_t>(stoi(returnCode.second));
-  }
-  catch(...)
-  {
-    m_badReturnCode = EXIT_FAILURE;
-  }
-}
-
 ///
 ///@brief Set mode raw/cooked.
 ///First call is to save the good state set-up by cpp-terminal.

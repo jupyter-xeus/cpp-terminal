@@ -48,26 +48,30 @@ private:
 class Errno
 {
 public:
-  Errno();
-  ~Errno();
-  std::int32_t error() const;
-  bool         check_value() const;
-  Errno&       check_if(const bool& ret);
-  void         throw_exception(const std::string& str = std::string());
+  Errno(const Errno&) noexcept = default;
+  Errno(Errno&&) noexcept      = default;
+  Errno() noexcept;
+  ~Errno() noexcept;
+  Errno&        operator=(Errno&&) noexcept      = default;
+  Errno&        operator=(const Errno&) noexcept = default;
+  std::uint32_t error() const noexcept;
+  bool          check_value() const noexcept;
+  Errno&        check_if(const bool& ret) noexcept;
+  void          throw_exception(const std::string& str = std::string()) const;
 
 private:
-  int  m_errno{0};
-  bool m_check_value{false};
+  std::uint32_t m_errno{0};
+  bool          m_check_value{false};
 };
 
 class ErrnoException : public Term::Exception
 {
 public:
-  ErrnoException(const int& error, const std::string& context = std::string());
+  ErrnoException(const std::uint32_t& error, const std::string& context = std::string());
   ~ErrnoException() override;
 
 private:
-  void build_what() override;
+  void build_what() const noexcept override;
 };
 
 }  // namespace Private
