@@ -10,7 +10,6 @@
 #pragma once
 
 #include <cstddef>
-#include <cstdint>
 
 namespace Term
 {
@@ -21,10 +20,10 @@ namespace Private
 class FileInitializer
 {
 public:
-  FileInitializer(FileInitializer&&)      = delete;
-  FileInitializer(const FileInitializer&) = delete;
   FileInitializer();
   ~FileInitializer();
+  FileInitializer(FileInitializer&&)                 = delete;
+  FileInitializer(const FileInitializer&)            = delete;
   FileInitializer& operator=(const FileInitializer&) = delete;
   FileInitializer& operator=(FileInitializer&&)      = delete;
   static void      init();
