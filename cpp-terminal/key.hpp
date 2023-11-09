@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "cpp-terminal/platforms/conversion.hpp"
-
 #include <cstdint>
 #include <string>
 

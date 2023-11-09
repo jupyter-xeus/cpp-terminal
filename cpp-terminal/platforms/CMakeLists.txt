@@ -1,7 +1,0 @@
-set(THREADS_PREFER_PTHREAD_FLAG TRUE)
-find_package(Threads)
-add_library(cpp-terminal-platforms STATIC return_code.cpp file_initializer.cpp exception.cpp unicode.cpp conversion.cpp args.cpp terminal.cpp tty.cpp terminfo.cpp input.cpp screen.cpp cursor.cpp file.cpp env.cpp blocking_queue.cpp sigwinch.cpp)
-target_link_libraries(cpp-terminal-platforms PRIVATE Warnings::Warnings PUBLIC Threads::Threads)
-target_compile_options(cpp-terminal-platforms PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/utf-8 /wd4668 /wd4514>)
-target_include_directories(cpp-terminal-platforms PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> $<INSTALL_INTERFACE:include>)
-add_library(cpp-terminal::cpp-terminal-platforms ALIAS cpp-terminal-platforms)

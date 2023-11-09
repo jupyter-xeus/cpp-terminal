@@ -14,7 +14,7 @@
 // clang-format off
   #include <windows.h>
   #include <processenv.h>
-  #include "cpp-terminal/platforms/unicode.hpp"
+  #include "cpp-terminal/private/unicode.hpp"
 // clang-format on
 #elif defined(__APPLE__)
   #include <crt_externs.h>

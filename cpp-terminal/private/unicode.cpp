@@ -7,9 +7,9 @@
 * SPDX-License-Identifier: MIT
 */
 
-#include "cpp-terminal/platforms/unicode.hpp"
+#include "cpp-terminal/private/unicode.hpp"
 
-#include "cpp-terminal/platforms/exception.hpp"
+#include "cpp-terminal/private/exception.hpp"
 
 #if defined(_WIN32)
   #include <limits>

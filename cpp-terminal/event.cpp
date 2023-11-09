@@ -9,7 +9,7 @@
 
 #include "cpp-terminal/event.hpp"
 
-#include "cpp-terminal/platforms/conversion.hpp"
+#include "cpp-terminal/private/conversion.hpp"
 
 #if defined(_MSC_VER)
   // Disable stupid warnings on Windows

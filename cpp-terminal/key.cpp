@@ -9,7 +9,7 @@
 
 #include "cpp-terminal/key.hpp"
 
-#include "cpp-terminal/platforms/conversion.hpp"
+#include "cpp-terminal/private/conversion.hpp"
 
 // ------------------------- Key ---------------------------
 

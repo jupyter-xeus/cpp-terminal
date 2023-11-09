@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "cpp-terminal/private/file_initializer.hpp"
+
 #include <cstdint>
 #include <mutex>
 #include <string>
@@ -84,9 +86,9 @@ public:
 #endif
 };
 
-extern InputFileHandler&  in;
-extern OutputFileHandler& out;
-
+extern InputFileHandler&     in;
+extern OutputFileHandler&    out;
+static const FileInitializer file_initializer;
 }  // namespace Private
 
 }  // namespace Term

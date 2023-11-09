@@ -10,7 +10,7 @@
 #include "cpp-terminal/buffer.hpp"
 
 #include "cpp-terminal/options.hpp"
-#include "cpp-terminal/platforms/file.hpp"
+#include "cpp-terminal/private/file.hpp"
 #include "cpp-terminal/terminal.hpp"
 
 static std::string replace(const Term::Buffer::int_type& c)

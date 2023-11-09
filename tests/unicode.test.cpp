@@ -8,7 +8,7 @@
 */
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "cpp-terminal/platforms/unicode.hpp"
+#include "cpp-terminal/private/unicode.hpp"
 
 #include "doctest/doctest.h"
 

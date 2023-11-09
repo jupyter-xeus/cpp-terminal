@@ -9,86 +9,14 @@
 
 #include "cpp-terminal/terminal.hpp"
 
-#include "cpp-terminal/cursor.hpp"
-#include "cpp-terminal/exception.hpp"
-#include "cpp-terminal/options.hpp"
-#include "cpp-terminal/platforms/file.hpp"
-#include "cpp-terminal/platforms/file_initializer.hpp"
-#include "cpp-terminal/platforms/return_code.hpp"
-#include "cpp-terminal/platforms/sigwinch.hpp"
-#include "cpp-terminal/screen.hpp"
-#include "cpp-terminal/style.hpp"
+#include <array>
 
-#include <new>
-
-namespace Term
+namespace
 {
-static char termbuf[sizeof(Term::Terminal)];
-Terminal&   terminal = reinterpret_cast<Term::Terminal&>(termbuf);
-}  // namespace Term */
+std::array<char, sizeof(Term::Terminal)> terminal_buffer;
+}  // namespace
 
-int Term::TerminalInitializer::m_counter{0};
-
-void Term::TerminalInitializer::init()
-{
-  if(m_counter++ == 0) new(&Term::terminal) Terminal();
-}
-
-Term::TerminalInitializer::TerminalInitializer() { init(); }
-
-Term::TerminalInitializer::~TerminalInitializer()
-{
-  if(--m_counter == 0) { (&Term::terminal)->~Terminal(); }
-}
-
-Term::Options Term::Terminal::getOptions() { return m_options; }
-
-Term::Terminal::Terminal()
-{
-  Term::Private::Sigwinch::blockSigwinch();
-  Term::Private::m_fileInitializer.init();
-  store_and_restore();
-  setMode();  //Save the default cpp-terminal mode done in store_and_restore();
-  set_unset_utf8();
-  m_terminfo.checkUTF8();
-}
-
-bool Term::Terminal::supportUTF8() { return m_terminfo.hasUTF8(); }
-
-Term::Terminal::~Terminal()
-{
-  try
-  {
-    if(m_options.has(Option::ClearScreen)) Term::Private::out.write(clear_buffer() + style(Style::Reset) + cursor_move(1, 1) + screen_load());
-    if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_on());
-    set_unset_utf8();
-    store_and_restore();
-    unsetFocusEvents();
-    unsetMouseEvents();
-  }
-  catch(const Term::Exception& e)
-  {
-    Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\r\nreason : " + std::string(e.what()) + "\r\n");
-    std::exit(Term::returnCode());
-  }
-  catch(const std::exception& e)
-  {
-    Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\r\nreason : " + std::string(e.what()) + "\r\n");
-    std::exit(Term::returnCode());
-  }
-  catch(...)
-  {
-    Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\r\n");
-    std::exit(Term::returnCode());
-  }
-}
-
-void Term::Terminal::applyOptions()
-{
-  if(m_options.has(Option::ClearScreen)) Term::Private::out.write(screen_save() + clear_buffer() + style(Style::Reset) + cursor_move(1, 1));
-  if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_off());
-  setMode();
-}
+Term::Terminal& Term::terminal = reinterpret_cast<Term::Terminal&>(::terminal_buffer);
 
 std::string Term::terminal_title(const std::string& title) { return "\033]0;" + title + '\a'; }
 

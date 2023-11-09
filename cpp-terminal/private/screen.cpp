@@ -15,7 +15,7 @@
   #include <sys/ioctl.h>
 #endif
 
-#include "cpp-terminal/platforms/file.hpp"
+#include "cpp-terminal/private/file.hpp"
 
 Term::Screen Term::screen_size()
 {

@@ -11,7 +11,7 @@
 
 #include "cpp-terminal/cursor.hpp"
 #include "cpp-terminal/exception.hpp"
-#include "cpp-terminal/platforms/conversion.hpp"
+#include "cpp-terminal/private/conversion.hpp"
 #include "cpp-terminal/terminal.hpp"
 
 namespace Term

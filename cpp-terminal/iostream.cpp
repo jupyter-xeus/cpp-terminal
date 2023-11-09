@@ -9,50 +9,17 @@
 
 #include "cpp-terminal/iostream.hpp"
 
-#include "cpp-terminal/buffer.hpp"
-#include "cpp-terminal/tty.hpp"
+#include <array>
 
-#include <iostream>
-#include <new>
-
-namespace Term
+namespace
 {
-// Output
-static char coutBuf[sizeof(Term::TOstream)];
-TOstream&   cout = reinterpret_cast<Term::TOstream&>(coutBuf);
-static char cerrBuf[sizeof(Term::TOstream)];
-TOstream&   cerr = reinterpret_cast<Term::TOstream&>(cerrBuf);
-static char clogBuf[sizeof(Term::TOstream)];
-TOstream&   clog = reinterpret_cast<Term::TOstream&>(clogBuf);
-// Input
-static char cinBuf[sizeof(Term::TIstream)];
-TIstream&   cin = reinterpret_cast<Term::TIstream&>(cinBuf);
-}  // namespace Term */
+std::array<char, sizeof(Term::TOstream)> cout_buffer;
+std::array<char, sizeof(Term::TOstream)> clog_buffer;
+std::array<char, sizeof(Term::TOstream)> cerr_buffer;
+std::array<char, sizeof(Term::TOstream)> cin_buffer;
+}  // namespace
 
-int Term::StreamInitializer::m_counter{0};
-
-void Term::StreamInitializer::init()
-{
-  if(m_counter++ == 0)
-  {
-    std::ios_base::Init();
-    new(&Term::cout) TOstream(Term::Buffer::Type::FullBuffered, BUFSIZ);
-    new(&Term::clog) TOstream(Term::Buffer::Type::LineBuffered, BUFSIZ);
-    new(&Term::cerr) TOstream(Term::Buffer::Type::Unbuffered, 0);
-    new(&Term::cin) TIstream(Term::Buffer::Type::FullBuffered, BUFSIZ);
-    if(is_stdin_a_tty()) std::cin.rdbuf(Term::cin.rdbuf());
-  }
-}
-
-Term::StreamInitializer::StreamInitializer() { init(); }
-
-Term::StreamInitializer::~StreamInitializer()
-{
-  if(--m_counter == 0)
-  {
-    (&Term::cout)->~TOstream();
-    (&Term::cerr)->~TOstream();
-    (&Term::clog)->~TOstream();
-    (&Term::cin)->~TIstream();
-  }
-}
+Term::TOstream& Term::cout = reinterpret_cast<Term::TOstream&>(cout_buffer);
+Term::TOstream& Term::clog = reinterpret_cast<Term::TOstream&>(clog_buffer);
+Term::TOstream& Term::cerr = reinterpret_cast<Term::TOstream&>(cerr_buffer);
+Term::TIstream& Term::cin  = reinterpret_cast<Term::TIstream&>(cin_buffer);
