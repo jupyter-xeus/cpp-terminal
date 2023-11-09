@@ -61,7 +61,6 @@ void Term::Terminfo::setLegacy()
   else
   {
     DWORD dwOriginalOutMode{0};
-    Term::Private::m_fileInitializer.init();  //Just in case
     GetConsoleMode(Private::out.handle(), &dwOriginalOutMode);
     if(!SetConsoleMode(Private::out.handle(), dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) m_legacy = true;
     else
