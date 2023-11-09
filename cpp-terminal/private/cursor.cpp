@@ -23,7 +23,7 @@
 Term::Cursor Term::cursor_position()
 {
   static const Term::Private::FileInitializer files_init;
-  if(Term::Private::in.null()) return Term::Cursor();
+  if(Term::Private::in.null()) { return {}; }
 #if defined(_WIN32)
   CONSOLE_SCREEN_BUFFER_INFO inf;
   if(GetConsoleScreenBufferInfo(Private::out.handle(), &inf)) return Term::Cursor(static_cast<std::size_t>(inf.dwCursorPosition.Y + 1), static_cast<std::size_t>(inf.dwCursorPosition.X + 1));
@@ -36,7 +36,9 @@ Term::Cursor Term::cursor_position()
   // Hack to be sure we can do this all the time "Cooked" or "Raw" mode
   ::termios actual;
   if(!Private::out.null())
-    if(tcgetattr(Private::out.fd(), &actual) == -1) return Term::Cursor();
+  {
+    if(tcgetattr(Private::out.fd(), &actual) == -1) { return {}; }
+  }
   ::termios raw = actual;
   // Put terminal in raw mode
   raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
@@ -60,14 +62,13 @@ Term::Cursor Term::cursor_position()
     {
       std::size_t found = ret.find(';', 2);
       if(found != std::string::npos) { return Cursor(std::stoi(ret.substr(2, found - 2)), std::stoi(ret.substr(found + 1, ret.size() - (found + 2)))); }
-      else
-        return Term::Cursor();
+      return {};
     }
-    return Term::Cursor();
+    return {};
   }
   catch(...)
   {
-    return Term::Cursor();
+    return {};
   }
 #endif
 }

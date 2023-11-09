@@ -20,6 +20,21 @@ namespace Term
 
 class Terminal
 {
+public:
+  ~Terminal();
+  Terminal();
+  Terminal(const Terminal&)                                  = delete;
+  Terminal(Terminal&&)                                       = delete;
+  Terminal&                       operator=(Terminal&&)      = delete;
+  Terminal&                       operator=(const Terminal&) = delete;
+  bool                            supportUTF8();
+  template<typename... Args> void setOptions(const Args&&... args)
+  {
+    m_options = {args...};
+    applyOptions();
+  }
+  Term::Options getOptions() const noexcept;
+
 private:
   void           store_and_restore();
   void           setOptions();
@@ -32,23 +47,6 @@ private:
   void           set_unset_utf8();
   Term::Terminfo m_terminfo;
   Term::Options  m_options;
-
-public:
-  Terminal();
-  ~Terminal();
-  template<typename... Args> void setOptions(const Args&&... args)
-  {
-    m_options = {args...};
-    applyOptions();
-  }
-
-  Term::Options getOptions();
-
-  Terminal(const Terminal&)            = delete;
-  Terminal& operator=(const Terminal&) = delete;
-  Terminal(Terminal&&)                 = delete;
-  Terminal& operator=(Terminal&&)      = delete;
-  bool      supportUTF8();
 };
 
 }  // namespace Term

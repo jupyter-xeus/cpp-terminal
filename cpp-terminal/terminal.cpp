@@ -13,11 +13,11 @@
 
 namespace
 {
-std::array<char, sizeof(Term::Terminal)> terminal_buffer;
+std::array<char, sizeof(Term::Terminal)> terminal_buffer;  //NOLINT(fuchsia-statically-constructed-objects)
 }  // namespace
 
-Term::Terminal& Term::terminal = reinterpret_cast<Term::Terminal&>(::terminal_buffer);
+Term::Terminal& Term::terminal = reinterpret_cast<Term::Terminal&>(::terminal_buffer);  //NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
 
-std::string Term::terminal_title(const std::string& title) { return "\033]0;" + title + '\a'; }
+std::string Term::terminal_title(const std::string& title) { return "\u001b]0;" + title + '\a'; }
 
-std::string Term::clear_buffer() { return "\033[3J"; }
+std::string Term::clear_buffer() { return "\u001b[3J"; }

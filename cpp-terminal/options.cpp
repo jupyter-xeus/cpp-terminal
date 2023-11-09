@@ -22,8 +22,8 @@ void Term::Options::clean()
   std::sort(m_Options.begin(), m_Options.end());
   while(!m_Options.empty())
   {
-    std::size_t count      = std::count(m_Options.begin(), m_Options.end(), m_Options[0]);
-    std::size_t anti_count = std::count(m_Options.begin(), m_Options.end(), static_cast<Term::Option>(-1 * static_cast<std::int16_t>(m_Options[0])));
+    const std::size_t count      = std::count(m_Options.begin(), m_Options.end(), m_Options[0]);
+    const std::size_t anti_count = std::count(m_Options.begin(), m_Options.end(), static_cast<Term::Option>(-1 * static_cast<std::int16_t>(m_Options[0])));
     if(count > anti_count) { cleaned.emplace_back(m_Options[0]); }
     else if(count < anti_count) { cleaned.emplace_back(static_cast<Term::Option>(-1 * static_cast<std::int16_t>(m_Options[0]))); }
     m_Options.erase(std::remove(m_Options.begin(), m_Options.end(), static_cast<Term::Option>(-1 * static_cast<std::int16_t>(m_Options[0]))), m_Options.end());

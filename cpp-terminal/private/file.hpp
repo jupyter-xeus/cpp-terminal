@@ -11,6 +11,7 @@
 
 #include "cpp-terminal/private/file_initializer.hpp"
 
+#include <cstddef>
 #include <cstdint>
 #include <mutex>
 #include <string>
@@ -55,8 +56,8 @@ class OutputFileHandler : public FileHandler
 {
 public:
   explicit OutputFileHandler(std::recursive_mutex& IOmutex) : FileHandler(IOmutex, m_file, "w") {}
-  int write(const std::string& str);
-  int write(const char& ch);
+  std::size_t write(const std::string& str);
+  std::size_t write(const char& character);
   OutputFileHandler(const OutputFileHandler& other)          = delete;
   OutputFileHandler& operator=(const OutputFileHandler& rhs) = delete;
   OutputFileHandler(OutputFileHandler&& other)               = delete;

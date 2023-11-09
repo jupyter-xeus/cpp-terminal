@@ -11,6 +11,8 @@
 
 #include "cpp-terminal/private/conversion.hpp"
 
+#include <chrono>
+
 #if defined(_MSC_VER)
   // Disable stupid warnings on Windows
   #pragma warning(push)
@@ -24,62 +26,52 @@ Term::Event::container::~container() {}
   #pragma warning(pop)
 #endif
 
-#include <chrono>
-
 Term::Key* Term::Event::get_if_key()
 {
   if(m_Type == Type::Key) return &m_container.m_Key;
-  else
-    return nullptr;
+  return nullptr;
 }
 
 const Term::Key* Term::Event::get_if_key() const
 {
   if(m_Type == Type::Key) return &m_container.m_Key;
-  else
-    return nullptr;
+  return nullptr;
 }
 
 Term::Screen* Term::Event::get_if_screen()
 {
   if(m_Type == Type::Screen) return &m_container.m_Screen;
-  else
-    return nullptr;
+  return nullptr;
 }
 
 Term::Mouse* Term::Event::get_if_mouse()
 {
   if(m_Type == Type::Mouse) return &m_container.m_Mouse;
-  else
-    return nullptr;
+  return nullptr;
 }
 
 const Term::Mouse* Term::Event::get_if_mouse() const
 {
   if(m_Type == Type::Mouse) return &m_container.m_Mouse;
-  else
-    return nullptr;
+  return nullptr;
 }
 
 const Term::Screen* Term::Event::get_if_screen() const
 {
   if(m_Type == Type::Screen) return &m_container.m_Screen;
-  else
-    return nullptr;
+  return nullptr;
 }
 
 Term::Cursor* Term::Event::get_if_cursor()
 {
   if(m_Type == Type::Cursor) return &m_container.m_Cursor;
-  else
-    return nullptr;
+  return nullptr;
 }
 
 const Term::Cursor* Term::Event::get_if_cursor() const
 {
   if(m_Type == Type::Cursor) return &m_container.m_Cursor;
-  else
-    return nullptr;
+  return nullptr;
 }
 
 std::string* Term::Event::get_if_copy_paste()
@@ -99,15 +91,13 @@ Term::Event::Event(const Term::Cursor& cursor) : m_Type(Type::Cursor) { m_contai
 Term::Focus* Term::Event::get_if_focus()
 {
   if(m_Type == Type::Focus) return &m_container.m_Focus;
-  else
-    return nullptr;
+  return nullptr;
 }
 
 const Term::Focus* Term::Event::get_if_focus() const
 {
   if(m_Type == Type::Focus) return &m_container.m_Focus;
-  else
-    return nullptr;
+  return nullptr;
 }
 
 Term::Event& Term::Event::operator=(const Term::Event& event)
@@ -122,6 +112,7 @@ Term::Event& Term::Event::operator=(const Term::Event& event)
     case Type::Screen: m_container.m_Screen = event.m_container.m_Screen; break;
     case Type::Focus: m_container.m_Focus = event.m_container.m_Focus; break;
     case Type::Mouse: m_container.m_Mouse = event.m_container.m_Mouse; break;
+    default: break;
   }
   return *this;
 }
@@ -140,20 +131,20 @@ Term::Event::Event(const Term::Event& event)
     case Type::Screen: m_container.m_Screen = event.m_container.m_Screen; break;
     case Type::Focus: m_container.m_Focus = event.m_container.m_Focus; break;
     case Type::Mouse: m_container.m_Mouse = event.m_container.m_Mouse; break;
+    default: break;
   }
 }
 
 Term::Event::~Event()
 {
   using std::string;
-  if(m_Type == Type::CopyPaste) m_container.m_string.~string();
+  if(m_Type == Type::CopyPaste) { m_container.m_string.~string(); }
 }
 
-Term::Event::Event() : m_Type(Type::Empty) {}
+Term::Event::Event() = default;
 
-Term::Event::Event(Term::Event&& event) noexcept
+Term::Event::Event(Term::Event&& event) noexcept : m_Type(event.m_Type)
 {
-  m_Type = std::move(event.m_Type);
   switch(m_Type)
   {
     case Type::Empty: break;
@@ -163,21 +154,22 @@ Term::Event::Event(Term::Event&& event) noexcept
     case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
     case Type::Focus: std::swap(m_container.m_Focus, event.m_container.m_Focus); break;
     case Type::Mouse: std::swap(m_container.m_Mouse, event.m_container.m_Mouse); break;
+    default: break;
   }
 }
 
-Term::Event& Term::Event::operator=(Term::Event&& event) noexcept
+Term::Event& Term::Event::operator=(Term::Event&& other) noexcept
 {
-  m_Type = std::move(event.m_Type);
-  switch(m_Type)
+  switch(other.m_Type)
   {
     case Type::Empty: break;
-    case Type::Key: std::swap(m_container.m_Key, event.m_container.m_Key); break;
-    case Type::CopyPaste: std::swap(m_container.m_string, event.m_container.m_string); break;
-    case Type::Cursor: std::swap(m_container.m_Cursor, event.m_container.m_Cursor); break;
-    case Type::Screen: std::swap(m_container.m_Screen, event.m_container.m_Screen); break;
-    case Type::Focus: std::swap(m_container.m_Focus, event.m_container.m_Focus); break;
-    case Type::Mouse: std::swap(m_container.m_Mouse, event.m_container.m_Mouse); break;
+    case Type::Key: std::swap(m_container.m_Key, other.m_container.m_Key); break;
+    case Type::CopyPaste: std::swap(m_container.m_string, other.m_container.m_string); break;
+    case Type::Cursor: std::swap(m_container.m_Cursor, other.m_container.m_Cursor); break;
+    case Type::Screen: std::swap(m_container.m_Screen, other.m_container.m_Screen); break;
+    case Type::Focus: std::swap(m_container.m_Focus, other.m_container.m_Focus); break;
+    case Type::Mouse: std::swap(m_container.m_Mouse, other.m_container.m_Mouse); break;
+    default: break;
   }
   return *this;
 }
@@ -188,19 +180,19 @@ bool Term::Event::empty() const { return m_Type == Type::Empty; }
 
 Term::Event::operator Term::Mouse() const
 {
-  if(m_Type == Type::Mouse) return m_container.m_Mouse;
+  if(m_Type == Type::Mouse) { return m_container.m_Mouse; }
   return {};
 }
 
 Term::Event::operator std::string() const
 {
-  if(m_Type == Type::CopyPaste) return m_container.m_string;
+  if(m_Type == Type::CopyPaste) { return m_container.m_string; }
   return {};
 }
 
 Term::Event::operator Term::Screen() const
 {
-  if(m_Type == Type::Screen) return m_container.m_Screen;
+  if(m_Type == Type::Screen) { return m_container.m_Screen; }
   return {};
 }
 
@@ -210,7 +202,7 @@ Term::Event::Event(const Term::Key& key) : m_Type(Type::Key) { m_container.m_Key
 
 Term::Event::Type Term::Event::type() const { return m_Type; }
 
-Term::Event::Event(const std::string& str) : m_Type(Type::Empty) { parse(str); }
+Term::Event::Event(const std::string& str) { parse(str); }
 
 void Term::Event::parse(const std::string& str)
 {
@@ -332,13 +324,10 @@ void Term::Event::parse(const std::string& str)
      * Cursor Left  | ESC D
      * -------------+--------------------
     */
-    if(str == "\033OA" || str == "\033[A" || str == "\033A") m_container.m_Key = Key(Term::Key::ArrowUp);
-    else if(str == "\033OB" || str == "\033[B" || str == "\033B")
-      m_container.m_Key = Key(Term::Key::ArrowDown);
-    else if(str == "\033OC" || str == "\033[C" || str == "\033C")
-      m_container.m_Key = Key(Term::Key::ArrowRight);
-    else if(str == "\033OD" || str == "\033[D" || str == "\033D")
-      m_container.m_Key = Key(Term::Key::ArrowLeft);
+    if((str == "\u001bOA") || (str == "\u001b[A") || (str == "\u001bA")) { m_container.m_Key = Key(Term::Key::ArrowUp); }
+    else if((str == "\u001bOB") || (str == "\u001b[B") || (str == "\u001bB")) { m_container.m_Key = Key(Term::Key::ArrowDown); }
+    else if((str == "\u001bOC") || (str == "\u001b[C") || (str == "\u001bC")) { m_container.m_Key = Key(Term::Key::ArrowRight); }
+    else if((str == "\u001bOD") || (str == "\u001b[D") || (str == "\u001bD")) { m_container.m_Key = Key(Term::Key::ArrowLeft); }
     /*
      * Key        Normal     Application
      * ---------+----------+-------------
@@ -346,9 +335,9 @@ void Term::Event::parse(const std::string& str)
      * End      | CSI F    | SS3 F
      * ---------+----------+-------------
     */
-    else if(str == "\033OH" || str == "\033[H")
+    else if((str == "\u001bOH") || (str == "\u001b[H"))
       m_container.m_Key = Key(Term::Key::Home);
-    else if(str == "\033OF" || str == "\033[F")
+    else if(str == "\u001bOF" || str == "\u001b[F")
       m_container.m_Key = Key(Term::Key::End);
     /*
      * Key        Escape Sequence
@@ -371,29 +360,29 @@ void Term::Event::parse(const std::string& str)
      * F12      | CSI 2 4 ~
      * ---------+-----------------
     */
-    else if(str == "\033OP" || str == "\033[11~")
+    else if(str == "\u001bOP" || str == "\u001b[11~")
       m_container.m_Key = Key(Term::Key::F1);
-    else if(str == "\033OQ" || str == "\033[12~")
+    else if(str == "\u001bOQ" || str == "\u001b[12~")
       m_container.m_Key = Key(Term::Key::F2);
-    else if(str == "\033OR" || str == "\033[13~")
+    else if(str == "\u001bOR" || str == "\u001b[13~")
       m_container.m_Key = Key(Term::Key::F3);
-    else if(str == "\033OS" || str == "\033[14~")
+    else if(str == "\u001bOS" || str == "\u001b[14~")
       m_container.m_Key = Key(Term::Key::F4);
-    else if(str == "\033[15~")
+    else if(str == "\u001b[15~")
       m_container.m_Key = Key(Term::Key::F5);
-    else if(str == "\033[17~")
+    else if(str == "\u001b[17~")
       m_container.m_Key = Key(Term::Key::F6);
-    else if(str == "\033[18~")
+    else if(str == "\u001b[18~")
       m_container.m_Key = Key(Term::Key::F7);
-    else if(str == "\033[19~")
+    else if(str == "\u001b[19~")
       m_container.m_Key = Key(Term::Key::F8);
-    else if(str == "\033[20~")
+    else if(str == "\u001b[20~")
       m_container.m_Key = Key(Term::Key::F9);
-    else if(str == "\033[21~")
+    else if(str == "\u001b[21~")
       m_container.m_Key = Key(Term::Key::F10);
-    else if(str == "\033[23~")
+    else if(str == "\u001b[23~")
       m_container.m_Key = Key(Term::Key::F11);
-    else if(str == "\033[24~")
+    else if(str == "\u001b[24~")
       m_container.m_Key = Key(Term::Key::F12);
     /*
      * Key        Normal     Application
@@ -406,18 +395,12 @@ void Term::Event::parse(const std::string& str)
      * PageDown | CSI 6 ~  | CSI 6 ~
      * ---------+----------+-------------
     */
-    else if(str == "\033[2~")
-      m_container.m_Key = Key(Term::Key::Insert);
-    else if(str == "\033[3~")
-      m_container.m_Key = Key(Term::Key::Del);
-    else if(str == "\033[1~")
-      m_container.m_Key = Key(Term::Key::Home);
-    else if(str == "\033[4~")
-      m_container.m_Key = Key(Term::Key::End);
-    else if(str == "\033[5~")
-      m_container.m_Key = Key(Term::Key::PageUp);
-    else if(str == "\033[6~")
-      m_container.m_Key = Key(Term::Key::PageDown);
+    else if(str == "\u001b[2~") { m_container.m_Key = Key(Term::Key::Insert); }
+    else if(str == "\u001b[3~") { m_container.m_Key = Key(Term::Key::Del); }
+    else if(str == "\u001b[1~") { m_container.m_Key = Key(Term::Key::Home); }
+    else if(str == "\u001b[4~") { m_container.m_Key = Key(Term::Key::End); }
+    else if(str == "\u001b[5~") { m_container.m_Key = Key(Term::Key::PageUp); }
+    else if(str == "\u001b[6~") { m_container.m_Key = Key(Term::Key::PageDown); }
     /*
      * Key        Escape Sequence
      * ---------+-----------------
@@ -431,23 +414,23 @@ void Term::Event::parse(const std::string& str)
      * F20      | CSI 3 4 ~
      * ---------+-----------------
     */
-    else if(str == "\033[25~")
+    else if(str == "\u001b[25~")
       m_container.m_Key = Key(Term::Key::F13);
-    else if(str == "\033[26~")
+    else if(str == "\u001b[26~")
       m_container.m_Key = Key(Term::Key::F14);
-    else if(str == "\033[28~")
+    else if(str == "\u001b[28~")
       m_container.m_Key = Key(Term::Key::F15);
-    else if(str == "\033[29~")
+    else if(str == "\u001b[29~")
       m_container.m_Key = Key(Term::Key::F16);
-    else if(str == "\033[31~")
+    else if(str == "\u001b[31~")
       m_container.m_Key = Key(Term::Key::F17);
-    else if(str == "\033[32~")
+    else if(str == "\u001b[32~")
       m_container.m_Key = Key(Term::Key::F18);
-    else if(str == "\033[33~")
+    else if(str == "\u001b[33~")
       m_container.m_Key = Key(Term::Key::F19);
-    else if(str == "\033[34~")
+    else if(str == "\u001b[34~")
       m_container.m_Key = Key(Term::Key::F20);
-    else if(str == "\033[G")
+    else if(str == "\u001b[G")
       m_container.m_Key = Key(Term::Key::Value::Numeric5);
     else if(Term::Private::is_valid_utf8_code_unit(str))
       m_container.m_Key = Key(static_cast<Term::Key::Value>(Term::Private::utf8_to_utf32(str)[0]));
@@ -468,18 +451,18 @@ void Term::Event::parse(const std::string& str)
 
 Term::Event::operator Term::Key() const
 {
-  if(m_Type == Type::Key) return m_container.m_Key;
+  if(m_Type == Type::Key) { return m_container.m_Key; }
   return {};
 }
 
 Term::Event::operator Term::Cursor() const
 {
-  if(m_Type == Type::Cursor) return m_container.m_Cursor;
+  if(m_Type == Type::Cursor) { return m_container.m_Cursor; }
   return {};
 }
 
 Term::Event::operator Term::Focus() const
 {
-  if(m_Type == Type::Focus) return m_container.m_Focus;
+  if(m_Type == Type::Focus) { return m_container.m_Focus; }
   return {};
 }

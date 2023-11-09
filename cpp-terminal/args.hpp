@@ -21,7 +21,7 @@ public:
   Arguments();
   static std::size_t              argc();
   static std::vector<std::string> argv();
-  std::string                     operator[](const std::size_t&) const;
+  std::string                     operator[](const std::size_t& arg) const;
 
 private:
   static void                     parse();

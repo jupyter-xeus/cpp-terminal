@@ -93,8 +93,8 @@ enum class Style : std::uint8_t
 
 std::string style(const Term::Style& style);
 
-template<class Stream> Stream& operator<<(Stream& stream, const Term::Style& s) { return stream << style(s); }
+template<class Stream> Stream& operator<<(Stream& stream, const Term::Style& style_type) { return stream << style(style_type); }
 // unabigify operator overload
-inline Term::TOstream&         operator<<(Term::TOstream& term, const Term::Style& s) { return term << style(s); }
+inline Term::TOstream&         operator<<(Term::TOstream& term, const Term::Style& style_type) { return term << style(style_type); }
 
 }  // namespace Term

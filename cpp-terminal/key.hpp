@@ -22,8 +22,8 @@ public:
   {
     // Last utf8 codepoint is U+10FFFF (000100001111111111111111) So:
     None = 0,
-    Alt  = (1 << 22),
-    Ctrl = (1 << 23),
+    Alt  = (1UL << 22UL),
+    Ctrl = (1UL << 23UL),
   };
 
   constexpr MetaKey() : value(static_cast<std::int32_t>(Value::None)) {}

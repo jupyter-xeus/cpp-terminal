@@ -35,7 +35,7 @@ std::size_t Term::Private::FileInitializer::m_counter = {0};
 /// Check if a console is attached to the process. If not, try to attach to the console. If there is no console, then create one. \b stdin, \b stdout, \b stderr are check and opened if necessary.
 /// On error, on window, a message box is raised.
 ///
-void Term::Private::FileInitializer::attachConsole() noexcept
+void Term::Private::FileInitializer::attachConsole()
 try
 {
 #if defined(_WIN32)
@@ -79,14 +79,14 @@ catch(const Term::Exception& exception)
 #endif
 }
 
-void Term::Private::FileInitializer::detachConsole() noexcept
+void Term::Private::FileInitializer::detachConsole()
 {
 #if defined(_WIN32)
   if(m_consoleCreated) FreeConsole();
 #endif
 }
 
-Term::Private::FileInitializer::FileInitializer() noexcept
+Term::Private::FileInitializer::FileInitializer()
 {
   try
   {
@@ -112,7 +112,7 @@ Term::Private::FileInitializer::FileInitializer() noexcept
   }
 }
 
-Term::Private::FileInitializer::~FileInitializer() noexcept
+Term::Private::FileInitializer::~FileInitializer()
 {
   if(0 == m_counter)
   {

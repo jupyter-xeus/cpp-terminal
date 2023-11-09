@@ -21,16 +21,17 @@ class TIstream
 {
 public:
   explicit TIstream(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::streamsize& size = BUFSIZ);
+  TIstream(const TIstream&)            = delete;
+  TIstream(TIstream&& other)           = delete;
+  TIstream& operator=(TIstream&&)      = delete;
+  TIstream& operator=(const TIstream&) = delete;
+  ~TIstream();
+  std::streambuf*                rdbuf() const;
   template<typename T> TIstream& operator>>(T& t)
   {
     m_stream >> t;
     return *this;
   }
-  TIstream(const TIstream&)             = delete;
-  TIstream& operator=(const TIstream&)  = delete;
-  TIstream(TIstream&& other)            = delete;
-  TIstream&       operator=(TIstream&&) = delete;
-  std::streambuf* rdbuf() const;
 
 private:
   Term::Buffer m_buffer;
@@ -42,6 +43,10 @@ class TOstream
 public:
   explicit TOstream(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::streamsize& size = BUFSIZ);
   ~TOstream();
+  TOstream(const TOstream&)                                 = delete;
+  TOstream(TOstream&&)                                      = delete;
+  TOstream&                      operator=(TOstream&&)      = delete;
+  TOstream&                      operator=(const TOstream&) = delete;
   template<typename T> TOstream& operator<<(const T& t)
   {
     m_stream << t;
@@ -52,10 +57,6 @@ public:
     m_stream << t;
     return *this;
   }
-  TOstream(const TOstream&)            = delete;
-  TOstream& operator=(const TOstream&) = delete;
-  TOstream(TOstream&&)                 = delete;
-  TOstream& operator=(TOstream&&)      = delete;
 
 private:
   Term::Buffer m_buffer;

@@ -13,6 +13,8 @@
 #include "cpp-terminal/private/file.hpp"
 #include "cpp-terminal/terminal.hpp"
 
+#include <cstddef>
+
 static std::string replace(const Term::Buffer::int_type& c)
 {
 #if defined(_WIN32)
@@ -37,7 +39,7 @@ static bool newline_sequence(const std::string& str)  //https://en.wikipedia.org
 
 int Term::Buffer::sync()
 {
-  int ret = Term::Private::out.write(m_buffer);
+  const int ret = Term::Private::out.write(m_buffer);
   m_buffer.clear();
   return ret;
 }

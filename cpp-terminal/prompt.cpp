@@ -95,7 +95,7 @@ Term::Result Term::prompt(const std::string& message, const std::string& first_o
       {
         if(input.empty() != 0)
         {
-          std::cout << "\033[D \033[D" << std::flush;  // erase last line and move the cursor back
+          std::cout << "\u001b[D \u001b[D" << std::flush;  // erase last line and move the cursor back
           input.pop_back();
         }
       }
