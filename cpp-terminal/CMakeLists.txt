@@ -10,8 +10,7 @@ target_compile_options(cpp-terminal PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
 target_include_directories(cpp-terminal PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> $<INSTALL_INTERFACE:include>)
 
 set_target_properties(cpp-terminal PROPERTIES
-                      PUBLIC_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/focus.hpp;${CMAKE_CURRENT_SOURCE_DIR}/options.hpp;${CMAKE_CURRENT_SOURCE_DIR}/event.hpp;${CMAKE_CURRENT_SOURCE_DIR}/key.hpp;${CMAKE_CURRENT_SOURCE_DIR}/tty.hpp;${CMAKE_CURRENT_SOURCE_DIR}/terminal.hpp;${CMAKE_CURRENT_SOURCE_DIR}/cursor.hpp;${CMAKE_CURRENT_SOURCE_DIR}/style.hpp;${CMAKE_CURRENT_SOURCE_DIR}/prompt.hpp;${CMAKE_CURRENT_SOURCE_DIR}/window.hpp;${CMAKE_CURRENT_SOURCE_DIR}/version.hpp"
-                      PRIVATE_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/platforms/conversion.hpp;${CMAKE_CURRENT_SOURCE_DIR}/platforms/macros.hpp")
+                      PUBLIC_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/focus.hpp;${CMAKE_CURRENT_SOURCE_DIR}/options.hpp;${CMAKE_CURRENT_SOURCE_DIR}/event.hpp;${CMAKE_CURRENT_SOURCE_DIR}/key.hpp;${CMAKE_CURRENT_SOURCE_DIR}/tty.hpp;${CMAKE_CURRENT_SOURCE_DIR}/terminal.hpp;${CMAKE_CURRENT_SOURCE_DIR}/cursor.hpp;${CMAKE_CURRENT_SOURCE_DIR}/style.hpp;${CMAKE_CURRENT_SOURCE_DIR}/prompt.hpp;${CMAKE_CURRENT_SOURCE_DIR}/window.hpp;${CMAKE_CURRENT_SOURCE_DIR}/version.hpp")
 
 add_library(cpp-terminal::cpp-terminal ALIAS cpp-terminal)
 
@@ -25,8 +24,7 @@ if (CPPTERMINAL_ENABLE_INSTALL)
           LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
           ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
           RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-          PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/cpp-terminal"
-          PRIVATE_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/cpp-terminal/platforms")
+          PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/cpp-terminal")
   install(EXPORT cpp-terminalTargets FILE cpp-terminalTargets.cmake NAMESPACE cpp-terminal:: DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/cpp-terminal")
   install(FILES "${PROJECT_BINARY_DIR}/cmake/cpp-terminalConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/cpp-terminalConfigVersion.cmake" DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/cpp-terminal")
 endif()
