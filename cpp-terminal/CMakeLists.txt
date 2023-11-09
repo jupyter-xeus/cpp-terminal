@@ -27,8 +27,7 @@ set(CPP_TERMINAL_PUBLIC_HEADERS
     terminfo.hpp
     tty.hpp
     version.hpp
-    window.hpp
-    )
+    window.hpp)
 
 set(CPP_TERMINAL_SRC
     terminal_impl.cpp
@@ -50,8 +49,7 @@ set(CPP_TERMINAL_SRC
     options.cpp
     cursor.cpp
     style.cpp
-    "${CMAKE_CURRENT_BINARY_DIR}/version.cpp"
-    )
+    "${CMAKE_CURRENT_BINARY_DIR}/version.cpp")
 
 # create and configure library target
 add_library(cpp-terminal "${CPP_TERMINAL_SRC}")
