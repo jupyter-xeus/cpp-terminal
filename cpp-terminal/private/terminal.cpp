@@ -9,9 +9,9 @@
 
 #include "cpp-terminal/terminal.hpp"
 
-#include "cpp-terminal/platforms/env.hpp"
-#include "cpp-terminal/platforms/exception.hpp"
-#include "cpp-terminal/platforms/file.hpp"
+#include "cpp-terminal/private/env.hpp"
+#include "cpp-terminal/private/exception.hpp"
+#include "cpp-terminal/private/file.hpp"
 
 #if defined(_WIN32)
   #include <io.h>

@@ -7,7 +7,7 @@
 * SPDX-License-Identifier: MIT
 */
 
-#include "cpp-terminal/platforms/file.hpp"
+#include "cpp-terminal/private/file.hpp"
 
 #include <cstdio>
 #include <new>
@@ -20,8 +20,8 @@
   #include <unistd.h>
 #endif
 
-#include "cpp-terminal/platforms/exception.hpp"
-#include "cpp-terminal/platforms/unicode.hpp"
+#include "cpp-terminal/private/exception.hpp"
+#include "cpp-terminal/private/unicode.hpp"
 
 #include <array>
 #include <fcntl.h>

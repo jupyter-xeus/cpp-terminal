@@ -8,50 +8,17 @@
 */
 
 #pragma once
-#include "cpp-terminal/options.hpp"
-#include "cpp-terminal/terminal_initializer.hpp"
-#include "cpp-terminal/terminfo.hpp"
 
-#include <cstdint>
+#include "cpp-terminal/terminal_impl.hpp"
+#include "cpp-terminal/terminal_initializer.hpp"
+
+#include <string>
 
 namespace Term
 {
 
-class Terminal
-{
-private:
-  void           store_and_restore();
-  void           setOptions();
-  void           applyOptions();
-  void           setMode();
-  std::int16_t   setMouseEvents();
-  std::int16_t   unsetMouseEvents();
-  std::int16_t   setFocusEvents();
-  std::int16_t   unsetFocusEvents();
-  void           set_unset_utf8();
-  Term::Terminfo m_terminfo;
-  Term::Options  m_options;
-
-public:
-  Terminal();
-  ~Terminal();
-  template<typename... Args> void setOptions(const Args&&... args)
-  {
-    m_options = {args...};
-    applyOptions();
-  }
-
-  Term::Options getOptions();
-
-  Terminal(const Terminal&)            = delete;
-  Terminal& operator=(const Terminal&) = delete;
-  Terminal(Terminal&&)                 = delete;
-  Terminal& operator=(Terminal&&)      = delete;
-  bool      supportUTF8();
-};
-
-static TerminalInitializer m_terminalInitializer;
-extern Term::Terminal&     terminal;
+static const TerminalInitializer terminal_initializer;
+extern Term::Terminal&           terminal;
 
 // change the title of the terminal, only supported by a few terminals
 std::string terminal_title(const std::string& title);

@@ -8,7 +8,7 @@
 */
 
 #if defined(_WIN32)
-  #include "cpp-terminal/platforms/unicode.hpp"
+  #include "cpp-terminal/private/unicode.hpp"
 
   #include <vector>
   #include <windows.h>
@@ -26,10 +26,10 @@
 #include "cpp-terminal/event.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
-#include "cpp-terminal/platforms/blocking_queue.hpp"
-#include "cpp-terminal/platforms/file.hpp"
-#include "cpp-terminal/platforms/input.hpp"
-#include "cpp-terminal/platforms/sigwinch.hpp"
+#include "cpp-terminal/private/blocking_queue.hpp"
+#include "cpp-terminal/private/file.hpp"
+#include "cpp-terminal/private/input.hpp"
+#include "cpp-terminal/private/sigwinch.hpp"
 
 #include <mutex>
 #include <string>

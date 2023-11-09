@@ -7,7 +7,7 @@
 * SPDX-License-Identifier: MIT
 */
 
-#include "cpp-terminal/platforms/blocking_queue.hpp"
+#include "cpp-terminal/private/blocking_queue.hpp"
 
 Term::Event Term::Private::BlockingQueue::pop()
 {

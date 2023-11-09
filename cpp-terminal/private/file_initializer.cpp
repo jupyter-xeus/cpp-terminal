@@ -7,17 +7,17 @@
 * SPDX-License-Identifier: MIT
 */
 
-#include "cpp-terminal/platforms/file_initializer.hpp"
+#include "cpp-terminal/private/file_initializer.hpp"
 
-#include "cpp-terminal/platforms/exception.hpp"
-#include "cpp-terminal/platforms/file.hpp"
-#include "cpp-terminal/platforms/return_code.hpp"
+#include "cpp-terminal/private/exception.hpp"
+#include "cpp-terminal/private/file.hpp"
+#include "cpp-terminal/private/return_code.hpp"
 
 #include <iostream>
 #include <ostream>
 
 #if defined(_WIN32)
-  #include "cpp-terminal/platforms/unicode.hpp"
+  #include "cpp-terminal/private/unicode.hpp"
 
   #include <io.h>
   #include <windows.h>

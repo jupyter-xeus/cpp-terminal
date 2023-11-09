@@ -18,7 +18,7 @@
   #include <termios.h>
 #endif
 
-#include "cpp-terminal/platforms/file.hpp"
+#include "cpp-terminal/private/file.hpp"
 
 Term::Cursor Term::cursor_position()
 {

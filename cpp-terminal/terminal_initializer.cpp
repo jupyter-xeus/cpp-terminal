@@ -9,7 +9,7 @@
 
 #include "cpp-terminal/terminal_initializer.hpp"
 
-#include "cpp-terminal/platforms/file_initializer.hpp"
+#include "cpp-terminal/private/file_initializer.hpp"
 #include "cpp-terminal/terminal.hpp"
 
 #include <new>

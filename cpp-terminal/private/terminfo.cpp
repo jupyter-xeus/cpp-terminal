@@ -12,9 +12,9 @@
 #endif
 
 #include "cpp-terminal/cursor.hpp"
-#include "cpp-terminal/platforms/env.hpp"
-#include "cpp-terminal/platforms/file.hpp"
-#include "cpp-terminal/platforms/file_initializer.hpp"
+#include "cpp-terminal/private/env.hpp"
+#include "cpp-terminal/private/file.hpp"
+#include "cpp-terminal/private/file_initializer.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
 #include <string>

@@ -7,7 +7,7 @@
 * SPDX-License-Identifier: MIT
 */
 
-#include "cpp-terminal/platforms/sigwinch.hpp"
+#include "cpp-terminal/private/sigwinch.hpp"
 
 #if !defined(_WIN32)
   #include <csignal>

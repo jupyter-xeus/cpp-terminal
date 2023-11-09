@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "cpp-terminal/platforms/file_initializer.hpp"
+#include "cpp-terminal/private/file_initializer.hpp"
 
 #include <cstdint>
 #include <mutex>

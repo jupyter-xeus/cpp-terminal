@@ -7,9 +7,9 @@
 * SPDX-License-Identifier: MIT
 */
 
-#include "cpp-terminal/platforms/env.hpp"
+#include "cpp-terminal/private/env.hpp"
 
-#include "cpp-terminal/platforms/unicode.hpp"
+#include "cpp-terminal/private/unicode.hpp"
 
 std::pair<bool, std::string> Term::Private::getenv(const std::string& key)
 {

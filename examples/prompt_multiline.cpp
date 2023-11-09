@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-bool determine_completeness(CPP_TERMINAL_MAYBE_UNUSED const std::string& command)
+bool determine_completeness(const std::string& command)
 {
   // Determine if the statement is complete
   if(command.size() > 1 && command.substr(command.size() - 2, 1) == "\\") return false;

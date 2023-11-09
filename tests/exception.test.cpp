@@ -9,7 +9,7 @@
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #define DOCTEST_CONFIG_USE_STD_HEADERS
-#include "cpp-terminal/platforms/exception.hpp"
+#include "cpp-terminal/private/exception.hpp"
 
 #include "doctest/doctest.h"
 

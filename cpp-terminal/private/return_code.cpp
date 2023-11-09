@@ -7,9 +7,9 @@
 * SPDX-License-Identifier: MIT
 */
 
-#include "cpp-terminal/platforms/return_code.hpp"
+#include "cpp-terminal/private/return_code.hpp"
 
-#include "cpp-terminal/platforms/env.hpp"
+#include "cpp-terminal/private/env.hpp"
 
 #include <cstdlib>
 #include <string>
