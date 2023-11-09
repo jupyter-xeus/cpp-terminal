@@ -19,7 +19,7 @@
 #include "cpp-terminal/style.hpp"
 #include "cpp-terminal/terminal.hpp"
 
-Term::Options Term::Terminal::getOptions() { return m_options; }
+Term::Options Term::Terminal::getOptions() const noexcept { return m_options; }
 
 Term::Terminal::Terminal()
 {
@@ -36,8 +36,8 @@ Term::Terminal::~Terminal()
 {
   try
   {
-    if(m_options.has(Option::ClearScreen)) Term::Private::out.write(clear_buffer() + style(Style::Reset) + cursor_move(1, 1) + screen_load());
-    if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_on());
+    if(m_options.has(Option::ClearScreen)) { Term::Private::out.write(clear_buffer() + style(Style::Reset) + cursor_move(1, 1) + screen_load()); }
+    if(m_options.has(Option::NoCursor)) { Term::Private::out.write(cursor_on()); }
     set_unset_utf8();
     store_and_restore();
     unsetFocusEvents();
@@ -62,7 +62,7 @@ Term::Terminal::~Terminal()
 
 void Term::Terminal::applyOptions()
 {
-  if(m_options.has(Option::ClearScreen)) Term::Private::out.write(screen_save() + clear_buffer() + style(Style::Reset) + cursor_move(1, 1));
-  if(m_options.has(Option::NoCursor)) Term::Private::out.write(cursor_off());
+  if(m_options.has(Option::ClearScreen)) { Term::Private::out.write(screen_save() + clear_buffer() + style(Style::Reset) + cursor_move(1, 1)); }
+  if(m_options.has(Option::NoCursor)) { Term::Private::out.write(cursor_off()); }
   setMode();
 }

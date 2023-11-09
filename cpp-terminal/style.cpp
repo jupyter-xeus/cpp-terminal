@@ -12,7 +12,7 @@
 std::string Term::style(const Term::Style& style)
 {
   //https://unix.stackexchange.com/questions/212933/background-color-whitespace-when-end-of-the-terminal-reached
-  if(style == Term::Style::DefaultBackgroundColor) return "\033[" + std::to_string((std::uint8_t)style) + "m\033[K";
-  else
-    return "\033[" + std::to_string((std::uint8_t)style) + 'm';
+  std::string ret{"\u001b[" + std::to_string(static_cast<std::uint8_t>(style)) + 'm'};
+  if(style == Term::Style::DefaultBackgroundColor) { ret += "\u001b[K"; }
+  return ret;
 }

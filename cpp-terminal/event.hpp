@@ -16,7 +16,6 @@
 #include "cpp-terminal/screen.hpp"
 
 #include <cstdint>
-#include <memory>
 #include <string>
 
 namespace Term
@@ -35,21 +34,20 @@ public:
     Mouse,
     CopyPaste,
   };
-  Event();
   ~Event();
+  Event();
   Event(const std::string& str);
   Event(const Term::Key& key);
   Event(const Term::Screen& screen);
   Event(const Term::Cursor& cursor);
   Event(const Term::Focus& focus);
   Event(const Term::Mouse& mouse);
-  bool         empty() const;
-  Type         type() const;
-  Term::Event& operator=(const Term::Event& event);
   Event(const Term::Event& event);
   Event(Term::Event&& event) noexcept;
   Event& operator=(Event&& other) noexcept;
-
+  Event& operator=(const Term::Event& event);
+  bool   empty() const;
+  Type   type() const;
   operator Term::Key() const;
   operator Term::Screen() const;
   operator Term::Cursor() const;
@@ -72,7 +70,7 @@ public:
   const std::string* get_if_copy_paste() const;
 
 private:
-  void parse(const std::string&);
+  void parse(const std::string& str);
   union container
   {
     container();

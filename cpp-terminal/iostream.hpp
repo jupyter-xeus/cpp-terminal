@@ -20,6 +20,6 @@ extern TOstream& cout;
 extern TOstream& cerr;
 extern TOstream& clog;
 
-static const IOStreamInitializer IO_stream_initializer;
+static const IOStreamInitializer IO_stream_initializer;  //NOLINT(cert-err58-cpp,fuchsia-statically-constructed-objects)
 
 }  // namespace Term

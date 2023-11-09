@@ -16,11 +16,42 @@ namespace Term
 {
 namespace Version
 {
-std::uint16_t major();   ///< Major version of cpp-terminal.
-std::uint16_t minor();   ///< Minor version of cpp-terminal.
-std::uint16_t patch();   ///< Patch version of cpp-terminal.
-std::string   string();  ///< String containing the version of cpp-terminal ("Major.Minor.Patch").
+
+///
+///@brief Major version of cpp-terminal.
+///
+///@return std::uint16_t major version.
+///
+std::uint16_t major() noexcept;
+
+///
+///@brief Minor version of cpp-terminal.
+///
+///@return std::uint16_t minor version.
+///
+std::uint16_t minor() noexcept;
+
+///
+///@brief Patch version of cpp-terminal.
+///
+///@return std::uint16_t patch version.
+///
+std::uint16_t patch() noexcept;
+
+///
+///@brief String version of cpp-terminal.
+///
+///@return std::string version in the format "Major.Minor.Patch"
+///
+std::string string() noexcept;
+
 }  // namespace Version
 
-std::string homepage();  ///< Homepage of cpp-terminal.
+///
+///@brief Homepage of cpp-terminal.
+///
+///@return std::string return the URL of the cpp-terminal project.
+///
+std::string homepage() noexcept;
+
 }  // namespace Term

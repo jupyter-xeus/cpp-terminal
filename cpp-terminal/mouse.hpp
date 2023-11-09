@@ -46,8 +46,8 @@ public:
   };
   Button() = default;
   Button(const Term::Button::Type& type, const Term::Button::Action& action) : m_type(type), m_action(action) {}
-  Term::Button::Action action();
-  Term::Button::Type   type();
+  Term::Button::Action action() const noexcept;
+  Term::Button::Type   type() const noexcept;
   bool                 operator==(const Term::Button& button) const;
   bool                 operator!=(const Term::Button& button) const;
 
@@ -61,13 +61,13 @@ class Mouse
 public:
   Mouse() = default;
   Mouse(const Term::Button& buttons, const std::uint16_t& row, const std::uint16_t& column) : m_buttons(buttons), m_row(row), m_column(column) {}
-  std::size_t  row();
-  std::size_t  column();
-  Term::Button getButton();
-  bool         is(const Term::Button::Type& type, const Term::Button::Action& action);
-  bool         is(const Term::Button::Type& type);
-  bool         operator==(const Term::Mouse&) const;
-  bool         operator!=(const Term::Mouse&) const;
+  std::size_t  row() const noexcept;
+  std::size_t  column() const noexcept;
+  Term::Button getButton() const noexcept;
+  bool         is(const Term::Button::Type& type, const Term::Button::Action& action) const noexcept;
+  bool         is(const Term::Button::Type& type) const noexcept;
+  bool         operator==(const Term::Mouse& mouse) const;
+  bool         operator!=(const Term::Mouse& mouse) const;
 
 private:
   Term::Button  m_buttons;

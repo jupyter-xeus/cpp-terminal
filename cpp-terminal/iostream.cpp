@@ -13,13 +13,13 @@
 
 namespace
 {
-std::array<char, sizeof(Term::TOstream)> cout_buffer;
-std::array<char, sizeof(Term::TOstream)> clog_buffer;
-std::array<char, sizeof(Term::TOstream)> cerr_buffer;
-std::array<char, sizeof(Term::TOstream)> cin_buffer;
+std::array<char, sizeof(Term::TOstream)> cout_buffer;  //NOLINT(fuchsia-statically-constructed-objects)
+std::array<char, sizeof(Term::TOstream)> clog_buffer;  //NOLINT(fuchsia-statically-constructed-objects)
+std::array<char, sizeof(Term::TOstream)> cerr_buffer;  //NOLINT(fuchsia-statically-constructed-objects)
+std::array<char, sizeof(Term::TOstream)> cin_buffer;   //NOLINT(fuchsia-statically-constructed-objects)
 }  // namespace
 
-Term::TOstream& Term::cout = reinterpret_cast<Term::TOstream&>(cout_buffer);
-Term::TOstream& Term::clog = reinterpret_cast<Term::TOstream&>(clog_buffer);
-Term::TOstream& Term::cerr = reinterpret_cast<Term::TOstream&>(cerr_buffer);
-Term::TIstream& Term::cin  = reinterpret_cast<Term::TIstream&>(cin_buffer);
+Term::TOstream& Term::cout = reinterpret_cast<Term::TOstream&>(cout_buffer);  //NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
+Term::TOstream& Term::clog = reinterpret_cast<Term::TOstream&>(clog_buffer);  //NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
+Term::TOstream& Term::cerr = reinterpret_cast<Term::TOstream&>(cerr_buffer);  //NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
+Term::TIstream& Term::cin  = reinterpret_cast<Term::TIstream&>(cin_buffer);   //NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)

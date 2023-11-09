@@ -31,8 +31,8 @@
 
 namespace
 {
-std::array<char, sizeof(Term::Private::InputFileHandler)>  stdin_buffer;
-std::array<char, sizeof(Term::Private::OutputFileHandler)> stdout_buffer;
+std::array<char, sizeof(Term::Private::InputFileHandler)>  stdin_buffer;   //NOLINT(fuchsia-statically-constructed-objects)
+std::array<char, sizeof(Term::Private::OutputFileHandler)> stdout_buffer;  //NOLINT(fuchsia-statically-constructed-objects)
 }  // namespace
 
 Term::Private::InputFileHandler&  Term::Private::in  = reinterpret_cast<Term::Private::InputFileHandler&>(stdin_buffer);
@@ -90,10 +90,10 @@ std::int32_t Term::Private::FileHandler::fd() const { return m_fd; }
 
 Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() { return m_handle; }
 
-int Term::Private::OutputFileHandler::write(const std::string& str)
+std::size_t Term::Private::OutputFileHandler::write(const std::string& str)
 {
-  if(str.empty()) return 0;
-    //std::lock_guard<std::mutex> lock(m_mut);
+  if(str.empty()) { return 0; }
+  //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
   DWORD dwCount{0};
   if(WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &dwCount, nullptr) == 0) return -1;
@@ -104,7 +104,7 @@ int Term::Private::OutputFileHandler::write(const std::string& str)
 #endif
 }
 
-int Term::Private::OutputFileHandler::write(const char& ch)
+std::size_t Term::Private::OutputFileHandler::write(const char& ch)
 {
   //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)

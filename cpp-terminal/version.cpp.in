@@ -10,33 +10,33 @@
 #include "cpp-terminal/version.hpp"
 
 // clang-format off
-std::uint16_t Term::Version::major()
+std::uint16_t Term::Version::major() noexcept
 {
   static std::uint16_t ret{@cpp-terminal_VERSION_MAJOR@};
   return ret;
 }
 
-std::uint16_t Term::Version::minor()
+std::uint16_t Term::Version::minor() noexcept
 {
   static std::uint16_t ret{@cpp-terminal_VERSION_MINOR@};
   return ret;
 }
 
-std::uint16_t Term::Version::patch()
+std::uint16_t Term::Version::patch() noexcept
 {
   static std::uint16_t ret{@cpp-terminal_VERSION_PATCH@};
   return ret;
 }
 
-std::string Term::Version::string()
+std::string Term::Version::string() noexcept
 {
-  static std::string ret{"@cpp-terminal_VERSION_MAJOR@.@cpp-terminal_VERSION_MINOR@.@cpp-terminal_VERSION_PATCH@"};
+  static const char* ret{"@cpp-terminal_VERSION_MAJOR@.@cpp-terminal_VERSION_MINOR@.@cpp-terminal_VERSION_PATCH@"};
   return ret;
 }
 
-std::string Term::homepage()
+std::string Term::homepage() noexcept
 {
-  static std::string ret{"@cpp-terminal_HOMEPAGE_URL@"};
+  static const char* ret{"@cpp-terminal_HOMEPAGE_URL@"};
   return ret;
 }
 // clang-format on

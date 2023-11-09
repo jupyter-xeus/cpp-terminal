@@ -20,7 +20,7 @@ class Screen
 {
 public:
   Screen() = default;
-  Screen(const std::size_t& rows, const std::size_t& columns) { m_size = {rows, columns}; }
+  Screen(const std::size_t& rows, const std::size_t& columns);
   std::size_t rows() const;
   std::size_t columns() const;
   bool        empty() const;

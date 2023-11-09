@@ -63,7 +63,7 @@ public:
   std::int64_t error() const noexcept;
   bool         check_value() const noexcept;
   Errno&       check_if(const bool& ret) noexcept;
-  void         throw_exception(const std::string& str = std::string()) const;
+  void         throw_exception(const std::string& str = {}) const;
 
 private:
   std::int64_t m_errno{0};
@@ -75,7 +75,7 @@ class ErrnoException : public Term::Exception
 public:
   ErrnoException(const ErrnoException&) = default;
   ErrnoException(ErrnoException&&)      = default;
-  explicit ErrnoException(const std::int64_t& error, const std::string& context = std::string());
+  explicit ErrnoException(const std::int64_t& error, const std::string& context = {});
   ~ErrnoException() override                       = default;
   ErrnoException& operator=(ErrnoException&&)      = default;
   ErrnoException& operator=(const ErrnoException&) = default;

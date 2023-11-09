@@ -22,8 +22,7 @@ std::pair<bool, std::string> Term::Private::getenv(const std::string& key)
   _wgetenv_s(&size, &ret[0], size, Term::Private::to_wide(key).c_str());
   return {true, Term::Private::to_narrow(ret)};
 #else
-  if(std::getenv(key.c_str()) != nullptr) return {true, static_cast<std::string>(std::getenv(key.c_str()))};
-  else
-    return {false, std::string()};
+  if(std::getenv(key.c_str()) != nullptr) { return {true, static_cast<std::string>(std::getenv(key.c_str()))}; }
+  return {false, std::string()};
 #endif
 }

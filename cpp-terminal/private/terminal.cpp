@@ -51,13 +51,13 @@ void Term::Terminal::set_unset_utf8()
 #else
   if(!enabled)
   {
-    if(m_terminfo.getName() != "Apple_Terminal") Term::Private::out.write("\033%G");
+    if(m_terminfo.getName() != "Apple_Terminal") { Term::Private::out.write("\u001b%G"); }
     enabled = true;
   }
   else
   {
     // Does not return the original charset but, the default defined by standard ISO 8859-1 (ISO 2022);
-    if(m_terminfo.getName() != "Apple_Terminal") Term::Private::out.write("\033%@");
+    if(m_terminfo.getName() != "Apple_Terminal") { Term::Private::out.write("\u001b%@"); }
   }
 #endif
 }
@@ -112,7 +112,7 @@ std::int16_t Term::Terminal::setMouseEvents()
 #if defined(_WIN32)
   return ENABLE_MOUSE_INPUT;
 #else
-  return Term::Private::out.write("\033[?1002h\033[?1003h\033[?1006h");
+  return Term::Private::out.write("\u001b[?1002h\u001b[?1003h\u001b[?1006h");
 #endif
 }
 
@@ -121,7 +121,7 @@ std::int16_t Term::Terminal::unsetMouseEvents()
 #if defined(_WIN32)
   return ENABLE_MOUSE_INPUT;
 #else
-  return Term::Private::out.write("\033[?1006l\033[?1003l\033[?1002l");
+  return Term::Private::out.write("\u001b[?1006l\u001b[?1003l\u001b[?1002l");
 #endif
 }
 
@@ -130,7 +130,7 @@ std::int16_t Term::Terminal::setFocusEvents()
 #if defined(_WIN32)
   return ENABLE_WINDOW_INPUT;
 #else
-  return Term::Private::out.write("\033[?1004h");
+  return Term::Private::out.write("\u001b[?1004h");
 #endif
 }
 
@@ -139,7 +139,7 @@ std::int16_t Term::Terminal::unsetFocusEvents()
 #if defined(_WIN32)
   return ENABLE_WINDOW_INPUT;
 #else
-  return Term::Private::out.write("\033[?1004l");
+  return Term::Private::out.write("\u001b[?1004l");
 #endif
 }
 

@@ -26,20 +26,20 @@ public:
     FullBuffered
   };
   explicit Buffer(const Term::Buffer::Type& type = Term::Buffer::Type::LineBuffered, const std::streamsize& size = BUFSIZ);
-  ~Buffer() final;
+  ~Buffer() override;
   Buffer(const Buffer&)            = delete;
-  Buffer& operator=(const Buffer&) = delete;
   Buffer(Buffer&&)                 = delete;
   Buffer& operator=(Buffer&&)      = delete;
+  Buffer& operator=(const Buffer&) = delete;
 
 protected:
-  int_type underflow() final;
-  int_type overflow(int c = std::char_traits<Term::Buffer::char_type>::eof()) final;
-  int      sync() final;
+  int_type underflow() override;
+  int_type overflow(int c = std::char_traits<Term::Buffer::char_type>::eof()) override;
+  int      sync() override;
 
 private:
   void               setType(const Term::Buffer::Type& type);
-  std::streambuf*    setbuf(char* s, std::streamsize n) final;
+  std::streambuf*    setbuf(char* s, std::streamsize n) override;
   std::string        m_buffer;
   Term::Buffer::Type m_type{Term::Buffer::Type::LineBuffered};
 };

@@ -17,7 +17,7 @@
 namespace Term
 {
 
-static const TerminalInitializer terminal_initializer;
+static const TerminalInitializer terminal_initializer;  //NOLINT(cert-err58-cpp,fuchsia-statically-constructed-objects)
 extern Term::Terminal&           terminal;
 
 // change the title of the terminal, only supported by a few terminals

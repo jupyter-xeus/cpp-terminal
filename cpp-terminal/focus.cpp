@@ -12,7 +12,7 @@
 namespace Term
 {
 
-Focus::Focus(const Term::Focus::Type& type) { m_focus = type; }
+Focus::Focus(const Term::Focus::Type& type) : m_focus(type) {}
 
 Term::Focus::Type Focus::type() const { return m_focus; }
 

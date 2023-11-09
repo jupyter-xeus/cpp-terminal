@@ -21,7 +21,7 @@ std::size_t Term::IOStreamInitializer::m_counter{0};
 
 Term::IOStreamInitializer::IOStreamInitializer()
 {
-  if(m_counter++ == 0)
+  if(0 == m_counter++)
   {
     static const std::ios_base::Init       iostreams_init;  // Init std::cout etc...
     static const Term::TerminalInitializer terminal_init;   // Make sure terminal is set up.
@@ -35,7 +35,7 @@ Term::IOStreamInitializer::IOStreamInitializer()
 
 Term::IOStreamInitializer::~IOStreamInitializer()
 {
-  if(--m_counter == 0)
+  if(0 == --m_counter)
   {
     (&Term::cout)->~TOstream();
     (&Term::cerr)->~TOstream();
