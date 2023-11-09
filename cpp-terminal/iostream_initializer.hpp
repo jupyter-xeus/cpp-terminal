@@ -14,16 +14,15 @@
 namespace Term
 {
 
-class StreamInitializer
+class IOStreamInitializer
 {
 public:
-  StreamInitializer();
-  static void init();
-  ~StreamInitializer();
-  StreamInitializer(const StreamInitializer&)            = delete;
-  StreamInitializer& operator=(const StreamInitializer&) = delete;
-  StreamInitializer(StreamInitializer&&)                 = delete;
-  StreamInitializer& operator=(StreamInitializer&&)      = delete;
+  ~IOStreamInitializer();
+  IOStreamInitializer();
+  IOStreamInitializer(const IOStreamInitializer&)            = delete;
+  IOStreamInitializer(IOStreamInitializer&&)                 = delete;
+  IOStreamInitializer& operator=(IOStreamInitializer&&)      = delete;
+  IOStreamInitializer& operator=(const IOStreamInitializer&) = delete;
 
 private:
   static std::size_t m_counter;

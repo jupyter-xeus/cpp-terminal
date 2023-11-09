@@ -13,7 +13,6 @@
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/platforms/file.hpp"
-#include "cpp-terminal/platforms/file_initializer.hpp"
 #include "cpp-terminal/platforms/return_code.hpp"
 #include "cpp-terminal/platforms/sigwinch.hpp"
 #include "cpp-terminal/screen.hpp"
@@ -27,26 +26,11 @@ static char termbuf[sizeof(Term::Terminal)];
 Terminal&   terminal = reinterpret_cast<Term::Terminal&>(termbuf);
 }  // namespace Term */
 
-int Term::TerminalInitializer::m_counter{0};
-
-void Term::TerminalInitializer::init()
-{
-  if(m_counter++ == 0) new(&Term::terminal) Terminal();
-}
-
-Term::TerminalInitializer::TerminalInitializer() { init(); }
-
-Term::TerminalInitializer::~TerminalInitializer()
-{
-  if(--m_counter == 0) { (&Term::terminal)->~Terminal(); }
-}
-
 Term::Options Term::Terminal::getOptions() { return m_options; }
 
 Term::Terminal::Terminal()
 {
   Term::Private::Sigwinch::blockSigwinch();
-  Term::Private::m_fileInitializer.init();
   store_and_restore();
   setMode();  //Save the default cpp-terminal mode done in store_and_restore();
   set_unset_utf8();

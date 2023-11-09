@@ -7,6 +7,8 @@
 * SPDX-License-Identifier: MIT
 */
 
+#pragma once
+
 #include "cpp-terminal/exception.hpp"
 
 #include <cstdint>

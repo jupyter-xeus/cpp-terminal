@@ -23,21 +23,22 @@
 #include "cpp-terminal/platforms/exception.hpp"
 #include "cpp-terminal/platforms/unicode.hpp"
 
+#include <array>
 #include <fcntl.h>
 #include <iostream>
 
-namespace Term
-{
+//FIXME Move this to other file
 
-namespace Private
+namespace
 {
-static char                       stdin_buf[sizeof(Term::Private::InputFileHandler)];
-Term::Private::InputFileHandler&  in = reinterpret_cast<Term::Private::InputFileHandler&>(stdin_buf);
-static char                       stdout_buf[sizeof(Term::Private::OutputFileHandler)];
-Term::Private::OutputFileHandler& out = reinterpret_cast<Term::Private::OutputFileHandler&>(stdout_buf);
-}  // namespace Private
+std::array<char, sizeof(Term::Private::InputFileHandler)>  stdin_buffer;
+std::array<char, sizeof(Term::Private::OutputFileHandler)> stdout_buffer;
+}  // namespace
 
-}  // namespace Term
+Term::Private::InputFileHandler&  Term::Private::in  = reinterpret_cast<Term::Private::InputFileHandler&>(stdin_buffer);
+Term::Private::OutputFileHandler& Term::Private::out = reinterpret_cast<Term::Private::OutputFileHandler&>(stdout_buffer);
+
+//
 
 Term::Private::FileHandler::FileHandler(std::recursive_mutex& mutex, const std::string& filename, const std::string& mode) : m_mutex(mutex)
 {

@@ -20,22 +20,19 @@ namespace Private
 class FileInitializer
 {
 public:
-  FileInitializer();
-  ~FileInitializer();
+  ~FileInitializer() noexcept;
+  FileInitializer() noexcept;
   FileInitializer(FileInitializer&&)                 = delete;
   FileInitializer(const FileInitializer&)            = delete;
   FileInitializer& operator=(const FileInitializer&) = delete;
   FileInitializer& operator=(FileInitializer&&)      = delete;
-  static void      init();
 
 private:
   static bool        m_consoleCreated;
   static std::size_t m_counter;
-  static void        attachConsole();
-  static void        detachConsole();
+  static void        attachConsole() noexcept;
+  static void        detachConsole() noexcept;
 };
-
-static const FileInitializer m_fileInitializer;
 
 }  // namespace Private
 

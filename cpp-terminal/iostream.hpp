@@ -20,6 +20,6 @@ extern TOstream& cout;
 extern TOstream& cerr;
 extern TOstream& clog;
 
-static StreamInitializer m_streams;
+static const IOStreamInitializer IO_stream_initializer;
 
 }  // namespace Term

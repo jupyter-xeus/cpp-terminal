@@ -9,6 +9,8 @@
 
 #include "cpp-terminal/cursor.hpp"
 
+#include "file_initializer.hpp"
+
 #if defined(_WIN32)
   #include <windows.h>
 #else
@@ -20,6 +22,7 @@
 
 Term::Cursor Term::cursor_position()
 {
+  static const Term::Private::FileInitializer files_init;
   if(Term::Private::in.null()) return Term::Cursor();
 #if defined(_WIN32)
   CONSOLE_SCREEN_BUFFER_INFO inf;

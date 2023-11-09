@@ -9,6 +9,7 @@
 
 #pragma once
 #include "cpp-terminal/options.hpp"
+#include "cpp-terminal/terminal_initializer.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
 #include <cstdint>
@@ -47,21 +48,6 @@ public:
   Terminal(Terminal&&)                 = delete;
   Terminal& operator=(Terminal&&)      = delete;
   bool      supportUTF8();
-};
-
-class TerminalInitializer
-{
-public:
-  TerminalInitializer();
-  static void init();
-  ~TerminalInitializer();
-  TerminalInitializer(const TerminalInitializer&)            = delete;
-  TerminalInitializer& operator=(const TerminalInitializer&) = delete;
-  TerminalInitializer(TerminalInitializer&&)                 = delete;
-  TerminalInitializer& operator=(TerminalInitializer&&)      = delete;
-
-private:
-  static int m_counter;
 };
 
 static TerminalInitializer m_terminalInitializer;

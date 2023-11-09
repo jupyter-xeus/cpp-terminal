@@ -25,32 +25,6 @@
   #include <sys/stat.h>
 #endif
 
-void Term::Private::FileInitializer::init()
-{
-  try
-  {
-    // MacOS was not happy wish a static mutex in the class so we create it and pass to each class;
-    static std::recursive_mutex ioMutex;
-    if(0 == m_counter)
-    {
-      attachConsole();
-      if(new(&Term::Private::in) InputFileHandler(ioMutex) == nullptr) { throw Term::Exception("new(&Term::Private::in) InputFileHandler(ioMutex)"); }
-      if(new(&Term::Private::out) OutputFileHandler(ioMutex) == nullptr) { throw Term::Exception("new(&Term::Private::out) OutputFileHandler(ioMutex)"); }
-    }
-    ++m_counter;
-  }
-  catch(const Term::Exception& exception)
-  {
-    std::cerr << "Error in cpp-terminal: " << exception.what() << '\n' << std::flush;
-    std::exit(Term::returnCode());
-  }
-  catch(...)
-  {
-    std::cerr << "Undefined error in cpp-terminal [Term::Private::FileInitializer::init()]" << '\n' << std::flush;
-    std::exit(Term::returnCode());
-  }
-}
-
 bool Term::Private::FileInitializer::m_consoleCreated = {false};
 
 std::size_t Term::Private::FileInitializer::m_counter = {0};
@@ -61,7 +35,7 @@ std::size_t Term::Private::FileInitializer::m_counter = {0};
 /// Check if a console is attached to the process. If not, try to attach to the console. If there is no console, then create one. \b stdin, \b stdout, \b stderr are check and opened if necessary.
 /// On error, on window, a message box is raised.
 ///
-void Term::Private::FileInitializer::attachConsole()
+void Term::Private::FileInitializer::attachConsole() noexcept
 try
 {
 #if defined(_WIN32)
@@ -100,21 +74,45 @@ catch(const Term::Exception& exception)
   detachConsole();
 #if defined(_WIN32)
   MessageBoxW(nullptr, Term::Private::to_wide(exception.what()).c_str(), Term::Private::to_wide("cpp-terminal").c_str(), MB_OK | MB_ICONERROR | MB_DEFBUTTON1);
-  std::exit(exception.code());
+#else
+  (void)(exception);
 #endif
-  throw;
 }
 
-void Term::Private::FileInitializer::detachConsole()
+void Term::Private::FileInitializer::detachConsole() noexcept
 {
 #if defined(_WIN32)
   if(m_consoleCreated) FreeConsole();
 #endif
 }
 
-Term::Private::FileInitializer::FileInitializer() { init(); }
+Term::Private::FileInitializer::FileInitializer() noexcept
+{
+  try
+  {
+    // MacOS was not happy wish a static mutex in the class so we create it and pass to each class;
+    static std::recursive_mutex ioMutex;
+    if(0 == m_counter)
+    {
+      attachConsole();
+      if(new(&Term::Private::in) InputFileHandler(ioMutex) == nullptr) { throw Term::Exception("new(&Term::Private::in) InputFileHandler(ioMutex)"); }
+      if(new(&Term::Private::out) OutputFileHandler(ioMutex) == nullptr) { throw Term::Exception("new(&Term::Private::out) OutputFileHandler(ioMutex)"); }
+    }
+    ++m_counter;
+  }
+  catch(const Term::Exception& exception)
+  {
+    std::cerr << "Error in cpp-terminal: " << exception.what() << '\n' << std::flush;
+    std::exit(Term::returnCode());
+  }
+  catch(...)
+  {
+    std::cerr << "Undefined error in cpp-terminal [Term::Private::FileInitializer::init()]" << '\n' << std::flush;
+    std::exit(Term::returnCode());
+  }
+}
 
-Term::Private::FileInitializer::~FileInitializer()
+Term::Private::FileInitializer::~FileInitializer() noexcept
 {
   if(0 == m_counter)
   {
