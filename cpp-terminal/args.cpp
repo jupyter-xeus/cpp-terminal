@@ -12,6 +12,10 @@
 namespace Term
 {
 
+Term::Arguments::Arguments(){}
+
+Term::Argc::Argc(){}
+
 Term::Argc::operator unsigned int() { return static_cast<unsigned int>(Term::Arguments::argc()); }
 
 Term::Argc::operator unsigned int() const { return static_cast<unsigned int>(Term::Arguments::argc()); }
