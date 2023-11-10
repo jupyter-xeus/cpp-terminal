@@ -71,7 +71,7 @@ std::string Term::Private::utf32_to_utf8(const char32_t& utf, const bool& crash)
   else if(utf <= size[2]) { ret = {static_cast<char>(((utf >> shift[2]) & mask_first[1]) | add_first[1]), static_cast<char>(((utf >> shift[1]) & add) | mask), static_cast<char>(((utf >> shift[0]) & add) | mask)}; }
   else if(utf <= size[3]) { ret = {static_cast<char>(((utf >> shift[3]) & mask_first[2]) | add_first[2]), static_cast<char>(((utf >> shift[2]) & add) | mask), static_cast<char>(((utf >> shift[1]) & add) | mask), static_cast<char>(((utf >> shift[0]) & add) | mask)}; }
   else if(crash) { throw Term::Exception("Invalid UTF32 codepoint."); }
-  else { ret = u8"�"; }
+  else { ret = "�"; }
   return ret;
 }
 
