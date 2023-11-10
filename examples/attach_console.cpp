@@ -41,8 +41,7 @@ int main()
     text += "Unicode works too: originally written by Ondřej Čertík.";
     std::cout << text << std::endl;
 
-    Term::cout<<"Now some utf8 ∮ E⋅da = Q,  n → ∞, ∑ f(i) = ∏ g(i)γνωρίζω ἀπὸ τὴν ὄψηდარგებში⠝⠁⠊⠇ ⠁⠎ ⠹⠑ ⠙როგორიცააᚻ∂∈ℝ∧∪≡∞ ↑↗↨↻⇣ ┐┼╔╘░►☺♀ ﬁ�⑀₂ἠḂᛖᛒᚢᛞᛖразличных\tопеฮั่นเสื่อมโทรมแማደሪያ የለው፥ ግንድ ይዞ ይዞራል።"<<std::endl;
-
+    Term::cout << "Now some utf8 ∮ E⋅da = Q,  n → ∞, ∑ f(i) = ∏ g(i)γνωρίζω ἀπὸ τὴν ὄψηდარგებში⠝⠁⠊⠇ ⠁⠎ ⠹⠑ ⠙როგორიცააᚻ∂∈ℝ∧∪≡∞ ↑↗↨↻⇣ ┐┼╔╘░►☺♀ ﬁ�⑀₂ἠḂᛖᛒᚢᛞᛖразличных\tопеฮั่นเสื่อมโทรมแማደሪያ የለው፥ ግንድ ይዞ ይዞራል።" << std::endl;
 
 #ifdef _WIN32
     MessageBox(NULL, "Hello, world", "caption", 0);
