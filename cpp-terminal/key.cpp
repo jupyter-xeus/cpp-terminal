@@ -9,7 +9,7 @@
 
 #include "cpp-terminal/key.hpp"
 
-#include "cpp-terminal/private/conversion.hpp"
+#include "cpp-terminal/private/unicode.hpp"
 
 // ------------------------- Key ---------------------------
 
@@ -40,7 +40,7 @@ void Term::Key::append_name(std::string& strOut) const
     strOut += static_cast<char>(key.value + 64);
   else if(key == Term::Key::Space)
     strOut += "Space";
-  else if(key.isunicode()) { key.append_str(strOut); }
+  else if(key.isunicode()) { strOut += Term::Private::utf32_to_utf8(static_cast<char32_t>(this->value)); }
   else
   {
     switch(key)
@@ -86,11 +86,6 @@ void Term::Key::append_name(std::string& strOut) const
   }
 }
 
-void Term::Key::append_str(std::string& strOut) const
-{
-  if(!(this->value >= 0x10FFFFL)) { Term::Private::codepoint_to_utf8(strOut, static_cast<char32_t>(this->value)); }
-}
-
 std::string Term::Key::name() const
 {
   std::string str;
@@ -98,9 +93,4 @@ std::string Term::Key::name() const
   return str;
 }
 
-std::string Term::Key::str() const
-{
-  std::string str;
-  this->append_str(str);
-  return str;
-}
+std::string Term::Key::str() const { return Term::Private::utf32_to_utf8(static_cast<char32_t>(this->value)); }

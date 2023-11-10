@@ -35,7 +35,7 @@ std::string to_utf8(LPCWCH utf16Str)
   return ret.c_str();
 }
   #else
-std::string to_utf8(const std::string& ret) { return ret.c_str(); }
+std::string to_utf8(const std::string& ret) { return ret; }
   #endif
 
   #if defined(_WIN32)
@@ -49,7 +49,7 @@ int main(int argc, char_type** argv)
   doctest::Context context;
   context.setOption("no-breaks", true);
   int res = context.run();
-  if(context.shouldExit()) return res;
+  if(context.shouldExit()) { return res; }
   context.clearFilters();
   return res;
 }

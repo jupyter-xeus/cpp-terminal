@@ -17,40 +17,34 @@
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
 
-#include <iostream>
-
-void render(const std::size_t& rows, const std::size_t& cols, const std::size_t& menuheight, const std::size_t& menuwidth, const std::size_t& menupos)
+static void render(const std::size_t& rows, const std::size_t& cols, const std::size_t& menuheight, const std::size_t& menuwidth, const std::size_t& menupos)
 {
-  std::string scr;
-  scr.reserve(16 * 1024);
+  static std::string scr;
+  scr.reserve(rows * cols * 4);
 
   scr.append(Term::cursor_move(1, 1));
 
-  std::size_t menux0{(cols - menuwidth) / 2};
-  std::size_t menuy0{(rows - menuheight) / 2};
+  const std::size_t menux0{(cols - menuwidth) / 2};
+  const std::size_t menuy0{(rows - menuheight) / 2};
 
-  for(std::size_t j = 1; j <= menuy0; j++) { scr.append("\n"); }
+  for(std::size_t j = 1; j <= menuy0; ++j) { scr.append("\n"); }
 
-  for(std::size_t j = 1; j <= menux0; j++) { scr.append(" "); }
-  if(Term::terminal.supportUTF8()) scr.append("┌");
-  else
-    scr.append("+");
-  for(std::size_t j = 1; j <= menuwidth; j++)
+  for(std::size_t j = 1; j <= menux0; ++j) { scr.append(" "); }
+  if(Term::terminal.supportUTF8()) { scr.append("┌"); }
+  else { scr.append("+"); }
+  for(std::size_t j = 1; j <= menuwidth; ++j)
   {
-    if(Term::terminal.supportUTF8()) scr.append("─");
-    else
-      scr.append("-");
+    if(Term::terminal.supportUTF8()) { scr.append("─"); }
+    else { scr.append("-"); }
   }
-  if(Term::terminal.supportUTF8()) scr.append("┐");
-  else
-    scr.append("+");
+  if(Term::terminal.supportUTF8()) { scr.append("┐"); }
+  else { scr.append("+"); }
   scr.append(" \n");
-  for(std::size_t i = 1; i <= menuheight; i++)
+  for(std::size_t i = 1; i <= menuheight; ++i)
   {
-    for(std::size_t j = 1; j <= menux0; j++) { scr.append(" "); }
-    if(Term::terminal.supportUTF8()) scr.append("│");
-    else
-      scr.append("|");
+    for(std::size_t j = 1; j <= menux0; ++j) { scr.append(" "); }
+    if(Term::terminal.supportUTF8()) { scr.append("│"); }
+    else { scr.append("|"); }
     if(i == menupos)
     {
       scr.append(Term::color_fg(Term::Color::Name::Red));
@@ -62,30 +56,26 @@ void render(const std::size_t& rows, const std::size_t& cols, const std::size_t&
       scr.append(Term::color_fg(Term::Color::Name::Blue));
       scr.append(Term::color_bg(Term::Color::Name::Green));
     }
-    std::string s = std::to_string(i) + ": item";
-    scr.append(s);
-    for(std::size_t j = 1; j <= menuwidth - s.size(); j++) { scr.append(" "); }
+    const std::string item = std::to_string(i) + ": item";
+    scr.append(item);
+    for(std::size_t j = 1; j <= (menuwidth - item.size()); ++j) { scr.append(" "); }
     scr.append(Term::color_bg(Term::Color::Name::Default));
     scr.append(Term::color_fg(Term::Color::Name::Default));
     scr.append(Term::style(Term::Style::Reset));
-    if(Term::terminal.supportUTF8()) scr.append("│");
-    else
-      scr.append("|");
+    if(Term::terminal.supportUTF8()) { scr.append("│"); }
+    else { scr.append("|"); }
     scr.append(" \n");
   }
-  for(std::size_t j = 1; j <= menux0; j++) { scr.append(" "); }
-  if(Term::terminal.supportUTF8()) scr.append("└");
-  else
-    scr.append("+");
-  for(std::size_t j = 1; j <= menuwidth; j++)
+  for(std::size_t j = 1; j <= menux0; ++j) { scr.append(" "); }
+  if(Term::terminal.supportUTF8()) { scr.append("└"); }
+  else { scr.append("+"); }
+  for(std::size_t j = 1; j <= menuwidth; ++j)
   {
-    if(Term::terminal.supportUTF8()) scr.append("─");
-    else
-      scr.append("-");
+    if(Term::terminal.supportUTF8()) { scr.append("─"); }
+    else { scr.append("-"); }
   }
-  if(Term::terminal.supportUTF8()) scr.append("┘");
-  else
-    scr.append("+");
+  if(Term::terminal.supportUTF8()) { scr.append("┘"); }
+  else { scr.append("+"); }
   scr.append(" \n");
 
   scr.append(Term::cursor_move(menuy0 + menuheight + 5, 1));
@@ -102,15 +92,21 @@ int main()
   {
     // check if the terminal is capable of handling input
     Term::terminal.setOptions(Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw);
-    if(!Term::is_stdin_a_tty()) throw Term::Exception("The terminal is not attached to a TTY and therefore can't catch user input. Exiting...");
+    if(!Term::is_stdin_a_tty()) { throw Term::Exception("The terminal is not attached to a TTY and therefore can't catch user input. Exiting..."); }
     Term::Screen term_size = Term::screen_size();
     std::size_t  pos{5};
     std::size_t  h{10};
     std::size_t  w{10};
     bool         on{true};
-    render(term_size.rows(), term_size.columns(), h, w, pos);
+    bool         need_to_render{true};
+
     while(on)
     {
+      if(need_to_render)
+      {
+        ::render(term_size.rows(), term_size.columns(), h, w, pos);
+        need_to_render = false;
+      }
       Term::Event event{Term::read_event()};
       switch(event.type())
       {
@@ -119,46 +115,55 @@ int main()
           switch(Term::Key(event))
           {
             case Term::Key::ArrowLeft:
-              if(w > 10) w--;
+              if(w > 10) { --w; }
+              need_to_render = true;
               break;
             case Term::Key::ArrowRight:
-              if(w < (term_size.columns() - 5)) w++;
+              if(w < (term_size.columns() - 5)) { ++w; }
+              need_to_render = true;
               break;
             case Term::Key::ArrowUp:
-              if(pos > 1) pos--;
+              if(pos > 1) { --pos; }
+              need_to_render = true;
               break;
             case Term::Key::ArrowDown:
-              if(pos < h) pos++;
+              if(pos < h) { ++pos; }
+              need_to_render = true;
               break;
-            case Term::Key::Home: pos = 1; break;
-            case Term::Key::End: pos = h; break;
+            case Term::Key::Home:
+              pos            = 1;
+              need_to_render = true;
+              break;
+            case Term::Key::End:
+              pos            = h;
+              need_to_render = true;
+              break;
             case Term::Key::q:
             case Term::Key::Esc:
             case Term::Key::Ctrl_C: on = false;
             default: break;
           }
-          render(term_size.rows(), term_size.columns(), h, w, pos);
           break;
         }
         case Term::Event::Type::Screen:
         {
           term_size = Term::Screen(event);
           Term::cout << Term::clear_screen() << std::flush;
-          render(term_size.rows(), term_size.columns(), h, w, pos);
+          ::render(term_size.rows(), term_size.columns(), h, w, pos);
           break;
         }
         case Term::Event::Type::Mouse:
         {
           if(Term::Mouse(event).is(Term::Button::Type::Wheel, Term::Button::Action::RolledUp))
           {
-            if(pos > 1) pos--;
-            render(term_size.rows(), term_size.columns(), h, w, pos);
+            if(pos > 1) { --pos; }
+            need_to_render = true;
             break;
           }
-          else if(Term::Mouse(event).is(Term::Button::Type::Wheel, Term::Button::Action::RolledDown))
+          if(Term::Mouse(event).is(Term::Button::Type::Wheel, Term::Button::Action::RolledDown))
           {
-            if(pos < h) pos++;
-            render(term_size.rows(), term_size.columns(), h, w, pos);
+            if(pos < h) { ++pos; }
+            need_to_render = true;
             break;
           }
           break;

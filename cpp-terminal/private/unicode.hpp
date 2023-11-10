@@ -22,5 +22,9 @@ namespace Private
 std::string  to_narrow(const std::wstring& wstr);
 std::wstring to_wide(const std::string& str);
 #endif
+
+std::string utf32_to_utf8(const char32_t& utf, const bool& crash = false);
+std::string utf32_to_utf8(const std::u32string& str, const bool crash = false);
+
 }  // namespace Private
 }  // namespace Term

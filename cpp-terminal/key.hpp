@@ -412,7 +412,6 @@ public:
   constexpr bool empty() const { return (this->value == Key::NoKey); }
 
   void        append_name(std::string& strOut) const;
-  void        append_str(std::string& strOut) const;
   std::string name() const;
   std::string str() const;
 

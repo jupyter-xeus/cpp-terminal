@@ -61,7 +61,7 @@ void Term::Arguments::parse()
     file_stream.ignore(std::numeric_limits<std::streamsize>::max());
     cmdline.resize(static_cast<std::size_t>(file_stream.gcount()));
     file_stream.seekg(0, std::ios_base::beg);
-    file_stream.get(&cmdline[0], static_cast<std::streamsize>(cmdline.size()));
+    file_stream.get(&cmdline[0], static_cast<std::streamsize>(cmdline.size()));  //NOLINT(readability-container-data-pointer)
     file_stream.exceptions(old_iostate);
     if(file_stream.is_open()) { file_stream.close(); }
     m_args.reserve(static_cast<std::size_t>(std::count(cmdline.begin(), cmdline.end(), '\0')));
@@ -92,4 +92,4 @@ std::vector<std::string> Term::Arguments::argv()
 
 bool Term::Arguments::m_parsed = false;
 
-std::vector<std::string> Term::Arguments::m_args = std::vector<std::string>();
+std::vector<std::string> Term::Arguments::m_args = std::vector<std::string>();  //NOLINT(fuchsia-statically-constructed-objects)

@@ -14,6 +14,8 @@
 #include "cpp-terminal/tty.hpp"
 #include "cpp-terminal/version.hpp"
 
+#include <limits>
+
 int main()
 {
   Term::cout << "Running cpp-terminal version: " << Term::Version::string << " website : " << Term::homepage << std::endl << std::endl;
@@ -24,17 +26,12 @@ int main()
     else { Term::cout << "Standard output is not attached to a terminal." << std::endl << std::endl; }
 
     std::string mode;
-    if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit24) mode = "24bit";
-    else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit8)
-      mode = "8bit";
-    else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit4)
-      mode = "4bit";
-    else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit3)
-      mode = "3bit";
-    else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::NoColor)
-      mode = "nocolor";
-    else
-      mode = "Unset";
+    if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit24) { mode = "24bit"; }
+    else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit8) { mode = "8bit"; }
+    else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit4) { mode = "4bit"; }
+    else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit3) { mode = "3bit"; }
+    else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::NoColor) { mode = "nocolor"; }
+    else { mode = "Unset"; }
 
     Term::cout << "Terminal has " << mode << " color support" << std::endl << std::endl;
 
@@ -43,7 +40,7 @@ int main()
     text += "Unicode works too: originally written by Ondřej Čertík.";
     Term::cout << text << std::endl;
 
-    std::string rgb_text = "Some Text in " + Term::color_fg(255, 0, 0) + 'R' + Term::color_fg(0, 255, 0) + 'G' + Term::color_fg(0, 0, 255) + 'B' + Term::color_fg(Term::Color::Name::Default);
+    std::string rgb_text = "Some Text in " + Term::color_fg(std::numeric_limits<std::uint8_t>::max(), 0, 0) + 'R' + Term::color_fg(0, std::numeric_limits<std::uint8_t>::max(), 0) + 'G' + Term::color_fg(0, 0, std::numeric_limits<std::uint8_t>::max()) + 'B' + Term::color_fg(Term::Color::Name::Default);
 
     Term::cout << rgb_text << std::endl;
 
@@ -56,65 +53,65 @@ int main()
 
     Term::cout << "\n8bits colors:\n";
     Term::cout << "*";
-    for(std::uint8_t i = 0; i < 255; i += 1) { Term::cout << Term::color_bg(i) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 1) { Term::cout << Term::color_bg(i) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n";
 
     Term::cout << "\n24bits color chart: \n";
     Term::cout << "*";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(i, 0, 0) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(i, 0, 0) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n*";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(0, i, 0) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(0, i, 0) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n*";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(0, 0, i) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(0, 0, i) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n*";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(i, i, i) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(i, i, i) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n";
 
     Term::cout << "\nColor conversion (24bit)\n";
     /* red color space */
     Term::cout << "24bit original: *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(i, 0, 0) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(i, 0, 0) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n24bit to 8bit:  *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(Term::Color(i, 0, 0).to8bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(Term::Color(i, 0, 0).to8bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n24bit to 4bit:  *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(Term::Color(i, 0, 0).to4bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(Term::Color(i, 0, 0).to4bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n24bit to 3bit:  *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(Term::Color(i, 0, 0).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(Term::Color(i, 0, 0).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
     /* green color space */
     Term::cout << "*\n24bit original: *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(0, i, 0) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(0, i, 0) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n24bit to 8bit:  *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(Term::Color(0, i, 0).to8bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(Term::Color(0, i, 0).to8bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n24bit to 4bit:  *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(Term::Color(0, i, 0).to4bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(Term::Color(0, i, 0).to4bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n24bit to 3bit:  *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(Term::Color(0, i, 0).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(Term::Color(0, i, 0).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
     /* blue color space */
     Term::cout << "*\n24bit original: *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(0, 0, i) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(0, 0, i) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n24bit to 8bit:  *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(Term::Color(0, 0, i).to8bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(Term::Color(0, 0, i).to8bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n24bit to 4bit:  *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(Term::Color(0, 0, i).to4bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(Term::Color(0, 0, i).to4bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n24bit to 3bit:  *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(Term::Color(0, 0, i).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(Term::Color(0, 0, i).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
     /* black / grey color space */
     Term::cout << "*\n24bit original: *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(i, i, i) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(i, i, i) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n24bit to 8bit:  *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(Term::Color(i, i, i).to8bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(Term::Color(i, i, i).to8bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n24bit to 4bit:  *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(Term::Color(i, i, i).to4bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(Term::Color(i, i, i).to4bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n24bit to 3bit:  *";
-    for(std::uint8_t i = 0; i < 255; i += 3) { Term::cout << Term::color_bg(Term::Color(i, i, i).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 3) { Term::cout << Term::color_bg(Term::Color(i, i, i).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default); }
     Term::cout << "*\n";
 
     Term::cout << "\nColor conversion (8bit)\n";
     Term::cout << "to 4bit *";
-    for(std::uint8_t i = 0; i < 255; i += 1) { Term::cout << Term::color_bg(Term::Color(i).to4bits()) << " " << Term::color_bg(Term::Color::Name::Default) << ""; }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 1) { Term::cout << Term::color_bg(Term::Color(i).to4bits()) << " " << Term::color_bg(Term::Color::Name::Default) << ""; }
     Term::cout << "*\n";
     Term::cout << "to 3bit *";
-    for(std::uint8_t i = 0; i < 255; i += 1) { Term::cout << Term::color_bg(Term::Color(i).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default) << ""; }
+    for(std::uint8_t i = 0; i < std::numeric_limits<std::uint8_t>::max(); i += 1) { Term::cout << Term::color_bg(Term::Color(i).to3bits()) << " " << Term::color_bg(Term::Color::Name::Default) << ""; }
     Term::cout << "*\n";
 
     Term::cout << "\nColor conversion (4bit)\n";
