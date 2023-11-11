@@ -64,7 +64,7 @@ std::string Term::Private::utf32_to_utf8(const char32_t& codepoint, const bool& 
   else if(codepoint <= size[2]) { ret = {static_cast<char>(((codepoint >> shift[2]) & mask_first[1]) | add_first[1]), static_cast<char>(((codepoint >> shift[1]) & add) | mask), static_cast<char>(((codepoint >> shift[0]) & add) | mask)}; }
   else if(codepoint <= size[3]) { ret = {static_cast<char>(((codepoint >> shift[3]) & mask_first[2]) | add_first[2]), static_cast<char>(((codepoint >> shift[2]) & add) | mask), static_cast<char>(((codepoint >> shift[1]) & add) | mask), static_cast<char>(((codepoint >> shift[0]) & add) | mask)}; }
   else if(exception) { throw Term::Exception("Invalid UTF32 codepoint."); }
-  else { ret = "�"; }
+  else { ret = "\xEF\xBF\xBD"; }
   return ret;
 }
 
