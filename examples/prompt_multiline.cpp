@@ -21,8 +21,7 @@ bool determine_completeness(const std::string& command)
 {
   // Determine if the statement is complete
   if(command.size() > 1 && command.substr(command.size() - 2, 1) == "\\") return false;
-  else
-    return true;
+  return true;
 }
 
 int main()
@@ -30,7 +29,7 @@ int main()
   try
   {
     Term::terminal.setOptions(Term::Option::NoClearScreen, Term::Option::SignalKeys, Term::Option::Cursor, Term::Option::Raw);
-    if(!Term::is_stdin_a_tty()) throw Term::Exception("The terminal is not attached to a TTY and therefore can't catch user input. Exiting...");
+    if(!Term::is_stdin_a_tty()) { throw Term::Exception("The terminal is not attached to a TTY and therefore can't catch user input. Exiting..."); }
     std::cout << "Interactive prompt.\n"
               << "  * Use Ctrl-D to exit.\n"
               << "  * Use Enter to submit.\n"
@@ -45,7 +44,7 @@ int main()
     while(true)
     {
       std::string answer = Term::prompt_multiline("> ", history, iscomplete);
-      if(answer.size() == 1 && answer[0] == Term::Key::Ctrl_D) break;
+      if(answer.size() == 1 && answer[0] == Term::Key::Ctrl_D) { break; }
       std::cout << "Submitted text: " << answer << std::endl;
     }
   }

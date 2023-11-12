@@ -23,9 +23,9 @@ class Loop
 {
 public:
   void stop() { m_stop = true; }
-  void print_message()
+  void print_message() const
   {
-    while(m_stop == false)
+    while(m_stop)
     {
       std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(2000));
       std::cout << "\tNot waiting..." << std::endl;
@@ -59,9 +59,8 @@ int main()
         }
         case Term::Event::Type::Focus:
         {
-          if(static_cast<Term::Focus>(event).in()) Term::cout << "Event: Focus (In)" << std::endl;
-          else
-            Term::cout << "Event: Focus (Out)" << std::endl;
+          if(static_cast<Term::Focus>(event).in()) { Term::cout << "Event: Focus (In)" << std::endl; }
+          else { Term::cout << "Event: Focus (Out)" << std::endl; }
           break;
         }
         case Term::Event::Type::Key:

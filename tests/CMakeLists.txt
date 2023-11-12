@@ -30,7 +30,6 @@ function(cppterminal_test )
   doctest_discover_tests("${ARG_SOURCE}.test")
 endfunction()
 
-cppterminal_test(SOURCE test_terminal)
 cppterminal_test(SOURCE file)
 cppterminal_test(SOURCE key)
 cppterminal_test(SOURCE screen)

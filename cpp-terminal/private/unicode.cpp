@@ -16,6 +16,8 @@
   #include <windows.h>
 #endif
 
+#include <array>
+
 #if defined(_WIN32)
 std::string Term::Private::to_narrow(const std::wstring& in)
 {
@@ -45,3 +47,30 @@ std::wstring Term::Private::to_wide(const std::string& in)
   return ret;
 }
 #endif
+
+std::string Term::Private::utf32_to_utf8(const char32_t& codepoint, const bool& exception)
+{
+  static const constexpr std::array<std::uint32_t, 4> size{0x7F, 0x07FF, 0xFFFF, 0x10FFFF};
+  static const constexpr std::uint8_t                 mask{0x80};
+  static const constexpr std::uint8_t                 add{0x3F};
+  static const constexpr std::array<std::uint8_t, 3>  mask_first{0x1F, 0x0F, 0x07};
+  static const constexpr std::array<std::uint8_t, 3>  add_first{0xC0, 0xE0, 0xF0};
+  static const constexpr std::array<std::uint8_t, 4>  shift{0, 6, 12, 18};
+  static const constexpr std::uint8_t                 max_size{4};
+  std::string                                         ret;
+  ret.reserve(max_size);
+  if(codepoint <= size[0]) { ret = {static_cast<char>(codepoint)}; }  // Plain ASCII
+  else if(codepoint <= size[1]) { ret = {static_cast<char>(((codepoint >> shift[1]) & mask_first[0]) | add_first[0]), static_cast<char>(((codepoint >> shift[0]) & add) | mask)}; }
+  else if(codepoint <= size[2]) { ret = {static_cast<char>(((codepoint >> shift[2]) & mask_first[1]) | add_first[1]), static_cast<char>(((codepoint >> shift[1]) & add) | mask), static_cast<char>(((codepoint >> shift[0]) & add) | mask)}; }
+  else if(codepoint <= size[3]) { ret = {static_cast<char>(((codepoint >> shift[3]) & mask_first[2]) | add_first[2]), static_cast<char>(((codepoint >> shift[2]) & add) | mask), static_cast<char>(((codepoint >> shift[1]) & add) | mask), static_cast<char>(((codepoint >> shift[0]) & add) | mask)}; }
+  else if(exception) { throw Term::Exception("Invalid UTF32 codepoint."); }
+  else { ret = "\xEF\xBF\xBD"; }
+  return ret;
+}
+
+std::string Term::Private::utf32_to_utf8(const std::u32string& str, const bool& exception)
+{
+  std::string ret;
+  for(const char32_t codepoint: str) { ret.append(utf32_to_utf8(codepoint, exception)); }
+  return ret;
+}
