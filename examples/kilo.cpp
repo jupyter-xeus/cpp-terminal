@@ -486,7 +486,7 @@ void editorDelChar()
 std::string editorRowsToString()
 {
   std::string ret;
-  for(std::size_t line = 0; line < E.numrows; ++line) { ret += std::string(E.row[line].chars, static_cast<std::size_t>(E.row[line].size)) + '\0'; }
+  for(std::size_t line = 0; line < E.numrows; ++line) { ret += std::string(E.row[line].chars, static_cast<std::size_t>(E.row[line].size)) + '\n'; }
   return ret;
 }
 
