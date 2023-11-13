@@ -832,7 +832,7 @@ bool editorProcessKeypress()
   {
     case Term::Event::Type::Key:
     {
-      Term::Key key{event};
+      Term::Key key = event;
       switch(key)
       {
         case Term::Key::Enter:
@@ -925,7 +925,7 @@ bool editorProcessKeypress()
     }
     case Term::Event::Type::Mouse:
     {
-      Term::Mouse mouse{event};
+      Term::Mouse mouse = event;
       switch(mouse.getButton().type())
       {
         case Term::Button::Type::Wheel:
