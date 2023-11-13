@@ -7,6 +7,7 @@
 * SPDX-License-Identifier: MIT
 */
 
+#include "cpp-terminal/args.hpp"
 #include "cpp-terminal/color.hpp"
 #include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/input.hpp"
@@ -16,12 +17,19 @@
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 #include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/terminal_initializer.hpp"
 #include "cpp-terminal/tty.hpp"
 
 #include <cstdarg>
+#include <cstddef>
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <string>
+#include <vector>
+
+namespace
+{
 
 const std::string KILO_VERSION{"0.0.1"};
 const int         KILO_TAB_STOP{8};
@@ -44,15 +52,16 @@ enum editorHighlight
 
 /*** data ***/
 
-struct editorSyntax
+class editorSyntax
 {
-  const char*  filetype;
-  const char** filematch;
-  const char** keywords;
-  const char*  singleline_comment_start;
-  const char*  multiline_comment_start;
-  const char*  multiline_comment_end;
-  int          flags;
+public:
+  const std::string              filetype;
+  const std::vector<std::string> filematch;
+  const char**                   keywords;
+  const std::string              singleline_comment_start;
+  const std::string              multiline_comment_start;
+  const std::string              multiline_comment_end;
+  int                            flags;
 };
 
 typedef struct erow
@@ -66,35 +75,45 @@ typedef struct erow
   int            hl_open_comment;
 } erow;
 
-struct editorConfig
+class editorConfig
 {
-  int                  cx, cy;
-  int                  rx;
-  int                  rowoff;
-  int                  coloff;
-  int                  screenrows;
-  int                  screencols;
-  int                  numrows;
-  erow*                row;
-  int                  dirty;
-  char*                filename;
-  char                 statusmsg[80];
-  time_t               statusmsg_time;
-  struct editorSyntax* syntax;
+public:
+  editorConfig()
+  {
+    static const Term::TerminalInitializer init;
+    const Term::Screen                     screen = Term::screen_size();
+    screenrows                                    = screen.rows() - m_sizeBar;
+    screencols                                    = screen.columns();
+  }
+  int                  cx{0};
+  int                  cy{0};
+  int                  rx{0};
+  int                  rowoff{0};
+  int                  coloff{0};
+  std::size_t          screenrows{0};
+  std::size_t          screencols{0};
+  int                  numrows{0};
+  erow*                row{nullptr};
+  int                  dirty{0};
+  std::string          filename;
+  char                 statusmsg[80]{'\0'};
+  time_t               statusmsg_time{0};
+  struct editorSyntax* syntax{nullptr};
+
+private:
+  static const constexpr std::size_t m_sizeBar{2};
 };
 
-struct editorConfig E;
+class editorConfig E;
 
 /*** filetypes ***/
 
-const char* C_HL_extensions[] = {".c", ".h", ".cpp", nullptr};
-const char* C_HL_keywords[]   = {"switch", "if", "while", "for", "break", "continue", "return", "else", "struct", "union", "typedef", "static", "enum", "class", "case", "int|", "long|", "double|", "float|", "char|", "unsigned|", "signed|", "void|", nullptr};
+const std::vector<std::string> C_HL_extensions = {".c", ".h", ".hpp", ".cpp"};
+const char*                    C_HL_keywords[] = {"switch", "if", "while", "for", "break", "continue", "return", "else", "struct", "union", "typedef", "static", "enum", "class", "case", "int|", "long|", "double|", "float|", "char|", "unsigned|", "signed|", "void|", "bool|", nullptr};
 
-struct editorSyntax HLDB[] = {
+std::array<editorSyntax, 1> HLDB = {
   {"c", C_HL_extensions, C_HL_keywords, "//", "/*", "*/", HL_HIGHLIGHT_NUMBERS | HL_HIGHLIGHT_STRINGS},
 };
-
-#define HLDB_ENTRIES (sizeof(HLDB) / sizeof(HLDB[0]))
 
 /*** prototypes ***/
 
@@ -114,13 +133,9 @@ void editorUpdateSyntax(erow* row)
 
   const char** keywords = E.syntax->keywords;
 
-  const char* scs = E.syntax->singleline_comment_start;
-  const char* mcs = E.syntax->multiline_comment_start;
-  const char* mce = E.syntax->multiline_comment_end;
-
-  const size_t scs_len = scs ? strlen(scs) : 0;
-  const size_t mcs_len = mcs ? strlen(mcs) : 0;
-  const size_t mce_len = mce ? strlen(mce) : 0;
+  const std::string scs = E.syntax->singleline_comment_start;
+  const std::string mcs = E.syntax->multiline_comment_start;
+  const std::string mce = E.syntax->multiline_comment_end;
 
   int prev_sep   = 1;
   int in_string  = 0;
@@ -132,24 +147,24 @@ void editorUpdateSyntax(erow* row)
     char          c       = row->render[i];
     unsigned char prev_hl = (i > 0) ? row->hl[i - 1] : static_cast<unsigned char>(HL_NORMAL);
 
-    if(scs_len && !in_string && !in_comment)
+    if(scs.size() && !in_string && !in_comment)
     {
-      if(!strncmp(&row->render[i], scs, scs_len))
+      if(!strncmp(&row->render[i], &scs[0], scs.size()))
       {
         memset(&row->hl[i], HL_COMMENT, row->rsize - i);
         break;
       }
     }
 
-    if(mcs_len && mce_len && !in_string)
+    if(mcs.size() && mce.size() && !in_string)
     {
       if(in_comment)
       {
         row->hl[i] = HL_MLCOMMENT;
-        if(!strncmp(&row->render[i], mce, mce_len))
+        if(!strncmp(&row->render[i], &mce[0], mce.size()))
         {
-          memset(&row->hl[i], HL_MLCOMMENT, mce_len);
-          i += mce_len;
+          memset(&row->hl[i], HL_MLCOMMENT, mce.size());
+          i += mce.size();
           in_comment = 0;
           prev_sep   = 1;
           continue;
@@ -160,10 +175,10 @@ void editorUpdateSyntax(erow* row)
           continue;
         }
       }
-      else if(!strncmp(&row->render[i], mcs, mcs_len))
+      else if(!strncmp(&row->render[i], &mcs[0], mcs.size()))
       {
-        memset(&row->hl[i], HL_MLCOMMENT, mcs_len);
-        i += mcs_len;
+        memset(&row->hl[i], HL_MLCOMMENT, mcs.size());
+        i += mcs.size();
         in_comment = 1;
         continue;
       }
@@ -257,28 +272,22 @@ Term::Color editorSyntaxToColor(int hl)
 
 void editorSelectSyntaxHighlight()
 {
-  E.syntax = nullptr;
-  if(E.filename == nullptr) return;
+  if(E.filename.empty()) { return; }
+  std::size_t found{E.filename.find_last_of('.')};
+  std::string ext;
+  if(found == std::string::npos) { return; }
+  else { ext = E.filename.substr(found); }
 
-  char* ext = strrchr(E.filename, '.');
-
-  for(std::size_t j = 0; j != HLDB_ENTRIES; ++j)
+  for(std::size_t j = 0; j != HLDB.size(); ++j)
   {
-    struct editorSyntax* s = &HLDB[j];
-    unsigned int         i = 0;
-    while(s->filematch[i])
+    for(std::size_t i = 0; i != HLDB[j].filematch.size(); ++i)
     {
-      int is_ext = (s->filematch[i][0] == '.');
-      if((is_ext && ext && !strcmp(ext, s->filematch[i])) || (!is_ext && strstr(E.filename, s->filematch[i])))
+      if(HLDB[j].filematch[i] == ext)
       {
-        E.syntax = s;
-
-        int filerow;
-        for(filerow = 0; filerow < E.numrows; filerow++) { editorUpdateSyntax(&E.row[filerow]); }
-
+        E.syntax = &HLDB[j];
+        for(std::size_t filerow = 0; filerow < E.numrows; filerow++) { editorUpdateSyntax(&E.row[filerow]); }
         return;
       }
-      i++;
     }
   }
 }
@@ -418,10 +427,10 @@ void editorRowDelChar(erow* row, int at)
 
 /*** editor operations ***/
 
-void editorInsertChar(int c)
+void editorInsertChar(const Term::Key& key)
 {
   if(E.cy == E.numrows) { editorInsertRow(E.numrows, "", 0); }
-  editorRowInsertChar(&E.row[E.cy], E.cx, c);
+  editorRowInsertChar(&E.row[E.cy], E.cx, key);
   E.cx++;
 }
 
@@ -483,26 +492,21 @@ char* editorRowsToString(int* buflen)
   return buf;
 }
 
-void editorOpen(char* filename)
+void editorOpen(const std::string& filename)
 {
-  free(E.filename);
-#ifdef _WIN32
-  E.filename = _strdup(filename);
-#else
-  E.filename = strdup(filename);
-#endif
+  E.filename = filename;
   editorSelectSyntaxHighlight();
 
-  std::ifstream f(filename);
-  if(f.fail()) throw std::runtime_error("File failed to open.");
+  std::ifstream file(E.filename);
+  if(file.fail()) throw std::runtime_error("File failed to open.");
   std::string line;
-  std::getline(f, line);
-  while(f.rdstate() == std::ios_base::goodbit)
+  std::getline(file, line);
+  while(file.rdstate() == std::ios_base::goodbit)
   {
     long linelen = static_cast<long>(line.size());
     while(linelen > 0 && (line[static_cast<size_t>(linelen - 1)] == '\n' || line[static_cast<size_t>(linelen - 1)] == '\r')) linelen--;
     editorInsertRow(E.numrows, line.c_str(), linelen);
-    std::getline(f, line);
+    std::getline(file, line);
   }
   E.dirty = 0;
 }
@@ -518,10 +522,10 @@ void editorSetStatusMessage(const char* fmt, ...)
 
 void editorSave()
 {
-  if(E.filename == nullptr)
+  if(E.filename.empty())
   {
     E.filename = editorPrompt("Save as: %s (ESC to cancel)", nullptr);
-    if(E.filename == nullptr)
+    if(E.filename.empty())
     {
       editorSetStatusMessage("Save aborted");
       return;
@@ -707,8 +711,8 @@ void editorDrawStatusBar(std::string& ab)
 {
   ab.append(style(Term::Style::Reversed));
   char status[80], rstatus[80];
-  int  len  = snprintf(status, sizeof(status), "%.20s - %d lines %s", E.filename ? E.filename : "[No Name]", E.numrows, E.dirty ? "(modified)" : "");
-  int  rlen = snprintf(rstatus, sizeof(rstatus), "%s | %d/%d", E.syntax ? E.syntax->filetype : "no ft", E.cy + 1, E.numrows);
+  int  len  = snprintf(status, sizeof(status), "%.20s - %d lines %s", !E.filename.empty() ? E.filename.c_str() : "[No Name]", E.numrows, E.dirty ? "(modified)" : "");
+  int  rlen = snprintf(rstatus, sizeof(rstatus), "%s | %d/%d", E.syntax ? E.syntax->filetype.c_str() : "no ft", E.cy + 1, E.numrows);
   if(len > E.screencols) len = E.screencols;
   ab.append(std::string(status, len));
   while(len < E.screencols)
@@ -811,7 +815,7 @@ char* editorPrompt(const char* prompt, void (*callback)(char*, Term::Key))
   }
 }
 
-void editorMoveCursor(Term::Key key)
+void editorMoveCursor(const Term::Key& key)
 {
   erow* row = (E.cy >= E.numrows) ? nullptr : &E.row[E.cy];
 
@@ -849,98 +853,99 @@ void editorMoveCursor(Term::Key key)
 
 bool editorProcessKeypress()
 {
-  static int quit_times = KILO_QUIT_TIMES;
+  static std::size_t quit_times{KILO_QUIT_TIMES};
 
-  Term::Key c = Term::Key::NoKey;
-  while(c.empty())
-  {  //NEEDED for windows (FIXME ?)
-    c = Term::read_event();
-  }
-  switch(c)
+  Term::Key key{Term::Key::NoKey};
+  while(key.empty()) { key = Term::read_event(); }
+  switch(key)
   {
-    case Term::Key::Enter: editorInsertNewline(); break;
-
+    case Term::Key::Enter:
+    {
+      ::editorInsertNewline();
+      break;
+    }
     case Term::Key::Ctrl_Q:
+    {
       if(E.dirty && quit_times > 0)
       {
-        editorSetStatusMessage("WARNING!!! File has unsaved changes. Press Ctrl-Q %d more times to quit.", quit_times);
-        quit_times--;
+        ::editorSetStatusMessage("WARNING!!! File has unsaved changes. Press Ctrl-Q %d more times to quit.", quit_times);
+        --quit_times;
         return true;
       }
       return false;
+    }
+    case Term::Key::Ctrl_S:
+    {
+      ::editorSave();
       break;
-
-    case Term::Key::Ctrl_S: editorSave(); break;
-
-    case Term::Key::Home: E.cx = 0; break;
-
+    }
+    case Term::Key::Home:
+    {
+      E.cx = 0;
+      break;
+    }
     case Term::Key::End:
-      if(E.cy < E.numrows) E.cx = E.row[E.cy].size;
+    {
+      if(E.cy < E.numrows) { E.cx = E.row[E.cy].size; }
       break;
-
-    case Term::Key::Ctrl_F: editorFind(); break;
-
+    }
+    case Term::Key::Ctrl_F:
+    {
+      ::editorFind();
+      break;
+    }
     case Term::Key::Backspace:
     case Term::Key::Del:
-      if(c == Term::Key::Del) editorMoveCursor(Term::Key::ArrowRight);
-      editorDelChar();
+    {
+      if(key == Term::Key::Del) editorMoveCursor(Term::Key::ArrowRight);
+      ::editorDelChar();
       break;
-
+    }
     case Term::Key::PageUp:
     case Term::Key::PageDown:
     {
-      if(c == Term::Key::PageUp) { E.cy = E.rowoff; }
-      else if(c == Term::Key::PageDown)
+      if(key == Term::Key::PageUp) { E.cy = E.rowoff; }
+      else if(key == Term::Key::PageDown)
       {
         E.cy = E.rowoff + E.screenrows - 1;
         if(E.cy > E.numrows) E.cy = E.numrows;
       }
 
       int times = E.screenrows;
-      while(times--) editorMoveCursor(c == Term::Key::PageUp ? Term::Key::ArrowUp : Term::Key::ArrowDown);
+      while(times--) { ::editorMoveCursor(key == Term::Key::PageUp ? Term::Key::ArrowUp : Term::Key::ArrowDown); }
+      break;
     }
-    break;
 
     case Term::Key::ArrowUp:
     case Term::Key::ArrowDown:
     case Term::Key::ArrowLeft:
-    case Term::Key::ArrowRight: editorMoveCursor(c); break;
-
+    case Term::Key::ArrowRight:
+    {
+      ::editorMoveCursor(key);
+      break;
+    }
     case Term::Key::Ctrl_L:
-    case Term::Key::Esc: break;
-
-    case Term::Key::Tab: editorInsertChar('\t'); break;
-
-    default: editorInsertChar(static_cast<int>(c)); break;
+    case Term::Key::Esc:
+    {
+      break;
+    }
+    case Term::Key::Tab:
+    {
+      ::editorInsertChar('\t');
+      break;
+    }
+    default:
+    {
+      if((!key.hasCtrlAll()) && (key.isASCII())) { editorInsertChar(key); }  //FIXME UTF8 !
+      break;
+    }
   }
-
-  quit_times = KILO_QUIT_TIMES;
   return true;
 }
 
-/*** init ***/
+}  // namespace
 
-void initEditor()
-{
-  E.cx                = 0;
-  E.cy                = 0;
-  E.rx                = 0;
-  E.rowoff            = 0;
-  E.coloff            = 0;
-  E.numrows           = 0;
-  E.row               = nullptr;
-  E.dirty             = 0;
-  E.filename          = nullptr;
-  E.statusmsg[0]      = '\0';
-  E.statusmsg_time    = 0;
-  E.syntax            = nullptr;
-  Term::Screen screen = Term::screen_size();
-  E.screenrows        = static_cast<int>(screen.rows());
-  E.screencols        = static_cast<int>(screen.columns());
-  E.screenrows -= 2;
-}
-
-int main(int argc, char* argv[])
+int main()
 {
   // We must put all code in try/catch block, otherwise destructors are not
   // being called when exception happens and the terminal is not put into
@@ -954,23 +959,27 @@ int main(int argc, char* argv[])
       return 1;
     }
     Term::terminal.setOptions(Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw);
-    initEditor();
-    if(argc >= 2) { editorOpen(argv[1]); }
+    if(Term::argc >= 2) { editorOpen(Term::argv[1]); }
 
     editorSetStatusMessage("HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find");
 
     editorRefreshScreen();
     while(editorProcessKeypress()) { editorRefreshScreen(); }
   }
-  catch(const Term::Exception& re)
+  catch(const Term::Exception& exception)
   {
-    std::cerr << "cpp-terminal error: " << re.what() << std::endl;
-    return 2;
+    std::cerr << "cpp-terminal error: " << exception.what() << std::endl;
+    std::exit(2);
+  }
+  catch(const std::exception& exception)
+  {
+    std::cerr << "error: " << exception.what() << std::endl;
+    std::exit(2);
   }
   catch(...)
   {
     std::cerr << "Unknown error." << std::endl;
-    return 1;
+    std::exit(1);
   }
   return 0;
 }
