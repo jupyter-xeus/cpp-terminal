@@ -510,7 +510,7 @@ void editorOpen(const std::string& filename)
   E.dirty = 0;
 }
 
-void editorSetStatusMessage(const std::string& fmt, ...)
+void editorSetStatusMessage(const std::string fmt, ...)
 {
   va_list ap;
   va_start(ap, fmt);
