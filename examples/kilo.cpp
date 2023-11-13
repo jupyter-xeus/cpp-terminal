@@ -90,24 +90,26 @@ public:
   {
     static const Term::TerminalInitializer init;
     setScreenSize(Term::screen_size());
+    statusmsg.reserve(screencols);
   }
   void setScreenSize(const Term::Screen& screen)
   {
     screenrows = screen.rows() - m_sizeBar;
     screencols = screen.columns();
+    statusmsg.resize(screencols);
   }
   std::size_t  cx{0};
   std::size_t  cy{0};
   int          rx{0};
-  int          rowoff{0};
-  int          coloff{0};
+  std::size_t  rowoff{0};
+  std::size_t  coloff{0};
   std::size_t  screenrows{0};
   std::size_t  screencols{0};
   std::size_t  numrows{0};
   erow*        row{nullptr};
   int          dirty{0};
   std::string  filename;
-  char         statusmsg[80]{'\0'};
+  std::string  statusmsg;
   time_t       statusmsg_time{0};
   editorSyntax syntax;
 
@@ -266,11 +268,11 @@ void editorUpdateSyntax(erow* row)
   if(changed && row->idx + 1 < E.numrows) editorUpdateSyntax(&E.row[row->idx + 1]);
 }
 
-Term::Color editorSyntaxToColor(int hl)
+Term::Color editorSyntaxToColor(const std::size_t& color)
 {
-  switch(hl)
+  switch(color)
   {
-    case HL_COMMENT:
+    case HL_COMMENT: return Term::Color::Name::BrightCyan;
     case HL_MLCOMMENT: return Term::Color::Name::Cyan;
     case HL_KEYWORD1: return Term::Color::Name::Yellow;
     case HL_KEYWORD2: return Term::Color::Name::Green;
@@ -284,10 +286,9 @@ Term::Color editorSyntaxToColor(int hl)
 void editorSelectSyntaxHighlight()
 {
   if(E.filename.empty()) { return; }
-  std::size_t found{E.filename.find_last_of('.')};
-  std::string ext;
+  const std::size_t found{E.filename.find_last_of('.')};
   if(found == std::string::npos) { return; }
-  else { ext = E.filename.substr(found); }
+  const std::string ext{E.filename.substr(found)};
 
   for(std::size_t j = 0; j != HLDB.size(); ++j)
   {
@@ -308,10 +309,10 @@ void editorSelectSyntaxHighlight()
 int editorRowCxToRx(erow* row, int cx)
 {
   int rx = 0;
-  for(int j = 0; j < cx; j++)
+  for(std::size_t j = 0; j < cx; ++j)
   {
-    if(row->chars[j] == '\t') rx += (KILO_TAB_STOP - 1) - (rx % KILO_TAB_STOP);
-    rx++;
+    if(row->chars[j] == '\t') {rx += (KILO_TAB_STOP - 1) - (rx % KILO_TAB_STOP);}
+    ++rx;
   }
   return rx;
 }
@@ -513,7 +514,7 @@ void editorSetStatusMessage(const std::string& fmt, ...)
 {
   va_list ap;
   va_start(ap, fmt);
-  vsnprintf(E.statusmsg, sizeof(E.statusmsg), fmt.c_str(), ap);
+  vsnprintf(&E.statusmsg[0], E.statusmsg.capacity(), fmt.c_str(), ap);
   va_end(ap);
   E.statusmsg_time = time(nullptr);
 }
@@ -576,9 +577,8 @@ void editorFindCallback(std::string& query, const Term::Key& key)
   for(int i = 0; i < E.numrows; i++)
   {
     current += direction;
-    if(current == -1) current = E.numrows - 1;
-    else if(current == E.numrows)
-      current = 0;
+    if(current == -1) {current = E.numrows - 1;}
+    else if(current == E.numrows) {current = 0;}
 
     erow* row   = &E.row[current];
     char* match = strstr(row->render, query.c_str());
@@ -601,10 +601,10 @@ void editorFindCallback(std::string& query, const Term::Key& key)
 
 void editorFind()
 {
-  int saved_cx     = E.cx;
-  int saved_cy     = E.cy;
-  int saved_coloff = E.coloff;
-  int saved_rowoff = E.rowoff;
+  const std::size_t saved_cx{E.cx};
+  const std::size_t saved_cy{E.cy};
+  const std::size_t saved_coloff{E.coloff};
+  const std::size_t saved_rowoff{E.rowoff};
 
   std::string query = editorPrompt("Search: %s (Use ESC/Arrows/Enter)", editorFindCallback);
 
@@ -719,7 +719,7 @@ void editorDrawStatusBar(std::string& screen)
     else
     {
       screen.append(" ");
-      len++;
+      ++len;
     }
   }
   screen.append(style(Term::Style::Reset));
@@ -729,9 +729,8 @@ void editorDrawStatusBar(std::string& screen)
 void editorDrawMessageBar(std::string& screen)
 {
   screen.append(Term::clear_eol());
-  int msglen = static_cast<int>(strlen(E.statusmsg));
-  if(msglen > E.screencols) msglen = E.screencols;
-  if(msglen && time(nullptr) - E.statusmsg_time < 5) screen.append(std::string(E.statusmsg, msglen));
+  if(E.statusmsg.size() > E.screencols) E.statusmsg.resize(E.screencols);
+  if(!E.statusmsg.empty() && (time(nullptr) - E.statusmsg_time) < 5) {screen.append(E.statusmsg);}
 }
 
 void editorRefreshScreen()
