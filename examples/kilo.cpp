@@ -311,7 +311,7 @@ int editorRowCxToRx(erow* row, int cx)
   int rx = 0;
   for(std::size_t j = 0; j < cx; ++j)
   {
-    if(row->chars[j] == '\t') {rx += (KILO_TAB_STOP - 1) - (rx % KILO_TAB_STOP);}
+    if(row->chars[j] == '\t') { rx += (KILO_TAB_STOP - 1) - (rx % KILO_TAB_STOP); }
     ++rx;
   }
   return rx;
@@ -577,8 +577,8 @@ void editorFindCallback(std::string& query, const Term::Key& key)
   for(int i = 0; i < E.numrows; i++)
   {
     current += direction;
-    if(current == -1) {current = E.numrows - 1;}
-    else if(current == E.numrows) {current = 0;}
+    if(current == -1) { current = E.numrows - 1; }
+    else if(current == E.numrows) { current = 0; }
 
     erow* row   = &E.row[current];
     char* match = strstr(row->render, query.c_str());
@@ -730,7 +730,7 @@ void editorDrawMessageBar(std::string& screen)
 {
   screen.append(Term::clear_eol());
   if(E.statusmsg.size() > E.screencols) E.statusmsg.resize(E.screencols);
-  if(!E.statusmsg.empty() && (time(nullptr) - E.statusmsg_time) < 5) {screen.append(E.statusmsg);}
+  if(!E.statusmsg.empty() && (time(nullptr) - E.statusmsg_time) < 5) { screen.append(E.statusmsg); }
 }
 
 void editorRefreshScreen()
