@@ -33,9 +33,11 @@
 namespace
 {
 
-const std::string KILO_VERSION{"0.0.1"};
-const int         KILO_TAB_STOP{8};
-const int         KILO_QUIT_TIMES{3};
+const std::string           KILO_VERSION{"0.0.1"};
+const constexpr std::size_t KILO_TAB_STOP{8};
+const constexpr std::size_t KILO_QUIT_TIMES{3};
+const constexpr std::size_t HL_HIGHLIGHT_NUMBERS(1UL << 0UL);
+const constexpr std::size_t HL_HIGHLIGHT_STRINGS(1UL << 1UL);
 
 enum editorHighlight
 {
@@ -48,9 +50,6 @@ enum editorHighlight
   HL_NUMBER,
   HL_MATCH
 };
-
-#define HL_HIGHLIGHT_NUMBERS (1 << 0)
-#define HL_HIGHLIGHT_STRINGS (1 << 1)
 
 /*** data ***/
 
@@ -72,16 +71,17 @@ private:
   bool m_empty{true};
 };
 
-typedef struct erow
+class erow
 {
-  int            idx;
-  int            size;
-  int            rsize;
-  char*          chars;
-  char*          render;
-  unsigned char* hl;
-  int            hl_open_comment;
-} erow;
+public:
+  int            idx{0};
+  int            size{0};
+  int            rsize{0};
+  char*          chars{nullptr};
+  char*          render{nullptr};
+  unsigned char* hl{nullptr};
+  int            hl_open_comment{0};
+};
 
 class editorConfig
 {
@@ -107,10 +107,9 @@ public:
   std::size_t  screencols{0};
   std::size_t  numrows{0};
   erow*        row{nullptr};
-  int          dirty{0};
+  bool         dirty{false};
   std::string  filename;
   std::string  statusmsg;
-  time_t       statusmsg_time{0};
   editorSyntax syntax;
 
 private:
@@ -385,7 +384,7 @@ void editorInsertRow(int at, const char* s, std::size_t len)
   editorUpdateRow(&E.row[at]);
 
   E.numrows++;
-  E.dirty++;
+  E.dirty = true;
 }
 
 void editorFreeRow(erow* row)
@@ -402,7 +401,7 @@ void editorDelRow(int at)
   memmove(&E.row[at], &E.row[at + 1], sizeof(erow) * (static_cast<size_t>(E.numrows) - at - 1));
   for(int j = at; j < E.numrows - 1; j++) E.row[j].idx--;
   E.numrows--;
-  E.dirty++;
+  E.dirty = true;
 }
 
 void editorRowInsertChar(erow* row, int at, int c)
@@ -414,7 +413,7 @@ void editorRowInsertChar(erow* row, int at, int c)
   row->size++;
   row->chars[at] = static_cast<char>(c);
   editorUpdateRow(row);
-  E.dirty++;
+  E.dirty = true;
 }
 
 void editorRowAppendString(erow* row, char* s, std::size_t len)
@@ -425,7 +424,7 @@ void editorRowAppendString(erow* row, char* s, std::size_t len)
   row->size += static_cast<int>(len);
   row->chars[row->size] = '\0';
   editorUpdateRow(row);
-  E.dirty++;
+  E.dirty = true;
 }
 
 void editorRowDelChar(erow* row, int at)
@@ -434,7 +433,7 @@ void editorRowDelChar(erow* row, int at)
   memmove(&row->chars[at], &row->chars[at + 1], static_cast<size_t>(row->size) - at);
   row->size--;
   editorUpdateRow(row);
-  E.dirty++;
+  E.dirty = true;
 }
 
 /*** editor operations ***/
@@ -507,7 +506,7 @@ void editorOpen(const std::string& filename)
     editorInsertRow(E.numrows, line.c_str(), linelen);
     std::getline(file, line);
   }
-  E.dirty = 0;
+  E.dirty = false;
 }
 
 void editorSetStatusMessage(const std::string fmt, ...)
@@ -516,7 +515,6 @@ void editorSetStatusMessage(const std::string fmt, ...)
   va_start(ap, fmt);
   vsnprintf(&E.statusmsg[0], E.statusmsg.capacity(), fmt.c_str(), ap);
   va_end(ap);
-  E.statusmsg_time = time(nullptr);
 }
 
 void editorSave()
@@ -537,7 +535,7 @@ void editorSave()
   out.open(E.filename);
   out << text;
   out.close();
-  E.dirty = 0;
+  E.dirty = false;
   editorSetStatusMessage("%d bytes written to disk", text.size());
 }
 
@@ -703,24 +701,20 @@ void editorDrawRows(std::string& screen)
 void editorDrawStatusBar(std::string& screen)
 {
   screen.append(style(Term::Style::Reversed));
-  char status[80];
-  char rstatus[80];
-  int  len  = snprintf(status, sizeof(status), "%.20s - %d lines %s", !E.filename.empty() ? E.filename.c_str() : "[No Name]", E.numrows, E.dirty ? "(modified)" : "");
-  int  rlen = snprintf(rstatus, sizeof(rstatus), "%s | %ld/%ld", !E.syntax.empty() ? E.syntax.filetype.c_str() : "no ft", E.cy + 1, E.numrows);
-  if(len > E.screencols) len = E.screencols;
-  screen.append(std::string(status, len));
-  while(len < E.screencols)
+  std::string left1;
+  if(!E.filename.empty()) { left1 += E.filename; }
+  else { left1 += "[No Name]"; }
+  std::string left2 = " - " + std::to_string(E.numrows) + " lines ";
+  if(E.dirty) { left2 += "(modified)"; }
+  std::string right;
+  if(!E.syntax.empty()) { right += E.syntax.filetype + " | "; }
+  else { right += "no ft | "; }
+  right += std::to_string(E.cy + 1) + "/" + std::to_string(E.numrows);
+  if((left1.size() + left2.size() + right.size()) < E.screencols) { screen += left1 + left2 + std::string(E.screencols - right.size() - left1.size() - left2.size(), ' ') + right; }
+  else
   {
-    if(E.screencols - len == rlen)
-    {
-      screen.append(std::string(rstatus, rlen));
-      break;
-    }
-    else
-    {
-      screen.append(" ");
-      ++len;
-    }
+    const std::size_t size = right.size() + left2.size();
+    if(E.screencols - size > 0 && (left1.size() - E.screencols + size) < left1.size()) screen += left1.substr(left1.size() - E.screencols + size, E.screencols - size) + left2 + right;
   }
   screen.append(style(Term::Style::Reset));
   screen.append("\r\n");
@@ -730,7 +724,7 @@ void editorDrawMessageBar(std::string& screen)
 {
   screen.append(Term::clear_eol());
   if(E.statusmsg.size() > E.screencols) E.statusmsg.resize(E.screencols);
-  if(!E.statusmsg.empty() && (time(nullptr) - E.statusmsg_time) < 5) { screen.append(E.statusmsg); }
+  if(!E.statusmsg.empty()) { screen.append(E.statusmsg); }
 }
 
 void editorRefreshScreen()
@@ -842,7 +836,7 @@ bool editorProcessKeypress()
         }
         case Term::Key::Ctrl_Q:
         {
-          if(E.dirty && quit_times > 0)
+          if(E.dirty == true && quit_times > 0)
           {
             ::editorSetStatusMessage("WARNING!!! File has unsaved changes. Press Ctrl-Q %d more times to quit.", quit_times);
             --quit_times;
