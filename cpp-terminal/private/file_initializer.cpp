@@ -59,7 +59,7 @@ void Term::Private::FileInitializer::detachConsole() noexcept
 try
 {
 #if defined(_WIN32)
-  if(m_consoleCreated) {Term::Private::WindowsError().check_if(0 == FreeConsole()).throw_exception("FreeConsole()");}
+  if(m_consoleCreated) { Term::Private::WindowsError().check_if(0 == FreeConsole()).throw_exception("FreeConsole()"); }
 #endif
 }
 catch(...)
@@ -106,9 +106,9 @@ void Term::Private::FileInitializer::openStandardStreams()
 {
 #if defined(_WIN32)
   FILE* fDummy{nullptr};
-  if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) {Term::Private::WindowsError().check_if(_wfreopen_s(&fDummy, L"CONOUT$", L"w", stdout) != 0).throw_exception(R"(_wfreopen_s(&fDummy, L"CONOUT$", L"w", stdout))");}
-  if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) {Term::Private::WindowsError().check_if(_wfreopen_s(&fDummy, L"CONOUT$", L"w", stderr) != 0).throw_exception(R"(_wfreopen_s(&fDummy, L"CONOUT$", L"w", stderr))");}
-  if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) {Term::Private::WindowsError().check_if(_wfreopen_s(&fDummy, L"CONIN$", L"r", stdin) != 0).throw_exception(R"(_wfreopen_s(&fDummy, L"CONIN$", L"r", stdin))");}
+  if(_fileno(stdout) < 0 || _get_osfhandle(_fileno(stdout)) < 0) { Term::Private::WindowsError().check_if(_wfreopen_s(&fDummy, L"CONOUT$", L"w", stdout) != 0).throw_exception(R"(_wfreopen_s(&fDummy, L"CONOUT$", L"w", stdout))"); }
+  if(_fileno(stderr) < 0 || _get_osfhandle(_fileno(stderr)) < 0) { Term::Private::WindowsError().check_if(_wfreopen_s(&fDummy, L"CONOUT$", L"w", stderr) != 0).throw_exception(R"(_wfreopen_s(&fDummy, L"CONOUT$", L"w", stderr))"); }
+  if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) { Term::Private::WindowsError().check_if(_wfreopen_s(&fDummy, L"CONIN$", L"r", stdin) != 0).throw_exception(R"(_wfreopen_s(&fDummy, L"CONIN$", L"r", stdin))"); }
   const std::size_t bestSize{BUFSIZ > 4096 ? BUFSIZ : 4096};
 #else
   const struct stat stats
