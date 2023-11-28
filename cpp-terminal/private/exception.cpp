@@ -165,7 +165,7 @@ void Term::Private::ErrnoException::build_what() const noexcept
   setWhat(what);
 }
 
-[[noreturn]] void Term::Private::ExceptionHandler(const ExceptionDestination& destination) noexcept
+void Term::Private::ExceptionHandler(const ExceptionDestination& destination) noexcept
 {
   try
   {

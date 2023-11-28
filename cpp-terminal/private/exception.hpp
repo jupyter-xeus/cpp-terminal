@@ -90,7 +90,7 @@ enum class ExceptionDestination : std::uint8_t
   StdErr,
 };
 
-[[noreturn]] void ExceptionHandler(const ExceptionDestination& destination = ExceptionDestination::StdErr) noexcept;
+void ExceptionHandler(const ExceptionDestination& destination = ExceptionDestination::StdErr) noexcept;
 
 }  // namespace Private
 
