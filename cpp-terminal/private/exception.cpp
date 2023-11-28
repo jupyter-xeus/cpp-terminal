@@ -21,6 +21,9 @@
 
   #include <memory>
   #include <windows.h>
+  #if defined(MessageBox)
+    #undef MessageBox
+  #endif
 #else
   #include <cstring>
 #endif
@@ -178,7 +181,7 @@ void Term::Private::ExceptionHandler(const ExceptionDestination& destination) no
     {
       case ExceptionDestination::MessageBox:
 #if defined(_WIN32)
-        MessageBoxW(nullptr, Term::Private::to_wide(exception.what()).c_str(), Term::Private::to_wide("cpp-terminal v" + Term::Private::string()).c_str(), MB_OK | MB_ICONERROR | MB_DEFBUTTON1);
+        MessageBoxW(nullptr, Term::Private::to_wide(exception.what()).c_str(), Term::Private::to_wide("cpp-terminal v" + Term::Version::string()).c_str(), MB_OK | MB_ICONERROR);
         break;
 #endif
       case ExceptionDestination::StdErr:
@@ -197,7 +200,7 @@ void Term::Private::ExceptionHandler(const ExceptionDestination& destination) no
     {
       case ExceptionDestination::MessageBox:
 #if defined(_WIN32)
-        MessageBoxW(nullptr, Term::Private::to_wide(exception.what()).c_str(), Term::Private::to_wide("cpp-terminal v" + Term::Private::string()).c_str(), MB_OK | MB_ICONERROR | MB_DEFBUTTON1);
+        MessageBoxW(nullptr, Term::Private::to_wide(exception.what()).c_str(), Term::Private::to_wide("cpp-terminal v" + Term::Version::string()).c_str(), MB_OK | MB_ICONERROR);
         break;
 #endif
       case ExceptionDestination::StdErr:
@@ -216,11 +219,12 @@ void Term::Private::ExceptionHandler(const ExceptionDestination& destination) no
     {
       case ExceptionDestination::MessageBox:
 #if defined(_WIN32)
-        MessageBoxW(nullptr, Term::Private::to_wide("cpp-terminal v" + Term::Version::string() + "Unknown error").c_str(), Term::Private::to_wide("cpp-terminal v" + Term::Private::string()).c_str(), MB_OK | MB_ICONERROR | MB_DEFBUTTON1);
+        MessageBoxW(nullptr, Term::Private::to_wide("cpp-terminal v" + Term::Version::string() + "Unknown error").c_str(), Term::Private::to_wide("cpp-terminal v" + Term::Version::string()).c_str(), MB_OK | MB_ICONERROR);
+        break;
 #endif
       case ExceptionDestination::StdErr:
 #if defined(_WIN32)
-        (void)(fputws(("cpp-terminal v" + Term::Version::string() + ": Unknown error\n").c_str(), stderr));
+        (void)(fputws(Term::Private::to_wide("cpp-terminal v" + Term::Version::string() + ": Unknown error\n").c_str(), stderr));
 #else
         (void)(fputs(("cpp-terminal v" + Term::Version::string() + ": Unknown error\n").c_str(), stderr));
 #endif

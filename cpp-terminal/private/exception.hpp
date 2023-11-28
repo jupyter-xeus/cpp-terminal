@@ -86,7 +86,7 @@ private:
 
 enum class ExceptionDestination : std::uint8_t
 {
-  MessageBox,
+  MessageBox=0,
   StdErr,
 };
 
