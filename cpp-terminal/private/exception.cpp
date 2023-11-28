@@ -9,16 +9,27 @@
 
 #include "cpp-terminal/private/exception.hpp"
 
+#include "cpp-terminal/exception.hpp"
+#include "cpp-terminal/version.hpp"
+#include "return_code.hpp"
+
+#include <atomic>
+#include <exception>
+
 #if defined(_WIN32)
   #include "cpp-terminal/private/unicode.hpp"
 
   #include <memory>
   #include <windows.h>
+  #if defined(MessageBox)
+    #undef MessageBox
+  #endif
 #else
   #include <cstring>
 #endif
 
 #include <cerrno>
+#include <cstdio>
 #include <string>
 
 Term::Exception::Exception(const std::string& message) noexcept : m_message(message) {}
@@ -49,7 +60,7 @@ void Term::Exception::setMessage(const std::string& message) noexcept { m_messag
 
 void Term::Exception::setContext(const std::string& context) noexcept { m_context = context; }
 
-void Term::Exception::setWhat(const std::string& what) noexcept { m_what = what; }
+void Term::Exception::setWhat(const std::string& what) const noexcept { m_what = what; }
 
 #if defined(_WIN32)
 
@@ -92,6 +103,7 @@ void Term::Private::WindowsException::build_what() const noexcept
 {
   std::string what{"windows error " + std::to_string(code()) + ": " + message()};
   if(!context().empty()) what += " [" + context() + "]";
+  setWhat(what);
 }
 
 #endif
@@ -140,11 +152,11 @@ Term::Private::ErrnoException::ErrnoException(const std::int64_t& error, const s
   setContext(context);
 #if defined(_WIN32)
   std::wstring message(m_maxSize, L'\0');
-  _wcserror_s(&message[0], message.size(), static_cast<int>(error));
+  message = _wcserror_s(&message[0], message.size(), static_cast<int>(error));
   setMessage(Term::Private::to_narrow(message.c_str()));
 #else
   std::string message(m_maxSize, '\0');
-  ::strerror_r(static_cast<std::int32_t>(error), &message[0], message.size());  // NOLINT(readability-container-data-pointer)
+  message = ::strerror_r(static_cast<std::int32_t>(error), &message[0], message.size());  // NOLINT(readability-container-data-pointer)
   setMessage(message);
 #endif
 }
@@ -153,4 +165,72 @@ void Term::Private::ErrnoException::build_what() const noexcept
 {
   std::string what{"errno " + std::to_string(code()) + ": " + message()};
   if(!context().empty()) { what += +" [" + context() + "]"; }
+  setWhat(what);
+}
+
+void Term::Private::ExceptionHandler(const ExceptionDestination& destination) noexcept
+{
+  try
+  {
+    std::exception_ptr exception{std::current_exception()};
+    if(exception != nullptr) { std::rethrow_exception(exception); }
+  }
+  catch(const Term::Exception& exception)
+  {
+    switch(destination)
+    {
+      case ExceptionDestination::MessageBox:
+#if defined(_WIN32)
+        MessageBoxW(nullptr, Term::Private::to_wide(exception.what()).c_str(), Term::Private::to_wide("cpp-terminal v" + Term::Version::string()).c_str(), MB_OK | MB_ICONERROR);
+        break;
+#endif
+      case ExceptionDestination::StdErr:
+#if defined(_WIN32)
+        (void)(fputws(Term::Private::to_wide(std::string("cpp-terminal v" + Term::Version::string() + "\n" + exception.what() + "\n")).c_str(), stderr));
+#else
+        (void)(fputs(std::string("cpp-terminal v" + Term::Version::string() + "\n" + exception.what() + "\n").c_str(), stderr));
+#endif
+        break;
+      default: break;
+    }
+  }
+  catch(const std::exception& exception)
+  {
+    switch(destination)
+    {
+      case ExceptionDestination::MessageBox:
+#if defined(_WIN32)
+        MessageBoxW(nullptr, Term::Private::to_wide(exception.what()).c_str(), Term::Private::to_wide("cpp-terminal v" + Term::Version::string()).c_str(), MB_OK | MB_ICONERROR);
+        break;
+#endif
+      case ExceptionDestination::StdErr:
+#if defined(_WIN32)
+        (void)(fputws(Term::Private::to_wide(std::string("cpp-terminal v" + Term::Version::string() + "\n" + exception.what() + "\n")).c_str(), stderr));
+#else
+        (void)(fputs(std::string("cpp-terminal v" + Term::Version::string() + "\n" + exception.what() + "\n").c_str(), stderr));
+#endif
+        break;
+      default: break;
+    }
+  }
+  catch(...)
+  {
+    switch(destination)
+    {
+      case ExceptionDestination::MessageBox:
+#if defined(_WIN32)
+        MessageBoxW(nullptr, Term::Private::to_wide("cpp-terminal v" + Term::Version::string() + "Unknown error").c_str(), Term::Private::to_wide("cpp-terminal v" + Term::Version::string()).c_str(), MB_OK | MB_ICONERROR);
+        break;
+#endif
+      case ExceptionDestination::StdErr:
+#if defined(_WIN32)
+        (void)(fputws(Term::Private::to_wide("cpp-terminal v" + Term::Version::string() + ": Unknown error\n").c_str(), stderr));
+#else
+        (void)(fputs(("cpp-terminal v" + Term::Version::string() + ": Unknown error\n").c_str(), stderr));
+#endif
+      default: break;
+    }
+  }
+  (void)(std::fflush(stderr));
+  std::_Exit(Term::returnCode());
 }
