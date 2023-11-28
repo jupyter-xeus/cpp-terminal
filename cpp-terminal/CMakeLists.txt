@@ -1,6 +1,3 @@
-# configure version information
-configure_file(version.cpp.in version.cpp)
-
 add_subdirectory(private)
 
 set(CPP_TERMINAL_PUBLIC_HEADERS
@@ -48,8 +45,7 @@ set(CPP_TERMINAL_SRC
     screen.cpp
     options.cpp
     cursor.cpp
-    style.cpp
-    "${CMAKE_CURRENT_BINARY_DIR}/version.cpp")
+    style.cpp)
 
 # create and configure library target
 add_library(cpp-terminal "${CPP_TERMINAL_SRC}")

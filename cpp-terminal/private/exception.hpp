@@ -84,6 +84,14 @@ private:
   void build_what() const noexcept final;
 };
 
+enum class ExceptionDestination : std::uint8_t
+{
+  MessageBox,
+  StdErr,
+};
+
+[[noreturn]] void ExceptionHandler(const ExceptionDestination& destination = ExceptionDestination::StdErr) noexcept;
+
 }  // namespace Private
 
 }  // namespace Term

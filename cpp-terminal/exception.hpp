@@ -37,7 +37,7 @@ protected:
   virtual void                       build_what() const noexcept;
   void                               setMessage(const std::string& message) noexcept;
   void                               setContext(const std::string& context) noexcept;
-  void                               setWhat(const std::string& what) noexcept;
+  void                               setWhat(const std::string& what) const noexcept;
   static const constexpr std::size_t m_maxSize{256};
 
 private:

@@ -1,3 +1,5 @@
+[//]: {#mainpage}
+
 <p align="center">
   <img src="docs/imgs/logo.svg" alt="CPP-Terminal logo"/>
 </p>
@@ -5,6 +7,7 @@
 [![Linux CI](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/linux.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/linux.yml)
 [![Windows CI](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/windows.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/windows.yml)
 [![MacOS CI](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/macOS.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/macOS.yml)
+[![docs](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/docs.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/docs.yml)
 [![CodeQL](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/codeql-analysis.yml)
 [![pre-commit](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/pre-commit-check.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/pre-commit-check.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/jupyter-xeus/cpp-terminal/master.svg)](https://results.pre-commit.ci/latest/github/jupyter-xeus/cpp-terminal/maset)
@@ -92,22 +95,15 @@ We have created serval examples to show possible use cases of CPP-Terminal and t
 Adding CPP-Terminal to your own project is really easy. We have collected various ways with easy
 how-to's [in our documentation](https://github.com/jupyter-xeus/cpp-terminal/wiki/Adding-CPP-Terminal-to-your-ptoject).
 
-## Documentation [![docs](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/docs.yml/badge.svg)](https://github.com/jupyter-xeus/cpp-terminal/actions/workflows/docs.yml)
+## Documentation
 
 <h1 align="center">
   <a href="https://jupyter-xeus.github.io/cpp-terminal/">
-
-  ```markdown
   🌍 Online
-  ```
-
   </a>
+
   <a href="https://jupyter-xeus.github.io/cpp-terminal/cpp-terminal_Manual.pdf">
-
-  ```markdown
   📖 PDF
-  ```
-
   </a>
 </h1>
 
