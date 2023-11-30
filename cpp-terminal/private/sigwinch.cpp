@@ -18,23 +18,22 @@
   #include <sys/signalfd.h>
 #endif
 
+#if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
 namespace Term
 {
 namespace Private
 {
-#if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
 volatile std::sig_atomic_t m_signalStatus{0};
 static void                sigwinchHandler(int sig)
 {
-  if(sig == SIGWINCH) m_signalStatus = 1;
-  else
-    m_signalStatus = 0;
+  if(sig == SIGWINCH) { m_signalStatus = 1; }
+  else { m_signalStatus = 0; }
 }
-#endif
 }  // namespace Private
 }  // namespace Term
+#endif
 
-int Term::Private::Sigwinch::get()
+std::int32_t Term::Private::Sigwinch::get() noexcept
 {
 #if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
   return Term::Private::m_signalStatus;
@@ -43,7 +42,7 @@ int Term::Private::Sigwinch::get()
 #endif
 }
 
-int Term::Private::Sigwinch::m_fd{-1};
+std::int32_t Term::Private::Sigwinch::m_fd{-1};
 
 void Term::Private::Sigwinch::registerSigwinch()
 {
@@ -82,29 +81,27 @@ void Term::Private::Sigwinch::unblockSigwinch()
 #endif
 }
 
-bool Term::Private::Sigwinch::isSigwinch(const int& fd)
+bool Term::Private::Sigwinch::isSigwinch(const std::int32_t& file_descriptor) noexcept
 {
 #if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
   if(Term::Private::m_signalStatus == 1)
   {
-    static_cast<void>(fd);  // suppress warning
+    static_cast<void>(file_descriptor);  // suppress warning
     Term::Private::m_signalStatus = {0};
     return true;
   }
-  else
-    return false;
+  return false;
 #elif defined(__linux__)
-  if(m_fd == fd)
+  if(m_fd == file_descriptor)
   {
     // read it to clean
-    ::signalfd_siginfo fdsi;
+    ::signalfd_siginfo fdsi = {};
     ::read(m_fd, &fdsi, sizeof(fdsi));
     return true;
   }
-  else
-    return false;
+  return false;
 #else
-  static_cast<void>(fd);  // suppress warning
+  static_cast<void>(file_descriptor);  // suppress warning
   return false;
 #endif
 }

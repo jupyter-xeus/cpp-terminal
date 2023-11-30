@@ -35,7 +35,7 @@ public:
   FileHandler(FileHandler&&)                 = delete;
   FileHandler& operator=(const FileHandler&) = delete;
   FileHandler& operator=(FileHandler&&)      = delete;
-  virtual ~FileHandler();
+  virtual ~FileHandler() noexcept;
   Handle       handle();
   bool         null() const;
   FILE*        file();
@@ -55,14 +55,15 @@ private:
 class OutputFileHandler : public FileHandler
 {
 public:
-  explicit OutputFileHandler(std::recursive_mutex& IOmutex) : FileHandler(IOmutex, m_file, "w") {}
-  std::size_t write(const std::string& str);
-  std::size_t write(const char& character);
+  explicit OutputFileHandler(std::recursive_mutex& io_mutex) noexcept;
   OutputFileHandler(const OutputFileHandler& other)          = delete;
-  OutputFileHandler& operator=(const OutputFileHandler& rhs) = delete;
   OutputFileHandler(OutputFileHandler&& other)               = delete;
   OutputFileHandler& operator=(OutputFileHandler&& rhs)      = delete;
-  virtual ~OutputFileHandler()                               = default;
+  OutputFileHandler& operator=(const OutputFileHandler& rhs) = delete;
+  ~OutputFileHandler() override                              = default;
+
+  std::size_t write(const std::string& str);
+  std::size_t write(const char& character);
 #if defined(_WIN32)
   static const constexpr char* m_file{"CONOUT$"};
 #else
@@ -73,13 +74,14 @@ public:
 class InputFileHandler : public FileHandler
 {
 public:
-  explicit InputFileHandler(std::recursive_mutex& IOmutex) : FileHandler(IOmutex, m_file, "r") {}
-  std::string read();
+  explicit InputFileHandler(std::recursive_mutex& io_mutex) noexcept;
   InputFileHandler(const InputFileHandler&)            = delete;
-  InputFileHandler& operator=(const InputFileHandler&) = delete;
   InputFileHandler(InputFileHandler&&)                 = delete;
   InputFileHandler& operator=(InputFileHandler&&)      = delete;
-  virtual ~InputFileHandler()                          = default;
+  InputFileHandler& operator=(const InputFileHandler&) = delete;
+  ~InputFileHandler() override                         = default;
+
+  std::string read();
 #if defined(_WIN32)
   static const constexpr char* m_file{"CONIN$"};
 #else
