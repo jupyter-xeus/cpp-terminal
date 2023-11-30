@@ -30,7 +30,7 @@ public:
 #else
   using Handle = FILE*;
 #endif
-  FileHandler(std::recursive_mutex& mutex, const std::string& file, const std::string& mode);
+  FileHandler(std::recursive_mutex& mutex, const std::string& file, const std::string& mode) noexcept;
   FileHandler(const FileHandler&)            = delete;
   FileHandler(FileHandler&&)                 = delete;
   FileHandler& operator=(const FileHandler&) = delete;

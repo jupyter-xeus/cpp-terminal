@@ -8,6 +8,7 @@
 */
 
 #include "cpp-terminal/private/file.hpp"
+#include "cpp-terminal/private/exception.hpp"
 
 #include <cstdio>
 #include <new>
@@ -40,20 +41,17 @@ Term::Private::OutputFileHandler& Term::Private::out = reinterpret_cast<Term::Pr
 
 //
 
-Term::Private::FileHandler::FileHandler(std::recursive_mutex& mutex, const std::string& filename, const std::string& mode) : m_mutex(mutex)
+Term::Private::FileHandler::FileHandler(std::recursive_mutex& mutex, const std::string& filename, const std::string& mode) noexcept try : m_mutex(mutex)
 {
 #if defined(_WIN32)
-  m_handle = CreateFile(filename.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+  m_handle = {CreateFile(filename.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
   if(m_handle == INVALID_HANDLE_VALUE)
   {
-    m_handle = CreateFile("NUL", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-    if(m_handle != INVALID_HANDLE_VALUE) m_null = true;
+    Term::Private::WindowsError().check_if((m_handle = CreateFile("NUL", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr))==INVALID_HANDLE_VALUE).throw_exception("Problem opening NUL");
+    m_null = true;
   }
-  if(m_handle != INVALID_HANDLE_VALUE)
-  {
-    m_fd   = _open_osfhandle(reinterpret_cast<intptr_t>(m_handle), _O_RDWR);
-    m_file = _fdopen(m_fd, mode.c_str());
-  }
+  Term::Private::Errno().check_if((m_fd   = _open_osfhandle(reinterpret_cast<intptr_t>(m_handle), _O_RDWR))==-1).throw_exception("_open_osfhandle(reinterpret_cast<intptr_t>(m_handle), _O_RDWR)");
+  Term::Private::Errno().check_if(nullptr==(m_file = _fdopen(m_fd, mode.c_str()))).throw_exception("_fdopen(m_fd, mode.c_str())");
 #else
   std::size_t flag{O_ASYNC | O_DSYNC | O_NOCTTY | O_SYNC | O_NDELAY};
   if(mode.find('r') != std::string::npos) flag |= O_RDONLY;
@@ -74,6 +72,10 @@ Term::Private::FileHandler::FileHandler(std::recursive_mutex& mutex, const std::
   }
 #endif
   setvbuf(m_file, nullptr, _IONBF, 0);
+}
+catch(...)
+{
+  ExceptionHandler(ExceptionDestination::StdErr);
 }
 
 Term::Private::FileHandler::~FileHandler()
@@ -96,9 +98,8 @@ std::size_t Term::Private::OutputFileHandler::write(const std::string& str)
   //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
   DWORD dwCount{0};
-  if(WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &dwCount, nullptr) == 0) return -1;
-  else
-    return static_cast<int>(dwCount);
+  Term::Private::WindowsError().check_if(0==WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &dwCount, nullptr)).throw_exception("WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &dwCount, nullptr)");
+  return static_cast<std::size_t>(dwCount);
 #else
   return ::write(fd(), &str[0], str.size());
 #endif
@@ -109,9 +110,8 @@ std::size_t Term::Private::OutputFileHandler::write(const char& ch)
   //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
   DWORD dwCount{0};
-  if(WriteConsole(handle(), &ch, 1, &dwCount, nullptr) == 0) return -1;
-  else
-    return static_cast<int>(dwCount);
+  Term::Private::WindowsError().check_if(0==WriteConsole(handle(), &ch, 1, &dwCount, nullptr)).throw_exception("WriteConsole(handle(), &ch, 1, &dwCount, nullptr)");
+  return static_cast<std::size_t>(dwCount);
 #else
   return ::write(fd(), &ch, 1);
 #endif

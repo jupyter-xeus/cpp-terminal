@@ -84,7 +84,7 @@ Term::Private::WindowsException::WindowsException(const std::int64_t& error, con
 {
   setContext(context);
   wchar_t*    ptr{nullptr};
-  const DWORD cchMsg{FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_ALLOCATE_BUFFER, nullptr, static_cast<uint32_t>(code()), 0, reinterpret_cast<wchar_t*>(&ptr), 0, nullptr)};
+  const DWORD cchMsg{FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_ALLOCATE_BUFFER, nullptr, static_cast<uint32_t>(code()), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), reinterpret_cast<wchar_t*>(&ptr), 0, nullptr)};
   if(cchMsg > 0)
   {
     auto deleter = [](void* p)
@@ -101,7 +101,7 @@ Term::Private::WindowsException::WindowsException(const std::int64_t& error, con
 
 void Term::Private::WindowsException::build_what() const noexcept
 {
-  std::string what{"windows error " + std::to_string(code()) + ": " + message()};
+  std::string what{std::string("windows error ") + std::to_string(code()) + std::string(": ") + message().c_str()};
   if(!context().empty()) what += " [" + context() + "]";
   setWhat(what);
 }
