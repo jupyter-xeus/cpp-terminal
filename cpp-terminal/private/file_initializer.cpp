@@ -112,7 +112,7 @@ try
   if(_fileno(stdin) < 0 || _get_osfhandle(_fileno(stdin)) < 0) { Term::Private::Errno().check_if(_wfreopen_s(&fDummy, L"CONIN$", L"r", stdin) != 0).throw_exception(R"(_wfreopen_s(&fDummy, L"CONIN$", L"r", stdin))"); }
   const std::size_t bestSize{BUFSIZ > 4096 ? BUFSIZ : 4096};
 #else
-  if(::fileno(stderr) < 0) { Term::Private::Errno().check_if(nullptr != std::freopen("/dev/tty", "w", stderr)).throw_exception(R"(std::freopen("/dev/tty", "w", stderr))"); }  //NOLINT(cppcoreguidelines-owning-memory)
+  if(::fileno(stderr) < 0) { Term::Private::Errno().check_if(nullptr == std::freopen("/dev/tty", "w", stderr)).throw_exception(R"(std::freopen("/dev/tty", "w", stderr))"); }  //NOLINT(cppcoreguidelines-owning-memory)
   if(::fileno(stdout) < 0) { Term::Private::Errno().check_if(nullptr == std::freopen("/dev/tty", "w", stdout)).throw_exception(R"(std::freopen("/dev/tty", "w", stdout))"); }  //NOLINT(cppcoreguidelines-owning-memory)
   if(::fileno(stdin) < 0) { Term::Private::Errno().check_if(nullptr == std::freopen("/dev/tty", "r", stdin)).throw_exception(R"(std::freopen("/dev/tty", "r", stdin))"); }     //NOLINT(cppcoreguidelines-owning-memory)
   struct stat stats = {};
