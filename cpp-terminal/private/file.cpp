@@ -40,11 +40,11 @@ Term::Private::OutputFileHandler& Term::Private::out = reinterpret_cast<Term::Pr
 
 //
 
-Term::Private::FileHandler::FileHandler(std::recursive_mutex& mutex, const std::string& filename, const std::string& mode) noexcept
+Term::Private::FileHandler::FileHandler(std::recursive_mutex& mutex, const std::string& file, const std::string& mode) noexcept
 try : m_mutex(mutex)
 {
 #if defined(_WIN32)
-  m_handle = {CreateFile(filename.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
+  m_handle = {CreateFile(file.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
   if(m_handle == INVALID_HANDLE_VALUE)
   {
     Term::Private::WindowsError().check_if((m_handle = CreateFile("NUL", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)) == INVALID_HANDLE_VALUE).throw_exception("Problem opening NUL");
@@ -57,7 +57,7 @@ try : m_mutex(mutex)
   if(mode.find('r') != std::string::npos) { flag |= O_RDONLY; }       //NOLINT(abseil-string-find-str-contains)
   else if(mode.find('w') != std::string::npos) { flag |= O_WRONLY; }  //NOLINT(abseil-string-find-str-contains)
   else { flag |= O_RDWR; }
-  m_fd = {::open(filename.c_str(), static_cast<int>(flag))};  //NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+  m_fd = {::open(file.c_str(), static_cast<int>(flag))};  //NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
   if(m_fd == -1)
   {
     Term::Private::Errno().check_if((m_fd = ::open("/dev/null", static_cast<int>(flag))) == -1).throw_exception(R"(::open("/dev/null", flag))");  //NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -84,13 +84,13 @@ catch(...)
   ExceptionHandler(ExceptionDestination::StdErr);
 }
 
-bool Term::Private::FileHandler::null() const { return m_null; }
+bool Term::Private::FileHandler::null() const noexcept { return m_null; }
 
-FILE* Term::Private::FileHandler::file() { return m_file; }
+FILE* Term::Private::FileHandler::file() const noexcept { return m_file; }
 
-std::int32_t Term::Private::FileHandler::fd() const { return m_fd; }
+std::int32_t Term::Private::FileHandler::fd() const noexcept { return m_fd; }
 
-Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() { return m_handle; }
+Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() const noexcept { return m_handle; }
 
 std::size_t Term::Private::OutputFileHandler::write(const std::string& str) const
 {

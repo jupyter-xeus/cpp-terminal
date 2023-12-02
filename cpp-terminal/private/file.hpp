@@ -36,16 +36,17 @@ public:
   FileHandler& operator=(const FileHandler&) = delete;
   FileHandler& operator=(FileHandler&&)      = delete;
   virtual ~FileHandler() noexcept;
-  Handle       handle();
-  bool         null() const;
-  FILE*        file();
-  std::int32_t fd() const;
+  Handle       handle() const noexcept;
+  bool         null() const noexcept;
+  FILE*        file() const noexcept;
+  std::int32_t fd() const noexcept;
   void         lockIO();
   void         unlockIO();
   void         flush();
 
 private:
-  std::recursive_mutex& m_mutex;  // should be static but MacOS don't want it (crash at runtime)
+  // should be static but MacOS don't want it (crash at runtime)
+  std::recursive_mutex& m_mutex;  //NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
   bool                  m_null{false};
   Handle                m_handle{nullptr};
   FILE*                 m_file{nullptr};
