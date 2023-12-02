@@ -61,7 +61,8 @@ void Term::Terminal::set_unset_utf8()
 #endif
 }
 
-void Term::Terminal::store_and_restore()
+void Term::Terminal::store_and_restore() noexcept
+try
 {
   static bool enabled{false};
 #if defined(_WIN32)
@@ -101,6 +102,10 @@ void Term::Terminal::store_and_restore()
     if(!Private::out.null()) { Term::Private::Errno().check_if(tcsetattr(Private::out.fd(), TCSAFLUSH, &orig_termios) == -1).throw_exception("tcsetattr() failed in destructor"); }
   }
 #endif
+}
+catch(...)
+{
+  ExceptionHandler(Private::ExceptionDestination::StdErr);
 }
 
 std::size_t Term::Terminal::setMouseEvents()

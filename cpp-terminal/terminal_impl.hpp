@@ -39,7 +39,7 @@ private:
   ///
   ///@brief Store and restore the default state of the terminal. Configure the default mode for cpp-terminal.
   ///
-  static void store_and_restore();
+  static void store_and_restore() noexcept;
 
   ///
   ///@brief Set mode raw/cooked.
