@@ -76,8 +76,8 @@ try
   {
     attachConsole();
     openStandardStreams();
-    if(new(&Term::Private::in) InputFileHandler(ioMutex) == nullptr) { throw Term::Exception("new(&Term::Private::in) InputFileHandler(ioMutex)"); }
-    if(new(&Term::Private::out) OutputFileHandler(ioMutex) == nullptr) { throw Term::Exception("new(&Term::Private::out) OutputFileHandler(ioMutex)"); }
+    if(nullptr == new(&Term::Private::in) InputFileHandler(ioMutex)) { throw Term::Exception("new(&Term::Private::in) InputFileHandler(ioMutex)"); }
+    if(nullptr == new(&Term::Private::out) OutputFileHandler(ioMutex)) { throw Term::Exception("new(&Term::Private::out) OutputFileHandler(ioMutex)"); }
   }
   ++m_counter;
 }
@@ -117,7 +117,7 @@ try
   if(::fileno(stdin) < 0) { Term::Private::Errno().check_if(nullptr == std::freopen("/dev/tty", "r", stdin)).throw_exception(R"(std::freopen("/dev/tty", "r", stdin))"); }     //NOLINT(cppcoreguidelines-owning-memory)
   struct stat stats = {};
   ::stat("/dev/tty", &stats);
-  const std::size_t bestSize{static_cast<std::size_t>(stats.st_blksize) > 0 ? static_cast<std::size_t>(stats.st_blksize) : BUFSIZ};
+  const std::size_t bestSize{static_cast<std::size_t>(stats.st_blksize) > 0 ? static_cast<std::size_t>(stats.st_blksize) : BUFSIZ};  //NOSONAR(S1774)
 #endif
   Term::Private::Errno().check_if(std::setvbuf(stderr, nullptr, _IONBF, 0) != 0).throw_exception("std::setvbuf(stderr, nullptr, _IONBF, 0)");
   Term::Private::Errno().check_if(std::setvbuf(stdout, nullptr, _IOLBF, bestSize) != 0).throw_exception("std::setvbuf(stdout, nullptr, _IOLBF, bestSize)");
