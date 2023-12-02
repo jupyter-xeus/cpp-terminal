@@ -9,6 +9,7 @@
 
 #include "cpp-terminal/terminal_initializer.hpp"
 
+#include "cpp-terminal/private/exception.hpp"
 #include "cpp-terminal/private/file_initializer.hpp"
 #include "cpp-terminal/terminal.hpp"
 
@@ -16,7 +17,8 @@
 
 std::size_t Term::TerminalInitializer::m_counter{0};
 
-Term::TerminalInitializer::TerminalInitializer()
+Term::TerminalInitializer::TerminalInitializer() noexcept
+try
 {
   if(0 == m_counter)
   {
@@ -25,9 +27,18 @@ Term::TerminalInitializer::TerminalInitializer()
   }
   ++m_counter;
 }
+catch(...)
+{
+  ExceptionHandler(Private::ExceptionDestination::StdErr);
+}
 
-Term::TerminalInitializer::~TerminalInitializer()
+Term::TerminalInitializer::~TerminalInitializer() noexcept
+try
 {
   --m_counter;
   if(0 == m_counter) { (&Term::terminal)->~Terminal(); }
+}
+catch(...)
+{
+  ExceptionHandler(Private::ExceptionDestination::StdErr);
 }

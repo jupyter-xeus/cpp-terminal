@@ -17,8 +17,8 @@ namespace Term
 class IOStreamInitializer
 {
 public:
-  ~IOStreamInitializer();
-  IOStreamInitializer();
+  ~IOStreamInitializer() noexcept;
+  IOStreamInitializer() noexcept;
   IOStreamInitializer(const IOStreamInitializer&)            = delete;
   IOStreamInitializer(IOStreamInitializer&&)                 = delete;
   IOStreamInitializer& operator=(IOStreamInitializer&&)      = delete;

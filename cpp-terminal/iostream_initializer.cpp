@@ -10,6 +10,7 @@
 #include "cpp-terminal/iostream_initializer.hpp"
 
 #include "cpp-terminal/iostream.hpp"
+#include "cpp-terminal/private/exception.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/terminal_initializer.hpp"
 #include "cpp-terminal/tty.hpp"
@@ -19,7 +20,8 @@
 
 std::size_t Term::IOStreamInitializer::m_counter{0};
 
-Term::IOStreamInitializer::IOStreamInitializer()
+Term::IOStreamInitializer::IOStreamInitializer() noexcept
+try
 {
   if(0 == m_counter)
   {
@@ -33,8 +35,13 @@ Term::IOStreamInitializer::IOStreamInitializer()
   }
   ++m_counter;
 }
+catch(...)
+{
+  ExceptionHandler(Private::ExceptionDestination::StdErr);
+}
 
-Term::IOStreamInitializer::~IOStreamInitializer()
+Term::IOStreamInitializer::~IOStreamInitializer() noexcept
+try
 {
   --m_counter;
   if(0 == m_counter)
@@ -44,4 +51,8 @@ Term::IOStreamInitializer::~IOStreamInitializer()
     (&Term::clog)->~TOstream();
     (&Term::cin)->~TIstream();
   }
+}
+catch(...)
+{
+  ExceptionHandler(Private::ExceptionDestination::StdErr);
 }

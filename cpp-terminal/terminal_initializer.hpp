@@ -17,8 +17,8 @@ namespace Term
 class TerminalInitializer
 {
 public:
-  ~TerminalInitializer();
-  TerminalInitializer();
+  ~TerminalInitializer() noexcept;
+  TerminalInitializer() noexcept;
   TerminalInitializer(const TerminalInitializer&)            = delete;
   TerminalInitializer(TerminalInitializer&&)                 = delete;
   TerminalInitializer& operator=(TerminalInitializer&&)      = delete;
