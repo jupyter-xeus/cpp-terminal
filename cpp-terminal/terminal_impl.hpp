@@ -13,7 +13,7 @@
 #include "cpp-terminal/terminal_initializer.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
-#include <cstdint>
+#include <cstddef>
 
 namespace Term
 {
@@ -21,8 +21,8 @@ namespace Term
 class Terminal
 {
 public:
-  ~Terminal();
-  Terminal();
+  ~Terminal() noexcept;
+  Terminal() noexcept;
   Terminal(const Terminal&)                                  = delete;
   Terminal(Terminal&&)                                       = delete;
   Terminal&                       operator=(Terminal&&)      = delete;
@@ -36,14 +36,25 @@ public:
   Term::Options getOptions() const noexcept;
 
 private:
-  void           store_and_restore();
-  void           setOptions();
-  void           applyOptions();
-  void           setMode();
-  std::int16_t   setMouseEvents();
-  std::int16_t   unsetMouseEvents();
-  std::int16_t   setFocusEvents();
-  std::int16_t   unsetFocusEvents();
+  ///
+  ///@brief Store and restore the default state of the terminal. Configure the default mode for cpp-terminal.
+  ///
+  static void store_and_restore();
+
+  ///
+  ///@brief Set mode raw/cooked.
+  ///First call is to save the good state set-up by cpp-terminal.
+  ///
+  void setMode();
+
+  void setOptions();
+  void applyOptions();
+
+  static std::size_t setMouseEvents();
+  static std::size_t unsetMouseEvents();
+  static std::size_t setFocusEvents();
+  static std::size_t unsetFocusEvents();
+
   void           set_unset_utf8();
   Term::Terminfo m_terminfo;
   Term::Options  m_options;

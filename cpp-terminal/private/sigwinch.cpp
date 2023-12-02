@@ -9,6 +9,8 @@
 
 #include "cpp-terminal/private/sigwinch.hpp"
 
+#include "cpp-terminal/private/exception.hpp"
+
 #if !defined(_WIN32)
   #include <csignal>
   #include <unistd.h>
@@ -48,36 +50,35 @@ void Term::Private::Sigwinch::registerSigwinch()
 {
 #if defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
   struct sigaction sa;
-  sigemptyset(&sa.sa_mask);
+  Term::Private::Errno().check_if(sigemptyset(&sa.sa_mask) != 0).throw_exception("sigemptyset(&sa.sa_mask)");
   sa.sa_flags   = {0};
   sa.sa_handler = {Term::Private::sigwinchHandler};
-  sigaction(SIGWINCH, &sa, nullptr);
+  Term::Private::Errno().check_if(sigaction(SIGWINCH, &sa, nullptr) != 0).throw_exception("sigaction(SIGWINCH, &sa, nullptr)");
 #elif defined(__linux__)
-  ::sigset_t windows_event;
-  sigemptyset(&windows_event);
-  sigaddset(&windows_event, SIGWINCH);
-  m_fd = {::signalfd(-1, &windows_event, SFD_NONBLOCK | SFD_CLOEXEC)};
+  ::sigset_t windows_event = {};
+  Term::Private::Errno().check_if(sigemptyset(&windows_event) != 0).throw_exception("sigemptyset(&windows_event)");
+  Term::Private::Errno().check_if(sigaddset(&windows_event, SIGWINCH) != 0).throw_exception("sigaddset(&windows_event, SIGWINCH)");
+  Term::Private::Errno().check_if((m_fd = ::signalfd(-1, &windows_event, SFD_NONBLOCK | SFD_CLOEXEC)) == -1).throw_exception("m_fd = ::signalfd(-1, &windows_event, SFD_NONBLOCK | SFD_CLOEXEC)");
 #endif
 }
 
 void Term::Private::Sigwinch::blockSigwinch()
 {
 #if !defined(_WIN32)
-  ::sigset_t windows_event;
-  ::sigemptyset(&windows_event);
-  ::sigaddset(&windows_event, SIGWINCH);
-  ::pthread_sigmask(SIG_BLOCK, &windows_event, nullptr);
+  ::sigset_t windows_event = {};
+  Term::Private::Errno().check_if(sigemptyset(&windows_event) != 0).throw_exception("sigemptyset(&windows_event)");
+  Term::Private::Errno().check_if(sigaddset(&windows_event, SIGWINCH) != 0).throw_exception("sigaddset(&windows_event, SIGWINCH)");
+  Term::Private::Errno().check_if(::pthread_sigmask(SIG_BLOCK, &windows_event, nullptr) != 0).throw_exception("::pthread_sigmask(SIG_BLOCK, &windows_event, nullptr)");
 #endif
-  registerSigwinch();
 }
 
 void Term::Private::Sigwinch::unblockSigwinch()
 {
 #if !defined(_WIN32)
-  ::sigset_t windows_event;
-  sigemptyset(&windows_event);
-  sigaddset(&windows_event, SIGWINCH);
-  ::pthread_sigmask(SIG_UNBLOCK, &windows_event, nullptr);
+  ::sigset_t windows_event = {};
+  Term::Private::Errno().check_if(sigemptyset(&windows_event) != 0).throw_exception("sigemptyset(&windows_event)");
+  Term::Private::Errno().check_if(sigaddset(&windows_event, SIGWINCH) != 0).throw_exception("sigaddset(&windows_event, SIGWINCH)");
+  Term::Private::Errno().check_if(::pthread_sigmask(SIG_UNBLOCK, &windows_event, nullptr) != 0).throw_exception("::pthread_sigmask(SIG_UNBLOCK, &windows_event, nullptr)");
 #endif
 }
 

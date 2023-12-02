@@ -92,34 +92,34 @@ std::int32_t Term::Private::FileHandler::fd() const { return m_fd; }
 
 Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() { return m_handle; }
 
-std::size_t Term::Private::OutputFileHandler::write(const std::string& str)
+std::size_t Term::Private::OutputFileHandler::write(const std::string& str) const
 {
-  if(str.empty()) { return 0; }
-  //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
-  DWORD dwCount{0};
-  Term::Private::WindowsError().check_if(0 == WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &dwCount, nullptr)).throw_exception("WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &dwCount, nullptr)");
-  return static_cast<std::size_t>(dwCount);
+  DWORD written{0};
+  if(!str.empty()) { Term::Private::WindowsError().check_if(0 == WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &written, nullptr)).throw_exception("WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &written, nullptr)"); }
+  return static_cast<std::size_t>(written);
 #else
-  return ::write(fd(), str.data(), str.size());
+  ssize_t written{0};
+  if(!str.empty()) { Term::Private::Errno().check_if((written = ::write(fd(), str.data(), str.size())) == -1).throw_exception("::write(fd(), str.data(), str.size())"); }
+  return static_cast<std::size_t>(written);
 #endif
 }
 
-std::size_t Term::Private::OutputFileHandler::write(const char& ch)
+std::size_t Term::Private::OutputFileHandler::write(const char& character) const
 {
-  //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
-  DWORD dwCount{0};
-  Term::Private::WindowsError().check_if(0 == WriteConsole(handle(), &ch, 1, &dwCount, nullptr)).throw_exception("WriteConsole(handle(), &ch, 1, &dwCount, nullptr)");
-  return static_cast<std::size_t>(dwCount);
+  DWORD written{0};
+  Term::Private::WindowsError().check_if(0 == WriteConsole(handle(), &character, 1, &written, nullptr)).throw_exception("WriteConsole(handle(), &character, 1, &written, nullptr)");
+  return static_cast<std::size_t>(written);
 #else
-  return ::write(fd(), &ch, 1);
+  ssize_t written{0};
+  Term::Private::Errno().check_if((written = ::write(fd(), &character, 1)) == -1).throw_exception("::write(fd(), &character, 1)");
+  return static_cast<std::size_t>(written);
 #endif
 }
 
 std::string Term::Private::InputFileHandler::read()
 {
-  //std::lock_guard<std::mutex> lock(m_mut);
 #if defined(_WIN32)
   DWORD       nread{0};
   std::string ret(4096, '\0');

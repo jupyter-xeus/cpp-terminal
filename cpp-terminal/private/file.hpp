@@ -62,8 +62,8 @@ public:
   OutputFileHandler& operator=(const OutputFileHandler& rhs) = delete;
   ~OutputFileHandler() override                              = default;
 
-  std::size_t write(const std::string& str);
-  std::size_t write(const char& character);
+  std::size_t write(const std::string& str) const;
+  std::size_t write(const char& character) const;
 #if defined(_WIN32)
   static const constexpr char* m_file{"CONOUT$"};
 #else
