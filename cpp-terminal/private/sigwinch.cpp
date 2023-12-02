@@ -64,8 +64,8 @@ void Term::Private::Sigwinch::blockSigwinch()
 {
 #if !defined(_WIN32)
   ::sigset_t windows_event;
-  sigemptyset(&windows_event);
-  sigaddset(&windows_event, SIGWINCH);
+  ::sigemptyset(&windows_event);
+  ::sigaddset(&windows_event, SIGWINCH);
   ::pthread_sigmask(SIG_BLOCK, &windows_event, nullptr);
 #endif
   registerSigwinch();
