@@ -76,7 +76,7 @@ catch(...)
 Term::Private::FileHandler::~FileHandler() noexcept
 try
 {
-  Term::Private::Errno().check_if(0 != std::fflush(m_file)).throw_exception("std::fflush(m_file)");
+  flush();
   Term::Private::Errno().check_if(0 != std::fclose(m_file)).throw_exception("std::fclose(m_file)");  //NOLINT(cppcoreguidelines-owning-memory)
 }
 catch(...)
@@ -128,7 +128,7 @@ std::string Term::Private::InputFileHandler::read()
   return ret.c_str();
 #else
   std::size_t nread{0};
-  ::ioctl(Private::in.fd(), FIONREAD, &nread);
+  ::ioctl(Private::in.fd(), FIONREAD, &nread);  //NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
   if(nread != 0)
   {
     std::string ret(nread, '\0');
@@ -141,7 +141,7 @@ std::string Term::Private::InputFileHandler::read()
 #endif
 }
 
-void Term::Private::FileHandler::flush() { std::fflush(m_file); }
+void Term::Private::FileHandler::flush() { Term::Private::Errno().check_if(0 != std::fflush(m_file)).throw_exception("std::fflush(m_file)"); }
 
 void Term::Private::FileHandler::lockIO() { m_mutex.lock(); }
 void Term::Private::FileHandler::unlockIO() { m_mutex.unlock(); }
