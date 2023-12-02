@@ -72,7 +72,7 @@ try
   {
     Term::Private::WindowsError().check_if(GetConsoleMode(Private::out.handle(), &originalOut) == 0).throw_exception("GetConsoleMode(Private::out.handle(), &originalOut)");
     Term::Private::WindowsError().check_if(GetConsoleMode(Private::in.handle(), &originalIn) == 0).throw_exception("GetConsoleMode(Private::in.handle(), &originalIn)");
-    DWORD in{(originalIn & ~(ENABLE_QUICK_EDIT_MODE | setFocusEvents() | setMouseEvents())) | (ENABLE_EXTENDED_FLAGS)};
+    DWORD in{static_cast<DWORD>((originalIn & ~(ENABLE_QUICK_EDIT_MODE | setFocusEvents() | setMouseEvents())) | (ENABLE_EXTENDED_FLAGS))};
     DWORD out{originalOut};
     if(!m_terminfo.isLegacy())
     {
