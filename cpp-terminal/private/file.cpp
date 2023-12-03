@@ -54,6 +54,7 @@ try : m_mutex(mutex)
   Term::Private::Errno().check_if(nullptr == (m_file = _fdopen(m_fd, mode.c_str()))).throw_exception("_fdopen(m_fd, mode.c_str())");
 #else
   std::size_t flag{O_ASYNC | O_DSYNC | O_NOCTTY | O_SYNC | O_NDELAY};
+  flag &= ~O_NONBLOCK;
   if(mode.find('r') != std::string::npos) { flag |= O_RDONLY; }       //NOLINT(abseil-string-find-str-contains)
   else if(mode.find('w') != std::string::npos) { flag |= O_WRONLY; }  //NOLINT(abseil-string-find-str-contains)
   else { flag |= O_RDWR; }
