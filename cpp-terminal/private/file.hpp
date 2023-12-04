@@ -30,22 +30,23 @@ public:
 #else
   using Handle = FILE*;
 #endif
-  FileHandler(std::recursive_mutex& mutex, const std::string& file, const std::string& mode);
+  FileHandler(std::recursive_mutex& mutex, const std::string& file, const std::string& mode) noexcept;
   FileHandler(const FileHandler&)            = delete;
   FileHandler(FileHandler&&)                 = delete;
   FileHandler& operator=(const FileHandler&) = delete;
   FileHandler& operator=(FileHandler&&)      = delete;
-  virtual ~FileHandler();
-  Handle       handle();
-  bool         null() const;
-  FILE*        file();
-  std::int32_t fd() const;
+  virtual ~FileHandler() noexcept;
+  Handle       handle() const noexcept;
+  bool         null() const noexcept;
+  FILE*        file() const noexcept;
+  std::int32_t fd() const noexcept;
   void         lockIO();
   void         unlockIO();
   void         flush();
 
 private:
-  std::recursive_mutex& m_mutex;  // should be static but MacOS don't want it (crash at runtime)
+  // should be static but MacOS don't want it (crash at runtime)
+  std::recursive_mutex& m_mutex;  //NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
   bool                  m_null{false};
   Handle                m_handle{nullptr};
   FILE*                 m_file{nullptr};
@@ -55,14 +56,15 @@ private:
 class OutputFileHandler : public FileHandler
 {
 public:
-  explicit OutputFileHandler(std::recursive_mutex& IOmutex) : FileHandler(IOmutex, m_file, "w") {}
-  std::size_t write(const std::string& str);
-  std::size_t write(const char& character);
+  explicit OutputFileHandler(std::recursive_mutex& io_mutex) noexcept;
   OutputFileHandler(const OutputFileHandler& other)          = delete;
-  OutputFileHandler& operator=(const OutputFileHandler& rhs) = delete;
   OutputFileHandler(OutputFileHandler&& other)               = delete;
   OutputFileHandler& operator=(OutputFileHandler&& rhs)      = delete;
-  virtual ~OutputFileHandler()                               = default;
+  OutputFileHandler& operator=(const OutputFileHandler& rhs) = delete;
+  ~OutputFileHandler() override                              = default;
+
+  std::size_t write(const std::string& str) const;
+  std::size_t write(const char& character) const;
 #if defined(_WIN32)
   static const constexpr char* m_file{"CONOUT$"};
 #else
@@ -73,13 +75,14 @@ public:
 class InputFileHandler : public FileHandler
 {
 public:
-  explicit InputFileHandler(std::recursive_mutex& IOmutex) : FileHandler(IOmutex, m_file, "r") {}
-  std::string read();
+  explicit InputFileHandler(std::recursive_mutex& io_mutex) noexcept;
   InputFileHandler(const InputFileHandler&)            = delete;
-  InputFileHandler& operator=(const InputFileHandler&) = delete;
   InputFileHandler(InputFileHandler&&)                 = delete;
   InputFileHandler& operator=(InputFileHandler&&)      = delete;
-  virtual ~InputFileHandler()                          = default;
+  InputFileHandler& operator=(const InputFileHandler&) = delete;
+  ~InputFileHandler() override                         = default;
+
+  std::string read();
 #if defined(_WIN32)
   static const constexpr char* m_file{"CONIN$"};
 #else

@@ -7,11 +7,10 @@
 * SPDX-License-Identifier: MIT
 */
 
-#include "cpp-terminal/terminal.hpp"
-
 #include "cpp-terminal/private/env.hpp"
 #include "cpp-terminal/private/exception.hpp"
 #include "cpp-terminal/private/file.hpp"
+#include "cpp-terminal/terminal.hpp"
 
 #if defined(_WIN32)
   #include <io.h>
@@ -62,10 +61,8 @@ void Term::Terminal::set_unset_utf8()
 #endif
 }
 
-///
-///@brief Store and restore the default state of the terminal. Configure the default mode for cpp-terminal.
-///
-void Term::Terminal::store_and_restore()
+void Term::Terminal::store_and_restore() noexcept
+try
 {
   static bool enabled{false};
 #if defined(_WIN32)
@@ -75,7 +72,7 @@ void Term::Terminal::store_and_restore()
   {
     Term::Private::WindowsError().check_if(GetConsoleMode(Private::out.handle(), &originalOut) == 0).throw_exception("GetConsoleMode(Private::out.handle(), &originalOut)");
     Term::Private::WindowsError().check_if(GetConsoleMode(Private::in.handle(), &originalIn) == 0).throw_exception("GetConsoleMode(Private::in.handle(), &originalIn)");
-    DWORD in{(originalIn & ~(ENABLE_QUICK_EDIT_MODE | setFocusEvents() | setMouseEvents())) | (ENABLE_EXTENDED_FLAGS)};
+    DWORD in{static_cast<DWORD>((originalIn & ~(ENABLE_QUICK_EDIT_MODE | setFocusEvents() | setMouseEvents())) | (ENABLE_EXTENDED_FLAGS))};
     DWORD out{originalOut};
     if(!m_terminfo.isLegacy())
     {
@@ -106,47 +103,47 @@ void Term::Terminal::store_and_restore()
   }
 #endif
 }
+catch(...)
+{
+  ExceptionHandler(Private::ExceptionDestination::StdErr);
+}
 
-std::int16_t Term::Terminal::setMouseEvents()
+std::size_t Term::Terminal::setMouseEvents()
 {
 #if defined(_WIN32)
-  return ENABLE_MOUSE_INPUT;
+  return static_cast<std::size_t>(ENABLE_MOUSE_INPUT);
 #else
   return Term::Private::out.write("\u001b[?1002h\u001b[?1003h\u001b[?1006h");
 #endif
 }
 
-std::int16_t Term::Terminal::unsetMouseEvents()
+std::size_t Term::Terminal::unsetMouseEvents()
 {
 #if defined(_WIN32)
-  return ENABLE_MOUSE_INPUT;
+  return static_cast<std::size_t>(ENABLE_MOUSE_INPUT);
 #else
   return Term::Private::out.write("\u001b[?1006l\u001b[?1003l\u001b[?1002l");
 #endif
 }
 
-std::int16_t Term::Terminal::setFocusEvents()
+std::size_t Term::Terminal::setFocusEvents()
 {
 #if defined(_WIN32)
-  return ENABLE_WINDOW_INPUT;
+  return static_cast<std::size_t>(ENABLE_WINDOW_INPUT);
 #else
   return Term::Private::out.write("\u001b[?1004h");
 #endif
 }
 
-std::int16_t Term::Terminal::unsetFocusEvents()
+std::size_t Term::Terminal::unsetFocusEvents()
 {
 #if defined(_WIN32)
-  return ENABLE_WINDOW_INPUT;
+  return static_cast<std::size_t>(ENABLE_WINDOW_INPUT);
 #else
   return Term::Private::out.write("\u001b[?1004l");
 #endif
 }
 
-///
-///@brief Set mode raw/cooked.
-///First call is to save the good state set-up by cpp-terminal.
-///
 void Term::Terminal::setMode()
 {
   static bool activated{false};
@@ -157,6 +154,7 @@ void Term::Terminal::setMode()
     if(!Private::out.null())
       if(!GetConsoleMode(Private::in.handle(), &flags)) { throw Term::Private::WindowsException(GetLastError()); }
     activated = true;
+    return;
   }
   DWORD send = flags;
   if(m_options.has(Option::Raw))
@@ -179,19 +177,20 @@ void Term::Terminal::setMode()
     static ::termios raw;
     if(!activated)
     {
-      if(tcgetattr(Private::out.fd(), &raw) == -1) { throw Term::Exception("tcgetattr() failed"); }
+      Term::Private::Errno().check_if(tcgetattr(Private::out.fd(), &raw) == -1).throw_exception("tcgetattr(Private::out.fd(), &raw)");
       activated = true;
+      return;
     }
     ::termios send = raw;
     if(m_options.has(Option::Raw))
     {
       // Put terminal in raw mode
-      send.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+      send.c_iflag &= ~static_cast<std::size_t>(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
       // This disables output post-processing, requiring explicit \r\n. We
       // keep it enabled, so that in C++, one can still just use std::endl
       // for EOL instead of "\r\n".
       // raw.c_oflag &= ~(OPOST);
-      send.c_lflag &= ~(ECHO | ICANON | IEXTEN);
+      send.c_lflag &= ~static_cast<std::size_t>(ECHO | ICANON | IEXTEN);
       send.c_cc[VMIN]  = 1;
       send.c_cc[VTIME] = 0;
       setMouseEvents();
@@ -203,9 +202,9 @@ void Term::Terminal::setMode()
       unsetMouseEvents();
       unsetFocusEvents();
     }
-    if(m_options.has(Option::NoSignalKeys)) { send.c_lflag &= ~ISIG; }  //FIXME need others flags !
+    if(m_options.has(Option::NoSignalKeys)) { send.c_lflag &= ~static_cast<std::size_t>(ISIG); }  //FIXME need others flags !
     else if(m_options.has(Option::NoSignalKeys)) { send.c_lflag |= ISIG; }
-    if(tcsetattr(Private::out.fd(), TCSAFLUSH, &send) == -1) { throw Term::Exception("tcsetattr() failed"); }
+    Term::Private::Errno().check_if(tcsetattr(Private::out.fd(), TCSAFLUSH, &send) == -1).throw_exception("tcsetattr(Private::out.fd(), TCSAFLUSH, &send)");
   }
 #endif
 }

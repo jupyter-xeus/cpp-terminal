@@ -10,8 +10,8 @@
 #include "cpp-terminal/terminal_impl.hpp"
 
 #include "cpp-terminal/cursor.hpp"
-#include "cpp-terminal/exception.hpp"
 #include "cpp-terminal/options.hpp"
+#include "cpp-terminal/private/exception.hpp"
 #include "cpp-terminal/private/file.hpp"
 #include "cpp-terminal/private/return_code.hpp"
 #include "cpp-terminal/private/sigwinch.hpp"
@@ -21,43 +21,36 @@
 
 Term::Options Term::Terminal::getOptions() const noexcept { return m_options; }
 
-Term::Terminal::Terminal()
+Term::Terminal::Terminal() noexcept
+try
 {
   Term::Private::Sigwinch::blockSigwinch();
+  Term::Private::Sigwinch::registerSigwinch();
   store_and_restore();
   setMode();  //Save the default cpp-terminal mode done in store_and_restore();
   set_unset_utf8();
   m_terminfo.checkUTF8();
 }
+catch(...)
+{
+  ExceptionHandler(Private::ExceptionDestination::StdErr);
+}
 
 bool Term::Terminal::supportUTF8() { return m_terminfo.hasUTF8(); }
 
-Term::Terminal::~Terminal()
+Term::Terminal::~Terminal() noexcept
+try
 {
-  try
-  {
-    if(m_options.has(Option::ClearScreen)) { Term::Private::out.write(clear_buffer() + style(Style::Reset) + cursor_move(1, 1) + screen_load()); }
-    if(m_options.has(Option::NoCursor)) { Term::Private::out.write(cursor_on()); }
-    set_unset_utf8();
-    store_and_restore();
-    unsetFocusEvents();
-    unsetMouseEvents();
-  }
-  catch(const Term::Exception& e)
-  {
-    Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\r\nreason : " + std::string(e.what()) + "\r\n");
-    std::exit(Term::returnCode());
-  }
-  catch(const std::exception& e)
-  {
-    Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\r\nreason : " + std::string(e.what()) + "\r\n");
-    std::exit(Term::returnCode());
-  }
-  catch(...)
-  {
-    Term::Private::out.write("cpp-terminal has not been able to restore the terminal in a good state !\r\n");
-    std::exit(Term::returnCode());
-  }
+  if(m_options.has(Option::ClearScreen)) { Term::Private::out.write(clear_buffer() + style(Style::Reset) + cursor_move(1, 1) + screen_load()); }
+  if(m_options.has(Option::NoCursor)) { Term::Private::out.write(cursor_on()); }
+  set_unset_utf8();
+  store_and_restore();
+  unsetFocusEvents();
+  unsetMouseEvents();
+}
+catch(...)
+{
+  ExceptionHandler(Private::ExceptionDestination::StdErr);
 }
 
 void Term::Terminal::applyOptions()

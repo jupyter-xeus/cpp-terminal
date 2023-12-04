@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace Term
 {
 namespace Private
@@ -17,14 +19,14 @@ namespace Private
 class Sigwinch
 {
 public:
-  static void registerSigwinch();
-  static void blockSigwinch();
-  static void unblockSigwinch();
-  static bool isSigwinch(const int& fd = -1);
-  static int  get();
+  static void         registerSigwinch();
+  static void         blockSigwinch();
+  static void         unblockSigwinch();
+  static bool         isSigwinch(const std::int32_t& file_descriptor = -1) noexcept;
+  static std::int32_t get() noexcept;
 
 private:
-  static int m_fd;
+  static std::int32_t m_fd;
 };
 
 }  // namespace Private

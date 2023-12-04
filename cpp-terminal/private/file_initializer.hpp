@@ -50,7 +50,7 @@ private:
   ///
   ///Open \b stdout \b stderr \b stdin and adjust their buffer size and line discipline.
   ///
-  static void openStandardStreams();
+  static void openStandardStreams() noexcept;
 };
 
 }  // namespace Private
