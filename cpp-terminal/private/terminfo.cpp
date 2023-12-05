@@ -16,6 +16,7 @@
 #include "cpp-terminal/private/file.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
+#include <cstddef>
 #include <string>
 
 Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{ColorMode::Unset};
@@ -83,7 +84,7 @@ void Term::Terminfo::checkLegacy()
   #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
     #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
   #endif
-  if(!hasANSIEscapeCode()) { set(Terminfo::Bool::Legacy, true); }
+  if(!checkControlSequences()) { set(Terminfo::Bool::Legacy, true); }
   else
   {
     DWORD dwOriginalOutMode{0};
@@ -147,8 +148,8 @@ void Term::Terminfo::checkColorMode()
   else if(name == "ansicon") { m_colorMode = Term::Terminfo::ColorMode::Bit4; }
   else if(m_strings[static_cast<std::size_t>(Terminfo::String::TermEnv)] == "linux") { m_colorMode = Term::Terminfo::ColorMode::Bit4; }
 #if defined(_WIN32)
-  else if(WindowsVersionGreater(10, 0, 10586) && !isLegacy()) { m_colorMode = Term::Terminfo::ColorMode::Bit24; }
-  else if(isLegacy()) { m_colorMode = Term::Terminfo::ColorMode::Bit4; }
+  else if(WindowsVersionGreater(10, 0, 10586) && !m_booleans[static_cast<std::size_t>(Terminfo::Bool::Legacy)]) { m_colorMode = Term::Terminfo::ColorMode::Bit24; }
+  else if(m_booleans[static_cast<std::size_t>(Terminfo::Bool::Legacy)]) { m_colorMode = Term::Terminfo::ColorMode::Bit4; }
 #endif
   else { m_colorMode = Term::Terminfo::ColorMode::Bit24; }
   std::string colorterm = Private::getenv("COLORTERM").second;
@@ -168,7 +169,7 @@ void Term::Terminfo::checkControlSequences()
 void Term::Terminfo::checkUTF8()
 {
 #if defined(_WIN32)
-  (GetConsoleOutputCP() == CP_UTF8 && GetConsoleCP() == CP_UTF8) ? set(Terminfo::Bool::UTF8, true); : set(Terminfo::Bool::UTF8,false);
+  (GetConsoleOutputCP() == CP_UTF8 && GetConsoleCP() == CP_UTF8) ? set(Terminfo::Bool::UTF8, true) : set(Terminfo::Bool::UTF8, false);
 #else
   Term::Cursor cursor_before{Term::cursor_position()};
   Term::Private::out.write("\xe2\x82\xac");  // € 3bits in utf8 one character
