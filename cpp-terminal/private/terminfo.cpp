@@ -14,10 +14,36 @@
 #include "cpp-terminal/cursor.hpp"
 #include "cpp-terminal/private/env.hpp"
 #include "cpp-terminal/private/file.hpp"
-#include "cpp-terminal/private/file_initializer.hpp"
 #include "cpp-terminal/terminfo.hpp"
 
 #include <string>
+
+Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{ColorMode::Unset};
+Term::Terminfo::Booleans  Term::Terminfo::m_booleans{};
+Term::Terminfo::Integers  Term::Terminfo::m_integers{};
+Term::Terminfo::Strings   Term::Terminfo::m_strings{};
+
+bool Term::Terminfo::get(const Term::Terminfo::Bool& key)
+{
+  check();
+  return m_booleans[static_cast<std::size_t>(key)];
+}
+
+std::uint32_t Term::Terminfo::get(const Term::Terminfo::Integer& key)
+{
+  check();
+  return m_integers[static_cast<std::size_t>(key)];
+}
+
+std::string Term::Terminfo::get(const Term::Terminfo::String& key)
+{
+  check();
+  return m_strings[static_cast<std::size_t>(key)];
+}
+
+void Term::Terminfo::set(const Term::Terminfo::Bool& key, const bool& value) { m_booleans[static_cast<std::size_t>(key)] = value; }
+void Term::Terminfo::set(const Term::Terminfo::Integer& key, const std::uint32_t& value) { m_integers[static_cast<std::size_t>(key)] = value; }
+void Term::Terminfo::set(const Term::Terminfo::String& key, const std::string& value) { m_strings[static_cast<std::size_t>(key)] = value; }
 
 #if defined(_WIN32)
 bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& patch)
@@ -51,102 +77,106 @@ bool WindowsVersionGreater(const DWORD& major, const DWORD& minor, const DWORD& 
 }
 #endif
 
-void Term::Terminfo::setLegacy()
+void Term::Terminfo::checkLegacy()
 {
 #if defined(_WIN32)
   #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
     #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
   #endif
-  if(!hasANSIEscapeCode()) m_legacy = true;
+  if(!hasANSIEscapeCode()) { set(Terminfo::Bool::Legacy, true); }
   else
   {
     DWORD dwOriginalOutMode{0};
     GetConsoleMode(Private::out.handle(), &dwOriginalOutMode);
-    if(!SetConsoleMode(Private::out.handle(), dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) m_legacy = true;
+    if(!SetConsoleMode(Private::out.handle(), dwOriginalOutMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING)) { set(Terminfo::Bool::Legacy, true); }
     else
     {
       SetConsoleMode(Private::out.handle(), dwOriginalOutMode);
-      m_legacy = false;
+      set(Terminfo::Bool::Legacy, false);
     }
   }
 #else
-  m_legacy = false;
+  set(Terminfo::Bool::Legacy, false);
 #endif
 }
 
-Term::Terminfo::ColorMode Term::Terminfo::getColorMode() { return m_colorMode; }
+void Term::Terminfo::checkTermEnv() { set(Terminfo::String::TermEnv, Private::getenv("TERM").second); }
 
-bool Term::Terminfo::isLegacy() const { return m_legacy; }
-
-Term::Terminfo::ColorMode Term::Terminfo::m_colorMode{ColorMode::Unset};
-
-Term::Terminfo::Terminfo()
+void Term::Terminfo::checkTerminalName()
 {
-  m_term         = Private::getenv("TERM").second;
-  m_terminalName = Private::getenv("TERM_PROGRAM").second;
-  if(m_terminalName.empty()) m_terminalName = Private::getenv("TERMINAL_EMULATOR").second;
-  if(Private::getenv("ANSICON").first) m_terminalName = "ansicon";
-  m_terminalVersion = Private::getenv("TERM_PROGRAM_VERSION").second;
-  setANSIEscapeCode();
-  setLegacy();
-  setColorMode();
+  std::string name;
+  name = Private::getenv("TERM_PROGRAM").second;
+  if(name.empty()) { name = Private::getenv("TERMINAL_EMULATOR").second; }
+  if(Private::getenv("ANSICON").first) { name = "ansicon"; }
+  set(Term::Terminfo::String::TermName, name);
 }
 
-std::string Term::Terminfo::getName() { return m_terminalName; }
+void Term::Terminfo::checkTerminalVersion() { set(Terminfo::String::TermVersion, Private::getenv("TERM_PROGRAM_VERSION").second); }
 
-bool Term::Terminfo::hasANSIEscapeCode() const { return m_ANSIEscapeCode; }
-
-void Term::Terminfo::setColorMode()
+void Term::Terminfo::check()
 {
-  if(m_terminalName == "Apple_Terminal") m_colorMode = Term::Terminfo::ColorMode::Bit8;
-  else if(m_terminalName == "JetBrains-JediTerm")
-    m_colorMode = Term::Terminfo::ColorMode::Bit24;
-  else if(m_terminalName == "vscode")
-    m_colorMode = Term::Terminfo::ColorMode::Bit24;
-  else if(m_terminalName == "linux")
-    m_colorMode = Term::Terminfo::ColorMode::Bit4;
-  else if(m_terminalName == "ansicon")
-    m_colorMode = Term::Terminfo::ColorMode::Bit4;
-  else if(m_term == "linux")
-    m_colorMode = Term::Terminfo::ColorMode::Bit4;
+  static bool checked{false};
+  if(!checked)
+  {
+    checkTermEnv();
+    checkTerminalName();
+    checkTerminalVersion();
+    checkControlSequences();
+    checkLegacy();
+    checkColorMode();
+    checkUTF8();
+    checked = true;
+  }
+}
+
+Term::Terminfo::ColorMode Term::Terminfo::getColorMode()
+{
+  checkColorMode();
+  return m_colorMode;
+}
+
+Term::Terminfo::Terminfo() { check(); }
+
+void Term::Terminfo::checkColorMode()
+{
+  std::string name{m_strings[static_cast<std::size_t>(Terminfo::String::TermName)]};
+  if(name == "Apple_Terminal") { m_colorMode = Term::Terminfo::ColorMode::Bit8; }
+  else if(name == "JetBrains-JediTerm") { m_colorMode = Term::Terminfo::ColorMode::Bit24; }
+  else if(name == "vscode") { m_colorMode = Term::Terminfo::ColorMode::Bit24; }
+  else if(name == "linux") { m_colorMode = Term::Terminfo::ColorMode::Bit4; }
+  else if(name == "ansicon") { m_colorMode = Term::Terminfo::ColorMode::Bit4; }
+  else if(m_strings[static_cast<std::size_t>(Terminfo::String::TermEnv)] == "linux") { m_colorMode = Term::Terminfo::ColorMode::Bit4; }
 #if defined(_WIN32)
-  else if(WindowsVersionGreater(10, 0, 10586) && !isLegacy())
-    m_colorMode = Term::Terminfo::ColorMode::Bit24;
-  else if(isLegacy())
-    m_colorMode = Term::Terminfo::ColorMode::Bit4;
+  else if(WindowsVersionGreater(10, 0, 10586) && !isLegacy()) { m_colorMode = Term::Terminfo::ColorMode::Bit24; }
+  else if(isLegacy()) { m_colorMode = Term::Terminfo::ColorMode::Bit4; }
 #endif
-  else
-    m_colorMode = Term::Terminfo::ColorMode::Bit24;
+  else { m_colorMode = Term::Terminfo::ColorMode::Bit24; }
   std::string colorterm = Private::getenv("COLORTERM").second;
-  if((colorterm == "truecolor" || colorterm == "24bit") && m_colorMode != ColorMode::Unset) m_colorMode = Term::Terminfo::ColorMode::Bit24;
+  if((colorterm == "truecolor" || colorterm == "24bit") && m_colorMode != ColorMode::Unset) { m_colorMode = Term::Terminfo::ColorMode::Bit24; }
 }
 
-void Term::Terminfo::setANSIEscapeCode()
+void Term::Terminfo::checkControlSequences()
 {
 #ifdef _WIN32
-  if(WindowsVersionGreater(10, 0, 10586)) m_ANSIEscapeCode = true;
-  else
-    m_ANSIEscapeCode = false;
+  if(WindowsVersionGreater(10, 0, 10586)) { set(Term::Terminfo::Bool::ControlSequences, true); }
+  else { set(Term::Terminfo::Bool::ControlSequences, false); }
 #else
-  m_ANSIEscapeCode = true;
+  set(Term::Terminfo::Bool::ControlSequences, true);
 #endif
 }
 
 void Term::Terminfo::checkUTF8()
 {
 #if defined(_WIN32)
-  (GetConsoleOutputCP() == CP_UTF8 && GetConsoleCP() == CP_UTF8) ? m_UTF8 = true : m_UTF8 = false;
+  (GetConsoleOutputCP() == CP_UTF8 && GetConsoleCP() == CP_UTF8) ? set(Terminfo::Bool::UTF8, true); : set(Terminfo::Bool::UTF8,false);
 #else
   Term::Cursor cursor_before{Term::cursor_position()};
   Term::Private::out.write("\xe2\x82\xac");  // € 3bits in utf8 one character
   std::string  read{Term::Private::in.read()};
   Term::Cursor cursor_after{Term::cursor_position()};
   std::size_t  moved{cursor_after.column() - cursor_before.column()};
-  if(moved == 1) m_UTF8 = true;
-  else
-    m_UTF8 = false;
-  for(std::size_t i = 0; i != moved; ++i) Term::Private::out.write("\b \b");
+  if(moved == 1) { set(Terminfo::Bool::UTF8, true); }
+  else { set(Terminfo::Bool::UTF8, false); }
+  for(std::size_t i = 0; i != moved; ++i) { Term::Private::out.write("\b \b"); }
 #endif
 }
-
-bool Term::Terminfo::hasUTF8() { return m_UTF8; }

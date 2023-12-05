@@ -10,11 +10,12 @@
 #include <cpp-terminal/color.hpp>
 #include <cpp-terminal/iostream.hpp>
 #include <cpp-terminal/terminal.hpp>
+#include <cpp-terminal/terminfo.hpp>
 #include <iostream>
 
 int main()
 {
-  if(Term::terminal.supportUTF8()) { std::cout << Term::color_fg(Term::Color::Name::Green) << "Your terminal support utf8 !\n\n" << Term::color_fg(Term::Color::Name::Default) << std::endl; }
+  if(Term::Terminfo::get(Term::Terminfo::Bool::UTF8)) { std::cout << Term::color_fg(Term::Color::Name::Green) << "Your terminal support utf8 !\n\n" << Term::color_fg(Term::Color::Name::Default) << std::endl; }
   else { std::cout << Term::color_fg(Term::Color::Name::Red) << "Your terminal does NOT support utf8 !\n\n" << Term::color_fg(Term::Color::Name::Default) << std::endl; }
   // clang-format off
   Term::cout

@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <array>
+#include <cstdint>
 #include <string>
 
 namespace Term
@@ -19,7 +21,7 @@ class Terminfo
 public:
   // indicates the color mode (basically the original color resolution)
   // also used to manually override the original color resolution
-  enum class ColorMode
+  enum class ColorMode : std::uint8_t
   {
     Unset,
     // no color was used
@@ -33,25 +35,59 @@ public:
     // a 24bit (RGB) color was used
     Bit24
   };
-  Terminfo();
-  static ColorMode getColorMode();
-  bool             hasANSIEscapeCode() const;
-  bool             isLegacy() const;
-  bool             hasUTF8();
-  void             checkUTF8();
-  std::string      getName();
+  enum class Bool : std::uint8_t
+  {
+    UTF8 = 0,          ///< terminal has UTF-8 activated.
+    Legacy,            ///< Terminal is in legacy mode (Windows only).
+    ControlSequences,  ///< Terminal support control sequences.
+  };
+  enum class String : std::uint8_t
+  {
+    TermEnv,      ///< TERM environment variable value.
+    TermName,     ///< Name of the terminal program if available.
+    TermVersion,  ///< Terminal version.
+  };
+  enum class Integer : std::uint8_t
+  {
+
+  };
+
+  static bool          get(const Term::Terminfo::Bool& key);
+  static std::uint32_t get(const Term::Terminfo::Integer& key);
+  static std::string   get(const Term::Terminfo::String& key);
 
 private:
-  void             setANSIEscapeCode();
-  void             setColorMode();
-  void             setLegacy();
-  bool             m_ANSIEscapeCode{true};
-  bool             m_legacy{false};
-  bool             m_UTF8{false};
+  static const constexpr std::size_t BoolNumber{3};
+  static const constexpr std::size_t StringNumber{3};
+  static const constexpr std::size_t IntegerNumber{0};
+
+public:
+  using Booleans = std::array<bool, BoolNumber>;
+  using Strings  = std::array<std::string, StringNumber>;
+  using Integers = std::array<std::uint32_t, IntegerNumber>;
+
+  Terminfo();
+
+  static ColorMode getColorMode();
+
+private:
+  static void check();
+  static void checkTermEnv();
+  static void checkTerminalName();
+  static void checkTerminalVersion();
+  static void checkColorMode();
+  static void checkUTF8();
+  static void checkLegacy();
+  static void checkControlSequences();
+
+  static void set(const Term::Terminfo::Bool& key, const bool& value);
+  static void set(const Term::Terminfo::Integer& key, const std::uint32_t& value);
+  static void set(const Term::Terminfo::String& key, const std::string& value);
+
   static ColorMode m_colorMode;
-  std::string      m_terminalName;
-  std::string      m_terminalVersion;
-  std::string      m_term;
+  static Booleans  m_booleans;
+  static Integers  m_integers;
+  static Strings   m_strings;
 };
 
 }  // namespace Term

@@ -13,13 +13,14 @@
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/private/exception.hpp"
 #include "cpp-terminal/private/file.hpp"
-#include "cpp-terminal/private/return_code.hpp"
 #include "cpp-terminal/private/sigwinch.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
-#include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/terminal.hpp"  //FIXME avoid recursion
 
-Term::Options Term::Terminal::getOptions() const noexcept { return m_options; }
+Term::Options Term::Terminal::m_options{};  //NOLINT(fuchsia-statically-constructed-objects)
+
+Term::Options Term::Terminal::getOptions() noexcept { return m_options; }
 
 Term::Terminal::Terminal() noexcept
 try
@@ -29,14 +30,11 @@ try
   store_and_restore();
   setMode();  //Save the default cpp-terminal mode done in store_and_restore();
   set_unset_utf8();
-  m_terminfo.checkUTF8();
 }
 catch(...)
 {
   ExceptionHandler(Private::ExceptionDestination::StdErr);
 }
-
-bool Term::Terminal::supportUTF8() { return m_terminfo.hasUTF8(); }
 
 Term::Terminal::~Terminal() noexcept
 try
