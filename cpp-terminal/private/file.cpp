@@ -166,3 +166,11 @@ catch(...)
 {
   ExceptionHandler(ExceptionDestination::StdErr);
 }
+
+std::string Term::Private::ask(const std::string& str)
+{
+  Term::Private::out.write(str);
+  std::string ret{Term::Private::in.read()};
+  for(std::size_t i = 0; i != ret.size(); ++i) { Term::Private::out.write("\b \b"); }
+  return ret;
+}

@@ -93,6 +93,9 @@ public:
 extern InputFileHandler&     in;
 extern OutputFileHandler&    out;
 static const FileInitializer file_initializer;
+
+std::string ask(const std::string& str);
+
 }  // namespace Private
 
 }  // namespace Term
