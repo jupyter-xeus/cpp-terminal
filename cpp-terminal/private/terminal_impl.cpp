@@ -51,16 +51,16 @@ void Term::Terminal::set_unset_utf8()
 #else
   if(!enabled)
   {
-    Term::Cursor cursor_before{Term::cursor_position()};
+    const Term::Cursor cursor_before{Term::cursor_position()};
     Term::Private::out.write("\u001b%G");  // Try to activate UTF-8 (NOT warranty)
-    std::string       read{Term::Private::in.read()};
-    Term::Cursor      cursor_after{Term::cursor_position()};
-    const std::size_t moved{cursor_after.column() - cursor_before.column()};
-    std::string       remove;
-    remove.reserve(moved * 3);
-    for(std::size_t i = 0; i != moved; ++i) { remove += "\b \b"; }
-    Term::Private::out.write(remove);
-    enabled = moved == 0;
+    const std::string  read{Term::Private::in.read()};
+    const Term::Cursor cursor_after{Term::cursor_position()};
+    const std::size_t  moved{cursor_after.column() - cursor_before.column()};
+    std::string        rem;
+    rem.reserve(moved * 3);
+    for(std::size_t i = 0; i != moved; ++i) { rem += "\b \b"; }
+    Term::Private::out.write(rem);
+    enabled = 0 == moved;
   }
   else
   {
@@ -187,25 +187,26 @@ void Term::Terminal::setMode()
 #else
   if(!Private::out.null())
   {
-    static ::termios raw;
+    static ::termios raw = {};
     if(!activated)
     {
       Term::Private::Errno().check_if(tcgetattr(Private::out.fd(), &raw) == -1).throw_exception("tcgetattr(Private::out.fd(), &raw)");
-      activated = true;
+      raw.c_cflag &= ~static_cast<std::size_t>(CSIZE | PARENB);
+      raw.c_cflag |= CS8;
+      raw.c_cc[VMIN]  = 1;
+      raw.c_cc[VTIME] = 0;
+      activated       = true;
       return;
     }
     ::termios send = raw;
     if(m_options.has(Option::Raw))
     {
-      // Put terminal in raw mode
-      send.c_iflag &= ~static_cast<std::size_t>(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+      send.c_iflag &= ~static_cast<std::size_t>(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON | INPCK);
       // This disables output post-processing, requiring explicit \r\n. We
       // keep it enabled, so that in C++, one can still just use std::endl
       // for EOL instead of "\r\n".
-      // raw.c_oflag &= ~(OPOST);
-      send.c_lflag &= ~static_cast<std::size_t>(ECHO | ICANON | IEXTEN);
-      send.c_cc[VMIN]  = 1;
-      send.c_cc[VTIME] = 0;
+      //send.c_oflag &= ~static_cast<std::size_t>(OPOST);
+      send.c_lflag &= ~static_cast<std::size_t>(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
       setMouseEvents();
       setFocusEvents();
     }
