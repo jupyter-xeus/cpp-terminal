@@ -84,7 +84,7 @@ void Term::Terminfo::checkLegacy()
   #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
     #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
   #endif
-  if(!checkControlSequences()) { set(Terminfo::Bool::Legacy, true); }
+  if(!m_booleans[static_cast<std::size_t>(Terminfo::Bool::ControlSequences)]) { set(Terminfo::Bool::Legacy, true); }
   else
   {
     DWORD dwOriginalOutMode{0};
