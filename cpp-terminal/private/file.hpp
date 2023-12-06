@@ -38,7 +38,7 @@ public:
   virtual ~FileHandler() noexcept;
   Handle       handle() const noexcept;
   bool         null() const noexcept;
-  std::FILE*        file() const noexcept;
+  std::FILE*   file() const noexcept;
   std::int32_t fd() const noexcept;
   void         lockIO();
   void         unlockIO();
