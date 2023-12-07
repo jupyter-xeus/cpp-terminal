@@ -16,6 +16,7 @@
 #include "cpp-terminal/private/unicode.hpp"
 #include "cpp-terminal/prompt.hpp"
 #include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/terminfo.hpp"
 
 #include <cstddef>
 
@@ -147,7 +148,7 @@ void Term::Window::print_border() { print_rect(1, 1, m_window.columns(), m_windo
 void Term::Window::print_rect(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2)
 {
   std::u32string border = Private::utf8_to_utf32("│─┌┐└┘");
-  if(Term::terminal.supportUTF8())
+  if(Term::Terminfo::get(Term::Terminfo::Bool::UTF8))
   {
     for(std::size_t j = y1 + 1; j <= (y2 - 1); ++j)
     {

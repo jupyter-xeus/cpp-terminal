@@ -54,7 +54,7 @@ try : m_mutex(mutex)
   Term::Private::Errno().check_if(nullptr == (m_file = _fdopen(m_fd, mode.c_str()))).throw_exception("_fdopen(m_fd, mode.c_str())");
 #else
   std::size_t flag{O_ASYNC | O_DSYNC | O_NOCTTY | O_SYNC | O_NDELAY};
-  flag &= ~O_NONBLOCK;
+  flag &= ~static_cast<std::size_t>(O_NONBLOCK);
   if(mode.find('r') != std::string::npos) { flag |= O_RDONLY; }       //NOLINT(abseil-string-find-str-contains)
   else if(mode.find('w') != std::string::npos) { flag |= O_WRONLY; }  //NOLINT(abseil-string-find-str-contains)
   else { flag |= O_RDWR; }
@@ -87,7 +87,7 @@ catch(...)
 
 bool Term::Private::FileHandler::null() const noexcept { return m_null; }
 
-FILE* Term::Private::FileHandler::file() const noexcept { return m_file; }
+std::FILE* Term::Private::FileHandler::file() const noexcept { return m_file; }
 
 std::int32_t Term::Private::FileHandler::fd() const noexcept { return m_fd; }
 
@@ -119,7 +119,7 @@ std::size_t Term::Private::OutputFileHandler::write(const char& character) const
 #endif
 }
 
-std::string Term::Private::InputFileHandler::read()
+std::string Term::Private::InputFileHandler::read() const
 {
 #if defined(_WIN32)
   DWORD       nread{0};
@@ -129,16 +129,13 @@ std::string Term::Private::InputFileHandler::read()
   return ret.c_str();
 #else
   std::size_t nread{0};
-  ::ioctl(Private::in.fd(), FIONREAD, &nread);  //NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+  Term::Private::Errno().check_if(::ioctl(Private::in.fd(), FIONREAD, &nread) != 0).throw_exception("::ioctl(Private::in.fd(), FIONREAD, &nread)");  //NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
+  std::string ret(nread, '\0');
   if(nread != 0)
   {
-    std::string ret(nread, '\0');
-    errno = 0;
-    ::ssize_t nnread{::read(Private::in.fd(), &ret[0], ret.size())};
-    if(nnread == -1 && errno != EAGAIN) { throw Term::Exception("read() failed"); }
-    return ret.c_str();
+    Term::Private::Errno().check_if(::read(Private::in.fd(), &ret[0], ret.size()) == -1).throw_exception("::read(Private::in.fd(), &ret[0], ret.size())");  //NOLINT(readability-container-data-pointer)
   }
-  return {};
+  return ret;
 #endif
 }
 
@@ -165,4 +162,12 @@ try : FileHandler(io_mutex, m_file, "r")
 catch(...)
 {
   ExceptionHandler(ExceptionDestination::StdErr);
+}
+
+std::string Term::Private::ask(const std::string& str)
+{
+  Term::Private::out.write(str);
+  std::string ret{Term::Private::in.read()};
+  for(std::size_t i = 0; i != ret.size(); ++i) { Term::Private::out.write("\b \b"); }
+  return ret;
 }

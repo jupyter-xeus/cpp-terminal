@@ -7,6 +7,7 @@
 * SPDX-License-Identifier: MIT
 */
 
+#include "cpp-terminal/cursor.hpp"
 #include "cpp-terminal/private/env.hpp"
 #include "cpp-terminal/private/exception.hpp"
 #include "cpp-terminal/private/file.hpp"
@@ -50,13 +51,21 @@ void Term::Terminal::set_unset_utf8()
 #else
   if(!enabled)
   {
-    if(m_terminfo.getName() != "Apple_Terminal") { Term::Private::out.write("\u001b%G"); }
-    enabled = true;
+    const Term::Cursor cursor_before{Term::cursor_position()};
+    Term::Private::out.write("\u001b%G");  // Try to activate UTF-8 (NOT warranty)
+    const std::string  read{Term::Private::in.read()};
+    const Term::Cursor cursor_after{Term::cursor_position()};
+    const std::size_t  moved{cursor_after.column() - cursor_before.column()};
+    std::string        rem;
+    rem.reserve(moved * 3);
+    for(std::size_t i = 0; i != moved; ++i) { rem += "\b \b"; }
+    Term::Private::out.write(rem);
+    enabled = 0 == moved;
   }
   else
   {
     // Does not return the original charset but, the default defined by standard ISO 8859-1 (ISO 2022);
-    if(m_terminfo.getName() != "Apple_Terminal") { Term::Private::out.write("\u001b%@"); }
+    Term::Private::out.write("\u001b%@");
   }
 #endif
 }
@@ -74,7 +83,11 @@ try
     Term::Private::WindowsError().check_if(GetConsoleMode(Private::in.handle(), &originalIn) == 0).throw_exception("GetConsoleMode(Private::in.handle(), &originalIn)");
     DWORD in{static_cast<DWORD>((originalIn & ~(ENABLE_QUICK_EDIT_MODE | setFocusEvents() | setMouseEvents())) | (ENABLE_EXTENDED_FLAGS))};
     DWORD out{originalOut};
-    if(!m_terminfo.isLegacy())
+    // Check if ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN can be activated, if not we are a legacy terminal.
+    DWORD test = out;
+    test |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    if(!SetConsoleMode(Private::out.handle(), test)) { SetConsoleMode(Private::out.handle(), out); }
+    else
     {
       out |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
       in |= ENABLE_VIRTUAL_TERMINAL_INPUT;
@@ -174,25 +187,26 @@ void Term::Terminal::setMode()
 #else
   if(!Private::out.null())
   {
-    static ::termios raw;
+    static ::termios raw = {};
     if(!activated)
     {
       Term::Private::Errno().check_if(tcgetattr(Private::out.fd(), &raw) == -1).throw_exception("tcgetattr(Private::out.fd(), &raw)");
-      activated = true;
+      raw.c_cflag &= ~static_cast<std::size_t>(CSIZE | PARENB);
+      raw.c_cflag |= CS8;
+      raw.c_cc[VMIN]  = 1;
+      raw.c_cc[VTIME] = 0;
+      activated       = true;
       return;
     }
     ::termios send = raw;
     if(m_options.has(Option::Raw))
     {
-      // Put terminal in raw mode
-      send.c_iflag &= ~static_cast<std::size_t>(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+      send.c_iflag &= ~static_cast<std::size_t>(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON | INPCK);
       // This disables output post-processing, requiring explicit \r\n. We
       // keep it enabled, so that in C++, one can still just use std::endl
       // for EOL instead of "\r\n".
-      // raw.c_oflag &= ~(OPOST);
-      send.c_lflag &= ~static_cast<std::size_t>(ECHO | ICANON | IEXTEN);
-      send.c_cc[VMIN]  = 1;
-      send.c_cc[VTIME] = 0;
+      //send.c_oflag &= ~static_cast<std::size_t>(OPOST);
+      send.c_lflag &= ~static_cast<std::size_t>(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
       setMouseEvents();
       setFocusEvents();
     }
