@@ -40,8 +40,7 @@ public:
 
   bool operator==(const Options& options);
   bool operator!=(const Options& options);
-
-  bool has(const Option& option);
+  bool has(const Option& option) const noexcept;
 
 private:
   void                      clean();

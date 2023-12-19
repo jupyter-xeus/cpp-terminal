@@ -157,7 +157,7 @@ std::size_t Term::Terminal::unsetFocusEvents()
 #endif
 }
 
-void Term::Terminal::setMode()
+void Term::Terminal::setMode() const
 {
   static bool activated{false};
 #if defined(_WIN32)

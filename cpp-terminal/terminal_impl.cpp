@@ -18,9 +18,7 @@
 #include "cpp-terminal/style.hpp"
 #include "cpp-terminal/terminal.hpp"  //FIXME avoid recursion
 
-Term::Options Term::Terminal::m_options{};  //NOLINT(fuchsia-statically-constructed-objects)
-
-Term::Options Term::Terminal::getOptions() noexcept { return m_options; }
+Term::Options Term::Terminal::getOptions() const noexcept { return m_options; }
 
 Term::Terminal::Terminal() noexcept
 try
@@ -39,8 +37,8 @@ catch(...)
 Term::Terminal::~Terminal() noexcept
 try
 {
-  if(m_options.has(Option::ClearScreen)) { Term::Private::out.write(clear_buffer() + style(Style::Reset) + cursor_move(1, 1) + screen_load()); }
-  if(m_options.has(Option::NoCursor)) { Term::Private::out.write(cursor_on()); }
+  if(getOptions().has(Option::ClearScreen)) { Term::Private::out.write(clear_buffer() + style(Style::Reset) + cursor_move(1, 1) + screen_load()); }
+  if(getOptions().has(Option::NoCursor)) { Term::Private::out.write(cursor_on()); }
   set_unset_utf8();
   store_and_restore();
   unsetFocusEvents();
@@ -51,9 +49,9 @@ catch(...)
   ExceptionHandler(Private::ExceptionDestination::StdErr);
 }
 
-void Term::Terminal::applyOptions()
+void Term::Terminal::applyOptions() const
 {
-  if(m_options.has(Option::ClearScreen)) { Term::Private::out.write(screen_save() + clear_buffer() + style(Style::Reset) + cursor_move(1, 1)); }
-  if(m_options.has(Option::NoCursor)) { Term::Private::out.write(cursor_off()); }
+  if(getOptions().has(Option::ClearScreen)) { Term::Private::out.write(screen_save() + clear_buffer() + style(Style::Reset) + cursor_move(1, 1)); }
+  if(getOptions().has(Option::NoCursor)) { Term::Private::out.write(cursor_off()); }
   setMode();
 }
