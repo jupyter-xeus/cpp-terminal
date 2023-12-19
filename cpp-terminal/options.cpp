@@ -32,4 +32,4 @@ void Term::Options::clean()
   m_Options = cleaned;
 }
 
-bool Term::Options::has(const Option& option) { return std::find(m_Options.begin(), m_Options.end(), option) != m_Options.end(); }
+bool Term::Options::has(const Option& option) const noexcept { return std::find(m_Options.begin(), m_Options.end(), option) != m_Options.end(); }
