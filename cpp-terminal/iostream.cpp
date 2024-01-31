@@ -16,7 +16,7 @@ namespace
 std::array<char, sizeof(Term::TOstream)> cout_buffer;  //NOLINT(fuchsia-statically-constructed-objects)
 std::array<char, sizeof(Term::TOstream)> clog_buffer;  //NOLINT(fuchsia-statically-constructed-objects)
 std::array<char, sizeof(Term::TOstream)> cerr_buffer;  //NOLINT(fuchsia-statically-constructed-objects)
-std::array<char, sizeof(Term::TOstream)> cin_buffer;   //NOLINT(fuchsia-statically-constructed-objects)
+std::array<char, sizeof(Term::TIstream)> cin_buffer;   //NOLINT(fuchsia-statically-constructed-objects)
 }  // namespace
 
 Term::TOstream& Term::cout = reinterpret_cast<Term::TOstream&>(cout_buffer);  //NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
