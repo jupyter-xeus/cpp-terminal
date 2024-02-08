@@ -7,4 +7,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: pre-commit
-        uses: pre-commit/action@v3.0.0
+        uses: pre-commit/action@v3.0.1
