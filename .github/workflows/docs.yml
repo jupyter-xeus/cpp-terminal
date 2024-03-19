@@ -42,7 +42,7 @@ jobs:
       - name: 🟨 Install TinyTeX
         uses: r-lib/actions/setup-tinytex@v2
         env:
-          TINYTEX_INSTALLER: TinyTeX-0
+          TINYTEX_INSTALLER: TinyTeX-1
 
       - name: 🟨 Install LaTeX packages
         run: |
