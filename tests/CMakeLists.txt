@@ -4,7 +4,7 @@ endif()
 
 if(CMAKE_VERSION GREATER_EQUAL 3.11)
   include(FetchContent)
-  FetchContent_Declare(doctest GIT_REPOSITORY https://github.com/doctest/doctest.git GIT_TAG v2.4.9)
+  FetchContent_Declare(doctest GIT_REPOSITORY https://github.com/doctest/doctest.git GIT_TAG v2.4.11)
   FetchContent_GetProperties(doctest)
   if(NOT doctest_POPULATED)
     set(DOCTEST_NO_INSTALL  TRUE)
