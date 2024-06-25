@@ -127,7 +127,7 @@ jobs:
     steps:
       - uses: ammaraskar/gcc-problem-matcher@master
       - name: ⬇️ Install git
-        run: apt-get update ; apt-get install --no-install-recommends -y git
+        run: apt-get update ; apt-get install --no-install-recommends -y git unzip
       - name: ⬇️ Setup CMake
         uses: lukka/get-cmake@latest
         with:
@@ -163,7 +163,7 @@ jobs:
     steps:
       - uses: ammaraskar/gcc-problem-matcher@master
       - name: ⬇️ Install git
-        run: apt-get update ; apt-get install --no-install-recommends -y git
+        run: apt-get update ; apt-get install --no-install-recommends -y git unzip
       - name: ⬇️ Setup CMake
         uses: lukka/get-cmake@latest
         with:
