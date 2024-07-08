@@ -154,7 +154,7 @@ jobs:
   intel:
     runs-on: ubuntu-latest
     name: intel-oneapi (c++${{ matrix.standard }})
-    container: ghcr.io/flagarde/ci-ubuntu-intel-2024.2-x86_64:latest
+    container: flagarde/ci-ubuntu-intel-2024.2-x86_64:latest
     strategy:
       fail-fast: false
       matrix:
