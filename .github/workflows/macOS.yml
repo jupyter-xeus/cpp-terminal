@@ -119,8 +119,8 @@ jobs:
       - name: 🎉 Install
         run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
   gcc:
-    runs-on: macos-14
-    name: macos-14 gcc-${{ matrix.version }} (c++${{ matrix.standard }})
+    runs-on: macos-13
+    name: macos-13 gcc-${{ matrix.version }} (c++${{ matrix.standard }})
     strategy:
       fail-fast: false
       matrix:
