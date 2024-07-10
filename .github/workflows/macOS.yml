@@ -124,7 +124,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [ 11, 12, 13, 14 ]
+        version: [ 11, 12, 14 ]
         standard: [ 11, 14, 17, 20 ]
 
     steps:
