@@ -39,7 +39,7 @@ repos:
         args: [ --allow-multiple-documents ]
 
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
-    rev: 2.7.3
+    rev: 3.0.3
     hooks:
       - id: editorconfig-checker
         name: check .editorconfig rules
