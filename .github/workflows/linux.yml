@@ -129,6 +129,9 @@ jobs:
           # 7 has problem
           - version: 7
             standard: 20
+          # 14 has problem too ?!?
+          - version: 14
+            standard: 20
 
     steps:
       - uses: ammaraskar/gcc-problem-matcher@master
