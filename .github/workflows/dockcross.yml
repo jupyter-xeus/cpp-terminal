@@ -3,7 +3,13 @@ name: Dockcross
 
 on:
   push:
+    paths-ignore:
+      - '.github/workflows/**'
+      - '!.github/workflows/dockcross.yml'
   pull_request:
+    paths-ignore:
+      - '.github/workflows/**'
+      - '!.github/workflows/dockcross.yml'
   workflow_dispatch:
 
 concurrency:

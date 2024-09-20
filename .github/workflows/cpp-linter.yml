@@ -2,7 +2,13 @@ name: cpp-linter
 
 on:
   push:
+    paths-ignore:
+      - '.github/workflows/**'
+      - '!.github/workflows/cpp-linter.yml'
   pull_request:
+    paths-ignore:
+      - '.github/workflows/**'
+      - '!.github/workflows/cpp-linter.yml'
   workflow_dispatch:
 
 jobs:

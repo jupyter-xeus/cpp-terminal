@@ -3,7 +3,13 @@ name: Linux
 
 on:
   push:
+    paths-ignore:
+      - '.github/workflows/**'
+      - '!.github/workflows/linux.yml'
   pull_request:
+    paths-ignore:
+      - '.github/workflows/**'
+      - '!.github/workflows/linux.yml'
   workflow_dispatch:
 
 concurrency:
