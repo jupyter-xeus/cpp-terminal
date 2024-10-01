@@ -24,11 +24,8 @@ Term::Screen Term::screen_size()
   if(GetConsoleScreenBufferInfo(Private::out.handle(), &inf)) return Term::Screen(static_cast<std::size_t>(inf.srWindow.Bottom - inf.srWindow.Top + 1), static_cast<std::size_t>(inf.srWindow.Right - inf.srWindow.Left + 1));
   return Term::Screen();
 #else
-  Term::Screen ret;
-  struct winsize window
-  {
-    0, 0, 0, 0
-  };
+  Term::Screen   ret;
+  struct winsize window{0, 0, 0, 0};
   if(ioctl(Private::out.fd(), TIOCGWINSZ, &window) != -1) ret = {window.ws_row, window.ws_col};
   return ret;
 #endif
