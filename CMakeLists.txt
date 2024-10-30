@@ -31,6 +31,7 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE CACHE STRING "C++ standard required" FORCE)
 set(CMAKE_CXX_EXTENSIONS FALSE CACHE STRING "C++ extensions" FORCE)
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 option(CPPTERMINAL_BUILD_EXAMPLES "Set to ON to build examples" ON)
 option(CPPTERMINAL_ENABLE_INSTALL "Set to ON to enable install" ON)
@@ -39,12 +40,12 @@ option(CPPTERMINAL_ENABLE_DOCS "Set to ON to generate documentation" ON)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-add_subdirectory(cpp-terminal)
-
 if(CPPTERMINAL_ENABLE_TESTING)
   enable_testing()
   add_subdirectory(tests)
 endif()
+
+add_subdirectory(cpp-terminal)
 
 if(CPPTERMINAL_BUILD_EXAMPLES)
   add_subdirectory(examples)

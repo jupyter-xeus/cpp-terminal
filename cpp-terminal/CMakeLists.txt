@@ -1,3 +1,5 @@
+include(GNUInstallDirs)
+
 add_subdirectory(private)
 
 set(CPP_TERMINAL_PUBLIC_HEADERS
@@ -49,20 +51,18 @@ set(CPP_TERMINAL_SRC
 
 # create and configure library target
 add_library(cpp-terminal "${CPP_TERMINAL_SRC}")
-target_link_libraries(cpp-terminal PRIVATE Warnings::Warnings cpp-terminal::cpp-terminal-private)
-target_compile_options(cpp-terminal PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
-target_include_directories(cpp-terminal PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}> $<INSTALL_INTERFACE:include>)
+target_link_libraries(cpp-terminal PRIVATE cpp-terminal::cpp-terminal-private)
+target_include_directories(cpp-terminal PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 set_target_properties(cpp-terminal PROPERTIES PUBLIC_HEADER "${CPP_TERMINAL_PUBLIC_HEADERS}")
 
 add_library(cpp-terminal::cpp-terminal ALIAS cpp-terminal)
 
 # Install
 if (CPPTERMINAL_ENABLE_INSTALL)
-  include(GNUInstallDirs)
   include(CMakePackageConfigHelpers)
   configure_package_config_file("${PROJECT_SOURCE_DIR}/cmake/cpp-terminalConfig.cmake.in" "${PROJECT_BINARY_DIR}/cmake/cpp-terminalConfig.cmake" INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/cpp-terminal")
   write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/cpp-terminalConfigVersion.cmake" COMPATIBILITY AnyNewerVersion)
-  install(TARGETS cpp-terminal cpp-terminal-private cpp-terminalWarnings EXPORT cpp-terminalTargets
+  install(TARGETS cpp-terminal cpp-terminalWarnings cpp-terminal-private EXPORT cpp-terminalTargets
           LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
           ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
           RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"

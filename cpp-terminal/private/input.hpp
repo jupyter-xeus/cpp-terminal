@@ -22,10 +22,11 @@ namespace Private
 
 class BlockingQueue;
 
-class Input
+class Input final
 {
 public:
   Input();
+  ~Input();
   static void        startReading();
   static Term::Event getEvent();
   static Term::Event getEventBlocking();

@@ -6,7 +6,6 @@
 *
 * SPDX-License-Identifier: MIT
 */
-
 #if defined(_WIN32)
   #include "cpp-terminal/private/unicode.hpp"
 
@@ -75,7 +74,12 @@ void sendString(Term::Private::BlockingQueue& events, std::wstring& str)
 
 #endif
 
-std::thread Term::Private::Input::m_thread = std::thread(Term::Private::Input::read_event);
+Term::Private::Input::~Input()
+{
+  if(m_thread.joinable()) m_thread.join();
+}
+
+std::thread Term::Private::Input::m_thread{};
 
 Term::Private::BlockingQueue Term::Private::Input::m_events;
 
@@ -83,6 +87,9 @@ int Term::Private::Input::m_poll{-1};
 
 void Term::Private::Input::init_thread()
 {
+  if(m_thread.joinable()) m_thread.join();
+  std::thread thread(Term::Private::Input::read_event);
+  m_thread.swap(thread);
   Term::Private::Sigwinch::unblockSigwinch();
 #if defined(__linux__)
   m_poll = {::epoll_create1(EPOLL_CLOEXEC)};
@@ -99,7 +106,6 @@ void Term::Private::Input::init_thread()
 
 void Term::Private::Input::read_event()
 {
-  init_thread();
   while(true)
   {
 #if defined(_WIN32)
@@ -309,6 +315,7 @@ void Term::Private::Input::startReading()
   static bool activated{false};
   if(!activated)
   {
+    init_thread();
     m_thread.detach();
     activated = true;
   }
