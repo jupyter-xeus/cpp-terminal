@@ -18,7 +18,7 @@
 
 int main()
 {
-  Term::terminal.setOptions(Term::Option::Raw, Term::Option::NoSignalKeys, Term::Option::ClearScreen);
+  Term::terminal.setOptions(Term::Option::Raw, Term::Option::SignalKeys, Term::Option::ClearScreen);
   std::signal(SIGINT,
               [](int sig)
               {

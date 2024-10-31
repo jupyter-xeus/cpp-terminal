@@ -54,6 +54,7 @@ cmake-build*
 # cmake
 .cache/
 Makefile
+.build/
 
 # project specific
 cpp-terminal/version.h

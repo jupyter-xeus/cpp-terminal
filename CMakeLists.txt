@@ -31,7 +31,12 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE CACHE STRING "C++ standard required" FORCE)
 set(CMAKE_CXX_EXTENSIONS FALSE CACHE STRING "C++ extensions" FORCE)
-option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+
+if(WIN32) ##FIXME
+  option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
+else()
+  option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+endif()
 
 option(CPPTERMINAL_BUILD_EXAMPLES "Set to ON to build examples" ON)
 option(CPPTERMINAL_ENABLE_INSTALL "Set to ON to enable install" ON)

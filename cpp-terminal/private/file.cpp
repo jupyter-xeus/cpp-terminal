@@ -149,7 +149,7 @@ std::string Term::Private::InputFileHandler::read() const
   }
   catch(const ErrnoException& exception)
   {
-    if(exception.code() != 25) throw;
+    if(exception.code() != 25 && exception.code() != 0) throw;
   }
   std::string ret(nread, '\0');
   if(nread != 0)
