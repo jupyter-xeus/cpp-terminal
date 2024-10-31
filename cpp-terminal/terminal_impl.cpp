@@ -13,7 +13,6 @@
 #include "cpp-terminal/options.hpp"
 #include "cpp-terminal/private/exception.hpp"
 #include "cpp-terminal/private/file.hpp"
-#include "cpp-terminal/private/sigwinch.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 #include "cpp-terminal/terminal.hpp"  //FIXME avoid recursion
@@ -23,8 +22,6 @@ Term::Options Term::Terminal::getOptions() const noexcept { return m_options; }
 Term::Terminal::Terminal() noexcept
 try
 {
-  Term::Private::Sigwinch::blockSigwinch();
-  Term::Private::Sigwinch::registerSigwinch();
   store_and_restore();
   setMode();  //Save the default cpp-terminal mode done in store_and_restore();
   set_unset_utf8();

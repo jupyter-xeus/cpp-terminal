@@ -77,7 +77,6 @@ void sendString(Term::Private::BlockingQueue& events, std::wstring& str)
 }
 
 #endif
-
 Term::Private::Input::~Input()
 {
   if(m_thread.joinable()) m_thread.join();
@@ -91,10 +90,6 @@ int Term::Private::Input::m_poll{-1};
 
 void Term::Private::Input::init_thread()
 {
-  if(m_thread.joinable()) m_thread.join();
-  std::thread thread(Term::Private::Input::read_event);
-  m_thread.swap(thread);
-  Term::Private::Sigwinch::unblockSigwinch();
 #if defined(__linux__)
   m_poll = {::epoll_create1(EPOLL_CLOEXEC)};
   ::epoll_event signal;
@@ -106,6 +101,9 @@ void Term::Private::Input::init_thread()
   input.data.fd = {Term::Private::in.fd()};
   ::epoll_ctl(m_poll, EPOLL_CTL_ADD, Term::Private::in.fd(), &input);
 #endif
+  if(m_thread.joinable()) m_thread.join();
+  std::thread thread(Term::Private::Input::read_event);
+  m_thread.swap(thread);
 }
 
 void Term::Private::Input::read_event()
