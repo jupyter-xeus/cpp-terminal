@@ -14,6 +14,9 @@
 #if defined(_WIN32)
   #include <memory>
 // clang-format off
+  #pragma warning( push )
+  #pragma warning( disable : 4668)
+  #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
   #include <processenv.h>
   #include "cpp-terminal/private/unicode.hpp"
