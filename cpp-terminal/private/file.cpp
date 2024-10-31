@@ -138,7 +138,7 @@ std::string Term::Private::InputFileHandler::read() const
   static const constexpr std::size_t max_input{256};
   #endif
   #if defined(_POSIX_MAX_INPUT)
-  static const constexpr std::size_t posix_max_input{MAX_INPUT};
+  static const constexpr std::size_t posix_max_input{_POSIX_MAX_INPUT};
   #else
   static const constexpr std::size_t posix_max_input{256};
   #endif
