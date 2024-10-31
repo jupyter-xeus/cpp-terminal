@@ -16,7 +16,7 @@
 #if defined(_WIN32)
   #include <io.h>
   #pragma warning( push )
-  #pragma warning( disable : 4101)
+  #pragma warning( disable : 4668)
   #include <windows.h>
   #pragma warning( pop ) 
   #if !defined(ENABLE_VIRTUAL_TERMINAL_PROCESSING)
