@@ -12,7 +12,10 @@
 #include "file_initializer.hpp"
 
 #if defined(_WIN32)
+  #pragma warning(push)
+  #pragma warning(disable : 4668)
   #include <windows.h>
+  #pragma warning(pop)
 #else
   #include <sys/ioctl.h>
   #include <termios.h>

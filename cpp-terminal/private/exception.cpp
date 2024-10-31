@@ -20,7 +20,11 @@
   #include "cpp-terminal/private/unicode.hpp"
 
   #include <memory>
+  #pragma warning(push)
+  #pragma warning(disable : 4668)
+  #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
+  #pragma warning(pop)
   #if defined(MessageBox)
     #undef MessageBox
   #endif

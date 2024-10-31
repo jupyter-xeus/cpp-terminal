@@ -10,7 +10,11 @@
   #include "cpp-terminal/private/unicode.hpp"
 
   #include <vector>
+  #pragma warning(push)
+  #pragma warning(disable : 4668)
+  #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
+  #pragma warning(pop)
 #elif defined(__APPLE__) || defined(__wasm__) || defined(__wasm) || defined(__EMSCRIPTEN__)
   #include <cerrno>
   #include <csignal>

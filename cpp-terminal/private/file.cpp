@@ -16,7 +16,11 @@
 
 #if defined(_WIN32)
   #include <io.h>
+  #pragma warning(push)
+  #pragma warning(disable : 4668)
+  #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
+  #pragma warning(pop)
 #else
   #include <sys/ioctl.h>
   #include <unistd.h>

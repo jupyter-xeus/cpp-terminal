@@ -15,10 +15,10 @@
 
 #if defined(_WIN32)
   #include <io.h>
-  #pragma warning( push )
-  #pragma warning( disable : 4668)
+  #pragma warning(push)
+  #pragma warning(disable : 4668)
   #include <windows.h>
-  #pragma warning( pop ) 
+  #pragma warning(pop)
   #if !defined(ENABLE_VIRTUAL_TERMINAL_PROCESSING)
     #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
   #endif

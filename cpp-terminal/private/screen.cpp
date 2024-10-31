@@ -10,7 +10,11 @@
 #include "cpp-terminal/screen.hpp"
 
 #ifdef _WIN32
+  #pragma warning(push)
+  #pragma warning(disable : 4668)
+  #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
+  #pragma warning(pop)
 #else
   #include <sys/ioctl.h>
 #endif
