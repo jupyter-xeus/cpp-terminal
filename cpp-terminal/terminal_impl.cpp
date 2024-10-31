@@ -31,15 +31,20 @@ catch(...)
   ExceptionHandler(Private::ExceptionDestination::StdErr);
 }
 
+void Term::Terminal::clean()
+{
+  unsetFocusEvents();
+  unsetMouseEvents();
+  if(getOptions().has(Option::NoCursor)) { Term::Private::out.write(cursor_on()); }
+  if(getOptions().has(Option::ClearScreen)) { Term::Private::out.write(clear_buffer() + style(Style::Reset) + cursor_move(1, 1) + screen_load()); }
+  set_unset_utf8();
+  store_and_restore();
+}
+
 Term::Terminal::~Terminal() noexcept
 try
 {
-  if(getOptions().has(Option::ClearScreen)) { Term::Private::out.write(clear_buffer() + style(Style::Reset) + cursor_move(1, 1) + screen_load()); }
-  if(getOptions().has(Option::NoCursor)) { Term::Private::out.write(cursor_on()); }
-  set_unset_utf8();
-  store_and_restore();
-  unsetFocusEvents();
-  unsetMouseEvents();
+  clean();
 }
 catch(...)
 {

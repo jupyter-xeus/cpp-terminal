@@ -12,6 +12,7 @@
 #include "cpp-terminal/input.hpp"
 #include "cpp-terminal/iostream.hpp"
 #include "cpp-terminal/key.hpp"
+#include "cpp-terminal/options.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
 #include "cpp-terminal/terminal.hpp"
@@ -93,7 +94,7 @@ int main()
   try
   {
     // check if the terminal is capable of handling input
-    Term::terminal.setOptions(Term::Option::ClearScreen, Term::Option::NoSignalKeys, Term::Option::NoCursor, Term::Option::Raw);
+    Term::terminal.setOptions(Term::Option::Raw, Term::Option::NoSignalKeys, Term::Option::ClearScreen, Term::Option::NoCursor);
     if(!Term::is_stdin_a_tty()) { throw Term::Exception("The terminal is not attached to a TTY and therefore can't catch user input. Exiting..."); }
     Term::Screen term_size = Term::screen_size();
     std::size_t  pos{5};
@@ -141,8 +142,7 @@ int main()
               need_to_render = true;
               break;
             case Term::Key::q:
-            case Term::Key::Esc:
-            case Term::Key::Ctrl_C: on = false;
+            case Term::Key::Esc: on = false; break;
             default: break;
           }
           break;

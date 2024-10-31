@@ -11,6 +11,7 @@
 
 #include "cpp-terminal/private/exception.hpp"
 #include "cpp-terminal/private/file_initializer.hpp"
+#include "cpp-terminal/private/signals.hpp"
 #include "cpp-terminal/terminal.hpp"
 
 #include <new>
@@ -23,7 +24,11 @@ try
   if(0 == m_counter)
   {
     static const Private::FileInitializer files_init;
+    static std::vector<sighandler_t>      m_handlers;
     new(&Term::terminal) Terminal();
+    static Term::Private::Signals signals(m_handlers);
+    sighandler_t                  handler = [](int signum) { Term::Private::Signals::reset_and_raise(signum, m_handlers, Term::terminal); };
+    signals.setHandler(handler);
   }
   ++m_counter;
 }

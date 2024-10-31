@@ -22,6 +22,7 @@ target_sources(cpp-terminal-private INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/env.cpp>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/blocking_queue.cpp>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/sigwinch.cpp>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/signals.cpp>
 )
 target_link_libraries(cpp-terminal-private INTERFACE Warnings::Warnings Threads::Threads)
 target_compile_options(cpp-terminal-private INTERFACE $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)

@@ -10,6 +10,7 @@
 #pragma once
 
 #include "cpp-terminal/options.hpp"
+#include "cpp-terminal/private/signals.hpp"
 #include "cpp-terminal/terminal_initializer.hpp"
 
 #include <cstddef>
@@ -20,6 +21,7 @@ namespace Term
 class Terminal
 {
 public:
+  friend class Private::Signals;
   ~Terminal() noexcept;
   Terminal() noexcept;
   Terminal(const Terminal&)                                  = delete;
@@ -55,6 +57,7 @@ private:
 
   static void   set_unset_utf8();
   Term::Options m_options;
+  void          clean();
 };
 
 }  // namespace Term

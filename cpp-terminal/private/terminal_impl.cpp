@@ -11,6 +11,7 @@
 #include "cpp-terminal/private/env.hpp"
 #include "cpp-terminal/private/exception.hpp"
 #include "cpp-terminal/private/file.hpp"
+//#include "cpp-terminal/private/signals.hpp"
 #include "cpp-terminal/private/sigwinch.hpp"
 #include "cpp-terminal/terminal.hpp"
 
@@ -224,7 +225,7 @@ void Term::Terminal::setMode() const
       unsetFocusEvents();
     }
     if(m_options.has(Option::NoSignalKeys)) { send.c_lflag &= ~static_cast<std::size_t>(ISIG); }  //FIXME need others flags !
-    else if(m_options.has(Option::SignalKeys)) { send.c_lflag |= ISIG; }
+    if(m_options.has(Option::SignalKeys)) { send.c_lflag |= ISIG; }
     Term::Private::Errno().check_if(tcsetattr(Private::out.fd(), TCSAFLUSH, &send) == -1).throw_exception("tcsetattr(Private::out.fd(), TCSAFLUSH, &send)");
   }
 #endif

@@ -17,7 +17,6 @@
 
 #include <cstddef>
 #include <iostream>
-
 std::size_t Term::IOStreamInitializer::m_counter{0};
 
 Term::IOStreamInitializer::IOStreamInitializer() noexcept
