@@ -1,5 +1,5 @@
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
-find_package(Threads)
+find_package(Threads REQUIRED MODULE)
 
 # configure version information
 configure_file(version.cpp.in version.cpp)

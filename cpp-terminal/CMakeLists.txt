@@ -1,5 +1,4 @@
 include(GNUInstallDirs)
-
 add_subdirectory(private)
 
 set(CPP_TERMINAL_PUBLIC_HEADERS
