@@ -10,6 +10,7 @@
 #include "cpp-terminal/private/file.hpp"
 
 #include "cpp-terminal/private/exception.hpp"
+#include "cpp-terminal/tty.hpp"
 
 #include <cstdio>
 #include <new>
@@ -143,14 +144,7 @@ std::string Term::Private::InputFileHandler::read() const
   static const constexpr std::size_t posix_max_input{256};
   #endif
   static std::size_t nread{std::max(max_input, posix_max_input)};
-  try
-  {
-    Term::Private::Errno().check_if(::ioctl(Private::in.fd(), FIONREAD, &nread) != 0).throw_exception("::ioctl(Private::in.fd(), FIONREAD, &nread)");  //NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
-  }
-  catch(const ErrnoException& exception)
-  {
-    if(exception.code() != 25 && exception.code() != 0 && exception.code() != 19) throw;
-  }
+  if(is_stdin_a_tty()) Term::Private::Errno().check_if(::ioctl(Private::in.fd(), FIONREAD, &nread) != 0).throw_exception("::ioctl(Private::in.fd(), FIONREAD, &nread)");  //NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
   std::string ret(nread, '\0');
   if(nread != 0)
   {
