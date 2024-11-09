@@ -184,26 +184,26 @@ void Term::print_left_curly_bracket(Term::Window& scr, const std::size_t& x, con
   }
 }
 
-void Term::render(Term::Window& scr, const Model& m, const std::size_t& cols)
+void Term::render(Term::Window& scr, const Model& model, const std::size_t& cols)
 {
   scr.clear();
-  print_left_curly_bracket(scr, cols, 1, m.lines.size());
-  scr.print_str(cols - 6, m.lines.size(), std::to_string(m.cursor_row) + "," + std::to_string(m.cursor_col));
-  for(std::size_t j = 0; j < m.lines.size(); j++)
+  print_left_curly_bracket(scr, cols, 1, model.lines.size());
+  scr.print_str(cols - 6, model.lines.size(), std::to_string(model.cursor_row) + "," + std::to_string(model.cursor_col));
+  for(std::size_t j = 0; j < model.lines.size(); j++)
   {
     if(j == 0)
     {
-      scr.fill_fg(1, j + 1, m.prompt_string.size(), m.lines.size(), Term::Color::Name::Green);
-      scr.fill_style(1, j + 1, m.prompt_string.size(), m.lines.size(), Term::Style::Bold);
-      scr.print_str(1, j + 1, m.prompt_string);
+      scr.fill_fg(1, j + 1, model.prompt_string.size(), model.lines.size(), Term::Color::Name::Green);
+      scr.fill_style(1, j + 1, model.prompt_string.size(), model.lines.size(), Term::Style::Bold);
+      scr.print_str(1, j + 1, model.prompt_string);
     }
     else
     {
-      for(std::size_t i = 0; i < m.prompt_string.size() - 1; i++) { scr.set_char(i + 1, j + 1, '.'); }
+      for(std::size_t i = 0; i < model.prompt_string.size() - 1; i++) { scr.set_char(i + 1, j + 1, '.'); }
     }
-    scr.print_str(m.prompt_string.size() + 1, j + 1, m.lines[j]);
+    scr.print_str(model.prompt_string.size() + 1, j + 1, model.lines[j]);
   }
-  scr.set_cursor_pos(m.prompt_string.size() + m.cursor_col, m.cursor_row);
+  scr.set_cursor_pos(model.prompt_string.size() + model.cursor_col, model.cursor_row);
 }
 
 std::string Term::prompt_multiline(const std::string& prompt_string, std::vector<std::string>& m_history, std::function<bool(std::string)>& iscomplete)
@@ -217,18 +217,18 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     screen = screen_size();
   }
 
-  Model m;
-  m.prompt_string = prompt_string;
+  Model model;
+  model.prompt_string = prompt_string;
 
   // Make a local copy of history that can be modified by the user. All
   // changes will be forgotten once a command is submitted.
   std::vector<std::string> history     = m_history;
   std::size_t              history_pos = history.size();
-  history.push_back(concat(m.lines));  // Push back empty input
+  history.push_back(concat(model.lines));  // Push back empty input
 
   Term::Window scr(screen.columns(), 1);
   Term::Key    key;
-  render(scr, m, screen.columns());
+  render(scr, model, screen.columns());
   std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
   bool not_complete = true;
   while(not_complete)
@@ -237,21 +237,21 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     if(key == Term::Key::NoKey) continue;
     if(key.isprint())
     {
-      std::string before = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
+      std::string before = model.lines[model.cursor_row - 1].substr(0, model.cursor_col - 1);
       std::string newchar;
       newchar.push_back(static_cast<char>(key));
-      std::string after         = m.lines[m.cursor_row - 1].substr(m.cursor_col - 1);
-      m.lines[m.cursor_row - 1] = before += newchar += after;
-      m.cursor_col++;
+      std::string after                 = model.lines[model.cursor_row - 1].substr(model.cursor_col - 1);
+      model.lines[model.cursor_row - 1] = before += newchar += after;
+      model.cursor_col++;
     }
     else if(key == Key::Ctrl_D)
     {
-      if(m.lines.size() == 1 && m.lines[m.cursor_row - 1].empty())
+      if(model.lines.size() == 1 && model.lines[model.cursor_row - 1].empty())
       {
-        m.lines[m.cursor_row - 1].push_back(static_cast<char>(Key::Ctrl_D));
+        model.lines[model.cursor_row - 1].push_back(static_cast<char>(Key::Ctrl_D));
         std::cout << "\n" << std::flush;
-        m_history.push_back(m.lines[0]);
-        return m.lines[0];
+        m_history.push_back(model.lines[0]);
+        return model.lines[0];
       }
     }
     else
@@ -259,101 +259,101 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
       switch(key)
       {
         case Key::Enter:
-          not_complete = !iscomplete(concat(m.lines));
+          not_complete = !iscomplete(concat(model.lines));
           if(not_complete) key = Key(static_cast<Term::Key>(Term::MetaKey::Value::Alt + Term::Key::Enter));
           else
             break;
           CPP_TERMINAL_FALLTHROUGH;
         case Key::Backspace:
-          if(m.cursor_col > 1)
+          if(model.cursor_col > 1)
           {
-            std::string before        = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 2);
-            std::string after         = m.lines[m.cursor_row - 1].substr(m.cursor_col - 1);
-            m.lines[m.cursor_row - 1] = before + after;
-            m.cursor_col--;
+            std::string before                = model.lines[model.cursor_row - 1].substr(0, model.cursor_col - 2);
+            std::string after                 = model.lines[model.cursor_row - 1].substr(model.cursor_col - 1);
+            model.lines[model.cursor_row - 1] = before + after;
+            model.cursor_col--;
           }
-          else if(m.cursor_col == 1 && m.cursor_row > 1)
+          else if(model.cursor_col == 1 && model.cursor_row > 1)
           {
-            m.cursor_col = m.lines[m.cursor_row - 2].size() + 1;
-            m.lines[m.cursor_row - 2] += m.lines[m.cursor_row - 1];
-            m.lines.erase(m.lines.begin() + static_cast<long>(m.cursor_row) - 1);
-            m.cursor_row--;
+            model.cursor_col = model.lines[model.cursor_row - 2].size() + 1;
+            model.lines[model.cursor_row - 2] += model.lines[model.cursor_row - 1];
+            model.lines.erase(model.lines.begin() + static_cast<long>(model.cursor_row) - 1);
+            model.cursor_row--;
           }
           break;
         case Key::Del:
-          if(m.cursor_col <= m.lines[m.cursor_row - 1].size())
+          if(model.cursor_col <= model.lines[model.cursor_row - 1].size())
           {
-            std::string before        = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
-            std::string after         = m.lines[m.cursor_row - 1].substr(m.cursor_col);
-            m.lines[m.cursor_row - 1] = before + after;
+            std::string before                = model.lines[model.cursor_row - 1].substr(0, model.cursor_col - 1);
+            std::string after                 = model.lines[model.cursor_row - 1].substr(model.cursor_col);
+            model.lines[model.cursor_row - 1] = before + after;
           }
           break;
         case Key::ArrowLeft:
-          if(m.cursor_col > 1) { m.cursor_col--; }
+          if(model.cursor_col > 1) { model.cursor_col--; }
           break;
         case Key::ArrowRight:
-          if(m.cursor_col <= m.lines[m.cursor_row - 1].size()) { m.cursor_col++; }
+          if(model.cursor_col <= model.lines[model.cursor_row - 1].size()) { model.cursor_col++; }
           break;
-        case Key::Home: m.cursor_col = 1; break;
-        case Key::End: m.cursor_col = m.lines[m.cursor_row - 1].size() + 1; break;
+        case Key::Home: model.cursor_col = 1; break;
+        case Key::End: model.cursor_col = model.lines[model.cursor_row - 1].size() + 1; break;
         case Key::ArrowUp:
-          if(m.cursor_row == 1)
+          if(model.cursor_row == 1)
           {
             if(history_pos > 0)
             {
-              history[history_pos] = concat(m.lines);
+              history[history_pos] = concat(model.lines);
               history_pos--;
-              m.lines      = split(history[history_pos]);
-              m.cursor_row = m.lines.size();
-              if(m.cursor_col > m.lines[m.cursor_row - 1].size() + 1) { m.cursor_col = m.lines[m.cursor_row - 1].size() + 1; }
-              if(m.lines.size() > scr.get_h()) { scr.set_h(m.lines.size()); }
+              model.lines      = split(history[history_pos]);
+              model.cursor_row = model.lines.size();
+              if(model.cursor_col > model.lines[model.cursor_row - 1].size() + 1) { model.cursor_col = model.lines[model.cursor_row - 1].size() + 1; }
+              if(model.lines.size() > scr.get_h()) { scr.set_h(model.lines.size()); }
             }
           }
           else
           {
-            m.cursor_row--;
-            if(m.cursor_col > m.lines[m.cursor_row - 1].size() + 1) { m.cursor_col = m.lines[m.cursor_row - 1].size() + 1; }
+            model.cursor_row--;
+            if(model.cursor_col > model.lines[model.cursor_row - 1].size() + 1) { model.cursor_col = model.lines[model.cursor_row - 1].size() + 1; }
           }
           break;
         case Key::ArrowDown:
-          if(m.cursor_row == m.lines.size())
+          if(model.cursor_row == model.lines.size())
           {
             if(history_pos < history.size() - 1)
             {
-              history[history_pos] = concat(m.lines);
+              history[history_pos] = concat(model.lines);
               history_pos++;
-              m.lines      = split(history[history_pos]);
-              m.cursor_row = 1;
-              if(m.cursor_col > m.lines[m.cursor_row - 1].size() + 1) { m.cursor_col = m.lines[m.cursor_row - 1].size() + 1; }
-              if(m.lines.size() > scr.get_h()) { scr.set_h(m.lines.size()); }
+              model.lines      = split(history[history_pos]);
+              model.cursor_row = 1;
+              if(model.cursor_col > model.lines[model.cursor_row - 1].size() + 1) { model.cursor_col = model.lines[model.cursor_row - 1].size() + 1; }
+              if(model.lines.size() > scr.get_h()) { scr.set_h(model.lines.size()); }
             }
           }
           else
           {
-            m.cursor_row++;
-            if(m.cursor_col > m.lines[m.cursor_row - 1].size() + 1) { m.cursor_col = m.lines[m.cursor_row - 1].size() + 1; }
+            model.cursor_row++;
+            if(model.cursor_col > model.lines[model.cursor_row - 1].size() + 1) { model.cursor_col = model.lines[model.cursor_row - 1].size() + 1; }
           }
           break;
         case Key::Ctrl_N:
         {
-          std::string before        = m.lines[m.cursor_row - 1].substr(0, m.cursor_col - 1);
-          std::string after         = m.lines[m.cursor_row - 1].substr(m.cursor_col - 1);
-          m.lines[m.cursor_row - 1] = before;
-          if(m.cursor_row < m.lines.size())
+          std::string before                = model.lines[model.cursor_row - 1].substr(0, model.cursor_col - 1);
+          std::string after                 = model.lines[model.cursor_row - 1].substr(model.cursor_col - 1);
+          model.lines[model.cursor_row - 1] = before;
+          if(model.cursor_row < model.lines.size())
           {
             // Not at the bottom row, can't push back
-            m.lines.insert(m.lines.begin() + static_cast<long>(m.cursor_row), after);
+            model.lines.insert(model.lines.begin() + static_cast<long>(model.cursor_row), after);
           }
-          else { m.lines.push_back(after); }
-          m.cursor_col = 1;
-          m.cursor_row++;
-          if(m.lines.size() > scr.get_h()) { scr.set_h(m.lines.size()); }
+          else { model.lines.push_back(after); }
+          model.cursor_col = 1;
+          model.cursor_row++;
+          if(model.lines.size() > scr.get_h()) { scr.set_h(model.lines.size()); }
           break;
         }
         default: break;
       }
     }
-    render(scr, m, screen.columns());
+    render(scr, model, screen.columns());
     std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
     if(cursor.row() + (int)scr.get_h() - 1 > screen.rows())
     {
@@ -362,8 +362,8 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     }
   }
   std::string line_skips;
-  for(std::size_t i = 0; i <= m.lines.size() - m.cursor_row; i++) { line_skips += "\n"; }
+  for(std::size_t i = 0; i <= model.lines.size() - model.cursor_row; i++) { line_skips += "\n"; }
   std::cout << line_skips << std::flush;
-  m_history.push_back(concat(m.lines));
-  return concat(m.lines);
+  m_history.push_back(concat(model.lines));
+  return concat(model.lines);
 }

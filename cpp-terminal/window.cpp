@@ -23,7 +23,7 @@
 namespace Term
 {
 
-Term::Window::Window(const std::size_t& columns, const std::size_t& rows) : m_window({rows, columns}) { clear(); }
+Term::Window::Window(const std::size_t& columns, const std::size_t& rows) : m_size({rows, columns}) { clear(); }
 
 char32_t Term::Window::get_char(const std::size_t& column, const std::size_t& row) { return m_chars[index(column, row)]; }
 
@@ -37,9 +37,9 @@ Term::Color Term::Window::get_bg(const std::size_t& column, const std::size_t& r
 
 Term::Style Term::Window::get_style(const std::size_t& column, const std::size_t& row) { return m_style[index(column, row)]; }
 
-std::size_t Term::Window::get_w() const { return m_window.columns(); }
+std::size_t Term::Window::get_w() const { return m_size.columns(); }
 
-std::size_t Term::Window::get_h() const { return m_window.rows(); }
+std::size_t Term::Window::get_h() const { return m_size.rows(); }
 
 void Term::Window::set_char(const std::size_t& column, const std::size_t& row, const char32_t& character)
 {
@@ -77,17 +77,17 @@ void Term::Window::set_cursor_pos(const std::size_t& column, const std::size_t& 
 
 void Term::Window::set_h(const std::size_t& new_h)
 {
-  if(new_h == m_window.rows()) { return; }
-  if(new_h > m_window.rows())
+  if(new_h == m_size.rows()) { return; }
+  if(new_h > m_size.rows())
   {
-    const std::size_t dc = (new_h - m_window.rows()) * m_window.columns();
+    const std::size_t dc = (new_h - m_size.rows()) * m_size.columns();
     m_chars.insert(m_chars.end(), dc, ' ');
     m_fg_reset.insert(m_fg_reset.end(), dc, true);
     m_bg_reset.insert(m_bg_reset.end(), dc, true);
     m_fg.insert(m_fg.end(), dc, {0, 0, 0});
     m_bg.insert(m_bg.end(), dc, {0, 0, 0});
     m_style.insert(m_style.end(), dc, Style::Reset);
-    m_window = {m_window.columns(), new_h};
+    m_size = {m_size.columns(), new_h};
   }
   else { throw Term::Exception("Shrinking height not supported."); }
 }
@@ -143,7 +143,7 @@ void Term::Window::fill_style(const std::size_t& x1, const std::size_t& y1, cons
   }
 }
 
-void Term::Window::print_border() { print_rect(1, 1, m_window.columns(), m_window.rows()); }
+void Term::Window::print_border() { print_rect(1, 1, m_size.columns(), m_size.rows()); }
 
 void Term::Window::print_rect(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2)
 {
@@ -186,7 +186,7 @@ void Term::Window::print_rect(const std::size_t& x1, const std::size_t& y1, cons
 
 void Term::Window::clear()
 {
-  const std::size_t area{m_window.rows() * m_window.columns()};
+  const std::size_t area{m_size.rows() * m_size.columns()};
   m_style.assign(area, Style::Reset);
   m_bg_reset.assign(area, true);
   m_bg.assign(area, Term::Color::Name::Default);
@@ -204,10 +204,10 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
   bool  current_fg_reset = true;
   bool  current_bg_reset = true;
   Style current_style    = Style::Reset;
-  for(std::size_t j = 1; j <= m_window.rows(); ++j)
+  for(std::size_t j = 1; j <= m_size.rows(); ++j)
   {
     if(term) { out.append(cursor_move(y0 + j - 1, x0)); }
-    for(std::size_t i = 1; i <= m_window.columns(); ++i)
+    for(std::size_t i = 1; i <= m_size.columns(); ++i)
     {
       bool update_fg       = false;
       bool update_bg       = false;
@@ -282,7 +282,7 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
       }
       out.append(Private::utf32_to_utf8(get_char(i, j)));
     }
-    if(j < m_window.rows()) { out.append("\n"); }
+    if(j < m_size.rows()) { out.append("\n"); }
   }
   if(!current_fg_reset) { out.append(color_fg(Term::Color::Name::Default)); }
   if(!current_bg_reset) { out.append(color_bg(Term::Color::Name::Default)); }
@@ -298,8 +298,8 @@ std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, b
 std::size_t Term::Window::index(const std::size_t& column, const std::size_t& row) const
 {
   if(!insideWindow(column, row)) { throw Term::Exception("Cursor out of range"); }
-  return ((row - 1) * m_window.columns()) + (column - 1);
+  return ((row - 1) * m_size.columns()) + (column - 1);
 }
 
-bool Term::Window::insideWindow(const std::size_t& column, const std::size_t& row) const { return (column >= 1) && (row >= 1) && (column <= m_window.columns()) && (row <= m_window.rows()); }
+bool Term::Window::insideWindow(const std::size_t& column, const std::size_t& row) const { return (column >= 1) && (row >= 1) && (column <= m_size.columns()) && (row <= m_size.rows()); }
 }  // namespace Term

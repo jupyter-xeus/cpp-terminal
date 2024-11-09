@@ -78,7 +78,7 @@ public:
 
 private:
   std::size_t              index(const std::size_t& column, const std::size_t& row) const;
-  Term::Screen             m_window{0, 0};
+  Term::Screen             m_size{0, 0};
   Term::Cursor             m_cursor{1, 1};
   std::vector<char32_t>    m_chars;  // the characters in row first order
   std::vector<Term::Color> m_fg;
