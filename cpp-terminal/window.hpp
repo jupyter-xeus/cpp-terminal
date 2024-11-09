@@ -11,7 +11,7 @@
 
 #include "cpp-terminal/color.hpp"
 #include "cpp-terminal/cursor.hpp"
-#include "cpp-terminal/screen.hpp"
+#include "cpp-terminal/size.hpp"
 #include "cpp-terminal/style.hpp"
 
 #include <cstddef>
@@ -20,6 +20,7 @@
 namespace Term
 {
 
+class Screen;
 ///
 /// @brief Represents a rectangular window, as a 2D array of characters and their attributes.
 ///
@@ -32,11 +33,10 @@ namespace Term
 class Window
 {
 public:
-  Window(const std::size_t& columns, const std::size_t& rows);
-
-  std::size_t get_w() const;
-
-  std::size_t get_h() const;
+  explicit Window(const Size& size);
+  explicit Window(const Screen& screen);
+  const Columns& columns() const noexcept;
+  const Rows&    rows() const noexcept;
 
   void set_char(const std::size_t& column, const std::size_t& row, const char32_t& character);
 
@@ -78,7 +78,7 @@ public:
 
 private:
   std::size_t              index(const std::size_t& column, const std::size_t& row) const;
-  Term::Screen             m_size{0, 0};
+  Term::Size               m_size;
   Term::Cursor             m_cursor{1, 1};
   std::vector<char32_t>    m_chars;  // the characters in row first order
   std::vector<Term::Color> m_fg;

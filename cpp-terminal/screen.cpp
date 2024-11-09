@@ -9,13 +9,15 @@
 
 #include "cpp-terminal/screen.hpp"
 
-Term::Screen::Screen(const std::size_t& rows, const std::size_t& columns) : m_size({rows, columns}) {}
+#include "size.hpp"
 
-std::size_t Term::Screen::rows() const { return m_size.first; }
+Term::Screen::Screen(const Term::Size& size) : m_size(size) {}
 
-std::size_t Term::Screen::columns() const { return m_size.second; }
+const Term::Rows& Term::Screen::rows() const noexcept { return m_size.rows(); }
 
-bool Term::Screen::empty() const { return (0 == m_size.second) && (0 == m_size.first); }
+const Term::Columns& Term::Screen::columns() const noexcept { return m_size.columns(); }
+
+bool Term::Screen::empty() const { return (0 == m_size.rows()) && (0 == m_size.columns()); }
 
 std::string Term::clear_screen() { return "\u001b[2J"; }
 

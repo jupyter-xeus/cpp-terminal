@@ -9,9 +9,9 @@
 
 #pragma once
 
-#include <cstdint>
+#include "cpp-terminal/size.hpp"
+
 #include <string>
-#include <utility>
 
 namespace Term
 {
@@ -20,15 +20,15 @@ class Screen
 {
 public:
   Screen() = default;
-  Screen(const std::size_t& rows, const std::size_t& columns);
-  std::size_t rows() const;
-  std::size_t columns() const;
-  bool        empty() const;
-  bool        operator==(const Term::Screen& screen) const;
-  bool        operator!=(const Term::Screen& screen) const;
+  explicit Screen(const Size& size);
+  const Rows&    rows() const noexcept;
+  const Columns& columns() const noexcept;
+  bool           empty() const;
+  bool           operator==(const Term::Screen& screen) const;
+  bool           operator!=(const Term::Screen& screen) const;
 
 private:
-  std::pair<std::size_t, std::size_t> m_size;
+  Size m_size;
 };
 
 // clear the screen
@@ -37,7 +37,7 @@ std::string clear_screen();
 std::string screen_save();
 // load a previously saved terminal state
 std::string screen_load();
-// get the terminal size (row, column) / (Y, X)
+// get the terminal size
 Screen      screen_size();
 
 }  // namespace Term

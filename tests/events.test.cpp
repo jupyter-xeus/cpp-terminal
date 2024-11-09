@@ -35,9 +35,9 @@ TEST_CASE("default Event")
 
 TEST_CASE("Event with Screen")
 {
-  Term::Event event(Term::Screen(4, 2));
+  Term::Event event(Term::Screen({Term::Rows(4), Term::Columns(2)}));
   CHECK(event.empty() == false);
-  CHECK(*event.get_if_screen() == Term::Screen(4, 2));
+  CHECK(*event.get_if_screen() == Term::Screen({Term::Rows(4), Term::Columns(2)}));
   CHECK(event.get_if_focus() == nullptr);
   CHECK(event.get_if_cursor() == nullptr);
   CHECK(event.get_if_key() == nullptr);
@@ -46,7 +46,7 @@ TEST_CASE("Event with Screen")
   CHECK(event.type() == Term::Event::Type::Screen);
   const Term::Event event2 = event;
   CHECK(event2.empty() == false);
-  CHECK(*event.get_if_screen() == Term::Screen(4, 2));
+  CHECK(*event.get_if_screen() == Term::Screen({Term::Rows(4), Term::Columns(2)}));
   CHECK(event2.get_if_focus() == nullptr);
   CHECK(event2.get_if_cursor() == nullptr);
   CHECK(event2.get_if_key() == nullptr);

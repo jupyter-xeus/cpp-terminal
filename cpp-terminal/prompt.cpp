@@ -20,6 +20,7 @@
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
+#include "size.hpp"
 
 #include <iostream>
 
@@ -209,7 +210,7 @@ void Term::render(Term::Window& scr, const Model& model, const std::size_t& cols
 std::string Term::prompt_multiline(const std::string& prompt_string, std::vector<std::string>& m_history, std::function<bool(std::string)>& iscomplete)
 {
   Term::Cursor cursor;
-  Term::Screen screen(25, 80);
+  Term::Screen screen({Term::Rows(25), Term::Columns(80)});
   bool         term_attached = Term::is_stdin_a_tty();
   if(is_stdin_a_tty())
   {
@@ -226,7 +227,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
   std::size_t              history_pos = history.size();
   history.push_back(concat(model.lines));  // Push back empty input
 
-  Term::Window scr(screen.columns(), 1);
+  Term::Window scr({Term::Columns(screen.columns()), Term::Rows(1)});
   Term::Key    key;
   render(scr, model, screen.columns());
   std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
@@ -306,7 +307,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
               model.lines      = split(history[history_pos]);
               model.cursor_row = model.lines.size();
               if(model.cursor_col > model.lines[model.cursor_row - 1].size() + 1) { model.cursor_col = model.lines[model.cursor_row - 1].size() + 1; }
-              if(model.lines.size() > scr.get_h()) { scr.set_h(model.lines.size()); }
+              if(model.lines.size() > scr.columns()) { scr.set_h(model.lines.size()); }
             }
           }
           else
@@ -325,7 +326,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
               model.lines      = split(history[history_pos]);
               model.cursor_row = 1;
               if(model.cursor_col > model.lines[model.cursor_row - 1].size() + 1) { model.cursor_col = model.lines[model.cursor_row - 1].size() + 1; }
-              if(model.lines.size() > scr.get_h()) { scr.set_h(model.lines.size()); }
+              if(model.lines.size() > scr.columns()) { scr.set_h(model.lines.size()); }
             }
           }
           else
@@ -347,7 +348,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
           else { model.lines.push_back(after); }
           model.cursor_col = 1;
           model.cursor_row++;
-          if(model.lines.size() > scr.get_h()) { scr.set_h(model.lines.size()); }
+          if(model.lines.size() > scr.columns()) { scr.set_h(model.lines.size()); }
           break;
         }
         default: break;
@@ -355,9 +356,9 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     }
     render(scr, model, screen.columns());
     std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
-    if(cursor.row() + (int)scr.get_h() - 1 > screen.rows())
+    if(cursor.row() + scr.columns() - 1 > screen.rows())
     {
-      cursor.setRow(static_cast<std::uint16_t>(static_cast<long>(screen.rows()) - (static_cast<long>(scr.get_h()) - 1)));
+      cursor.setRow(static_cast<std::uint16_t>(screen.rows() - (scr.columns() - 1)));
       std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
     }
   }

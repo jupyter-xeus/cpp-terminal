@@ -21,7 +21,7 @@ TEST_CASE("Test Term::Screen")
 
 TEST_CASE("Test Term::Screen(5,10)")
 {
-  Term::Screen screen(5, 10);
+  Term::Screen screen({Term::Rows(5), Term::Columns(10)});
   CHECK(screen.rows() == 5);
   CHECK(screen.columns() == 10);
   CHECK(screen.empty() == false);

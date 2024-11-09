@@ -15,15 +15,17 @@
 #include "cpp-terminal/private/conversion.hpp"
 #include "cpp-terminal/private/unicode.hpp"
 #include "cpp-terminal/prompt.hpp"
+#include "cpp-terminal/screen.hpp"
+#include "cpp-terminal/size.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/terminfo.hpp"
-
-#include <cstddef>
 
 namespace Term
 {
 
-Term::Window::Window(const std::size_t& columns, const std::size_t& rows) : m_size({rows, columns}) { clear(); }
+Term::Window::Window(const Term::Size& size) : m_size(size) { clear(); }
+
+Term::Window::Window(const Term::Screen& screen) : m_size({screen.rows(), screen.columns()}) { clear(); }
 
 char32_t Term::Window::get_char(const std::size_t& column, const std::size_t& row) { return m_chars[index(column, row)]; }
 
@@ -37,9 +39,9 @@ Term::Color Term::Window::get_bg(const std::size_t& column, const std::size_t& r
 
 Term::Style Term::Window::get_style(const std::size_t& column, const std::size_t& row) { return m_style[index(column, row)]; }
 
-std::size_t Term::Window::get_w() const { return m_size.columns(); }
+const Columns& Term::Window::columns() const noexcept { return m_size.columns(); }
 
-std::size_t Term::Window::get_h() const { return m_size.rows(); }
+const Rows& Term::Window::rows() const noexcept { return m_size.rows(); }
 
 void Term::Window::set_char(const std::size_t& column, const std::size_t& row, const char32_t& character)
 {
@@ -87,7 +89,7 @@ void Term::Window::set_h(const std::size_t& new_h)
     m_fg.insert(m_fg.end(), dc, {0, 0, 0});
     m_bg.insert(m_bg.end(), dc, {0, 0, 0});
     m_style.insert(m_style.end(), dc, Style::Reset);
-    m_size = {m_size.columns(), new_h};
+    m_size = {Term::Columns(m_size.columns()), Term::Rows(new_h)};
   }
   else { throw Term::Exception("Shrinking height not supported."); }
 }
@@ -186,13 +188,12 @@ void Term::Window::print_rect(const std::size_t& x1, const std::size_t& y1, cons
 
 void Term::Window::clear()
 {
-  const std::size_t area{m_size.rows() * m_size.columns()};
-  m_style.assign(area, Style::Reset);
-  m_bg_reset.assign(area, true);
-  m_bg.assign(area, Term::Color::Name::Default);
-  m_fg_reset.assign(area, true);
-  m_fg.assign(area, Term::Color::Name::Default);
-  m_chars.assign(area, ' ');
+  m_style.assign(m_size.area(), Style::Reset);
+  m_bg_reset.assign(m_size.area(), true);
+  m_bg.assign(m_size.area(), Term::Color::Name::Default);
+  m_fg_reset.assign(m_size.area(), true);
+  m_fg.assign(m_size.area(), Term::Color::Name::Default);
+  m_chars.assign(m_size.area(), ' ');
 }
 
 std::string Term::Window::render(const std::size_t& x0, const std::size_t& y0, bool term)
