@@ -9,8 +9,6 @@
 
 #include "cpp-terminal/screen.hpp"
 
-#include "size.hpp"
-
 Term::Screen::Screen(const Term::Size& size) : m_size(size) {}
 
 const Term::Rows& Term::Screen::rows() const noexcept { return m_size.rows(); }

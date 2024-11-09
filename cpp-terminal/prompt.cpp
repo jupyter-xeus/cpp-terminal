@@ -20,7 +20,6 @@
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
-#include "size.hpp"
 
 #include <iostream>
 
