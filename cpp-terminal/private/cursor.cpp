@@ -31,7 +31,7 @@ Term::Cursor Term::cursor_position()
   CONSOLE_SCREEN_BUFFER_INFO inf;
   if(GetConsoleScreenBufferInfo(Private::out.handle(), &inf)) return Term::Cursor({Row(inf.dwCursorPosition.Y + 1), Column(inf.dwCursorPosition.X + 1)});
   else
-    return {}
+    return {};
 #else
   std::string ret;
   std::size_t nread{0};
