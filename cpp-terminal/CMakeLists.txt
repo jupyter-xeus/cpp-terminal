@@ -15,10 +15,12 @@ set(CPP_TERMINAL_PUBLIC_HEADERS
     key.hpp
     mouse.hpp
     options.hpp
+    position.hpp
     prompt.hpp
     screen.hpp
     stream.hpp
     style.hpp
+    size.hpp
     terminal_impl.hpp
     terminal_initializer.hpp
     terminal.hpp

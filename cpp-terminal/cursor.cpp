@@ -9,17 +9,13 @@
 
 #include "cpp-terminal/cursor.hpp"
 
-Term::Cursor::Cursor(const std::size_t& row, const std::size_t& column) : m_position({row, column}) {}
+Term::Cursor::Cursor(const Position& position) : m_position(position) {}
 
-std::size_t Term::Cursor::row() const { return m_position.first; }
+std::size_t Term::Cursor::row() const { return m_position.row(); }
 
-std::size_t Term::Cursor::column() const { return m_position.second; }
+std::size_t Term::Cursor::column() const { return m_position.column(); }
 
-bool Term::Cursor::empty() const { return (0 == m_position.first) && (0 == m_position.second); }
-
-void Term::Cursor::setRow(const std::size_t& row) { m_position.first = row; }
-
-void Term::Cursor::setColum(const std::size_t& column) { m_position.second = column; }
+bool Term::Cursor::empty() const { return (0 == m_position.row()) && (0 == m_position.column()); }
 
 bool Term::Cursor::operator==(const Term::Cursor& cursor) const { return (this->row() == cursor.row()) && (this->column() == cursor.column()); }
 

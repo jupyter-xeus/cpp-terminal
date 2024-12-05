@@ -20,6 +20,7 @@
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/terminal.hpp"
 #include "cpp-terminal/tty.hpp"
+#include "position.hpp"
 
 #include <iostream>
 
@@ -357,7 +358,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
     if(cursor.row() + scr.columns() - 1 > screen.rows())
     {
-      cursor.setRow(static_cast<std::uint16_t>(screen.rows() - (scr.columns() - 1)));
+      cursor = Cursor({Row(static_cast<std::uint16_t>(screen.rows() - (scr.columns() - 1))), Column(cursor.column())});
       std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
     }
   }

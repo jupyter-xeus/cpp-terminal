@@ -80,12 +80,12 @@ TEST_CASE("Event with Focus")
 
 TEST_CASE("Event with Cursor")
 {
-  Term::Cursor cursor(1, 5);
+  Term::Cursor cursor({Term::Row(1), Term::Column(5)});
   Term::Event  event(cursor);
   CHECK(event.empty() == false);
   CHECK(event.get_if_screen() == nullptr);
   CHECK(event.get_if_focus() == nullptr);
-  CHECK(*event.get_if_cursor() == Term::Cursor(1, 5));
+  CHECK(*event.get_if_cursor() == Term::Cursor({Term::Row(1), Term::Column(5)}));
   CHECK(event.get_if_key() == nullptr);
   CHECK(event.get_if_mouse() == nullptr);
   CHECK(event.get_if_copy_paste() == nullptr);
@@ -94,7 +94,7 @@ TEST_CASE("Event with Cursor")
   CHECK(event2.empty() == false);
   CHECK(event.get_if_screen() == nullptr);
   CHECK(event2.get_if_focus() == nullptr);
-  CHECK(*event2.get_if_cursor() == Term::Cursor(1, 5));
+  CHECK(*event2.get_if_cursor() == Term::Cursor({Term::Row(1), Term::Column(5)}));
   CHECK(event2.get_if_key() == nullptr);
   CHECK(event2.get_if_mouse() == nullptr);
   CHECK(event2.get_if_copy_paste() == nullptr);

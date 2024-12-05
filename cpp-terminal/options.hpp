@@ -38,8 +38,8 @@ public:
   Options(const std::initializer_list<Term::Option>& option);
   template<typename... Args> explicit Options(const Args&&... args) : m_Options(std::initializer_list<Term::Option>{args...}) { clean(); }
 
-  bool operator==(const Options& options);
-  bool operator!=(const Options& options);
+  bool operator==(const Options& options) const;
+  bool operator!=(const Options& options) const;
   bool has(const Option& option) const noexcept;
 
 private:

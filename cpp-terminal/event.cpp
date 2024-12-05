@@ -235,7 +235,7 @@ void Term::Event::parse(const std::string& str)
     if(found != std::string::npos)
     {
       m_Type               = Type::Cursor;
-      m_container.m_Cursor = Cursor(static_cast<std::uint16_t>(std::stoi(str.substr(2, found - 2))), static_cast<std::uint16_t>(std::stoi(str.substr(found + 1, str.size() - (found + 2)))));
+      m_container.m_Cursor = Cursor({Row(std::stoi(str.substr(2, found - 2))), Column(std::stoi(str.substr(found + 1, str.size() - (found + 2))))});
     }
   }
   else if(str[0] == '\033' && str[1] == '[' && str[2] == '<')

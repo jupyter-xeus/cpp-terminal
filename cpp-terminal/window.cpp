@@ -75,7 +75,7 @@ void Term::Window::set_bg(const std::size_t& column, const std::size_t& row, con
 
 void Term::Window::set_style(const std::size_t& column, const std::size_t& row, const Style& style) { m_style[index(column, row)] = style; }
 
-void Term::Window::set_cursor_pos(const std::size_t& column, const std::size_t& row) { m_cursor = {row, column}; }
+void Term::Window::set_cursor_pos(const std::size_t& column, const std::size_t& row) { m_cursor = Cursor({Row(row), Column(column)}); }
 
 void Term::Window::set_h(const std::size_t& new_h)
 {
@@ -118,7 +118,7 @@ void Term::Window::print_str(const std::size_t& x, const std::size_t& y, const s
       ++xpos;
     }
   }
-  if(move_cursor) { m_cursor = {ypos, xpos}; }
+  if(move_cursor) { m_cursor = Cursor({Row(ypos), Column(xpos)}); }
 }
 
 void Term::Window::fill_fg(const std::size_t& x1, const std::size_t& y1, const std::size_t& x2, const std::size_t& y2, const Color& rgb)

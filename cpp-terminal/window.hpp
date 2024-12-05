@@ -79,7 +79,7 @@ public:
 private:
   std::size_t              index(const std::size_t& column, const std::size_t& row) const;
   Term::Size               m_size;
-  Term::Cursor             m_cursor{1, 1};
+  Term::Cursor             m_cursor;
   std::vector<char32_t>    m_chars;  // the characters in row first order
   std::vector<Term::Color> m_fg;
   std::vector<Term::Color> m_bg;
