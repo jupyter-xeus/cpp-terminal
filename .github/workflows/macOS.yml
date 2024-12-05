@@ -17,42 +17,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  macos-12:
-    runs-on: macos-12
-    name: macos-12 xcode-${{ matrix.xcode }} (c++${{ matrix.standard }})
-    strategy:
-      fail-fast: false
-      matrix:
-        xcode: [ '13.1', '13.2.1', '13.3.1', '13.4.1' ]
-        standard: [ 11, 14, 17, 20 ]
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
-
-    steps:
-      - uses: ammaraskar/gcc-problem-matcher@master
-      - name: 📥 Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: ⬇️ Setup CMake
-        uses: lukka/get-cmake@latest
-        with:
-          cmakeVersion: ^3
-          ninjaVersion: ^1.11.1
-      - name: 📂 Load .env file
-        if: hashFiles('.github/workflows/.env') != ''
-        uses: xom9ikk/dotenv@v2
-        with:
-          path: .github/workflows
-      - name: 🔧 Configure
-        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }} -D CPPTERMINAL_ENABLE_DOCS=OFF
-      - name: ⚙️ Build
-        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
-      - name: 🧪 Test
-        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
-      - name: 🎉 Install
-        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
-
   macos-13:
     name: macos-13 xcode-${{ matrix.xcode }} (c++${{ matrix.standard }})
     runs-on: macos-13
@@ -124,6 +88,43 @@ jobs:
         run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
       - name: 🎉 Install
         run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
+
+  macos-15:
+    runs-on: macos-15
+    name: macos-15 xcode-${{ matrix.xcode }} (c++${{ matrix.standard }})
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode: [ '15.4', '16.0', '16.1', '16.2' ]
+        standard: [ 11, 14, 17, 20 ]
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+
+    steps:
+      - uses: ammaraskar/gcc-problem-matcher@master
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: ⬇️ Setup CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: ^3
+          ninjaVersion: ^1.11.1
+      - name: 📂 Load .env file
+        if: hashFiles('.github/workflows/.env') != ''
+        uses: xom9ikk/dotenv@v2
+        with:
+          path: .github/workflows
+      - name: 🔧 Configure
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }} -D CPPTERMINAL_ENABLE_DOCS=OFF
+      - name: ⚙️ Build
+        run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
+      - name: 🧪 Test
+        run: ctest --test-dir ${{ env.CMAKE_BINARY_PREFIX }} -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure
+      - name: 🎉 Install
+        run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
+  
   gcc:
     runs-on: macos-14
     name: macos-14 gcc-${{ matrix.version }} (c++${{ matrix.standard }})
