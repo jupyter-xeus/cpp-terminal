@@ -260,7 +260,7 @@ void Term::Event::parse(const std::string& str)
     if(str[str.size() - 1] == 'm') action = Term::Button::Action::Released;
     else
       action = Term::Button::Action::Pressed;
-    Term::Button::Type type;
+    Term::Button::Type type = Button::Type::None;
     switch(values[0])
     {
       case 0:
