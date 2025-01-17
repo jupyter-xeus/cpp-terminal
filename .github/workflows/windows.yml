@@ -25,7 +25,7 @@ jobs:
       matrix:
         # https://www.msys2.org/docs/environments/
         # TODO Try to add msys
-        sys: [ ucrt64 , clang64, clang32, mingw64, mingw32 ]
+        sys: [ ucrt64 , clang64, mingw64, mingw32 ]
         standard: [ 11, 14, 17, 20 ]
     defaults:
       run:
