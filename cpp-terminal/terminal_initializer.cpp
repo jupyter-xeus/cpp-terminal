@@ -13,6 +13,7 @@
 #include "cpp-terminal/private/file_initializer.hpp"
 #include "cpp-terminal/private/signals.hpp"
 #include "cpp-terminal/terminal.hpp"
+#include "terminal.hpp"
 
 #include <new>
 
@@ -25,7 +26,7 @@ try
   {
     static const Private::FileInitializer files_init;
     new(&Term::terminal) Terminal();
-    static Term::Private::Signals signals;
+    static Term::Private::Signals signals(Term::terminal);
     sighandler_t                  handler = [](int signum) { signals.reset_and_raise(signum); };
     signals.setHandler(handler);
   }

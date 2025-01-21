@@ -9,7 +9,7 @@
 
 #include "cpp-terminal/private/signals.hpp"
 
-#include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/terminal_impl.hpp"
 #include "signals.hpp"
 
 #include <algorithm>
@@ -36,10 +36,7 @@ static BOOL WINAPI consoleHandler(DWORD signal)
 }
 #endif
 
-void Term::Private::Signals::clean_terminal() noexcept
-{
-    Term::terminal.clean();
-}
+void Term::Private::Signals::clean_terminal() noexcept { const_cast<Term::Terminal*>(m_term)->clean(); }
 
 const std::size_t Term::Private::Signals::m_signals_number{NSIG - 1};
 
@@ -58,8 +55,11 @@ void Term::Private::Signals::setHandler(const sighandler_t& handler) noexcept
 #endif
 }
 
-Term::Private::Signals::Signals() noexcept
+const Term::Terminal* Term::Private::Signals::m_term{nullptr};
+
+Term::Private::Signals::Signals(const Terminal& terminal) noexcept
 {
+  m_term = &terminal;
   m_handlers.reserve(m_signals_number);
   for(std::size_t signal = 0; signal != m_signals_number; ++signal)
   {

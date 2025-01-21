@@ -20,7 +20,7 @@ int main()
 {
   Term::terminal.setOptions(Term::Option::Raw, Term::Option::SignalKeys, Term::Option::ClearScreen);
   std::signal(SIGINT,
-              [](int sig)
+              [](int)
               {
                 std::ofstream outfile("cpp_terminal_signal.txt");
                 outfile << "my text here!" << std::endl;
