@@ -33,7 +33,7 @@ jobs:
         run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -DCMAKE_PREFIX_PATH="~/micromamba" -DCMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }}  -D CPPTERMINAL_ENABLE_DOCS=OFF
 
       - name: ☑️ cpp-linter
-        uses: cpp-linter/cpp-linter-action@v3
+        uses: cpp-linter/cpp-linter-action@v2
         id: linter
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
