@@ -15,7 +15,6 @@ using sighandler_t = void (*)(int);
 
 namespace Term
 {
-class Terminal;
 
 namespace Private
 {
@@ -26,8 +25,8 @@ public:
   Signals() noexcept;
   ~Signals() noexcept = default;
   void        setHandler(const sighandler_t& handler) noexcept;
-  void        reset_and_raise(int sign, Term::Terminal&) noexcept;
-  static void reset_and_raise(Term::Terminal&) noexcept;
+  void        reset_and_raise(const int &sign) noexcept;
+  static      void clean_terminal() noexcept;
 
 private:
   const static std::size_t  m_signals_number;

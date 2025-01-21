@@ -26,7 +26,7 @@ try
     static const Private::FileInitializer files_init;
     new(&Term::terminal) Terminal();
     static Term::Private::Signals signals;
-    sighandler_t                  handler = [](int signum) { signals.reset_and_raise(signum, Term::terminal); };
+    sighandler_t                  handler = [](int signum) { signals.reset_and_raise(signum); };
     signals.setHandler(handler);
   }
   ++m_counter;

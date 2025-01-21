@@ -9,7 +9,7 @@
 
 #include "cpp-terminal/private/signals.hpp"
 
-#include "cpp-terminal/terminal_impl.hpp"
+#include "cpp-terminal/terminal.hpp"
 #include "signals.hpp"
 
 #include <algorithm>
@@ -28,13 +28,18 @@ static BOOL WINAPI consoleHandler(DWORD signal)
     case CTRL_C_EVENT:
     case CTRL_BREAK_EVENT:
     {
-      Term::Private::Signals::reset_and_raise(Term::terminal);
+      Term::Private::Signals::clean_terminal();
       return false;
     }
     default: return false;
   }
 }
 #endif
+
+void Term::Private::Signals::clean_terminal() noexcept
+{
+    Term::terminal.clean();
+}
 
 const std::size_t Term::Private::Signals::m_signals_number{NSIG - 1};
 
@@ -72,10 +77,9 @@ Term::Private::Signals::Signals() noexcept
   }
 }
 
-void Term::Private::Signals::reset_and_raise(Term::Terminal& term) noexcept { term.clean(); }
-
-void Term::Private::Signals::reset_and_raise(int sign, Term::Terminal& term) noexcept
+void Term::Private::Signals::reset_and_raise(const int& sign) noexcept
 {
+  clean_terminal();
   const static std::vector<int> termin{
 #if defined(SIGHUP)
     SIGHUP,
@@ -166,7 +170,6 @@ void Term::Private::Signals::reset_and_raise(int sign, Term::Terminal& term) noe
   {
     sighandler_t old = std::signal(sign, m_handlers[sign]);
     old              = std::signal(sign, m_handlers[sign]);
-    term.clean();
     std::raise(sign);
   }
 }
