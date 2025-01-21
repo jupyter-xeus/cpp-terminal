@@ -24,10 +24,9 @@ try
   if(0 == m_counter)
   {
     static const Private::FileInitializer files_init;
-    static std::vector<sighandler_t>      m_handlers;
     new(&Term::terminal) Terminal();
-    static Term::Private::Signals signals(m_handlers);
-    sighandler_t                  handler = [](int signum) { Term::Private::Signals::reset_and_raise(signum, m_handlers, Term::terminal); };
+    static Term::Private::Signals signals;
+    sighandler_t                  handler = [](int signum) { signals.reset_and_raise(signum, Term::terminal); };
     signals.setHandler(handler);
   }
   ++m_counter;

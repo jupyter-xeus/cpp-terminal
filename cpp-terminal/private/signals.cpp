@@ -9,7 +9,8 @@
 
 #include "cpp-terminal/private/signals.hpp"
 
-#include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/terminal_impl.hpp"
+#include "signals.hpp"
 
 #include <algorithm>
 #include <csignal>
@@ -19,20 +20,20 @@
 #endif
 
 #ifdef _WIN32
-    #include<windows.h>
-    static BOOL WINAPI consoleHandler(DWORD signal)
+  #include <windows.h>
+static BOOL WINAPI consoleHandler(DWORD signal)
+{
+  switch(signal)
+  {
+    case CTRL_C_EVENT:
+    case CTRL_BREAK_EVENT:
     {
-        switch(signal)
-        {
-            case CTRL_C_EVENT:
-            case CTRL_BREAK_EVENT:
-            {
-                Term::Private::Signals::reset_and_raise(Term::terminal);
-                return false;
-            }
-            default : return false;
-        }
+      Term::Private::Signals::reset_and_raise(Term::terminal);
+      return false;
     }
+    default: return false;
+  }
+}
 #endif
 
 const std::size_t Term::Private::Signals::m_signals_number{NSIG - 1};
@@ -40,45 +41,28 @@ const std::size_t Term::Private::Signals::m_signals_number{NSIG - 1};
 void Term::Private::Signals::setHandler(const sighandler_t& handler) noexcept
 {
   for(std::size_t signal = 0; signal != m_signals_number; ++signal)
-  { 
-    #ifdef _WIN32
-        if(signal!=SIGINT) sighandler_t hand = std::signal(signal, handler);
-    #else
-        sighandler_t hand = std::signal(signal, handler);
-    #endif
+  {
+#ifdef _WIN32
+    if(signal != SIGINT) sighandler_t hand = std::signal(signal, handler);
+#else
+    sighandler_t hand = std::signal(signal, handler);
+#endif
   }
-  #ifdef _WIN32
+#ifdef _WIN32
   SetConsoleCtrlHandler(consoleHandler, TRUE);
-  #endif
+#endif
 }
 
-Term::Private::Signals::Signals(std::vector<sighandler_t>& m_han) noexcept
+Term::Private::Signals::Signals() noexcept
 {
-  const static std::vector<int> ignore{
-#if defined(SIGCONT)
-    SIGCONT,
-#endif
-#if defined(SIGSTOP)
-    SIGSTOP,
-#endif
-#if defined(SIGTSTP)
-    SIGTSTP,
-#endif
-#if defined(SIGTTIN)
-    SIGTTIN,
-#endif
-#if defined(SIGTTOU)
-    SIGTTOU,
-#endif
-  };
-  m_han.reserve(m_signals_number);
+  m_handlers.reserve(m_signals_number);
   for(std::size_t signal = 0; signal != m_signals_number; ++signal)
   {
     //if(std::find(ignore.begin(),ignore.end(),signal)==ignore.end())
     //{
     sighandler_t old = std::signal(signal, SIG_DFL);
     //sighandler_t dumb=std::signal(signal, old);
-    m_han.push_back(old);
+    m_handlers.push_back(old);
     //}
     //else
     //{
@@ -88,12 +72,9 @@ Term::Private::Signals::Signals(std::vector<sighandler_t>& m_han) noexcept
   }
 }
 
-void Term::Private::Signals::reset_and_raise(Term::Terminal& term) noexcept
-{
-  term.clean();
-}
+void Term::Private::Signals::reset_and_raise(Term::Terminal& term) noexcept { term.clean(); }
 
-void Term::Private::Signals::reset_and_raise(int sign, std::vector<sighandler_t>& m_han, Term::Terminal& term) noexcept
+void Term::Private::Signals::reset_and_raise(int sign, Term::Terminal& term) noexcept
 {
   const static std::vector<int> termin{
 #if defined(SIGHUP)
@@ -183,8 +164,8 @@ void Term::Private::Signals::reset_and_raise(int sign, std::vector<sighandler_t>
   };
   if(std::find(termin.begin(), termin.end(), sign) != termin.end())
   {
-    sighandler_t old = std::signal(sign, m_han[sign]);
-    old              = std::signal(sign, m_han[sign]);
+    sighandler_t old = std::signal(sign, m_handlers[sign]);
+    old              = std::signal(sign, m_handlers[sign]);
     term.clean();
     std::raise(sign);
   }
