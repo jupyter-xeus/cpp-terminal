@@ -25,6 +25,7 @@ public:
   ~Signals() noexcept {}
   void        setHandler(const sighandler_t& handler) noexcept;
   static void reset_and_raise(int sign, std::vector<sighandler_t>& m_han, Term::Terminal&) noexcept;
+  static void reset_and_raise(Term::Terminal&) noexcept;
 
 private:
   const static std::size_t m_signals_number;

@@ -18,11 +18,38 @@
   #define NSIG (_SIGMAX + 1) /* For QNX */
 #endif
 
+#ifdef _WIN32
+    #include<windows.h>
+    static BOOL WINAPI consoleHandler(DWORD signal)
+    {
+        switch(signal)
+        {
+            case CTRL_C_EVENT:
+            case CTRL_BREAK_EVENT:
+            {
+                Term::Private::Signals::reset_and_raise(Term::terminal);
+                return false;
+            }
+            default : return false;
+        }
+    }
+#endif
+
 const std::size_t Term::Private::Signals::m_signals_number{NSIG - 1};
 
 void Term::Private::Signals::setHandler(const sighandler_t& handler) noexcept
 {
-  for(std::size_t signal = 0; signal != m_signals_number; ++signal) { sighandler_t hand = std::signal(signal, handler); }
+  for(std::size_t signal = 0; signal != m_signals_number; ++signal)
+  { 
+    #ifdef _WIN32
+        if(signal!=SIGINT) sighandler_t hand = std::signal(signal, handler);
+    #else
+        sighandler_t hand = std::signal(signal, handler);
+    #endif
+  }
+  #ifdef _WIN32
+  SetConsoleCtrlHandler(consoleHandler, TRUE);
+  #endif
 }
 
 Term::Private::Signals::Signals(std::vector<sighandler_t>& m_han) noexcept
@@ -61,25 +88,30 @@ Term::Private::Signals::Signals(std::vector<sighandler_t>& m_han) noexcept
   }
 }
 
+void Term::Private::Signals::reset_and_raise(Term::Terminal& term) noexcept
+{
+  term.clean();
+}
+
 void Term::Private::Signals::reset_and_raise(int sign, std::vector<sighandler_t>& m_han, Term::Terminal& term) noexcept
 {
   const static std::vector<int> termin{
 #if defined(SIGHUP)
     SIGHUP,
 #endif
-#if defined(SIGHUP)
+#if defined(SIGINT)
     SIGINT,
 #endif
 #if defined(SIGQUIT)
     SIGQUIT,
 #endif
-#if defined(SIGQUIT)
+#if defined(SIGILL)
     SIGILL,
 #endif
 #if defined(SIGTRAP)
     SIGTRAP,
 #endif
-#if defined(SIGTRAP)
+#if defined(SIGABRT)
     SIGABRT,
 #endif
 #if defined(SIGIOT)
@@ -88,7 +120,7 @@ void Term::Private::Signals::reset_and_raise(int sign, std::vector<sighandler_t>
 #if defined(SIGBUS)
     SIGBUS,
 #endif
-#if defined(SIGBUS)
+#if defined(SIGFPE)
     SIGFPE,
 #endif
 #if defined(SIGKILL)
@@ -103,7 +135,7 @@ void Term::Private::Signals::reset_and_raise(int sign, std::vector<sighandler_t>
 #if defined(SIGUSR2)
     SIGUSR2,
 #endif
-#if defined(SIGUSR2)
+#if defined(SIGPIPE)
     SIGPIPE,
 #endif
 #if defined(SIGALRM)
@@ -127,7 +159,7 @@ void Term::Private::Signals::reset_and_raise(int sign, std::vector<sighandler_t>
 #if defined(SIGPROF)
     SIGPROF,
 #endif
-#if defined(SIGPROF)
+#if defined(SIGIO)
     SIGIO,
 #endif
 #if defined(SIGPOLL)
