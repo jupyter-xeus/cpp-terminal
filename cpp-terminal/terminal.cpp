@@ -19,5 +19,3 @@ std::array<char, sizeof(Term::Terminal)> terminal_buffer;  //NOLINT(fuchsia-stat
 Term::Terminal& Term::terminal = reinterpret_cast<Term::Terminal&>(::terminal_buffer);  //NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
 
 std::string Term::terminal_title(const std::string& title) { return "\u001b]0;" + title + '\a'; }
-
-std::string Term::clear_buffer() { return "\u001b[3J"; }

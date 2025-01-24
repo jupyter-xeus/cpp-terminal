@@ -15,7 +15,8 @@
 #include "cpp-terminal/private/file.hpp"
 #include "cpp-terminal/screen.hpp"
 #include "cpp-terminal/style.hpp"
-#include "cpp-terminal/terminal.hpp"  //FIXME avoid recursion
+
+std::string Term::Terminal::clear() const noexcept { return "\u001b[3J"; }
 
 Term::Options Term::Terminal::getOptions() const noexcept { return m_options; }
 
@@ -36,7 +37,7 @@ void Term::Terminal::clean()
   unsetFocusEvents();
   unsetMouseEvents();
   if(getOptions().has(Option::NoCursor)) { Term::Private::out.write(cursor_on()); }
-  if(getOptions().has(Option::ClearScreen)) { Term::Private::out.write(clear_buffer() + style(Style::Reset) + cursor_move(1, 1) + screen_load()); }
+  if(getOptions().has(Option::ClearScreen)) { Term::Private::out.write(clear() + style(Style::Reset) + cursor_move(1, 1) + screen_load()); }
   set_unset_utf8();
   store_and_restore();
 }
@@ -53,7 +54,7 @@ catch(...)
 
 void Term::Terminal::applyOptions() const
 {
-  if(getOptions().has(Option::ClearScreen)) { Term::Private::out.write(screen_save() + clear_buffer() + style(Style::Reset) + cursor_move(1, 1)); }
+  if(getOptions().has(Option::ClearScreen)) { Term::Private::out.write(screen_save() + clear() + style(Style::Reset) + cursor_move(1, 1)); }
   if(getOptions().has(Option::NoCursor)) { Term::Private::out.write(cursor_off()); }
   setMode();
 }

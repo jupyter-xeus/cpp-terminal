@@ -14,6 +14,7 @@
 #include "cpp-terminal/terminal_initializer.hpp"
 
 #include <cstddef>
+#include <string>
 
 namespace Term
 {
@@ -34,6 +35,8 @@ public:
     applyOptions();
   }
   Term::Options getOptions() const noexcept;
+  // clear the screen and the scroll-back buffer
+  std::string   clear() const noexcept;
 
 private:
   ///
