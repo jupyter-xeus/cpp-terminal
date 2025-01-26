@@ -11,15 +11,7 @@
 
 #include <cstddef>
 #include <cstdint>
-
-#ifdef _WIN32
-  #pragma warning( push )
-  #pragma warning( disable : 4710)
-#endif
 #include <streambuf>
-#ifdef _WIN32
-  #pragma warning( pop )
-#endif
 
 namespace Term
 {

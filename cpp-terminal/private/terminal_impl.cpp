@@ -18,7 +18,6 @@
   #include <io.h>
   #pragma warning(push)
   #pragma warning(disable : 4668)
-  #pragma warning(disable : 4710)
   #include <windows.h>
   #pragma warning(pop)
   #if !defined(ENABLE_VIRTUAL_TERMINAL_PROCESSING)

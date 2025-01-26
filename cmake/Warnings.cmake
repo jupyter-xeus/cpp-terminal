@@ -64,9 +64,11 @@ set(MSVC_WARNINGS
         "/W4"
         "/Wall"
         "/WL"
-        "/wd5045"
-        "/wd4820"
-        "/wd4514")
+        "/wd5045" #FIXME
+        "/wd4820" #FIXME
+        "/wd4514" #FIXME
+        "/wd4710" #FIXME
+        )
 
 target_compile_options(
   ${PROJECT_NAME}Warnings
