@@ -45,6 +45,11 @@ Term::Private::OutputFileHandler& Term::Private::out = reinterpret_cast<Term::Pr
 
 //
 
+#ifdef _WIN32
+  #pragma warning( push )
+  #pragma warning( disable : 4297)
+#endif
+
 Term::Private::FileHandler::FileHandler(std::recursive_mutex& mutex, const std::string& file, const std::string& mode) noexcept
 try : m_mutex(mutex)
 {
@@ -89,6 +94,30 @@ catch(...)
 {
   ExceptionHandler(ExceptionDestination::StdErr);
 }
+
+Term::Private::OutputFileHandler::OutputFileHandler(std::recursive_mutex& io_mutex) noexcept
+try : FileHandler(io_mutex, m_file, "w")
+{
+  //noop
+}
+catch(...)
+{
+  ExceptionHandler(ExceptionDestination::StdErr);
+}
+
+Term::Private::InputFileHandler::InputFileHandler(std::recursive_mutex& io_mutex) noexcept
+try : FileHandler(io_mutex, m_file, "r")
+{
+  //noop
+}
+catch(...)
+{
+  ExceptionHandler(ExceptionDestination::StdErr);
+}
+
+#ifdef _WIN32
+  #pragma warning( pop )
+#endif
 
 bool Term::Private::FileHandler::null() const noexcept { return m_null; }
 
@@ -158,26 +187,6 @@ void Term::Private::FileHandler::flush() { Term::Private::Errno().check_if(0 != 
 
 void Term::Private::FileHandler::lockIO() { m_mutex.lock(); }
 void Term::Private::FileHandler::unlockIO() { m_mutex.unlock(); }
-
-Term::Private::OutputFileHandler::OutputFileHandler(std::recursive_mutex& io_mutex) noexcept
-try : FileHandler(io_mutex, m_file, "w")
-{
-  //noop
-}
-catch(...)
-{
-  ExceptionHandler(ExceptionDestination::StdErr);
-}
-
-Term::Private::InputFileHandler::InputFileHandler(std::recursive_mutex& io_mutex) noexcept
-try : FileHandler(io_mutex, m_file, "r")
-{
-  //noop
-}
-catch(...)
-{
-  ExceptionHandler(ExceptionDestination::StdErr);
-}
 
 std::string Term::Private::ask(const std::string& str)
 {

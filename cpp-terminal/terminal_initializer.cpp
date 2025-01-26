@@ -19,6 +19,11 @@
 
 std::size_t Term::TerminalInitializer::m_counter{0};
 
+#ifdef _WIN32
+  #pragma warning( push )
+  #pragma warning( disable : 4297)
+#endif
+
 Term::TerminalInitializer::TerminalInitializer() noexcept
 try
 {
@@ -47,3 +52,7 @@ catch(...)
 {
   ExceptionHandler(Private::ExceptionDestination::StdErr);
 }
+
+#ifdef _WIN32
+  #pragma warning( pop )
+#endif

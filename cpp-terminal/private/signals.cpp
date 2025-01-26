@@ -8,9 +8,7 @@
 */
 
 #include "cpp-terminal/private/signals.hpp"
-
 #include "cpp-terminal/terminal_impl.hpp"
-#include "signals.hpp"
 
 #include <algorithm>
 #include <csignal>
@@ -20,7 +18,10 @@
 #endif
 
 #ifdef _WIN32
+  #pragma warning( push )
+  #pragma warning( disable : 4668)
   #include <windows.h>
+  #pragma warning( pop )
 static BOOL WINAPI consoleHandler(DWORD signal)
 {
   switch(signal)

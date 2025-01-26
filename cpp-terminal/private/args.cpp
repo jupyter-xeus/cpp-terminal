@@ -17,6 +17,7 @@
   #pragma warning( push )
   #pragma warning( disable : 4668)
   #include <windows.h>
+  #pragma warning( pop )
   #include <processenv.h>
   #include "cpp-terminal/private/unicode.hpp"
 // clang-format on

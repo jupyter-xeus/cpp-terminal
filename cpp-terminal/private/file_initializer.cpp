@@ -71,6 +71,11 @@ catch(...)
   ExceptionHandler(ExceptionDestination::MessageBox);
 }
 
+#ifdef _WIN32
+  #pragma warning( push )
+  #pragma warning( disable : 4297)
+#endif
+
 Term::Private::FileInitializer::FileInitializer() noexcept
 try
 {
@@ -105,6 +110,10 @@ catch(...)
 {
   ExceptionHandler(ExceptionDestination::StdErr);
 }
+
+#ifdef _WIN32
+  #pragma warning( pop )
+#endif
 
 void Term::Private::FileInitializer::openStandardStreams() noexcept
 try

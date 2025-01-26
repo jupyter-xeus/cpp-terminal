@@ -20,6 +20,11 @@ std::string Term::Terminal::clear() const noexcept { return "\u001b[3J"; }
 
 Term::Options Term::Terminal::getOptions() const noexcept { return m_options; }
 
+#ifdef _WIN32
+  #pragma warning( push )
+  #pragma warning( disable : 4297)
+#endif
+
 Term::Terminal::Terminal() noexcept
 try
 {
@@ -32,16 +37,6 @@ catch(...)
   ExceptionHandler(Private::ExceptionDestination::StdErr);
 }
 
-void Term::Terminal::clean()
-{
-  unsetFocusEvents();
-  unsetMouseEvents();
-  if(getOptions().has(Option::NoCursor)) { Term::Private::out.write(cursor_on()); }
-  if(getOptions().has(Option::ClearScreen)) { Term::Private::out.write(clear() + style(Style::Reset) + cursor_move(1, 1) + screen_load()); }
-  set_unset_utf8();
-  store_and_restore();
-}
-
 Term::Terminal::~Terminal() noexcept
 try
 {
@@ -50,6 +45,20 @@ try
 catch(...)
 {
   ExceptionHandler(Private::ExceptionDestination::StdErr);
+}
+
+#ifdef _WIN32
+  #pragma warning( pop )
+#endif
+
+void Term::Terminal::clean()
+{
+  unsetFocusEvents();
+  unsetMouseEvents();
+  if(getOptions().has(Option::NoCursor)) { Term::Private::out.write(cursor_on()); }
+  if(getOptions().has(Option::ClearScreen)) { Term::Private::out.write(clear() + style(Style::Reset) + cursor_move(1, 1) + screen_load()); }
+  set_unset_utf8();
+  store_and_restore();
 }
 
 void Term::Terminal::applyOptions() const
