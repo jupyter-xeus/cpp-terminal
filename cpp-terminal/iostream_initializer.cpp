@@ -16,7 +16,16 @@
 #include "cpp-terminal/tty.hpp"
 
 #include <cstddef>
+
+#ifdef _WIN32
+  #pragma warning( push )
+  #pragma warning( disable : 4710)
+#endif
 #include <iostream>
+#ifdef _WIN32
+  #pragma warning( pop )
+#endif
+
 std::size_t Term::IOStreamInitializer::m_counter{0};
 
 #ifdef _WIN32
