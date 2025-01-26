@@ -11,7 +11,6 @@
 #include "cpp-terminal/private/env.hpp"
 #include "cpp-terminal/private/exception.hpp"
 #include "cpp-terminal/private/file.hpp"
-//#include "cpp-terminal/private/signals.hpp"
 #include "cpp-terminal/private/sigwinch.hpp"
 #include "cpp-terminal/terminal.hpp"
 
@@ -19,6 +18,7 @@
   #include <io.h>
   #pragma warning(push)
   #pragma warning(disable : 4668)
+  #pragma warning(disable : 4710)
   #include <windows.h>
   #pragma warning(pop)
   #if !defined(ENABLE_VIRTUAL_TERMINAL_PROCESSING)

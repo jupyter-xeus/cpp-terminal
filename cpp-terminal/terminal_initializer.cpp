@@ -13,7 +13,6 @@
 #include "cpp-terminal/private/file_initializer.hpp"
 #include "cpp-terminal/private/signals.hpp"
 #include "cpp-terminal/terminal.hpp"
-#include "terminal.hpp"
 
 #include <new>
 
