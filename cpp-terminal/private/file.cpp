@@ -46,8 +46,8 @@ Term::Private::OutputFileHandler& Term::Private::out = reinterpret_cast<Term::Pr
 //
 
 #ifdef _WIN32
-  #pragma warning( push )
-  #pragma warning( disable : 4297)
+  #pragma warning(push)
+  #pragma warning(disable : 4297)
 #endif
 
 Term::Private::FileHandler::FileHandler(std::recursive_mutex& mutex, const std::string& file, const std::string& mode) noexcept
@@ -116,7 +116,7 @@ catch(...)
 }
 
 #ifdef _WIN32
-  #pragma warning( pop )
+  #pragma warning(pop)
 #endif
 
 bool Term::Private::FileHandler::null() const noexcept { return m_null; }
