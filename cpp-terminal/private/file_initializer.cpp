@@ -72,8 +72,8 @@ catch(...)
 }
 
 #ifdef _WIN32
-  #pragma warning( push )
-  #pragma warning( disable : 4297)
+  #pragma warning(push)
+  #pragma warning(disable : 4297)
 #endif
 
 Term::Private::FileInitializer::FileInitializer() noexcept
@@ -112,7 +112,7 @@ catch(...)
 }
 
 #ifdef _WIN32
-  #pragma warning( pop )
+  #pragma warning(pop)
 #endif
 
 void Term::Private::FileInitializer::openStandardStreams() noexcept

@@ -155,10 +155,11 @@ Term::Private::ErrnoException::ErrnoException(const std::int64_t& error, const s
 {
   setContext(context);
 #if defined(_WIN32)
-  std::wstring message(m_maxSize, L'\0');
+  std::wstring  message(m_maxSize, L'\0');
   const errno_t result = _wcserror_s(&message[0], message.size(), static_cast<int>(error));
-  if(result==0) setMessage(Term::Private::to_narrow(message.c_str()));
-  else setMessage("_wcserror_s failed");
+  if(result == 0) setMessage(Term::Private::to_narrow(message.c_str()));
+  else
+    setMessage("_wcserror_s failed");
 #else
   std::string message(m_maxSize, '\0');
   message = ::strerror_r(static_cast<std::int32_t>(error), &message[0], message.size());  // NOLINT(readability-container-data-pointer)

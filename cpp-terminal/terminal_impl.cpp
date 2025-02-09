@@ -21,8 +21,8 @@ std::string Term::Terminal::clear() const noexcept { return "\u001b[3J"; }
 Term::Options Term::Terminal::getOptions() const noexcept { return m_options; }
 
 #ifdef _WIN32
-  #pragma warning( push )
-  #pragma warning( disable : 4297)
+  #pragma warning(push)
+  #pragma warning(disable : 4297)
 #endif
 
 Term::Terminal::Terminal() noexcept
@@ -48,7 +48,7 @@ catch(...)
 }
 
 #ifdef _WIN32
-  #pragma warning( pop )
+  #pragma warning(pop)
 #endif
 
 void Term::Terminal::clean()
