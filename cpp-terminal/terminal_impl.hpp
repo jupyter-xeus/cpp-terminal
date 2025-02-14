@@ -10,7 +10,6 @@
 #pragma once
 
 #include "cpp-terminal/options.hpp"
-#include "cpp-terminal/private/signals.hpp"
 #include "cpp-terminal/terminal_initializer.hpp"
 
 #include <cstddef>
@@ -18,6 +17,10 @@
 
 namespace Term
 {
+
+namespace Private {
+  class Signals;
+}
 
 class Terminal
 {
