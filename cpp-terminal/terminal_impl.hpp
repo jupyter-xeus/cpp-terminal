@@ -18,8 +18,9 @@
 namespace Term
 {
 
-namespace Private {
-  class Signals;
+namespace Private
+{
+class Signals;
 }
 
 class Terminal
