@@ -68,7 +68,7 @@ set(MSVC_WARNINGS
         "/wd4820" #FIXME
         "/wd4514" #FIXME
         "/wd4710" #FIXME
-        )
+)
 
 target_compile_options(
   ${PROJECT_NAME}Warnings
