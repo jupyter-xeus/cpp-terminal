@@ -13,6 +13,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
 #include <mutex>
 #include <string>
 
@@ -49,7 +50,7 @@ private:
   std::recursive_mutex& m_mutex;  //NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
   bool                  m_null{false};
   Handle                m_handle{nullptr};
-  FILE*                 m_file{nullptr};
+  std::FILE*            m_file{nullptr};
   std::int32_t          m_fd{-1};
 };
 
