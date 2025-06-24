@@ -10,12 +10,13 @@
 #pragma once
 
 #include "cpp-terminal/private/file_initializer.hpp"
-
+// clang-format off
+#include <cstdio>
 #include <cstddef>
 #include <cstdint>
-#include <cstdio>
 #include <mutex>
 #include <string>
+// clang-format on
 
 namespace Term
 {
