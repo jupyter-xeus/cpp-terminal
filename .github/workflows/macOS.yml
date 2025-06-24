@@ -150,6 +150,8 @@ jobs:
         uses: xom9ikk/dotenv@v2
         with:
           path: .github/workflows
+      - name: Install GCC
+        run: brew reinstall gcc@${{matrix.version}}
       - name: 🔧 Configure
         env:
           CC: gcc-${{matrix.version}}
