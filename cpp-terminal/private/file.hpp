@@ -29,7 +29,7 @@ public:
 #if defined(_WIN32)
   using Handle = void*;
 #else
-  using Handle = std::FILE*;
+  using Handle = ::FILE*;
 #endif
   FileHandler(std::recursive_mutex& mutex, const std::string& file, const std::string& mode) noexcept;
   FileHandler(const FileHandler&)            = delete;
@@ -39,7 +39,7 @@ public:
   virtual ~FileHandler() noexcept;
   Handle       handle() const noexcept;
   bool         null() const noexcept;
-  std::FILE*   file() const noexcept;
+  ::FILE*      file() const noexcept;
   std::int32_t fd() const noexcept;
   void         lockIO();
   void         unlockIO();
@@ -50,7 +50,7 @@ private:
   std::recursive_mutex& m_mutex;  //NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)
   bool                  m_null{false};
   Handle                m_handle{nullptr};
-  std::FILE*            m_file{nullptr};
+  ::FILE*               m_file{nullptr};
   std::int32_t          m_fd{-1};
 };
 
