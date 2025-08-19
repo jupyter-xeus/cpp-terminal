@@ -18,7 +18,7 @@ fail_fast: false
 repos:
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
         args: [ --maxkb=200 ]
@@ -39,7 +39,7 @@ repos:
         args: [ --allow-multiple-documents ]
 
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
-    rev: 3.2.1
+    rev: 3.4.0
     hooks:
       - id: editorconfig-checker
         name: check .editorconfig rules
