@@ -67,7 +67,10 @@ try : m_mutex(mutex)
   flag &= ~static_cast<std::size_t>(O_NONBLOCK);
   if(mode.find('r') != std::string::npos) { flag |= O_RDONLY; }       //NOLINT(abseil-string-find-str-contains)
   else if(mode.find('w') != std::string::npos) { flag |= O_WRONLY; }  //NOLINT(abseil-string-find-str-contains)
-  else { flag |= O_RDWR; }
+  else
+  {
+    flag |= O_RDWR;
+  }
   m_fd = {::open(file.c_str(), static_cast<int>(flag))};  //NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
   if(m_fd == -1)
   {

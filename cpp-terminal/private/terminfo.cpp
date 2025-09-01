@@ -154,7 +154,10 @@ void Term::Terminfo::checkColorMode()
   else if(WindowsVersionGreater(10, 0, 10586) && !m_booleans[static_cast<std::size_t>(Terminfo::Bool::Legacy)]) { m_colorMode = Term::Terminfo::ColorMode::Bit24; }
   else if(m_booleans[static_cast<std::size_t>(Terminfo::Bool::Legacy)]) { m_colorMode = Term::Terminfo::ColorMode::Bit4; }
 #endif
-  else { m_colorMode = Term::Terminfo::ColorMode::Bit24; }
+  else
+  {
+    m_colorMode = Term::Terminfo::ColorMode::Bit24;
+  }
   std::string colorterm = Private::getenv("COLORTERM").second;
   if((colorterm == "truecolor" || colorterm == "24bit") && m_colorMode != ColorMode::Unset) { m_colorMode = Term::Terminfo::ColorMode::Bit24; }
 }
@@ -163,7 +166,10 @@ void Term::Terminfo::checkControlSequences()
 {
 #ifdef _WIN32
   if(WindowsVersionGreater(10, 0, 10586)) { set(Term::Terminfo::Bool::ControlSequences, true); }
-  else { set(Term::Terminfo::Bool::ControlSequences, false); }
+  else
+  {
+    set(Term::Terminfo::Bool::ControlSequences, false);
+  }
 #else
   set(Term::Terminfo::Bool::ControlSequences, true);
 #endif
@@ -180,7 +186,10 @@ void Term::Terminfo::checkUTF8()
   Term::Cursor cursor_after{Term::cursor_position()};
   std::size_t  moved{cursor_after.column() - cursor_before.column()};
   if(moved == 1) { set(Terminfo::Bool::UTF8, true); }
-  else { set(Terminfo::Bool::UTF8, false); }
+  else
+  {
+    set(Terminfo::Bool::UTF8, false);
+  }
   for(std::size_t i = 0; i != moved; ++i) { Term::Private::out.write("\b \b"); }
 #endif
 }

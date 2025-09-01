@@ -46,7 +46,10 @@ const Rows& Term::Window::rows() const noexcept { return m_size.rows(); }
 void Term::Window::set_char(const std::size_t& column, const std::size_t& row, const char32_t& character)
 {
   if(insideWindow(column, row)) { m_chars[index(column, row)] = character; }
-  else { throw Term::Exception("set_char(): (x,y) out of bounds"); }
+  else
+  {
+    throw Term::Exception("set_char(): (x,y) out of bounds");
+  }
 }
 
 void Term::Window::set_fg_reset(const std::size_t& column, const std::size_t& row)
@@ -91,7 +94,10 @@ void Term::Window::set_h(const std::size_t& new_h)
     m_style.insert(m_style.end(), dc, Style::Reset);
     m_size = {Term::Columns(m_size.columns()), Term::Rows(new_h)};
   }
-  else { throw Term::Exception("Shrinking height not supported."); }
+  else
+  {
+    throw Term::Exception("Shrinking height not supported.");
+  }
 }
 
 void Term::Window::print_str(const std::size_t& x, const std::size_t& y, const std::string& s, const std::size_t& indent, bool move_cursor)
@@ -109,12 +115,18 @@ void Term::Window::print_str(const std::size_t& x, const std::size_t& y, const s
       {
         for(std::size_t j = 0; j < indent; ++j) { set_char(x + j, ypos, '.'); }
       }
-      else { return; }
+      else
+      {
+        return;
+      }
     }
     else
     {
       if(insideWindow(xpos, ypos)) { set_char(xpos, y, i); }
-      else { return; }
+      else
+      {
+        return;
+      }
       ++xpos;
     }
   }

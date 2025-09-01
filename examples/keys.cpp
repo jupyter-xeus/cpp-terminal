@@ -41,7 +41,10 @@ int main()
         {
           Term::Key key(event);
           if(key == Term::Key::q) { quit++; }
-          else { quit = 0; }
+          else
+          {
+            quit = 0;
+          }
           Term::cout << "Key: " << key.name() << " (" << static_cast<std::int32_t>(key) << ")" << std::endl;
           break;
         }

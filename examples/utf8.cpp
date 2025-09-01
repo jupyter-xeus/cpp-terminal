@@ -16,7 +16,10 @@
 int main()
 {
   if(Term::Terminfo::get(Term::Terminfo::Bool::UTF8)) { std::cout << Term::color_fg(Term::Color::Name::Green) << "Your terminal support utf8 !\n\n" << Term::color_fg(Term::Color::Name::Default) << std::endl; }
-  else { std::cout << Term::color_fg(Term::Color::Name::Red) << "Your terminal does NOT support utf8 !\n\n" << Term::color_fg(Term::Color::Name::Default) << std::endl; }
+  else
+  {
+    std::cout << Term::color_fg(Term::Color::Name::Red) << "Your terminal does NOT support utf8 !\n\n" << Term::color_fg(Term::Color::Name::Default) << std::endl;
+  }
   // clang-format off
   Term::cout
   << "UTF-8 encoded sample plain-text file\n"

@@ -23,7 +23,10 @@ int main()
   try
   {
     if(Term::is_stdout_a_tty()) { Term::cout << "Standard output is attached to a terminal." << std::endl << std::endl; }
-    else { Term::cout << "Standard output is not attached to a terminal." << std::endl << std::endl; }
+    else
+    {
+      Term::cout << "Standard output is not attached to a terminal." << std::endl << std::endl;
+    }
 
     std::string mode;
     if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit24) { mode = "24bit"; }
@@ -31,7 +34,10 @@ int main()
     else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit4) { mode = "4bit"; }
     else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit3) { mode = "3bit"; }
     else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::NoColor) { mode = "nocolor"; }
-    else { mode = "Unset"; }
+    else
+    {
+      mode = "Unset";
+    }
 
     Term::cout << "Terminal has " << mode << " color support" << std::endl << std::endl;
 
