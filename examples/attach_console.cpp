@@ -33,7 +33,10 @@ int main()
     else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit4) { mode = "4bit"; }
     else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::Bit3) { mode = "3bit"; }
     else if(Term::Terminfo::getColorMode() == Term::Terminfo::ColorMode::NoColor) { mode = "nocolor"; }
-    else { mode = "Unset"; }
+    else
+    {
+      mode = "Unset";
+    }
     std::cout << "Terminal has " << mode << " color support\n" << std::endl;
 
     std::string text = "Some text with " + Term::color_fg(Term::Color::Name::Red) + color_bg(Term::Color::Name::Green) + "red on green" + color_bg(Term::Color::Name::Default) + color_fg(Term::Color::Name::Default);

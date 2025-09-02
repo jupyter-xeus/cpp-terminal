@@ -34,20 +34,32 @@ static void render(const std::size_t& rows, const std::size_t& cols, const std::
   for(std::size_t j = 1; j <= menux0; ++j) { scr.append(" "); }
   bool hasUTF8{Term::Terminfo::get(Term::Terminfo::Bool::UTF8)};
   if(hasUTF8) { scr.append("┌"); }
-  else { scr.append("+"); }
+  else
+  {
+    scr.append("+");
+  }
   for(std::size_t j = 1; j <= menuwidth; ++j)
   {
     if(hasUTF8) { scr.append("─"); }
-    else { scr.append("-"); }
+    else
+    {
+      scr.append("-");
+    }
   }
   if(hasUTF8) { scr.append("┐"); }
-  else { scr.append("+"); }
+  else
+  {
+    scr.append("+");
+  }
   scr.append(" \n");
   for(std::size_t i = 1; i <= menuheight; ++i)
   {
     for(std::size_t j = 1; j <= menux0; ++j) { scr.append(" "); }
     if(hasUTF8) { scr.append("│"); }
-    else { scr.append("|"); }
+    else
+    {
+      scr.append("|");
+    }
     if(i == menupos)
     {
       scr.append(Term::color_fg(Term::Color::Name::Red));
@@ -66,19 +78,31 @@ static void render(const std::size_t& rows, const std::size_t& cols, const std::
     scr.append(Term::color_fg(Term::Color::Name::Default));
     scr.append(Term::style(Term::Style::Reset));
     if(hasUTF8) { scr.append("│"); }
-    else { scr.append("|"); }
+    else
+    {
+      scr.append("|");
+    }
     scr.append(" \n");
   }
   for(std::size_t j = 1; j <= menux0; ++j) { scr.append(" "); }
   if(hasUTF8) { scr.append("└"); }
-  else { scr.append("+"); }
+  else
+  {
+    scr.append("+");
+  }
   for(std::size_t j = 1; j <= menuwidth; ++j)
   {
     if(hasUTF8) { scr.append("─"); }
-    else { scr.append("-"); }
+    else
+    {
+      scr.append("-");
+    }
   }
   if(hasUTF8) { scr.append("┘"); }
-  else { scr.append("+"); }
+  else
+  {
+    scr.append("+");
+  }
   scr.append(" \n");
 
   scr.append(Term::cursor_move(menuy0 + menuheight + 5, 1));

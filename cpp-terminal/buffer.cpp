@@ -71,7 +71,8 @@ Term::Buffer::int_type Term::Buffer::underflow()
     m_buffer.clear();
     if(terminal.getOptions().has(Option::Raw))
     {
-      do {
+      do
+      {
         std::string ret{Term::Private::in.read()};
         if(!ret.empty())
         {
@@ -96,7 +97,8 @@ Term::Buffer::int_type Term::Buffer::underflow()
     }
     else
     {
-      do {
+      do
+      {
         std::string ret{Term::Private::in.read()};
         m_buffer += ret;
       } while(m_buffer.empty());

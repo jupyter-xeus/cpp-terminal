@@ -348,7 +348,10 @@ void editorUpdateRow(erow* row)
       row->render[idx++] = ' ';
       while(idx % KILO_TAB_STOP != 0) row->render[idx++] = ' ';
     }
-    else { row->render[idx++] = row->chars[j]; }
+    else
+    {
+      row->render[idx++] = row->chars[j];
+    }
   }
   row->render[idx] = '\0';
   row->rsize       = idx;
@@ -649,7 +652,10 @@ void editorDrawRows(std::string& screen)
         while(padding--) screen.append(" ");
         screen.append(welcome);
       }
-      else { screen.append("~"); }
+      else
+      {
+        screen.append("~");
+      }
     }
     else
     {
@@ -703,12 +709,18 @@ void editorDrawStatusBar(std::string& screen)
   screen.append(style(Term::Style::Reversed));
   std::string left1;
   if(!E.filename.empty()) { left1 += E.filename; }
-  else { left1 += "[No Name]"; }
+  else
+  {
+    left1 += "[No Name]";
+  }
   std::string left2 = " - " + std::to_string(E.numrows) + " lines ";
   if(E.dirty) { left2 += "(modified)"; }
   std::string right;
   if(!E.syntax.empty()) { right += E.syntax.filetype + " | "; }
-  else { right += "no ft | "; }
+  else
+  {
+    right += "no ft | ";
+  }
   right += std::to_string(E.cy + 1) + "/" + std::to_string(E.numrows);
   if((left1.size() + left2.size() + right.size()) < E.screencols) { screen += left1 + left2 + std::string(E.screencols - right.size() - left1.size() - left2.size(), ' ') + right; }
   else
@@ -926,7 +938,10 @@ bool editorProcessKeypress()
         {
           if(mouse.getButton().action() == Term::Button::Action::RolledDown) { ::editorMoveCursor(Term::Key::ArrowDown); }
           else if(mouse.getButton().action() == Term::Button::Action::RolledUp) { ::editorMoveCursor(Term::Key::ArrowUp); }
-          else { break; }
+          else
+          {
+            break;
+          }
         }
         default: break;
       }

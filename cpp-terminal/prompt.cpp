@@ -161,7 +161,10 @@ std::vector<std::string> Term::split(const std::string& s)
       j++;
       lines.emplace_back("");
     }
-    else { lines[j].push_back(s[i]); }
+    else
+    {
+      lines[j].push_back(s[i]);
+    }
   }
   return lines;
 }
@@ -345,7 +348,10 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
             // Not at the bottom row, can't push back
             model.lines.insert(model.lines.begin() + static_cast<long>(model.cursor_row), after);
           }
-          else { model.lines.push_back(after); }
+          else
+          {
+            model.lines.push_back(after);
+          }
           model.cursor_col = 1;
           model.cursor_row++;
           if(model.lines.size() > scr.columns()) { scr.set_h(model.lines.size()); }

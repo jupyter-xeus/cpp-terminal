@@ -57,7 +57,10 @@ Term::Exception::Exception(const std::int64_t& code) noexcept : m_code(code) {}
 void Term::Exception::build_what() const noexcept
 {
   if(0 == m_code) { m_what = m_message; }
-  else { m_what = "error " + std::to_string(m_code) + ": " + m_message; }
+  else
+  {
+    m_what = "error " + std::to_string(m_code) + ": " + m_message;
+  }
 }
 
 void Term::Exception::setMessage(const std::string& message) noexcept { m_message = message; }
@@ -100,7 +103,10 @@ Term::Private::WindowsException::WindowsException(const std::int64_t& error, con
     if(ret.size() >= 2 && ret[ret.size() - 1] == '\n' && ret[ret.size() - 2] == '\r') ret.erase(ret.size() - 2);
     setMessage(ret);
   }
-  else { throw Term::Exception(::GetLastError(), "Error in FormatMessageW"); }
+  else
+  {
+    throw Term::Exception(::GetLastError(), "Error in FormatMessageW");
+  }
 }
 
 void Term::Private::WindowsException::build_what() const noexcept

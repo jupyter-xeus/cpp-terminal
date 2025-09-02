@@ -29,7 +29,10 @@ volatile std::sig_atomic_t m_signalStatus{0};
 static void                sigwinchHandler(int sig)
 {
   if(sig == SIGWINCH) { m_signalStatus = 1; }
-  else { m_signalStatus = 0; }
+  else
+  {
+    m_signalStatus = 0;
+  }
 }
 }  // namespace Private
 }  // namespace Term

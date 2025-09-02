@@ -48,12 +48,12 @@ public:
   Event& operator=(const Term::Event& event);
   bool   empty() const;
   Type   type() const;
-  operator Term::Key() const;
-  operator Term::Screen() const;
-  operator Term::Cursor() const;
-  operator Term::Focus() const;
-  operator Term::Mouse() const;
-  operator std::string() const;
+         operator Term::Key() const;
+         operator Term::Screen() const;
+         operator Term::Cursor() const;
+         operator Term::Focus() const;
+         operator Term::Mouse() const;
+         operator std::string() const;
 
   // getters
   Key*               get_if_key();
