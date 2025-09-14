@@ -362,7 +362,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     }
     render(scr, model, screen.columns());
     std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
-    if(cursor.row() + scr.columns() - 1 > screen.rows())
+    if(cursor.row() + scr.rows() - 1 > screen.rows())
     {
       cursor = Cursor({Row(static_cast<std::uint16_t>(screen.rows() - (scr.columns() - 1))), Column(cursor.column())});
       std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
