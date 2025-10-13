@@ -25,7 +25,7 @@ public:
   {
     Unknown = -1,  ///< The terminal focus is \b unknown.
     Out     = 0,   ///< The terminal focus is \b out.
-    In      = 1,   ///< The terminal focus is \b in.
+    In      = 1    ///< The terminal focus is \b in.
   };
 
   Focus() = default;

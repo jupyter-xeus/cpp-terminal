@@ -23,7 +23,7 @@ public:
     // Last utf8 codepoint is U+10FFFF (000100001111111111111111) So:
     None = 0,
     Alt  = (1UL << 22UL),
-    Ctrl = (1UL << 23UL),
+    Ctrl = (1UL << 23UL)
   };
 
   constexpr MetaKey() : value(static_cast<std::int32_t>(Value::None)) {}
@@ -270,7 +270,7 @@ public:
     F23               = 0x10FFFF + 33,
     F24               = 0x10FFFF + 34,
     PrintScreen       = 0x10FFFF + 35,
-    Menu              = 0x10FFFF + 36,
+    Menu              = 0x10FFFF + 36
   };
 
   constexpr Key() : value(NoKey) {}

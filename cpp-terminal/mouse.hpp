@@ -31,7 +31,7 @@ public:
     Button5,
     Button6,
     Button7,
-    Button8,
+    Button8
   };
   enum class Action : std::int8_t
   {
@@ -42,7 +42,7 @@ public:
     RolledUp,
     RolledDown,
     ToRight,
-    ToLeft,
+    ToLeft
   };
   Button() = default;
   Button(const Term::Button::Type& type, const Term::Button::Action& action) : m_type(type), m_action(action) {}

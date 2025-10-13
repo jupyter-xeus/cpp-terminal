@@ -41,8 +41,8 @@ class Size
 {
 public:
   Size() = default;
-  Size(const Rows& rows, const Columns& columns) : m_rows(rows), m_columns(columns) {};
-  Size(const Columns& columns, const Rows& rows) : m_rows(rows), m_columns(columns) {};
+  Size(const Rows& rows, const Columns& columns) : m_rows(rows), m_columns(columns) {}
+  Size(const Columns& columns, const Rows& rows) : m_rows(rows), m_columns(columns) {}
   std::size_t    area() const noexcept { return static_cast<std::size_t>(m_rows) * static_cast<std::size_t>(m_columns); }
   const Rows&    rows() const noexcept { return m_rows; }
   const Columns& columns() const noexcept { return m_columns; }

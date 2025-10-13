@@ -41,8 +41,8 @@ class Position
 {
 public:
   Position() = default;
-  Position(const Row& row, const Column& column) : m_row(row), m_column(column) {};
-  Position(const Column& column, const Row& row) : m_row(row), m_column(column) {};
+  Position(const Row& row, const Column& column) : m_row(row), m_column(column) {}
+  Position(const Column& column, const Row& row) : m_row(row), m_column(column) {}
   const Row&    row() const noexcept { return m_row; }
   const Column& column() const noexcept { return m_column; }
 

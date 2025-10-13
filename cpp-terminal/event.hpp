@@ -32,7 +32,7 @@ public:
     Cursor,
     Focus,
     Mouse,
-    CopyPaste,
+    CopyPaste
   };
   ~Event();
   Event();

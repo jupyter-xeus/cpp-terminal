@@ -37,15 +37,15 @@ public:
   };
   enum class Bool : std::uint8_t
   {
-    UTF8 = 0,          ///< terminal has UTF-8 activated.
-    Legacy,            ///< Terminal is in legacy mode (Windows only).
-    ControlSequences,  ///< Terminal support control sequences.
+    UTF8 = 0,         ///< terminal has UTF-8 activated.
+    Legacy,           ///< Terminal is in legacy mode (Windows only).
+    ControlSequences  ///< Terminal support control sequences.
   };
   enum class String : std::uint8_t
   {
-    TermEnv,      ///< TERM environment variable value.
-    TermName,     ///< Name of the terminal program if available.
-    TermVersion,  ///< Terminal version.
+    TermEnv,     ///< TERM environment variable value.
+    TermName,    ///< Name of the terminal program if available.
+    TermVersion  ///< Terminal version.
   };
   enum class Integer : std::uint8_t
   {
