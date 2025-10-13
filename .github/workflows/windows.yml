@@ -66,9 +66,9 @@ jobs:
       - name: 🎉 Install
         run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
 
-  msvc2025:
+  msvc2022:
     runs-on: windows-2025
-    name: msvc2025 ${{ matrix.architecture }} (c++${{ matrix.standard }})
+    name: msvc2022 ${{ matrix.architecture }} (c++${{ matrix.standard }})
     strategy:
       fail-fast: false
       matrix:
@@ -96,7 +96,7 @@ jobs:
         with:
           arch: ${{ matrix.architecture }}
       - name: 🔧 Configure
-        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G "Visual Studio 16 2019" -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }} -D CPPTERMINAL_ENABLE_DOCS=OFF
+        run: cmake -S ${{ env.CMAKE_SOURCE_PREFIX }} -B ${{ env.CMAKE_BINARY_PREFIX }} -G "Visual Studio 17 2022" -A ${{ matrix.architecture }} -D CMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -D CMAKE_CXX_STANDARD=${{ matrix.standard }} -D CMAKE_INSTALL_PREFIX=${{ env.CMAKE_INSTALL_PREFIX }} -D CPPTERMINAL_ENABLE_DOCS=OFF
       - name: ⚙️ Build
         run: cmake --build ${{ env.CMAKE_BINARY_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }} --parallel ${{ env.CMAKE_NUMBER_JOBS }}
       - name: 🧪 Test
