@@ -726,7 +726,7 @@ void editorDrawStatusBar(std::string& screen)
   else
   {
     const std::size_t size = right.size() + left2.size();
-    if(E.screencols - size > 0 && (left1.size() - E.screencols + size) < left1.size()) screen += left1.substr(left1.size() - E.screencols + size, E.screencols - size) + left2 + right;
+    if(E.screencols > size && (left1.size() - E.screencols + size) < left1.size()) screen += left1.substr(left1.size() - E.screencols + size, E.screencols - size) + left2 + right;
   }
   screen.append(style(Term::Style::Reset));
   screen.append("\r\n");
