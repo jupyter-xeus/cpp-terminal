@@ -66,9 +66,9 @@ jobs:
       - name: 🎉 Install
         run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
 
-  msvc2019:
-    runs-on: windows-2019
-    name: msvc2019 ${{ matrix.architecture }} (c++${{ matrix.standard }})
+  msvc2025:
+    runs-on: windows-2025
+    name: msvc2025 ${{ matrix.architecture }} (c++${{ matrix.standard }})
     strategy:
       fail-fast: false
       matrix:
@@ -143,8 +143,8 @@ jobs:
         run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
 
   clang:
-    runs-on: windows-2019
-    name: windows-2019 clang-${{ matrix.version }} (c++${{ matrix.standard }})
+    runs-on: windows-2025
+    name: windows-2025 clang-${{ matrix.version }} (c++${{ matrix.standard }})
     strategy:
       fail-fast: false
       matrix:
@@ -179,8 +179,8 @@ jobs:
         run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
 
   clang-cl-11:
-    runs-on: windows-2019
-    name: windows-2019 clang-cl-11 ${{ matrix.architecture }} (c++${{ matrix.standard }})
+    runs-on: windows-2025
+    name: windows-2025 clang-cl-11 ${{ matrix.architecture }} (c++${{ matrix.standard }})
     strategy:
       fail-fast: false
       matrix:
