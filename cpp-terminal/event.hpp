@@ -44,17 +44,18 @@ public:
   Event(const Term::Mouse& mouse);
   Event(const Term::Event& event);
   Event(Term::Event&& event) noexcept;
-  Event& operator=(Event&& other) noexcept;
-  Event& operator=(const Term::Event& event);
-  bool   empty() const;
-  Type   type() const;
-         operator Term::Key() const;
-         operator Term::Screen() const;
-         operator Term::Cursor() const;
-         operator Term::Focus() const;
-         operator Term::Mouse() const;
-         operator std::string() const;
-
+  Event&             operator=(Event&& other) noexcept;
+  Event&             operator=(const Term::Event& event);
+  bool               empty() const;
+  Type               type() const;
+  // clang-format off
+  operator Term::Key() const;
+  operator Term::Screen() const;
+  operator Term::Cursor() const;
+  operator Term::Focus() const;
+  operator Term::Mouse() const;
+  operator std::string() const;
+  // clang-format on
   // getters
   Key*               get_if_key();
   const Key*         get_if_key() const;

@@ -66,9 +66,9 @@ jobs:
       - name: 🎉 Install
         run: cmake --install ${{ env.CMAKE_BINARY_PREFIX }} --prefix ${{ env.CMAKE_INSTALL_PREFIX }} --config ${{ env.CMAKE_BUILD_TYPE }}
 
-  msvc2022:
+  msvc:
     runs-on: windows-2025
-    name: msvc2022 ${{ matrix.architecture }} (c++${{ matrix.standard }})
+    name: msvc ${{ matrix.architecture }} (c++${{ matrix.standard }})
     strategy:
       fail-fast: false
       matrix:
