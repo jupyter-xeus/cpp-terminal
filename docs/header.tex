@@ -5,7 +5,7 @@ $latex_batchmode
 % to overcome problems with too many open files
 \let\mypdfximage\pdfximage\def\pdfximage{\immediate\mypdfximage}
 
-\pdfminorversion=7
+%\pdfminorversion=7
 
 % Set document class depending on configuration
 %%BEGIN COMPACT_LATEX
@@ -14,7 +14,7 @@ $latex_batchmode
 %%BEGIN !COMPACT_LATEX
 \documentclass[twoside]{book}
 %%END !COMPACT_LATEX
-
+\usepackage{fontspec}
 %% moved from doxygen.sty due to workaround for LaTex 2019 version and unmaintained tabu package
 \usepackage{ifthen}
 \ifx\requestedLaTeXdate\undefined
@@ -33,14 +33,14 @@ $latex_batchmode
 \RequirePackage{infwarerr}
 \let\protected@wlog\@@protected@wlog
 \makeatother
-\IfFormatAtLeastTF{2015/01/01}{\pdfsuppresswarningpagegroup=1}{}
+%\IfFormatAtLeastTF{2015/01/01}{\pdfsuppresswarningpagegroup=1}{}
 
 \usepackage{doxygen}
 
 $extralatexstylesheet
 
 \usepackage{graphicx}
-\usepackage[utf8]{inputenc}
+%\usepackage[utf8]{inputenc}
 \usepackage{makeidx}
 \usepackage{iftex}
 
@@ -205,8 +205,8 @@ pdfsubject={$projectbrief}%
 % End of preamble, now comes the document contents
 %===== C O N T E N T S =====
 
-\newunicodechar{🌍}{\twemoji{1f30d}}
-\newunicodechar{📖}{\twemoji{1f4d6}}
+%\newunicodechar{🌍}{\twemoji{1f30d}}
+%\newunicodechar{📖}{\twemoji{1f4d6}}
 
 \begin{document}
 \raggedbottom
