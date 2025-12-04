@@ -231,7 +231,7 @@ void Term::Private::ExceptionHandler(const ExceptionDestination& destination) no
     {
       case ExceptionDestination::MessageBox:
 #if defined(_WIN32)
-        MessageBoxW(nullptr, Term::Private::to_wide("cpp-terminal v" + Term::Version::string() + "Unknown error").c_str(), Term::Private::to_wide("cpp-terminal v" + Term::Version::string()).c_str(), MB_OK | MB_ICONERROR);
+        MessageBoxW(nullptr, Term::Private::to_wide("cpp-terminal v" + Term::Version::string() + ": Unknown error").c_str(), Term::Private::to_wide("cpp-terminal v" + Term::Version::string()).c_str(), MB_OK | MB_ICONERROR);
         break;
 #endif
       case ExceptionDestination::StdErr:
