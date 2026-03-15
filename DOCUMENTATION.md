@@ -514,7 +514,7 @@ These are used exactly like their `std` counterparts:
 ```cpp
 Term::cout << "Hello, world!" << std::endl;
 Term::cout << "Score: " << score << "\r\n" << std::flush;
-Term::cout << Term::color_fg(Term::Color::Name::Red) << "Error!" 
+Term::cout << Term::color_fg(Term::Color::Name::Red) << "Error!"
            << Term::style(Term::Style::Reset) << std::flush;
 ```
 
