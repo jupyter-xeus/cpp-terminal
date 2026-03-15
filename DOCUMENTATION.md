@@ -515,7 +515,7 @@ These are used exactly like their `std` counterparts:
 Term::cout << "Hello, world!" << std::endl;
 Term::cout << "Score: " << score << "\r\n" << std::flush;
 Term::cout << Term::color_fg(Term::Color::Name::Red) << "Error!"
-           << Term::style(Term::Style::Reset) << std::flush;
+  << Term::style(Term::Style::Reset) << std::flush;
 ```
 
 **Important:** In raw mode, `\n` moves the cursor down but does **not** return to
@@ -638,7 +638,7 @@ it returns an empty string.
 ```cpp
 // Named 4-bit colors
 Term::cout << Term::color_fg(Term::Color::Name::Red) << "red text"
-           << Term::color_fg(Term::Color::Name::Default);  // reset to default
+  << Term::color_fg(Term::Color::Name::Default);  // reset to default
 
 // 8-bit color (256-color palette)
 Term::cout << Term::color_fg(214) << "orange";  // xterm color 214
@@ -701,10 +701,10 @@ Term::cout << Term::Style::Bold << "bold text" << Term::Style::Reset;
 **Example:**
 ```cpp
 Term::cout << Term::style(Term::Style::Bold)
-           << Term::color_fg(Term::Color::Name::Cyan)
-           << "Bold cyan text"
-           << Term::style(Term::Style::Reset)
-           << std::flush;
+  << Term::color_fg(Term::Color::Name::Cyan)
+  << "Bold cyan text"
+  << Term::style(Term::Style::Reset)
+  << std::flush;
 ```
 
 ---
@@ -1328,12 +1328,12 @@ int main()
     // Draw a simple status bar at the bottom
     auto draw_status = [&](const std::string& msg) {
         Term::cout << Term::cursor_move(size.rows(), 1)
-                   << Term::color_bg(Term::Color::Name::Blue)
-                   << Term::color_fg(Term::Color::Name::White)
-                   << Term::style(Term::Style::Bold)
-                   << msg
-                   << Term::style(Term::Style::Reset)
-                   << std::flush;
+          << Term::color_bg(Term::Color::Name::Blue)
+          << Term::color_fg(Term::Color::Name::White)
+          << Term::style(Term::Style::Bold)
+          << msg
+          << Term::style(Term::Style::Reset)
+          << std::flush;
     };
 
     draw_status(" Press 'q' or Ctrl+C to quit ");
@@ -1383,9 +1383,9 @@ int main()
 done:
     // Move to a clean line before exit
     Term::cout << Term::cursor_move(size.rows(), 1)
-               << Term::style(Term::Style::Reset)
-               << "\r\n"
-               << std::flush;
+      << Term::style(Term::Style::Reset)
+      << "\r\n"
+      << std::flush;
 
     return 0;
     // Term::terminal destructor restores the terminal automatically
