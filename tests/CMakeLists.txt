@@ -4,7 +4,7 @@ endif()
 
 if(CMAKE_VERSION GREATER_EQUAL 3.11)
   include(FetchContent)
-  FetchContent_Declare(doctest GIT_REPOSITORY https://github.com/doctest/doctest.git GIT_TAG dev GIT_PROGRESS TRUE CMAKE_ARGS DOCTEST_NO_INSTALL=TRUE)
+  FetchContent_Declare(doctest GIT_REPOSITORY https://github.com/doctest/doctest.git GIT_TAG v2.5.2 GIT_PROGRESS TRUE CMAKE_ARGS DOCTEST_NO_INSTALL=TRUE)
   if(CMAKE_VERSION GREATER_EQUAL 3.14)
     FetchContent_MakeAvailable(doctest)
     include("${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake")
