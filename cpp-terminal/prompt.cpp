@@ -310,7 +310,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
               model.lines      = split(history[history_pos]);
               model.cursor_row = model.lines.size();
               if(model.cursor_col > model.lines[model.cursor_row - 1].size() + 1) { model.cursor_col = model.lines[model.cursor_row - 1].size() + 1; }
-              if(model.lines.size() > scr.columns()) { scr.set_h(model.lines.size()); }
+              if(model.lines.size() > scr.rows()) { scr.set_h(model.lines.size()); }
             }
           }
           else
@@ -329,7 +329,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
               model.lines      = split(history[history_pos]);
               model.cursor_row = 1;
               if(model.cursor_col > model.lines[model.cursor_row - 1].size() + 1) { model.cursor_col = model.lines[model.cursor_row - 1].size() + 1; }
-              if(model.lines.size() > scr.columns()) { scr.set_h(model.lines.size()); }
+              if(model.lines.size() > scr.rows()) { scr.set_h(model.lines.size()); }
             }
           }
           else
@@ -354,7 +354,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
           }
           model.cursor_col = 1;
           model.cursor_row++;
-          if(model.lines.size() > scr.columns()) { scr.set_h(model.lines.size()); }
+          if(model.lines.size() > scr.rows()) { scr.set_h(model.lines.size()); }
           break;
         }
         default: break;
@@ -364,7 +364,7 @@ std::string Term::prompt_multiline(const std::string& prompt_string, std::vector
     std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
     if(cursor.row() + scr.rows() - 1 > screen.rows())
     {
-      cursor = Cursor({Row(static_cast<std::uint16_t>(screen.rows() - (scr.columns() - 1))), Column(cursor.column())});
+      cursor = Cursor({Row(static_cast<std::uint16_t>(screen.rows() - (scr.rows() - 1))), Column(cursor.column())});
       std::cout << scr.render(1, cursor.row(), term_attached) << std::flush;
     }
   }
