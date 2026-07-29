@@ -35,6 +35,7 @@
 #include <cerrno>
 #include <cstdio>
 #include <string>
+#include <cstdlib>
 
 Term::Exception::Exception(const std::string& message) noexcept : m_message(message) {}
 
