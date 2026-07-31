@@ -10,6 +10,7 @@
 #include "cpp-terminal/private/env.hpp"
 
 #include "cpp-terminal/private/unicode.hpp"
+
 #include <cstdlib>
 
 std::pair<bool, std::string> Term::Private::getenv(const std::string& key)
