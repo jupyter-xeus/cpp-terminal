@@ -19,7 +19,7 @@ namespace Term
 struct WinConsoleAdapter::impl
 {
   impl() : emulator(Private::get_emulator()) {}
-  ~impl()                           = default;
+  ~impl()                          = default;
   impl(const impl& rhs)            = delete;
   impl& operator=(const impl& rhs) = delete;
   impl(impl&& other)               = delete;

@@ -263,10 +263,10 @@ struct VtApi
 
 /**
  * @brief Calls windows console API functions to emulate a virtual terminal.
- * 
+ *
  * @remarks This class maintains certain state properties, such as scrolling window margins.
- *			Therefore, it is important that only one instance is in use at a time for 
- *			proper operation.
+ *      Therefore, it is important that only one instance is in use at a time for
+ *      proper operation.
  */
 class VtEmulator
 {
@@ -387,7 +387,7 @@ private:
   void report_error(const char* err);
 
   std::shared_ptr<VtEmulator> m_emulator;
-  std::stringstream m_stream;
+  std::stringstream           m_stream;
 };
 
 }  // namespace Private
