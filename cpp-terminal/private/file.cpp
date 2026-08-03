@@ -10,6 +10,8 @@
 #include "cpp-terminal/private/file.hpp"
 
 #include "cpp-terminal/private/exception.hpp"
+#include "cpp-terminal/terminal.hpp"
+#include "cpp-terminal/terminfo.hpp"
 #include "cpp-terminal/tty.hpp"
 
 #include <cstdio>
@@ -67,10 +69,7 @@ try : m_mutex(mutex)
   flag &= ~static_cast<std::size_t>(O_NONBLOCK);
   if(mode.find('r') != std::string::npos) { flag |= O_RDONLY; }       //NOLINT(abseil-string-find-str-contains)
   else if(mode.find('w') != std::string::npos) { flag |= O_WRONLY; }  //NOLINT(abseil-string-find-str-contains)
-  else
-  {
-    flag |= O_RDWR;
-  }
+  else { flag |= O_RDWR; }
   m_fd = {::open(file.c_str(), static_cast<int>(flag))};  //NOLINT(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
   if(m_fd == -1)
   {
@@ -133,6 +132,8 @@ Term::Private::FileHandler::Handle Term::Private::FileHandler::handle() const no
 std::size_t Term::Private::OutputFileHandler::write(const std::string& str) const
 {
 #if defined(_WIN32)
+  if(use_legacy_win_writer()) { return m_legacy_writer->write(str); }
+
   DWORD written{0};
   if(!str.empty()) { Term::Private::WindowsError().check_if(0 == WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &written, nullptr)).throw_exception("WriteConsole(handle(), &str[0], static_cast<DWORD>(str.size()), &written, nullptr)"); }
   return static_cast<std::size_t>(written);
@@ -146,6 +147,8 @@ std::size_t Term::Private::OutputFileHandler::write(const std::string& str) cons
 std::size_t Term::Private::OutputFileHandler::write(const char& character) const
 {
 #if defined(_WIN32)
+  if(use_legacy_win_writer()) { return m_legacy_writer->write(character); }
+
   DWORD written{0};
   Term::Private::WindowsError().check_if(0 == WriteConsole(handle(), &character, 1, &written, nullptr)).throw_exception("WriteConsole(handle(), &character, 1, &written, nullptr)");
   return static_cast<std::size_t>(written);
@@ -154,6 +157,19 @@ std::size_t Term::Private::OutputFileHandler::write(const char& character) const
   Term::Private::Errno().check_if((written = ::write(fd(), &character, 1)) == -1).throw_exception("::write(fd(), &character, 1)");
   return static_cast<std::size_t>(written);
 #endif
+}
+
+bool Term::Private::OutputFileHandler::use_legacy_win_writer() const
+{
+  // Provide support unless NoLegacyWindowsSupport explicitly chosen
+  if(Term::Terminfo::get(Term::Terminfo::Bool::Legacy) && !terminal.getOptions().has(Option::NoLegacyWindowsSupport))
+  {
+    if(!m_legacy_writer) { m_legacy_writer = std::make_unique<VtWriter>(); }
+    return true;
+  }
+  else if(m_legacy_writer) { m_legacy_writer.reset(); }
+
+  return false;
 }
 
 std::string Term::Private::InputFileHandler::read() const

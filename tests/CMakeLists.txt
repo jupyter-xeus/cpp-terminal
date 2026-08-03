@@ -41,6 +41,7 @@ cppterminal_test(SOURCE exception)
 cppterminal_test(SOURCE unicode)
 cppterminal_test(SOURCE options)
 cppterminal_test(SOURCE version)
+cppterminal_test(SOURCE vt_parser)
 
 if (NOT MINGW AND NOT MSYS)
 add_executable(Args args.test.cpp)
