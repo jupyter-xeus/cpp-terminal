@@ -7,10 +7,6 @@
 * SPDX-License-Identifier: MIT
 */
 
-#if defined _WIN32
-  #undef _WIN32
-#endif
-
 #include "cpp-terminal/color.hpp"
 #include "cpp-terminal/iostream.hpp"
 #include "cpp-terminal/terminal.hpp"

@@ -394,11 +394,8 @@ void VtParseStateGround::handle(char c, VtParseMachine& m)
     m.take();
     m.emit(VtSequence::Type::C0);
   }
-  else if(c >= 0x20 && c <= 0x7F) { m.take(); }
-  else
-  {
-    throw_unhandled_char(c);
-  }
+  else if(c >= 0x20 && static_cast<unsigned char>(c) <= 0x7F) { m.take(); }
+  else { throw_unhandled_char(c); }
 }
 
 void VtParseStateGround::exit(VtParseMachine& m)
@@ -469,10 +466,7 @@ void VtParseStateEscape::handle(char c, VtParseMachine& m)
     m.take();
     m.change_state(std::unique_ptr<VtParseStateCsiEntry>(new VtParseStateCsiEntry()));
   }
-  else
-  {
-    throw_unhandled_char(c);
-  }
+  else { throw_unhandled_char(c); }
 }
 
 void VtParseStateEscapeIntermediate::handle(char c, VtParseMachine& m)
@@ -492,10 +486,7 @@ void VtParseStateEscapeIntermediate::handle(char c, VtParseMachine& m)
     m.emit(VtSequence::Type::Escape);
     m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
   }
-  else
-  {
-    throw_unhandled_char(c);
-  }
+  else { throw_unhandled_char(c); }
 }
 
 void VtParseStateCsiEntry::enter(VtParseMachine& m)
@@ -540,10 +531,7 @@ void VtParseStateCsiEntry::handle(char c, VtParseMachine& m)
     m.emit(VtSequence::Type::CSI);
     m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
   }
-  else
-  {
-    throw_unhandled_char(c);
-  }
+  else { throw_unhandled_char(c); }
 }
 
 void VtParseStateCsiParam::handle(char c, VtParseMachine& m)
@@ -573,10 +561,7 @@ void VtParseStateCsiParam::handle(char c, VtParseMachine& m)
     m.take();
     m.change_state(std::unique_ptr<VtParseStateCsiIgnore>(new VtParseStateCsiIgnore()));
   }
-  else
-  {
-    throw_unhandled_char(c);
-  }
+  else { throw_unhandled_char(c); }
 }
 
 void VtParseStateCsiIgnore::handle(char c, VtParseMachine& m)
@@ -596,10 +581,7 @@ void VtParseStateCsiIgnore::handle(char c, VtParseMachine& m)
     m.emit(VtSequence::Type::Malformed);
     m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
   }
-  else
-  {
-    throw_unhandled_char(c);
-  }
+  else { throw_unhandled_char(c); }
 }
 
 void VtParseStateCsiIntermediate::handle(char c, VtParseMachine& m)
@@ -688,11 +670,8 @@ void VtParseStateOsc::handle(char c, VtParseMachine& m)
   }
 
   if(is_c0(c)) { m.ignore(); }
-  else if(c >= 0x20 && c <= 0x7F) { m.take(); }
-  else
-  {
-    throw_unhandled_char(c);
-  }
+  else if(c >= 0x20 && static_cast<unsigned char>(c) <= 0x7F) { m.take(); }
+  else { throw_unhandled_char(c); }
 }
 
 void VtParseStateOsc::exit(VtParseMachine& m) { (void)m; }
@@ -702,11 +681,8 @@ void VtParseStateSos::handle(char c, VtParseMachine& m)
   if(handle_anywhere_control_codes(c, m)) return;
 
   if(is_c0(c)) { m.ignore(); }
-  else if(c >= 0x20 && c <= 0x7F) { m.take(); }
-  else
-  {
-    throw_unhandled_char(c);
-  }
+  else if(c >= 0x20 && static_cast<unsigned char>(c) <= 0x7F) { m.take(); }
+  else { throw_unhandled_char(c); }
 }
 
 class cmd_builder;
@@ -832,18 +808,12 @@ void csi_cursor(cmd_builder& cmd)
         if(cmd.params()[0] == 12)
         {
           if(cmd.last_char() == 'h') { cmd.cmd(VtCommand::Type::CursorBlink); }
-          else
-          {
-            cmd.cmd(VtCommand::Type::CursorNoBlink);
-          }
+          else { cmd.cmd(VtCommand::Type::CursorNoBlink); }
         }
         else if(cmd.params()[0] == 25)
         {
           if(cmd.last_char() == 'h') { cmd.cmd(VtCommand::Type::CursorShow); }
-          else
-          {
-            cmd.cmd(VtCommand::Type::CursorHide);
-          }
+          else { cmd.cmd(VtCommand::Type::CursorHide); }
         }
       }
       break;
@@ -911,10 +881,7 @@ void csi_mode_changes(cmd_builder& cmd)
         if(cmd.params()[0] == 1)
         {
           if(cmd.last_char() == 'h') { cmd.cmd(VtCommand::Type::ModeCursorKeysApplication); }
-          else
-          {
-            cmd.cmd(VtCommand::Type::ModeCursorKeysNumeric);
-          }
+          else { cmd.cmd(VtCommand::Type::ModeCursorKeysNumeric); }
         }
       }
       break;
@@ -985,10 +952,7 @@ void csi_screen_buffer(cmd_builder& cmd)
         if(cmd.params()[0] == 1049)
         {
           if(cmd.last_char() == 'h') { cmd.cmd(VtCommand::Type::ScreenBufferAlternate); }
-          else
-          {
-            cmd.cmd(VtCommand::Type::ScreenBufferMain);
-          }
+          else { cmd.cmd(VtCommand::Type::ScreenBufferMain); }
         }
       }
       break;
@@ -1006,10 +970,7 @@ void csi_window_width(cmd_builder& cmd)
         if(cmd.params()[0] == 3)
         {
           if(cmd.last_char() == 'h') { cmd.cmd(VtCommand::Type::WindowWidth132); }
-          else
-          {
-            cmd.cmd(VtCommand::Type::WindowWidth80);
-          }
+          else { cmd.cmd(VtCommand::Type::WindowWidth80); }
         }
       }
       break;
@@ -1037,10 +998,7 @@ void csi_exclusive(cmd_builder& cmd)
         if(cmd.params()[0] == 3210)
         {
           if(cmd.last_char() == 'h') { cmd.cmd(VtCommand::Type::EnableErrorReporting); }
-          else
-          {
-            cmd.cmd(VtCommand::Type::DisableErrorReporting);
-          }
+          else { cmd.cmd(VtCommand::Type::DisableErrorReporting); }
         }
       }
       break;
@@ -1090,15 +1048,9 @@ cmd_builder parse_csi(const VtSequence& seq)
             cmd.add_param(std::stoi(param_builder));
             param_builder.clear();
           }
-          else
-          {
-            cmd.add_param(0);
-          }
+          else { cmd.add_param(0); }
         }
-        else
-        {
-          param_builder.push_back(c);
-        }
+        else { param_builder.push_back(c); }
       }
 
       // Add final param if appropriate.
@@ -1123,10 +1075,7 @@ cmd_builder parse_csi(const VtSequence& seq)
         cmd.last_char(c);
         csi_finalize(cmd);
       }
-      else
-      {
-        throw std::invalid_argument("Final character is invalid or it's in the wrong position.");
-      }
+      else { throw std::invalid_argument("Final character is invalid or it's in the wrong position."); }
     }
     catch(const std::invalid_argument& e)
     {
@@ -2156,10 +2105,7 @@ VtCommand::VtCommand(VtSequence sequence)
     if(!cmd.params().empty()) m_params = std::move(cmd.m_params);
     if(!cmd.intermediates().empty()) m_intermediates = std::move(cmd.m_intermediate);
   }
-  else
-  {
-    m_cmd = VtCommand::Type::Invalid;
-  }
+  else { m_cmd = VtCommand::Type::Invalid; }
 }
 
 VtCommand::Type VtCommand::type() const noexcept { return m_cmd; }
@@ -2258,10 +2204,7 @@ void VtEmulator::write(const VtSequence& seq)
 
     // Write the content
     if(buf.properties().char_set == vt::CharSet::Ascii) { m_api.write_to_output(buf.handle(), seq.content()); }
-    else
-    {
-      m_api.write_to_output(buf.handle(), map_charset(seq.content(), buf.properties().char_set));
-    }
+    else { m_api.write_to_output(buf.handle(), map_charset(seq.content(), buf.properties().char_set)); }
 
     // Refresh state
     state = m_api.get_state(buf.handle());
@@ -2458,10 +2401,7 @@ bool VtEmulator::exec_cursor_position(const VtCommand& cmd)
     x = buf.properties().saved_cursor.column();
     y = buf.properties().saved_cursor.row();
   }
-  else
-  {
-    return false;
-  }
+  else { return false; }
 
   auto new_cursor = Cursor({Column(static_cast<vt::dim_type>(x)), Row(static_cast<vt::dim_type>(y))});
 
@@ -2486,10 +2426,7 @@ bool VtEmulator::exec_cursor_visibility(const VtCommand& cmd)
   else if(cmd.type() == VtCommand::Type::CursorDefaultShape) { ca.fill_percent = buf.defaults().cursor_fill_percent; }
   else if(cmd.type() == VtCommand::Type::CursorSteadyBlock || cmd.type() == VtCommand::Type::CursorSteadyBar) { ca.fill_percent = 100; }
   else if(cmd.type() == VtCommand::Type::CursorSteadyUnderline) { ca.fill_percent = 10; }
-  else
-  {
-    return false;
-  }
+  else { return false; }
 
   m_api.set_cursor_appearance(buf.handle(), ca);
 
@@ -2684,10 +2621,7 @@ bool VtEmulator::exec_text_modification(const VtCommand& cmd)
 
     return true;
   }
-  else
-  {
-    return false;
-  }
+  else { return false; }
 }
 
 bool VtEmulator::exec_screen_format(const VtCommand& cmd)
@@ -2816,10 +2750,7 @@ bool VtEmulator::exec_screen_format(const VtCommand& cmd)
           }
 
           if(fg) { sgr_mod.foreground_color = static_cast<vt::tiny_type>(static_cast<int>(color.to4bits()) + 30); }
-          else
-          {
-            sgr_mod.background_color = static_cast<vt::tiny_type>(static_cast<int>(color.to4bits()) + 40);
-          }
+          else { sgr_mod.background_color = static_cast<vt::tiny_type>(static_cast<int>(color.to4bits()) + 40); }
 
           break;
         }
@@ -2874,10 +2805,7 @@ bool VtEmulator::exec_query(const VtCommand& cmd)
   {
     response = vt::csi("?1;0c");  // VT101 with No Options
   }
-  else
-  {
-    return false;
-  }
+  else { return false; }
 
   auto handle = m_api.handle_open(VtApi::TerminalHandleType::StdIn, m_api.handle_close);
   m_api.write_to_input(handle, response);
@@ -2943,10 +2871,7 @@ bool VtEmulator::exec_tab(const VtCommand& cmd)
       }
 
       if(it != tabs_effective.end()) { new_col = Term::Column(*it); }
-      else
-      {
-        new_row = Term::Row(static_cast<cur_t>(cur_cursor.row() + 1));
-      }
+      else { new_row = Term::Row(static_cast<cur_t>(cur_cursor.row() + 1)); }
     }
     else
     {
@@ -2972,10 +2897,7 @@ bool VtEmulator::exec_tab(const VtCommand& cmd)
     if(it != tabs.end()) tabs.erase(it);
     return true;
   }
-  else
-  {
-    return false;
-  }
+  else { return false; }
 }
 
 bool VtEmulator::exec_set_property(const VtCommand& cmd)
@@ -3007,10 +2929,7 @@ bool VtEmulator::exec_set_property(const VtCommand& cmd)
     if(state.cursor_position.column() != win.left || state.cursor_position.row() != win.top) { m_api.set_cursor_position(buf.handle(), Cursor({Column(win.left), Row(win.top)})); }
     return true;
   }
-  else
-  {
-    return false;
-  }
+  else { return false; }
 }
 
 bool VtEmulator::exec_char_set(const VtCommand& cmd)
@@ -3053,10 +2972,7 @@ bool VtEmulator::exec_set_window_width(const VtCommand& cmd)
 
   if(cmd.type() == VtCommand::Type::WindowWidth132) { width = 132; }
   else if(cmd.type() == VtCommand::Type::WindowWidth80) { width = 80; }
-  else
-  {
-    return false;
-  }
+  else { return false; }
 
   auto& buf = get_active_screen_buffer();
   m_api.set_window_width(buf.handle(), width);
@@ -3121,10 +3037,7 @@ bool VtEmulator::exec_misc(const VtCommand& cmd)
     m_report_errors = false;
     return true;
   }
-  else
-  {
-    return false;
-  }
+  else { return false; }
 }
 
 VtEmulator::ScreenBuffer& VtEmulator::get_active_screen_buffer() { return get_screen_buffer(m_active_buffer); }
@@ -3154,10 +3067,7 @@ VtEmulator::ScreenBuffer& VtEmulator::get_screen_buffer(vt::ScreenBufferType typ
 
     return m_buffers[1];
   }
-  else
-  {
-    throw std::runtime_error("Invalid screen buffer requested");
-  }
+  else { throw std::runtime_error("Invalid screen buffer requested"); }
 }
 
 void VtEmulator::set_active_screen_buffer(vt::ScreenBufferType type)
