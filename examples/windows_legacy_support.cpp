@@ -18,6 +18,7 @@
 
 #include <cpp-terminal/style.hpp>
 #include <iostream>
+#include <limits>
 
 int main()
 {

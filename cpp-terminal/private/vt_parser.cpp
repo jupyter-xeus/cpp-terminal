@@ -15,7 +15,9 @@
 #include "cpp-terminal/color.hpp"
 #include "cpp-terminal/private/vt_parser.hpp"
 
+#include <algorithm>
 #include <istream>
+#include <iterator>
 #include <limits>
 #include <memory>
 #include <sstream>
@@ -312,6 +314,8 @@ bool VtParseState::handle_anywhere_control_codes(char c, VtParseMachine& m)
 {
   bool handled{false};
 
+  auto uc = static_cast<unsigned char>(c);
+
   if(c == Char::CAN || c == Char::SUB)
   {
     m.ignore();
@@ -319,7 +323,7 @@ bool VtParseState::handle_anywhere_control_codes(char c, VtParseMachine& m)
     m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
     handled = true;
   }
-  else if((c >= 0x80 && c <= 0x8f) || (c >= 0x91 && c <= 0x97) || c == 0x99 || c == 0x9a)
+  else if((uc >= 0x80 && uc <= 0x8f) || (uc >= 0x91 && uc <= 0x97) || uc == 0x99 || uc == 0x9a)
   {
     m.ignore();
     m.emit(c, VtSequence::Type::C1);
@@ -713,7 +717,7 @@ void invalidate_and_throw(cmd_builder& cmd, const char* reason);
    */
 class cmd_builder
 {
-  friend class VtCommand;
+  friend class Term::Private::VtCommand;
 
 public:
   using params_type        = std::vector<int>;
@@ -2284,7 +2288,7 @@ void VtEmulator::write(const VtSequence& seq)
       m_api.set_cursor_appearance(buf.handle(), ca);
     }
   }
-  catch(const std::exception exp)
+  catch(const std::exception& exp)
   {
     std::string err = exp.what();
     err += " while writing sequence: ";
@@ -2716,7 +2720,7 @@ bool VtEmulator::exec_screen_format(const VtCommand& cmd)
     std::vector<int> default_params{0};
     auto&            params = cmd.params().empty() ? default_params : cmd.params();
 
-    sgr sgr_mod = buf.properties().sgr;
+    select_graphic_rendition sgr_mod = buf.properties().sgr;
 
     for(size_t i = 0; i < params.size(); ++i)
     {
@@ -2791,9 +2795,8 @@ bool VtEmulator::exec_screen_format(const VtCommand& cmd)
               while(rgb.size() < 3)
               {
                 ++i;
-
+                if(params[i] < 0 || params[i] > 255) { throw std::invalid_argument("Invalid RGB value"); }
                 rgb.push_back(static_cast<vt::tiny_type>(params[i]));
-                if(rgb.back() < 0 || rgb.back() > 255) { throw std::invalid_argument("Invalid RGB value"); }
               }
 
               color = Color(rgb[0], rgb[1], rgb[2]);
@@ -3164,14 +3167,14 @@ void VtEmulator::set_active_screen_buffer(vt::ScreenBufferType type)
   m_active_buffer = type;
 }
 
-bool VtEmulator::sgr::operator==(const sgr& rhs) const
+bool VtEmulator::select_graphic_rendition::operator==(const select_graphic_rendition& rhs) const
 {
   if(this->foreground_color == rhs.foreground_color && this->background_color == rhs.background_color && this->bold == rhs.bold && this->underline == rhs.underline && this->reversed == rhs.reversed) { return true; }
 
   return false;
 }
 
-bool VtEmulator::sgr::operator!=(const sgr& rhs) const { return !(*this == rhs); }
+bool VtEmulator::select_graphic_rendition::operator!=(const select_graphic_rendition& rhs) const { return !(*this == rhs); }
 
 vt::Handle::Handle(raw_handle_type handle, std::function<void(raw_handle_type)> handle_closer_fn) : m_handle(handle), m_closer(handle_closer_fn) {}
 

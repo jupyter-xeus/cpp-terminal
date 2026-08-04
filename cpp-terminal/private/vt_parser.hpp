@@ -283,7 +283,7 @@ public:
   void report_error(const char* err);
 
 private:
-  struct sgr
+  struct select_graphic_rendition
   {
     vt::tiny_type foreground_color{0};
     vt::tiny_type background_color{0};
@@ -291,24 +291,24 @@ private:
     bool          underline{false};  // Win can't do underline, so a bright version of the background color is used.
     bool          reversed{false};   // foreground and background colors are reversed
 
-    bool operator==(const sgr& rhs) const;
-    bool operator!=(const sgr& rhs) const;
+    bool operator==(const select_graphic_rendition& rhs) const;
+    bool operator!=(const select_graphic_rendition& rhs) const;
   };
 
   struct buffer_defaults
   {
-    vt::tiny_type cursor_fill_percent{};
-    sgr           sgr;
+    vt::tiny_type            cursor_fill_percent{};
+    select_graphic_rendition sgr;
   };
 
   struct buffer_properties
   {
-    sgr                     sgr;
-    std::set<std::uint16_t> tabs;
-    vt::dim_type            top_margin{};     // 1-based row number representing the top of the scrolling window.
-    vt::dim_type            bottom_margin{};  // 1-based row number representing the bottom of the scrolling window.
-    vt::CharSet             char_set{vt::CharSet::Ascii};
-    Cursor                  saved_cursor;
+    select_graphic_rendition sgr;
+    std::set<std::uint16_t>  tabs;
+    vt::dim_type             top_margin{};     // 1-based row number representing the top of the scrolling window.
+    vt::dim_type             bottom_margin{};  // 1-based row number representing the bottom of the scrolling window.
+    vt::CharSet              char_set{vt::CharSet::Ascii};
+    Cursor                   saved_cursor;
   };
 
   class ScreenBuffer
@@ -343,19 +343,19 @@ private:
   void execute(const VtSequence& seq);
   void do_report_error(const char* err);
 
-  [[nodiscard]] bool exec_unsupported(const VtCommand& cmd);
-  [[nodiscard]] bool exec_cursor_position(const VtCommand& cmd);
-  [[nodiscard]] bool exec_cursor_visibility(const VtCommand& cmd);
-  [[nodiscard]] bool exec_viewport_position(const VtCommand& cmd);
-  [[nodiscard]] bool exec_text_modification(const VtCommand& cmd);
-  [[nodiscard]] bool exec_screen_format(const VtCommand& cmd);
-  [[nodiscard]] bool exec_query(const VtCommand& cmd);
-  [[nodiscard]] bool exec_tab(const VtCommand& cmd);
-  [[nodiscard]] bool exec_set_property(const VtCommand& cmd);
-  [[nodiscard]] bool exec_char_set(const VtCommand& cmd);
-  [[nodiscard]] bool exec_select_screen_buffer(const VtCommand& cmd);
-  [[nodiscard]] bool exec_set_window_width(const VtCommand& cmd);
-  [[nodiscard]] bool exec_misc(const VtCommand& cmd);
+  bool exec_unsupported(const VtCommand& cmd);
+  bool exec_cursor_position(const VtCommand& cmd);
+  bool exec_cursor_visibility(const VtCommand& cmd);
+  bool exec_viewport_position(const VtCommand& cmd);
+  bool exec_text_modification(const VtCommand& cmd);
+  bool exec_screen_format(const VtCommand& cmd);
+  bool exec_query(const VtCommand& cmd);
+  bool exec_tab(const VtCommand& cmd);
+  bool exec_set_property(const VtCommand& cmd);
+  bool exec_char_set(const VtCommand& cmd);
+  bool exec_select_screen_buffer(const VtCommand& cmd);
+  bool exec_set_window_width(const VtCommand& cmd);
+  bool exec_misc(const VtCommand& cmd);
 
   mutable std::mutex        m_mutex;
   std::vector<ScreenBuffer> m_buffers;
