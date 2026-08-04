@@ -100,9 +100,9 @@ int utf8_leading_ones(char c)
 };
 
 /**
-	 * @brief State machine for parsing video terminal control sequences, based on the state digram by Paul Flo Williams
-	 *			https://vt100.net/emu/dec_ansi_parser
-	 */
+   * @brief State machine for parsing video terminal control sequences, based on the state digram by Paul Flo Williams
+   *			https://vt100.net/emu/dec_ansi_parser
+   */
 class VtParseState;
 class VtParseMachine
 {
@@ -234,7 +234,7 @@ public:
   void handle(char c, VtParseMachine& m) override;
 };
 
-VtParseMachine::VtParseMachine(std::streambuf* sb, std::function<void(VtSequence)> cb) : m_handler(std::make_unique<VtParseStateGround>()), m_stream(sb), m_emit_cb(cb) {}
+VtParseMachine::VtParseMachine(std::streambuf* sb, std::function<void(VtSequence)> cb) : m_handler(std::unique_ptr<VtParseStateGround>(new VtParseStateGround())), m_stream(sb), m_emit_cb(cb) {}
 
 void VtParseMachine::run()
 {
@@ -316,34 +316,34 @@ bool VtParseState::handle_anywhere_control_codes(char c, VtParseMachine& m)
   {
     m.ignore();
     m.emit(c, VtSequence::Type::C0);
-    m.change_state(std::make_unique<VtParseStateGround>());
+    m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
     handled = true;
   }
   else if((c >= 0x80 && c <= 0x8f) || (c >= 0x91 && c <= 0x97) || c == 0x99 || c == 0x9a)
   {
     m.ignore();
     m.emit(c, VtSequence::Type::C1);
-    m.change_state(std::make_unique<VtParseStateGround>());
+    m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
     handled = true;
   }
   else if(c == Char::ST)
   {
-    m.change_state(std::make_unique<VtParseStateGround>());
+    m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
     handled = true;
   }
   else if(c == Char::ESC)
   {
-    m.change_state(std::make_unique<VtParseStateEscape>());
+    m.change_state(std::unique_ptr<VtParseStateEscape>(new VtParseStateEscape()));
     handled = true;
   }
   else if(c == Char::SOS || c == Char::PM || c == Char::APC)
   {
-    m.change_state(std::make_unique<VtParseStateSos>());
+    m.change_state(std::unique_ptr<VtParseStateSos>(new VtParseStateSos()));
     handled = true;
   }
   else if(c == Char::OSC_8bit)
   {
-    m.change_state(std::make_unique<VtParseStateOsc>());
+    m.change_state(std::unique_ptr<VtParseStateOsc>(new VtParseStateOsc()));
     handled = true;
   }
 
@@ -434,18 +434,18 @@ void VtParseStateEscape::handle(char c, VtParseMachine& m)
   else if(is_intermediate(c))
   {
     m.take();
-    m.change_state(std::make_unique<VtParseStateEscapeIntermediate>());
+    m.change_state(std::unique_ptr<VtParseStateEscapeIntermediate>(new VtParseStateEscapeIntermediate()));
   }
   else if((c >= 0x30 && c <= 0x4f) || (c >= 0x51 && c <= 0x57) || c == 0x59 || c == 0x5a || c == 0x5c || (c >= 0x60 && c <= 0x7e))
   {
     m.take();
     m.emit(VtSequence::Type::Escape);
-    m.change_state(std::make_unique<VtParseStateGround>());
+    m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
   }
   else if(c == 0x58 || c == 0x5e || c == 0x5f)
   {
     m.take();
-    m.change_state(std::make_unique<VtParseStateSos>());
+    m.change_state(std::unique_ptr<VtParseStateSos>(new VtParseStateSos()));
   }
   else if(c == 0x50)
   {
@@ -455,12 +455,12 @@ void VtParseStateEscape::handle(char c, VtParseMachine& m)
   else if(c == 0x5d)
   {
     m.take();
-    m.change_state(std::make_unique<VtParseStateOsc>());
+    m.change_state(std::unique_ptr<VtParseStateOsc>(new VtParseStateOsc()));
   }
   else if(c == Char::CSI)
   {
     m.take();
-    m.change_state(std::make_unique<VtParseStateCsiEntry>());
+    m.change_state(std::unique_ptr<VtParseStateCsiEntry>(new VtParseStateCsiEntry()));
   }
   else { throw_unhandled_char(c); }
 }
@@ -480,7 +480,7 @@ void VtParseStateEscapeIntermediate::handle(char c, VtParseMachine& m)
   {
     m.take();
     m.emit(VtSequence::Type::Escape);
-    m.change_state(std::make_unique<VtParseStateGround>());
+    m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
   }
   else { throw_unhandled_char(c); }
 }
@@ -504,28 +504,28 @@ void VtParseStateCsiEntry::handle(char c, VtParseMachine& m)
   else if(is_csi_param(c))
   {
     m.take();
-    m.change_state(std::make_unique<VtParseStateCsiParam>());
+    m.change_state(std::unique_ptr<VtParseStateCsiParam>(new VtParseStateCsiParam()));
   }
   else if(is_csi_private(c))
   {
     m.take();
-    m.change_state(std::make_unique<VtParseStateCsiParam>());
+    m.change_state(std::unique_ptr<VtParseStateCsiParam>(new VtParseStateCsiParam()));
   }
   else if(c == 0x3a)
   {
     m.take();
-    m.change_state(std::make_unique<VtParseStateCsiIgnore>());
+    m.change_state(std::unique_ptr<VtParseStateCsiIgnore>(new VtParseStateCsiIgnore()));
   }
   else if(is_intermediate(c))
   {
     m.take();
-    m.change_state(std::make_unique<VtParseStateCsiIntermediate>());
+    m.change_state(std::unique_ptr<VtParseStateCsiIntermediate>(new VtParseStateCsiIntermediate()));
   }
   else if(c >= 0x40 && c <= 0x7e)
   {
     m.take();
     m.emit(VtSequence::Type::CSI);
-    m.change_state(std::make_unique<VtParseStateGround>());
+    m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
   }
   else { throw_unhandled_char(c); }
 }
@@ -545,17 +545,17 @@ void VtParseStateCsiParam::handle(char c, VtParseMachine& m)
   {
     m.take();
     m.emit(VtSequence::Type::CSI);
-    m.change_state(std::make_unique<VtParseStateGround>());
+    m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
   }
   else if(is_intermediate(c))
   {
     m.take();
-    m.change_state(std::make_unique<VtParseStateCsiIntermediate>());
+    m.change_state(std::unique_ptr<VtParseStateCsiIntermediate>(new VtParseStateCsiIntermediate()));
   }
   else if(c == 0x3a || is_csi_private(c))
   {
     m.take();
-    m.change_state(std::make_unique<VtParseStateCsiIgnore>());
+    m.change_state(std::unique_ptr<VtParseStateCsiIgnore>(new VtParseStateCsiIgnore()));
   }
   else { throw_unhandled_char(c); }
 }
@@ -575,7 +575,7 @@ void VtParseStateCsiIgnore::handle(char c, VtParseMachine& m)
   {
     m.take();
     m.emit(VtSequence::Type::Malformed);
-    m.change_state(std::make_unique<VtParseStateGround>());
+    m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
   }
   else { throw_unhandled_char(c); }
 }
@@ -595,12 +595,12 @@ void VtParseStateCsiIntermediate::handle(char c, VtParseMachine& m)
   {
     m.take();
     m.emit(VtSequence::Type::CSI);
-    m.change_state(std::make_unique<VtParseStateGround>());
+    m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
   }
   else if(c >= 0x30 && c <= 0x3f)
   {
     m.take();
-    m.change_state(std::make_unique<VtParseStateCsiIgnore>());
+    m.change_state(std::unique_ptr<VtParseStateCsiIgnore>(new VtParseStateCsiIgnore()));
   }
   else
   {
@@ -612,20 +612,20 @@ void VtParseStateCsiIntermediate::handle(char c, VtParseMachine& m)
 void VtParseStateOsc::enter(VtParseMachine& m)
 {
   /* Note about OSC processing
-		*
-		* https://vt100.net/emu/dec_ansi_parser describes the 'osc string' state to have
-		* the following actions:
-		*
-		*	entry/osc_start
-		*	event 20-7F/osc_put
-		*	exit/osc_end
-		*
-		* These are to support an external parser to handle parsing the control string.
-		* Since this parser is simply extracting the OSC string from the stream (not
-		* attempting to parse and interpret it), those actions will not be supported here.
-		* Parsing the control string is a job for the consumer.
-		*
-		*/
+    *
+    * https://vt100.net/emu/dec_ansi_parser describes the 'osc string' state to have
+    * the following actions:
+    *
+    *	entry/osc_start
+    *	event 20-7F/osc_put
+    *	exit/osc_end
+    *
+    * These are to support an external parser to handle parsing the control string.
+    * Since this parser is simply extracting the OSC string from the stream (not
+    * attempting to parse and interpret it), those actions will not be supported here.
+    * Parsing the control string is a job for the consumer.
+    *
+    */
   (void)m;
 }
 
@@ -645,11 +645,11 @@ void VtParseStateOsc::handle(char c, VtParseMachine& m)
   // Some OSC terminators are handled by handle_anywhere_control_codes(), so handle terminators first
   if(c == Char::BEL || c == Char::ST || c == Char::ESC)
   {
-    if(c == Char::ESC) { m.change_state(std::make_unique<VtParseStateEscape>()); }
+    if(c == Char::ESC) { m.change_state(std::unique_ptr<VtParseStateEscape>(new VtParseStateEscape())); }
     else
     {
       m.take();
-      m.change_state(std::make_unique<VtParseStateGround>());
+      m.change_state(std::unique_ptr<VtParseStateGround>(new VtParseStateGround()));
     }
 
     m.emit(VtSequence::Type::OSC);
@@ -685,8 +685,8 @@ class cmd_builder;
 void invalidate_and_throw(cmd_builder& cmd, const char* reason);
 
 /**
-	 * @brief Helper class for constructing a VtCommand
-	 */
+   * @brief Helper class for constructing a VtCommand
+   */
 class cmd_builder
 {
   friend class VtCommand;
@@ -1127,12 +1127,12 @@ cmd_builder parse_osc(const VtSequence& seq)
     cmd.cmd(VtCommand::Type::WindowTitleSet);
 
     /*
-			* The window title is stored in the intermediates as a workaround for
-			* VtCommand's design that uses integers as the parameters' type. It's
-			* not ideal, but since the use of OSC is so limited (it's only used for
-			* setting window title and RGB palette), it did not seem worth any extra
-			* complexity to devise a more robust solution.
-			*/
+      * The window title is stored in the intermediates as a workaround for
+      * VtCommand's design that uses integers as the parameters' type. It's
+      * not ideal, but since the use of OSC is so limited (it's only used for
+      * setting window title and RGB palette), it did not seem worth any extra
+      * complexity to devise a more robust solution.
+      */
     for(size_t i = 2; i < seq.content().size(); ++i) { cmd.add_intermediate(seq.content()[i]); }
   }
   else if(c == '4' && seq.content().size() >= 13)
@@ -1421,17 +1421,17 @@ std::string to_string(const VtCommand& cmd)
 
 #if defined(_WIN32)
 /*
-	* The following functions are not available in Windows releases prior to Vista. Most
-	* of the other console API functions are available as far back as Windows 2000
-	* Professional and Windows 2000 Server.
-	*
-	* In order to support those earlier versions with most of the functionality, these
-	* functions are not statically linked.
-	*
-	* - GetConsoleScreenBufferInfoEx
-	* - SetConsoleScreenBufferInfoEx
-	* - SetCurrentConsoleFontEx
-	*/
+  * The following functions are not available in Windows releases prior to Vista. Most
+  * of the other console API functions are available as far back as Windows 2000
+  * Professional and Windows 2000 Server.
+  *
+  * In order to support those earlier versions with most of the functionality, these
+  * functions are not statically linked.
+  *
+  * - GetConsoleScreenBufferInfoEx
+  * - SetConsoleScreenBufferInfoEx
+  * - SetCurrentConsoleFontEx
+  */
 
 // Duplicate of CONSOLE_SCREEN_BUFFER_INFOEX
 typedef struct _CSBIX_DUP
@@ -1843,9 +1843,9 @@ void terminal_set_window_width_default(const vt::Handle& handle, vt::dim_type wi
 {
 #if defined(_WIN32)
   /*
-		* Microsoft recommended using SetConsoleScreenBufferInfoEx() but that function requires Vista or better.
-		* Ansicon did it with functions available in Windows 2000.
-		*/
+    * Microsoft recommended using SetConsoleScreenBufferInfoEx() but that function requires Vista or better.
+    * Ansicon did it with functions available in Windows 2000.
+    */
   CONSOLE_SCREEN_BUFFER_INFO csbi{};
   if(!GetConsoleScreenBufferInfo(handle, &csbi)) { throw_win32_error("GetConsoleScreenBufferInfo"); }
 
@@ -1880,32 +1880,32 @@ void terminal_set_window_width_default(const vt::Handle& handle, vt::dim_type wi
 }
 
 /*
-		_________________________ ______ screen_buffer.top
-		|						|
-		|						|
-		|-----------------------|------- viewport.top
-		|      static area      |
-		|.......................|....... scroll_region.top
-		|						|
-		|     scroll region     |
-		|.......................|....... scroll_region.bottom
-		|      static area      |
-		|-----------------------|------- viewport.bottom
-		|						|
-		|						|
-		|						|
-		|_______________________| ______ screen_buffer.bottom
+    _________________________ ______ screen_buffer.top
+    |						|
+    |						|
+    |-----------------------|------- viewport.top
+    |      static area      |
+    |.......................|....... scroll_region.top
+    |						|
+    |     scroll region     |
+    |.......................|....... scroll_region.bottom
+    |      static area      |
+    |-----------------------|------- viewport.bottom
+    |						|
+    |						|
+    |						|
+    |_______________________| ______ screen_buffer.bottom
 
-	*/
+  */
 
 /**
-	 * @brief Apply margins to the viewport to get the scrolling region. Anything outside the
-	 *			scroll region (MS calls it the clipping rectangle) is fixed and will not scroll.
-	 * @param vp The viewport (same as CONSOLE_SCREEN_BUFFER_INFO.srWindow, but 1-based)
-	 * @param top_margin The 1-based line number corresponding to the top of the scroll region.
-	 * @param bottom_margin The 1-based line number corresponding to the bottom of the scroll region.
-	 * @return The scroll region.
-	 */
+   * @brief Apply margins to the viewport to get the scrolling region. Anything outside the
+   *			scroll region (MS calls it the clipping rectangle) is fixed and will not scroll.
+   * @param vp The viewport (same as CONSOLE_SCREEN_BUFFER_INFO.srWindow, but 1-based)
+   * @param top_margin The 1-based line number corresponding to the top of the scroll region.
+   * @param bottom_margin The 1-based line number corresponding to the bottom of the scroll region.
+   * @return The scroll region.
+   */
 vt::rectangle console_get_scroll_region(const vt::rectangle& vp, vt::dim_type top_margin, vt::dim_type bottom_margin)
 {
   vt::rectangle sw = vp;
@@ -2838,18 +2838,18 @@ bool VtEmulator::exec_tab(const VtCommand& cmd)
   else if(cmd.type() == VtCommand::Type::TabCursorForward || cmd.type() == VtCommand::Type::TabCursorBackward)
   {
     /*
-				* Microsoft documentation states "If there are no tab stops set via HTS, CHT and CBT
-				* will treat the first and last columns of the window as the only two tab stops."
-				* https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences#tabs
-				*
-				* For forward movement "If there are no more tab stops, move to the last column in the
-				* row. If the cursor is in the last column, move to the first column of the next row."
-				*
-				* For backward movement "If there are no more tab stops, moves the cursor to the first
-				* column. If the cursor is in the first column, doesn’t move the cursor."
-				*
-				* So, in effect, there are always tabs at the first and last columns.
-				*/
+        * Microsoft documentation states "If there are no tab stops set via HTS, CHT and CBT
+        * will treat the first and last columns of the window as the only two tab stops."
+        * https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences#tabs
+        *
+        * For forward movement "If there are no more tab stops, move to the last column in the
+        * row. If the cursor is in the last column, move to the first column of the next row."
+        *
+        * For backward movement "If there are no more tab stops, moves the cursor to the first
+        * column. If the cursor is in the first column, doesn’t move the cursor."
+        *
+        * So, in effect, there are always tabs at the first and last columns.
+        */
     decltype(buf.properties().tabs) tabs_effective = buf.properties().tabs;
     tabs_effective.insert(static_cast<set_t>(state.window.left));
     tabs_effective.insert(static_cast<set_t>(state.window.right));
@@ -2975,12 +2975,12 @@ bool VtEmulator::exec_set_window_width(const VtCommand& cmd)
   m_api.set_window_width(buf.handle(), width);
 
   /*
-			* If you change the DECCOLM setting, the terminal:
-			*	- Sets the left, right, top and bottom scrolling margins to their default positions.
-			*	- Erases all data in page memory.
-			*
-			* http://vt100.net/docs/vt510-rm/DECCOLM
-			*/
+      * If you change the DECCOLM setting, the terminal:
+      *	- Sets the left, right, top and bottom scrolling margins to their default positions.
+      *	- Erases all data in page memory.
+      *
+      * http://vt100.net/docs/vt510-rm/DECCOLM
+      */
   std::vector<VtSequence> reset_ops;
   reset_ops.push_back(VtSequence(VtSequence::Type::CSI, "r"));   // default margins
   reset_ops.push_back(VtSequence(VtSequence::Type::CSI, "3J"));  // erase data in display and scroll-back memory

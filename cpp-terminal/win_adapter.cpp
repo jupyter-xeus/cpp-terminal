@@ -19,7 +19,7 @@ namespace Term
 struct WinConsoleAdapter::impl
 {
   impl() : emulator(Private::get_emulator()) {}
-  ~impl()                           = default;
+  ~impl()                          = default;
   impl(const impl& rhs)            = delete;
   impl& operator=(const impl& rhs) = delete;
   impl(impl&& other)               = delete;
@@ -35,14 +35,14 @@ WinConsoleAdapter::WinConsoleAdapter(std::ostream& stream, size_t buf_size, std:
   bool legacy_win = Term::Terminfo::get(Term::Terminfo::Bool::Legacy);
   if(std_stream && !legacy_win) return;
 
-  m_pimpl = std::make_unique<impl>();
+  m_pimpl = std::unique_ptr<impl>(new impl());
 
   m_streambuf = stream.rdbuf();
   m_stream.rdbuf(this);
 
   char* beg = m_buf.data();
   setg(beg, beg, beg);
-  setp(beg, beg, beg + m_buf.capacity());
+  setp(beg, beg + m_buf.capacity());
 }
 
 WinConsoleAdapter::~WinConsoleAdapter()
@@ -57,7 +57,6 @@ WinConsoleAdapter::int_type WinConsoleAdapter::overflow(int c)
   auto g_beg = eback();
   auto g_cur = gptr();
   auto g_end = egptr();
-  auto p_beg = pbase();
   auto p_cur = pptr();
   auto p_end = epptr();
 
@@ -74,7 +73,7 @@ WinConsoleAdapter::int_type WinConsoleAdapter::overflow(int c)
   g_end -= reclaim;
 
   setg(g_beg, g_cur, g_end);
-  setp(p_beg, p_cur, p_end);
+  setp(p_cur, p_end);
 
   if(traits_type::eq_int_type(c, traits_type::eof())) { return traits_type::not_eof(c); }
 

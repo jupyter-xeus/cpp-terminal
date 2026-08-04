@@ -387,7 +387,7 @@ private:
   void report_error(const char* err);
 
   std::shared_ptr<VtEmulator> m_emulator;
-  std::stringstream m_stream;
+  std::stringstream           m_stream;
 };
 
 }  // namespace Private

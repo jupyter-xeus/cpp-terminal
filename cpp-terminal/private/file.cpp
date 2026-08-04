@@ -164,7 +164,7 @@ bool Term::Private::OutputFileHandler::use_legacy_win_writer() const
   // Provide support unless NoLegacyWindowsSupport explicitly chosen
   if(Term::Terminfo::get(Term::Terminfo::Bool::Legacy) && !terminal.getOptions().has(Option::NoLegacyWindowsSupport))
   {
-    if(!m_legacy_writer) { m_legacy_writer = std::make_unique<VtWriter>(); }
+    if(!m_legacy_writer) { m_legacy_writer = std::unique_ptr<VtWriter>(new VtWriter()); }
     return true;
   }
   else if(m_legacy_writer) { m_legacy_writer.reset(); }
