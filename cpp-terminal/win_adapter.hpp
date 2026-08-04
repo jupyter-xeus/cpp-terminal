@@ -17,8 +17,8 @@
 namespace Term
 {
 /**
-   * @brief Emulates the virtual terminal features Microsoft introduced in 
-   *			Windows 10 for pre-win10 systems starting with Windows 2000.
+   * @brief Emulates the virtual terminal features Microsoft introduced in
+   *      Windows 10 for pre-win10 systems starting with Windows 2000.
    */
 class WinConsoleAdapter : public std::streambuf
 {

@@ -120,20 +120,20 @@ TEST_CASE("Parse. 24-bit color sequence")
 TEST_CASE("Parse. Test various OSC terminators")
 {
   /*
-  * Apparently, there are three ways to terminate an OSC sequence. 
-  * 
+  * Apparently, there are three ways to terminate an OSC sequence.
+  *
   * https://vt100.net/emu/dec_ansi_parser
-  *	Says terminator is 0x9C
+  * Says terminator is 0x9C
   *
   * https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences#window-title
-  *	Says terminator is the sequence 0x1B 0x5C (ESC /), but BEL (0x7) can also be used.
+  * Says terminator is the sequence 0x1B 0x5C (ESC /), but BEL (0x7) can also be used.
   *
   * https://en.wikipedia.org/wiki/ANSI_escape_code#Operating_System_Command_sequences
-  *	Says terminator can be BEL (0x07) as well as the standard ST (0x9C or 0x1B 0x5C).
+  * Says terminator can be BEL (0x07) as well as the standard ST (0x9C or 0x1B 0x5C).
   *
-  * Supporting all three should not be a problem. Several references have noted that the 
+  * Supporting all three should not be a problem. Several references have noted that the
   * 'ESC \' long form is preferred.
-  * 
+  *
   */
 
   auto result = parse("\x1b]cmd\x1b\x5c");
@@ -210,9 +210,9 @@ TEST_CASE("VtCommand. Does not allow negative parameters")
 {
   /*
   * Note:
-  * This test succeeds not because the parser is checking for a negative number so that it 
-  * may be rejected (although it does). It succeeds because of the way the parser handles the 
-  * negative sign (0x2d). Once it encounters it, it stops parsing parameters because the 
+  * This test succeeds not because the parser is checking for a negative number so that it
+  * may be rejected (although it does). It succeeds because of the way the parser handles the
+  * negative sign (0x2d). Once it encounters it, it stops parsing parameters because the
   * negative sign is in the intermediate character range.
   */
   VtSequence seq(VtSequence::Type::CSI, csi("1;-1H"));

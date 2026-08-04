@@ -263,10 +263,10 @@ struct VtApi
 
 /**
  * @brief Calls windows console API functions to emulate a virtual terminal.
- * 
+ *
  * @remarks This class maintains certain state properties, such as scrolling window margins.
- *			Therefore, it is important that only one instance is in use at a time for 
- *			proper operation.
+ *      Therefore, it is important that only one instance is in use at a time for
+ *      proper operation.
  */
 class VtEmulator
 {
