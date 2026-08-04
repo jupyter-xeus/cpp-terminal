@@ -1259,12 +1259,12 @@ TEST_CASE("VtEmulator. Select screen buffer")
     // 7m (reverse fg/bg colors) & 27m (unreverse fg/bg colors) are issued throughout this
     // test to force set_text_attributes to be called so that active_handle_use_verified is set.
 
-    // Initial buffer is the primary. 
+    // Initial buffer is the primary.
     auto result = parse(csi("7m"));
     emulator.process(result[0]);
     CHECK(active_handle_use_verified == primary_handle);
 
-    // Switch to alternate. 
+    // Switch to alternate.
     result = parse(csi("?1049h") + csi("7m"));
     for(auto& seq: result) { emulator.process(seq); }
 
