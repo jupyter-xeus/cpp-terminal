@@ -630,20 +630,20 @@ void VtParseStateCsiIntermediate::handle(char c, VtParseMachine& m)
 void VtParseStateOsc::enter(VtParseMachine& m)
 {
   /* Note about OSC processing
-		*
-		* https://vt100.net/emu/dec_ansi_parser describes the 'osc string' state to have
-		* the following actions:
-		*
-		*	entry/osc_start
-		*	event 20-7F/osc_put
-		*	exit/osc_end
-		*
-		* These are to support an external parser to handle parsing the control string.
-		* Since this parser is simply extracting the OSC string from the stream (not
-		* attempting to parse and interpret it), those actions will not be supported here.
-		* Parsing the control string is a job for the consumer.
-		*
-		*/
+    *
+    * https://vt100.net/emu/dec_ansi_parser describes the 'osc string' state to have
+    * the following actions:
+    *
+    * entry/osc_start
+    * event 20-7F/osc_put
+    * exit/osc_end
+    *
+    * These are to support an external parser to handle parsing the control string.
+    * Since this parser is simply extracting the OSC string from the stream (not
+    * attempting to parse and interpret it), those actions will not be supported here.
+    * Parsing the control string is a job for the consumer.
+    *
+    */
   (void)m;
 }
 
@@ -1931,32 +1931,32 @@ void terminal_set_window_width_default(const vt::Handle& handle, vt::dim_type wi
 }
 
 /*
-		_________________________ ______ screen_buffer.top
-		|						|
-		|						|
-		|-----------------------|------- viewport.top
-		|      static area      |
-		|.......................|....... scroll_region.top
-		|						|
-		|     scroll region     |
-		|.......................|....... scroll_region.bottom
-		|      static area      |
-		|-----------------------|------- viewport.bottom
-		|						|
-		|						|
-		|						|
-		|_______________________| ______ screen_buffer.bottom
+    _________________________ ______ screen_buffer.top
+    |           |
+    |           |
+    |-----------------------|------- viewport.top
+    |      static area      |
+    |.......................|....... scroll_region.top
+    |           |
+    |     scroll region     |
+    |.......................|....... scroll_region.bottom
+    |      static area      |
+    |-----------------------|------- viewport.bottom
+    |           |
+    |           |
+    |           |
+    |_______________________| ______ screen_buffer.bottom
 
   */
 
 /**
-	 * @brief Apply margins to the viewport to get the scrolling region. Anything outside the
-	 *			scroll region (MS calls it the clipping rectangle) is fixed and will not scroll.
-	 * @param vp The viewport (same as CONSOLE_SCREEN_BUFFER_INFO.srWindow, but 1-based)
-	 * @param top_margin The 1-based line number corresponding to the top of the scroll region.
-	 * @param bottom_margin The 1-based line number corresponding to the bottom of the scroll region.
-	 * @return The scroll region.
-	 */
+   * @brief Apply margins to the viewport to get the scrolling region. Anything outside the
+   *      scroll region (MS calls it the clipping rectangle) is fixed and will not scroll.
+   * @param vp The viewport (same as CONSOLE_SCREEN_BUFFER_INFO.srWindow, but 1-based)
+   * @param top_margin The 1-based line number corresponding to the top of the scroll region.
+   * @param bottom_margin The 1-based line number corresponding to the bottom of the scroll region.
+   * @return The scroll region.
+   */
 vt::rectangle console_get_scroll_region(const vt::rectangle& vp, vt::dim_type top_margin, vt::dim_type bottom_margin)
 {
   vt::rectangle sw = vp;
@@ -3059,12 +3059,12 @@ bool VtEmulator::exec_set_window_width(const VtCommand& cmd)
   m_api.set_window_width(buf.handle(), width);
 
   /*
-			* If you change the DECCOLM setting, the terminal:
-			*	- Sets the left, right, top and bottom scrolling margins to their default positions.
-			*	- Erases all data in page memory.
-			*
-			* http://vt100.net/docs/vt510-rm/DECCOLM
-			*/
+      * If you change the DECCOLM setting, the terminal:
+      * - Sets the left, right, top and bottom scrolling margins to their default positions.
+      * - Erases all data in page memory.
+      *
+      * http://vt100.net/docs/vt510-rm/DECCOLM
+      */
   std::vector<VtSequence> reset_ops;
   reset_ops.push_back(VtSequence(VtSequence::Type::CSI, "r"));   // default margins
   reset_ops.push_back(VtSequence(VtSequence::Type::CSI, "3J"));  // erase data in display and scroll-back memory
