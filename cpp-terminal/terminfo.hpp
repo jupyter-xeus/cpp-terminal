@@ -49,7 +49,6 @@ public:
   };
   enum class Integer : std::uint8_t
   {
-
   };
 
   static bool          get(const Term::Terminfo::Bool& key);

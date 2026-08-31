@@ -22,7 +22,6 @@ namespace Term
  */
 enum class Style : std::uint8_t
 {
-
   Reset      = 0,  ///< resets all attributes (styles and colors)
   Bold       = 1,  ///< Thick text font
   Dim        = 2,  ///< lighter, slimmer text font
