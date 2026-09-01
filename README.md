@@ -80,15 +80,12 @@ We have created serval examples to show possible use cases of CPP-Terminal and t
 
 |     Platform      | Supported versions |                                                                Arch                                                                |                                  Compiler                                   | C++ standard |
 |:-----------------:|:------------------:|:----------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------:|:------------:|
-|      Windows      |   10 and higher*   |                                                            x86, x86_64                                                             | MSVC 2019, MSVC 2022, clang11, clang12, clang13, clang14, clang15, clang-cl | 11,14,17,20  |
+|      Windows      | 2000 Pro or higher |                                                            x86, x86_64                                                             | MSVC 2019, MSVC 2022, clang11, clang12, clang13, clang14, clang15, clang-cl | 11,14,17,20  |
 |  (Windows) MSYS2  |   All supported    |                                                            x86, x86_64                                                             |                            ucrt , clang,  mingw                             | 11,14,17,20  |
 |       MacOS       |         11         |                                                                                                                                    |          xcode11.7 xcode12.4 xcode12.5.1 xcode13 gcc10 gcc11 gcc12          | 11,14,17,20  |
 |       MacOS       |         12         |                                                                                                                                    |                   xcode13.1 xcode13.2 xcode13.3 xcode13.4                   | 11,14,17,20  |
 |       Linux       |   All supported    |                                                               x86_64                                                               |                 4.7<=GCC<= 12  3.5<=Clang<=15  intel-oneapi                 | 11,14,17,20  |
 | Linux (dockcross) |   All supported    | arm64 armv5 armv5-musl armv5-uclibc armv6 armv7a, mips, mipsel-lts, s390x, ppc64le, xtensa-uclibc, x86, x64, x64-clang, x64-tinycc |                        4.7<=GCC<= 12  3.5<=Clang<=15                        | 11,14,17,20  |
-
-> Windows versions prior Windows 10 are missing the Win32 API functionality for entering the "raw mode" and therefore
-> won't work. They are also lacking ANSI support. See #173 for adding support to prior windows versions for MSVC / Win32.
 
 ## How to use
 
