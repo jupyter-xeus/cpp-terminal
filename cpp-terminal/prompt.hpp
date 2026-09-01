@@ -43,7 +43,6 @@ Result prompt(const std::string& message, const std::string& first_option, const
 // indicates the results of prompt_simple()
 enum class Result_simple
 {
-
   Yes,   ///< Returned if the user chose \b yes.
   No,    ///< Returned if the user chose no or invalid / no input or if no terminal is attached.
   Abort  ///< Returned if CTRL+C was pressed.
