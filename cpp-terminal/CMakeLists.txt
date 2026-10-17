@@ -27,6 +27,7 @@ set(CPP_TERMINAL_PUBLIC_HEADERS
     terminfo.hpp
     tty.hpp
     version.hpp
+    win_adapter.hpp
     window.hpp)
 
 set(CPP_TERMINAL_SRC
@@ -48,7 +49,8 @@ set(CPP_TERMINAL_SRC
     screen.cpp
     options.cpp
     cursor.cpp
-    style.cpp)
+    style.cpp
+    win_adapter.cpp)
 
 # create and configure library target
 add_library(cpp-terminal "${CPP_TERMINAL_SRC}")
