@@ -10,10 +10,12 @@
 #pragma once
 
 #include "cpp-terminal/private/file_initializer.hpp"
+#include "cpp-terminal/private/vt_parser.hpp"
 // clang-format off
 #include <cstdio>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <mutex>
 #include <string>
 // clang-format on
@@ -72,6 +74,10 @@ public:
 #else
   static const constexpr char* m_file{"/dev/tty"};
 #endif
+private:
+  bool use_legacy_win_writer() const;
+
+  mutable std::unique_ptr<VtWriter> m_legacy_writer;
 };
 
 class InputFileHandler : public FileHandler
